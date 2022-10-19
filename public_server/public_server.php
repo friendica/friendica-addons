@@ -16,6 +16,7 @@ use Friendica\DI;
 use Friendica\Model\Notification;
 use Friendica\Model\User;
 use Friendica\Core\Config\Util\ConfigFileLoader;
+use Friendica\Core\Session;
 use Friendica\Util\DateTimeFormat;
 
 function public_server_install()
@@ -118,7 +119,7 @@ function public_server_login(App $a, $b)
 	}
 
 	$fields = ['account_expires_on' => DateTimeFormat::utc('now +' . $days . ' days')];
-	$condition = ["`uid` = ? AND `account_expires_on` > ?", local_user(), DBA::NULL_DATETIME];
+	$condition = ["`uid` = ? AND `account_expires_on` > ?", Session::getLocalUser(), DBA::NULL_DATETIME];
 	DBA::update('user', $fields, $condition);
 }
 

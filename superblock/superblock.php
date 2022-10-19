@@ -10,6 +10,7 @@
 use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\DI;
 use Friendica\Util\Strings;
 
@@ -24,11 +25,11 @@ function superblock_install()
 
 function superblock_addon_settings(App &$a, array &$data)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$blocked = DI::pConfig()->get(local_user(), 'system', 'blocked', '');
+	$blocked = DI::pConfig()->get(Session::getLocalUser(), 'system', 'blocked', '');
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/superblock/');
 	$html = Renderer::replaceMacros($t, [
@@ -44,12 +45,12 @@ function superblock_addon_settings(App &$a, array &$data)
 
 function superblock_addon_settings_post(App $a, array &$b)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
 	if (!empty($_POST['superblock-submit'])) {
-		DI::pConfig()->set(local_user(), 'system', 'blocked',trim($_POST['superblock-words']));
+		DI::pConfig()->set(Session::getLocalUser(), 'system', 'blocked',trim($_POST['superblock-words']));
 	}
 }
 
@@ -89,11 +90,11 @@ function superblock_enotify_store(App $a, array &$b)
 
 function superblock_conversation_start(App $a, array &$b)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$words = DI::pConfig()->get(local_user(), 'system', 'blocked');
+	$words = DI::pConfig()->get(Session::getLocalUser(), 'system', 'blocked');
 	if ($words) {
 		$a->data['superblock'] = explode(',', $words);
 	}
@@ -112,7 +113,7 @@ EOT;
 
 function superblock_item_photo_menu(App $a, array &$b)
 {
-	if (!local_user() || $b['item']['self']) {
+	if (!Session::getLocalUser() || $b['item']['self']) {
 		return;
 	}
 
@@ -139,11 +140,11 @@ function superblock_module() {}
 
 function superblock_init(App $a)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$words = DI::pConfig()->get(local_user(), 'system', 'blocked');
+	$words = DI::pConfig()->get(Session::getLocalUser(), 'system', 'blocked');
 
 	if (array_key_exists('block', $_GET) && $_GET['block']) {
 		if (strlen($words))
@@ -151,6 +152,6 @@ function superblock_init(App $a)
 		$words .= trim($_GET['block']);
 	}
 
-	DI::pConfig()->set(local_user(), 'system', 'blocked', $words);
+	DI::pConfig()->set(Session::getLocalUser(), 'system', 'blocked', $words);
 	exit();
 }

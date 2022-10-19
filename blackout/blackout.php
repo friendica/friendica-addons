@@ -48,6 +48,7 @@ use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\Core\System;
 use Friendica\DI;
 
@@ -58,7 +59,7 @@ function blackout_install() {
 function blackout_redirect (App $a, $b)
 {
 	// if we have a logged in user, don't throw her out
-	if (local_user()) {
+	if (Session::getLocalUser()) {
 		return true;
 	}
 

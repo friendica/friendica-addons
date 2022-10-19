@@ -12,6 +12,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\Database\DBA;
 use Friendica\DI;
 
@@ -36,23 +37,23 @@ function showmore_dyn_footer(App $a, string &$body)
 
 function showmore_dyn_settings_post()
 {
-	if(!local_user()) {
+	if(!Session::getLocalUser()) {
 		return;
 	}
 
 	if (isset($_POST['showmore_dyn-submit'])) {
-		DI::pConfig()->set(local_user(), 'showmore_dyn', 'limitHeight', $_POST['limitHeight'] ?? 0);
+		DI::pConfig()->set(Session::getLocalUser(), 'showmore_dyn', 'limitHeight', $_POST['limitHeight'] ?? 0);
 	}
 }
 
 function showmore_dyn_settings(App &$a, array &$data)
 {
-	if(!local_user()) {
+	if(!Session::getLocalUser()) {
 		return;
 	}
 
-	$limitHeight = DI::pConfig()->get(local_user(), 'showmore_dyn', 'limitHeight', 250);
-	DI::pConfig()->set(local_user(), 'showmore_dyn', 'limitHeight', $limitHeight);
+	$limitHeight = DI::pConfig()->get(Session::getLocalUser(), 'showmore_dyn', 'limitHeight', 250);
+	DI::pConfig()->set(Session::getLocalUser(), 'showmore_dyn', 'limitHeight', $limitHeight);
 
 	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/showmore_dyn/');
 	$html = Renderer::replaceMacros($t, [
@@ -68,7 +69,7 @@ function showmore_dyn_settings(App &$a, array &$data)
 
 function showmore_dyn_script()
 {
-	$limitHeight = intval(DI::pConfig()->get(local_user(), 'showmore_dyn', 'limitHeight', 250));
+	$limitHeight = intval(DI::pConfig()->get(Session::getLocalUser(), 'showmore_dyn', 'limitHeight', 250));
 	$showmore_dyn_showmore_linktext = DI::l10n()->t('Show more...');
 	DI::page()['htmlhead'] .= <<<EOT
 <script>

@@ -11,6 +11,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\Core\System;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
@@ -481,10 +482,10 @@ function mailstream_convert_table_entries()
  */
 function mailstream_addon_settings(App &$a, array &$data)
 {
-	$enabled   = DI::pConfig()->get(local_user(), 'mailstream', 'enabled');
-	$address   = DI::pConfig()->get(local_user(), 'mailstream', 'address');
-	$nolikes   = DI::pConfig()->get(local_user(), 'mailstream', 'nolikes');
-	$attachimg = DI::pConfig()->get(local_user(), 'mailstream', 'attachimg');
+	$enabled   = DI::pConfig()->get(Session::getLocalUser(), 'mailstream', 'enabled');
+	$address   = DI::pConfig()->get(Session::getLocalUser(), 'mailstream', 'address');
+	$nolikes   = DI::pConfig()->get(Session::getLocalUser(), 'mailstream', 'nolikes');
+	$attachimg = DI::pConfig()->get(Session::getLocalUser(), 'mailstream', 'attachimg');
 
 	$template  = Renderer::getMarkupTemplate('settings.tpl', 'addon/mailstream/');
 	$html      = Renderer::replaceMacros($template, [
@@ -529,28 +530,28 @@ function mailstream_addon_settings(App &$a, array &$data)
  */
 function mailstream_addon_settings_post(App $a, array $post)
 {
-	if (!local_user() || empty($post['mailstream-submit'])) {
+	if (!Session::getLocalUser() || empty($post['mailstream-submit'])) {
 		return;
 	}
 
 	if ($post['mailstream_address'] != "") {
-		DI::pConfig()->set(local_user(), 'mailstream', 'address', $post['mailstream_address']);
+		DI::pConfig()->set(Session::getLocalUser(), 'mailstream', 'address', $post['mailstream_address']);
 	} else {
-		DI::pConfig()->delete(local_user(), 'mailstream', 'address');
+		DI::pConfig()->delete(Session::getLocalUser(), 'mailstream', 'address');
 	}
 	if ($post['mailstream_nolikes']) {
-		DI::pConfig()->set(local_user(), 'mailstream', 'nolikes', $post['mailstream_enabled']);
+		DI::pConfig()->set(Session::getLocalUser(), 'mailstream', 'nolikes', $post['mailstream_enabled']);
 	} else {
-		DI::pConfig()->delete(local_user(), 'mailstream', 'nolikes');
+		DI::pConfig()->delete(Session::getLocalUser(), 'mailstream', 'nolikes');
 	}
 	if ($post['mailstream_enabled']) {
-		DI::pConfig()->set(local_user(), 'mailstream', 'enabled', $post['mailstream_enabled']);
+		DI::pConfig()->set(Session::getLocalUser(), 'mailstream', 'enabled', $post['mailstream_enabled']);
 	} else {
-		DI::pConfig()->delete(local_user(), 'mailstream', 'enabled');
+		DI::pConfig()->delete(Session::getLocalUser(), 'mailstream', 'enabled');
 	}
 	if ($post['mailstream_attachimg']) {
-		DI::pConfig()->set(local_user(), 'mailstream', 'attachimg', $post['mailstream_attachimg']);
+		DI::pConfig()->set(Session::getLocalUser(), 'mailstream', 'attachimg', $post['mailstream_attachimg']);
 	} else {
-		DI::pConfig()->delete(local_user(), 'mailstream', 'attachimg');
+		DI::pConfig()->delete(Session::getLocalUser(), 'mailstream', 'attachimg');
 	}
 }

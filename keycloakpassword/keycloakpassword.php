@@ -10,6 +10,7 @@ use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\User;
@@ -142,7 +143,7 @@ function keycloakpassword_addon_admin(App $a, string &$o)
 
 function keycloakpassword_addon_admin_post(App $a)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 

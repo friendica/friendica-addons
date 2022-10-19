@@ -9,6 +9,7 @@ use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Content\Text\Markdown;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\DI;
 
 function markdown_install() {
@@ -19,11 +20,11 @@ function markdown_install() {
 
 function markdown_addon_settings(App $a, array &$data)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$enabled = intval(DI::pConfig()->get(local_user(), 'markdown', 'enabled'));
+	$enabled = intval(DI::pConfig()->get(Session::getLocalUser(), 'markdown', 'enabled'));
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/markdown/');
 	$html = Renderer::replaceMacros($t, [
@@ -39,15 +40,15 @@ function markdown_addon_settings(App $a, array &$data)
 
 function markdown_addon_settings_post(App $a, array &$b)
 {
-	if (!local_user() || empty($_POST['markdown-submit'])) {
+	if (!Session::getLocalUser() || empty($_POST['markdown-submit'])) {
 		return;
 	}
 
-	DI::pConfig()->set(local_user(), 'markdown', 'enabled', intval($_POST['enabled']));
+	DI::pConfig()->set(Session::getLocalUser(), 'markdown', 'enabled', intval($_POST['enabled']));
 }
 
 function markdown_post_local_start(App $a, &$request) {
-	if (empty($request['body']) || !DI::pConfig()->get(local_user(), 'markdown', 'enabled')) {
+	if (empty($request['body']) || !DI::pConfig()->get(Session::getLocalUser(), 'markdown', 'enabled')) {
 		return;
 	}
 

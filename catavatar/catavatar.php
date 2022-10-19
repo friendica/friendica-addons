@@ -10,6 +10,7 @@ use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\DI;
@@ -37,14 +38,14 @@ function catavatar_install()
  */
 function catavatar_addon_settings(App $a, array &$data)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/catavatar/');
 	$html = Renderer::replaceMacros($t, [
 		'$uncache'      => time(),
-		'$uid'          => local_user(),
+		'$uid'          => Session::getLocalUser(),
 		'$setrandomize' => DI::l10n()->t('Set default profile avatar or randomize the cat.'),
 	]);
 
@@ -55,7 +56,7 @@ function catavatar_addon_settings(App $a, array &$data)
 		'submit' => [
 			'catavatar-usecat'   => DI::l10n()->t('Use Cat as Avatar'),
 			'catavatar-morecat'  => DI::l10n()->t('Another random Cat!'),
-			'catavatar-emailcat' => DI::pConfig()->get(local_user(), 'catavatar', 'seed', false) ? DI::l10n()->t('Reset to email Cat') : null,
+			'catavatar-emailcat' => DI::pConfig()->get(Session::getLocalUser(), 'catavatar', 'seed', false) ? DI::l10n()->t('Reset to email Cat') : null,
 		],
 	];
 }
@@ -65,50 +66,50 @@ function catavatar_addon_settings(App $a, array &$data)
  */
 function catavatar_addon_settings_post(App $a, &$s)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
 	if (!empty($_POST['catavatar-usecat'])) {
-		$url = DI::baseUrl()->get() . '/catavatar/' . local_user() . '?ts=' . time();
+		$url = DI::baseUrl()->get() . '/catavatar/' . Session::getLocalUser() . '?ts=' . time();
 
-		$self = DBA::selectFirst('contact', ['id'], ['uid' => local_user(), 'self' => true]);
+		$self = DBA::selectFirst('contact', ['id'], ['uid' => Session::getLocalUser(), 'self' => true]);
 		if (!DBA::isResult($self)) {
 			DI::sysmsg()->addNotice(DI::l10n()->t("The cat hadn't found itself."));
 			return;
 		}
 
-		Photo::importProfilePhoto($url, local_user(), $self['id']);
+		Photo::importProfilePhoto($url, Session::getLocalUser(), $self['id']);
 
-		$condition = ['uid' => local_user(), 'contact-id' => $self['id']];
+		$condition = ['uid' => Session::getLocalUser(), 'contact-id' => $self['id']];
 		$photo = DBA::selectFirst('photo', ['resource-id'], $condition);
 		if (!DBA::isResult($photo)) {
 			DI::sysmsg()->addNotice(DI::l10n()->t('There was an error, the cat ran away.'));
 			return;
 		}
 
-		DBA::update('photo', ['profile' => false], ['profile' => true, 'uid' => local_user()]);
+		DBA::update('photo', ['profile' => false], ['profile' => true, 'uid' => Session::getLocalUser()]);
 
 		$fields = ['profile' => true, 'album' => DI::l10n()->t('Profile Photos'), 'contact-id' => 0];
-		DBA::update('photo', $fields, ['uid' => local_user(), 'resource-id' => $photo['resource-id']]);
+		DBA::update('photo', $fields, ['uid' => Session::getLocalUser(), 'resource-id' => $photo['resource-id']]);
 
-		Photo::importProfilePhoto($url, local_user(), $self['id']);
+		Photo::importProfilePhoto($url, Session::getLocalUser(), $self['id']);
 
-		Contact::updateSelfFromUserID(local_user(), true);
+		Contact::updateSelfFromUserID(Session::getLocalUser(), true);
 
 		// Update global directory in background
-		Profile::publishUpdate(local_user());
+		Profile::publishUpdate(Session::getLocalUser());
 
 		DI::sysmsg()->addInfo(DI::l10n()->t('Meow!'));
 		return;
 	}
 
 	if (!empty($_POST['catavatar-morecat'])) {
-		DI::pConfig()->set(local_user(), 'catavatar', 'seed', time());
+		DI::pConfig()->set(Session::getLocalUser(), 'catavatar', 'seed', time());
 	}
 
 	if (!empty($_POST['catavatar-emailcat'])) {
-		DI::pConfig()->delete(local_user(), 'catavatar', 'seed');
+		DI::pConfig()->delete(Session::getLocalUser(), 'catavatar', 'seed');
 	}
 }
 

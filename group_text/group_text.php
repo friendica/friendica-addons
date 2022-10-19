@@ -10,14 +10,13 @@ use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\DI;
 
-function group_text_install() {
-
+function group_text_install()
+{
 	Hook::register('addon_settings', 'addon/group_text/group_text.php', 'group_text_settings');
 	Hook::register('addon_settings_post', 'addon/group_text/group_text.php', 'group_text_settings_post');
-
-	Logger::notice("installed group_text");
 }
 
 /**
@@ -29,29 +28,30 @@ function group_text_install() {
  *
  */
 
-function group_text_settings_post(App $a, $post) {
-	if(! local_user() || empty($_POST['group_text-submit']))
+function group_text_settings_post(App $a, array $post)
+{
+	if (!Session::getLocalUser() || empty($post['group_text-submit'])) {
 		return;
-	DI::pConfig()->set(local_user(),'system','groupedit_image_limit',intval($_POST['group_text']));
+	}
+
+	DI::pConfig()->set(Session::getLocalUser(), 'system', 'groupedit_image_limit', intval($post['group_text']));
 }
 
 
 /**
  *
- * Called from the Addon Setting form. 
+ * Called from the Addon Setting form.
  * Add our own settings info to the page.
  *
  */
 
-
-
 function group_text_settings(App &$a, array &$data)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$enabled = DI::pConfig()->get(local_user(),'system','groupedit_image_limit');
+	$enabled = DI::pConfig()->get(Session::getLocalUser(), 'system', 'groupedit_image_limit');
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/group_text/');
 	$html = Renderer::replaceMacros($t, [

@@ -11,6 +11,7 @@ use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\DI;
 
 /* Define the hooks we want to use
@@ -33,16 +34,16 @@ function langfilter_install()
 
 function langfilter_addon_settings(App $a, array &$data)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$enabled = DI::pConfig()->get(local_user(), 'langfilter', 'enable',
-		!DI::pConfig()->get(local_user(), 'langfilter', 'disable'));
+	$enabled = DI::pConfig()->get(Session::getLocalUser(), 'langfilter', 'enable',
+		!DI::pConfig()->get(Session::getLocalUser(), 'langfilter', 'disable'));
 
-	$languages     = DI::pConfig()->get(local_user(), 'langfilter', 'languages');
-	$minconfidence = DI::pConfig()->get(local_user(), 'langfilter', 'minconfidence', 0) * 100;
-	$minlength     = DI::pConfig()->get(local_user(), 'langfilter', 'minlength', 32);
+	$languages     = DI::pConfig()->get(Session::getLocalUser(), 'langfilter', 'languages');
+	$minconfidence = DI::pConfig()->get(Session::getLocalUser(), 'langfilter', 'minconfidence', 0) * 100;
+	$minlength     = DI::pConfig()->get(Session::getLocalUser(), 'langfilter', 'minlength', 32);
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/langfilter/');
 	$html = Renderer::replaceMacros($t, [
@@ -69,7 +70,7 @@ function langfilter_addon_settings(App $a, array &$data)
 
 function langfilter_addon_settings_post(App $a, array &$b)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
@@ -82,10 +83,10 @@ function langfilter_addon_settings_post(App $a, array &$b)
 			$minlength = 32;
 		}
 
-		DI::pConfig()->set(local_user(), 'langfilter', 'enable'       , $enable);
-		DI::pConfig()->set(local_user(), 'langfilter', 'languages'    , $languages);
-		DI::pConfig()->set(local_user(), 'langfilter', 'minconfidence', $minconfidence);
-		DI::pConfig()->set(local_user(), 'langfilter', 'minlength'    , $minlength);
+		DI::pConfig()->set(Session::getLocalUser(), 'langfilter', 'enable'       , $enable);
+		DI::pConfig()->set(Session::getLocalUser(), 'langfilter', 'languages'    , $languages);
+		DI::pConfig()->set(Session::getLocalUser(), 'langfilter', 'minconfidence', $minconfidence);
+		DI::pConfig()->set(Session::getLocalUser(), 'langfilter', 'minlength'    , $minlength);
 	}
 }
 
@@ -100,7 +101,7 @@ function langfilter_addon_settings_post(App $a, array &$b)
 
 function langfilter_prepare_body_content_filter(App $a, &$hook_data)
 {
-	$logged_user = local_user();
+	$logged_user = Session::getLocalUser();
 	if (!$logged_user) {
 		return;
 	}
@@ -128,7 +129,7 @@ function langfilter_prepare_body_content_filter(App $a, &$hook_data)
 	$naked_body = preg_replace('#\s+#', ' ', trim($naked_body));
 
 	// Don't filter if body lenght is below minimum
-	$minlen = DI::pConfig()->get(local_user(), 'langfilter', 'minlength', 32);
+	$minlen = DI::pConfig()->get(Session::getLocalUser(), 'langfilter', 'minlength', 32);
 	if (!$minlen) {
 		$minlen = 32;
 	}
@@ -137,8 +138,8 @@ function langfilter_prepare_body_content_filter(App $a, &$hook_data)
 		return;
 	}
 
-	$read_languages_string = DI::pConfig()->get(local_user(), 'langfilter', 'languages');
-	$minconfidence = DI::pConfig()->get(local_user(), 'langfilter', 'minconfidence');
+	$read_languages_string = DI::pConfig()->get(Session::getLocalUser(), 'langfilter', 'languages');
+	$minconfidence = DI::pConfig()->get(Session::getLocalUser(), 'langfilter', 'minconfidence');
 
 	// Don't filter if no spoken languages are configured
 	if (!$read_languages_string) {

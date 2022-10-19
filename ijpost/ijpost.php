@@ -13,6 +13,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\DI;
 use Friendica\Model\Tag;
 use Friendica\Model\User;
@@ -30,17 +31,17 @@ function ijpost_install()
 
 function ijpost_jot_nets(App &$a, array &$jotnets_fields)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	if (DI::pConfig()->get(local_user(), 'ijpost', 'post')) {
+	if (DI::pConfig()->get(Session::getLocalUser(), 'ijpost', 'post')) {
 		$jotnets_fields[] = [
 			'type' => 'checkbox',
 			'field' => [
 				'ijpost_enable',
 				DI::l10n()->t('Post to Insanejournal'),
-				DI::pConfig()->get(local_user(), 'ijpost', 'post_by_default')
+				DI::pConfig()->get(Session::getLocalUser(), 'ijpost', 'post_by_default')
 			]
 		];
 	}
@@ -48,13 +49,13 @@ function ijpost_jot_nets(App &$a, array &$jotnets_fields)
 
 function ijpost_settings(App &$a, array &$data)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$enabled     = DI::pConfig()->get(local_user(), 'ijpost', 'post', false);
-	$ij_username = DI::pConfig()->get(local_user(), 'ijpost', 'ij_username');
-	$def_enabled = DI::pConfig()->get(local_user(), 'ijpost', 'post_by_default');
+	$enabled     = DI::pConfig()->get(Session::getLocalUser(), 'ijpost', 'post', false);
+	$ij_username = DI::pConfig()->get(Session::getLocalUser(), 'ijpost', 'ij_username');
+	$def_enabled = DI::pConfig()->get(Session::getLocalUser(), 'ijpost', 'post_by_default');
 
 	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/ijpost/');
 	$html = Renderer::replaceMacros($t, [
@@ -76,10 +77,10 @@ function ijpost_settings(App &$a, array &$data)
 function ijpost_settings_post(App $a, array &$b)
 {
 	if (!empty($_POST['ijpost-submit'])) {
-		DI::pConfig()->set(local_user(), 'ijpost', 'post', intval($_POST['ijpost']));
-		DI::pConfig()->set(local_user(), 'ijpost', 'post_by_default', intval($_POST['ij_bydefault']));
-		DI::pConfig()->set(local_user(), 'ijpost', 'ij_username', trim($_POST['ij_username']));
-		DI::pConfig()->set(local_user(), 'ijpost', 'ij_password', trim($_POST['ij_password']));
+		DI::pConfig()->set(Session::getLocalUser(), 'ijpost', 'post', intval($_POST['ijpost']));
+		DI::pConfig()->set(Session::getLocalUser(), 'ijpost', 'post_by_default', intval($_POST['ij_bydefault']));
+		DI::pConfig()->set(Session::getLocalUser(), 'ijpost', 'ij_username', trim($_POST['ij_username']));
+		DI::pConfig()->set(Session::getLocalUser(), 'ijpost', 'ij_password', trim($_POST['ij_password']));
 	}
 }
 
@@ -91,7 +92,7 @@ function ijpost_post_local(App $a, array &$b)
 		return;
 	}
 
-	if (!local_user() || (local_user() != $b['uid'])) {
+	if (!Session::getLocalUser() || (Session::getLocalUser() != $b['uid'])) {
 		return;
 	}
 
@@ -99,11 +100,11 @@ function ijpost_post_local(App $a, array &$b)
 		return;
 	}
 
-	$ij_post   = intval(DI::pConfig()->get(local_user(), 'ijpost', 'post'));
+	$ij_post   = intval(DI::pConfig()->get(Session::getLocalUser(), 'ijpost', 'post'));
 
 	$ij_enable = (($ij_post && !empty($_REQUEST['ijpost_enable'])) ? intval($_REQUEST['ijpost_enable']) : 0);
 
-	if ($b['api_source'] && intval(DI::pConfig()->get(local_user(), 'ijpost', 'post_by_default'))) {
+	if ($b['api_source'] && intval(DI::pConfig()->get(Session::getLocalUser(), 'ijpost', 'post_by_default'))) {
 		$ij_enable = 1;
 	}
 

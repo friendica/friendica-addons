@@ -33,6 +33,7 @@ use Friendica\Content\Text\HTML;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Item;
@@ -72,19 +73,19 @@ function windowsphonepush_module() {}
  * We will make sure we've got a valid user account
  * and if so set our configuration setting for this person.
  */
-function windowsphonepush_settings_post(App $a, $post)
+function windowsphonepush_settings_post(App $a, array $post)
 {
-	if (!local_user() || empty($_POST['windowsphonepush-submit'])) {
+	if (!Session::getLocalUser() || empty($post['windowsphonepush-submit'])) {
 		return;
 	}
-	$enable = intval($_POST['windowsphonepush']);
-	DI::pConfig()->set(local_user(), 'windowsphonepush', 'enable', $enable);
+	$enable = intval($post['windowsphonepush']);
+	DI::pConfig()->set(Session::getLocalUser(), 'windowsphonepush', 'enable', $enable);
 
 	if ($enable) {
-		DI::pConfig()->set(local_user(), 'windowsphonepush', 'counterunseen', 0);
+		DI::pConfig()->set(Session::getLocalUser(), 'windowsphonepush', 'counterunseen', 0);
 	}
 
-	DI::pConfig()->set(local_user(), 'windowsphonepush', 'senditemtext', intval($_POST['windowsphonepush-senditemtext']));
+	DI::pConfig()->set(Session::getLocalUser(), 'windowsphonepush', 'senditemtext', intval($post['windowsphonepush-senditemtext']));
 }
 
 /* Called from the Addon Setting form.
@@ -92,13 +93,13 @@ function windowsphonepush_settings_post(App $a, $post)
  */
 function windowsphonepush_settings(App &$a, array &$data)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$enabled = DI::pConfig()->get(local_user(), 'windowsphonepush', 'enable');
-	$senditemtext = DI::pConfig()->get(local_user(), 'windowsphonepush', 'senditemtext');
-	$device_url = DI::pConfig()->get(local_user(), 'windowsphonepush', 'device_url');
+	$enabled      = DI::pConfig()->get(Session::getLocalUser(), 'windowsphonepush', 'enable');
+	$senditemtext = DI::pConfig()->get(Session::getLocalUser(), 'windowsphonepush', 'senditemtext');
+	$device_url   = DI::pConfig()->get(Session::getLocalUser(), 'windowsphonepush', 'device_url');
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/windowsphonepush/');
 	$html = Renderer::replaceMacros($t, [
@@ -274,7 +275,7 @@ function send_push($device_url, $headers, $msg)
 	// and log this fact
 	$subscriptionStatus = get_header_value($output, 'X-SubscriptionStatus');
 	if ($subscriptionStatus == "Expired") {
-		DI::pConfig()->set(local_user(), 'windowsphonepush', 'device_url', "");
+		DI::pConfig()->set(Session::getLocalUser(), 'windowsphonepush', 'device_url', "");
 		Logger::notice("ERROR: the stored Device-URL " . $device_url . "returned an 'Expired' error, it has been deleted now.");
 	}
 
@@ -329,16 +330,16 @@ function windowsphonepush_content(App $a)
 // return settings for windowsphonepush addon to be able to check them in WP app
 function windowsphonepush_showsettings()
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$enable = DI::pConfig()->get(local_user(), 'windowsphonepush', 'enable');
-	$device_url = DI::pConfig()->get(local_user(), 'windowsphonepush', 'device_url');
-	$senditemtext = DI::pConfig()->get(local_user(), 'windowsphonepush', 'senditemtext');
-	$lastpushid = DI::pConfig()->get(local_user(), 'windowsphonepush', 'lastpushid');
-	$counterunseen = DI::pConfig()->get(local_user(), 'windowsphonepush', 'counterunseen');
-	$addonversion = "2.0";
+	$enable        = DI::pConfig()->get(Session::getLocalUser(), 'windowsphonepush', 'enable');
+	$device_url    = DI::pConfig()->get(Session::getLocalUser(), 'windowsphonepush', 'device_url');
+	$senditemtext  = DI::pConfig()->get(Session::getLocalUser(), 'windowsphonepush', 'senditemtext');
+	$lastpushid    = DI::pConfig()->get(Session::getLocalUser(), 'windowsphonepush', 'lastpushid');
+	$counterunseen = DI::pConfig()->get(Session::getLocalUser(), 'windowsphonepush', 'counterunseen');
+	$addonversion  = "2.0";
 
 	if (!$device_url) {
 		$device_url = "";
@@ -349,7 +350,7 @@ function windowsphonepush_showsettings()
 	}
 
 	header("Content-Type: application/json");
-	echo json_encode(['uid' => local_user(),
+	echo json_encode(['uid' => Session::getLocalUser(),
 		'enable' => $enable,
 		'device_url' => $device_url,
 		'senditemtext' => $senditemtext,
@@ -363,12 +364,12 @@ function windowsphonepush_showsettings()
  */
 function windowsphonepush_updatesettings()
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return "Not Authenticated";
 	}
 
 	// no updating if user hasn't enabled the addon
-	$enable = DI::pConfig()->get(local_user(), 'windowsphonepush', 'enable');
+	$enable = DI::pConfig()->get(Session::getLocalUser(), 'windowsphonepush', 'enable');
 	if (!$enable) {
 		return "Plug-in not enabled";
 	}
@@ -384,32 +385,32 @@ function windowsphonepush_updatesettings()
 	// the user on the Windows Phone device and that device url is no longer true for the other user, so we
 	// et the device_url for the OTHER user blank (should normally not occur as App should include User/server
 	// in url request to Microsoft Push Notification server)
-	$pconfigs = DBA::selectToArray('pconfig', ['uid'], ["`uid` != ? AND `cat` = ? AND `k` = ? AND `v` = ?", local_user(), 'windowsphonepush', 'device_url', $device_url]);
+	$pconfigs = DBA::selectToArray('pconfig', ['uid'], ["`uid` != ? AND `cat` = ? AND `k` = ? AND `v` = ?", Session::getLocalUser(), 'windowsphonepush', 'device_url', $device_url]);
 	foreach ($pconfigs as $rr) {
 		DI::pConfig()->set($rr['uid'], 'windowsphonepush', 'device_url', '');
-		Logger::notice("WARN: the sent URL was already registered with user '" . $rr['uid'] . "'. Deleted for this user as we expect to be correct now for user '" . local_user() . "'.");
+		Logger::notice("WARN: the sent URL was already registered with user '" . $rr['uid'] . "'. Deleted for this user as we expect to be correct now for user '" . Session::getLocalUser() . "'.");
 	}
 
-	DI::pConfig()->set(local_user(), 'windowsphonepush', 'device_url', $device_url);
+	DI::pConfig()->set(Session::getLocalUser(), 'windowsphonepush', 'device_url', $device_url);
 	// output the successfull update of the device URL to the logger for error analysis if necessary
-	Logger::notice("INFO: Device-URL for user '" . local_user() . "' has been updated with '" . $device_url . "'");
+	Logger::notice("INFO: Device-URL for user '" . Session::getLocalUser() . "' has been updated with '" . $device_url . "'");
 	return "Device-URL updated successfully!";
 }
 
 // update_counterunseen is used to reset the counter to zero from Windows Phone app
 function windowsphonepush_updatecounterunseen()
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return "Not Authenticated";
 	}
 
 	// no updating if user hasn't enabled the addon
-	$enable = DI::pConfig()->get(local_user(), 'windowsphonepush', 'enable');
+	$enable = DI::pConfig()->get(Session::getLocalUser(), 'windowsphonepush', 'enable');
 	if (!$enable) {
 		return "Plug-in not enabled";
 	}
 
-	DI::pConfig()->set(local_user(), 'windowsphonepush', 'counterunseen', 0);
+	DI::pConfig()->set(Session::getLocalUser(), 'windowsphonepush', 'counterunseen', 0);
 	return "Counter set to zero";
 }
 

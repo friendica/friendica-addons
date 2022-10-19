@@ -11,6 +11,7 @@
 use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\DI;
 use Friendica\Util\Strings;
 
@@ -23,14 +24,14 @@ function showmore_install()
 
 function showmore_addon_settings(App &$a, array &$data)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
 	DI::page()->registerStylesheet(__DIR__ . '/showmore.css', 'all');
 
-	$enabled = !DI::pConfig()->get(local_user(), 'showmore', 'disable');
-	$chars   = DI::pConfig()->get(local_user(), 'showmore', 'chars', 1100);
+	$enabled = !DI::pConfig()->get(Session::getLocalUser(), 'showmore', 'disable');
+	$chars   = DI::pConfig()->get(Session::getLocalUser(), 'showmore', 'chars', 1100);
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/showmore/');
 	$html = Renderer::replaceMacros($t, [
@@ -47,15 +48,15 @@ function showmore_addon_settings(App &$a, array &$data)
 
 function showmore_addon_settings_post(App $a, array &$b)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
 	if (!empty($_POST['showmore-submit'])) {
-		DI::pConfig()->set(local_user(), 'showmore', 'chars', trim($_POST['showmore-chars']));
+		DI::pConfig()->set(Session::getLocalUser(), 'showmore', 'chars', trim($_POST['showmore-chars']));
 		$enable = (!empty($_POST['showmore-enable']) ? intval($_POST['showmore-enable']) : 0);
 		$disable = 1-$enable;
-		DI::pConfig()->set(local_user(), 'showmore', 'disable', $disable);
+		DI::pConfig()->set(Session::getLocalUser(), 'showmore', 'disable', $disable);
 	}
 }
 
@@ -100,11 +101,11 @@ function showmore_prepare_body(App $a, &$hook_data)
 		return;
 	}
 
-	if (DI::pConfig()->get(local_user(), 'showmore', 'disable')) {
+	if (DI::pConfig()->get(Session::getLocalUser(), 'showmore', 'disable')) {
 		return;
 	}
 
-	$chars = (int) DI::pConfig()->get(local_user(), 'showmore', 'chars', 1100);
+	$chars = (int) DI::pConfig()->get(Session::getLocalUser(), 'showmore', 'chars', 1100);
 
 	if (get_body_length($hook_data['html']) > $chars) {
 		$found = true;

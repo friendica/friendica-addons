@@ -32,7 +32,7 @@ function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cacheti
 	$now = new DateTime();
 
 	if (!is_null($cached)) {
-		$cdate = DI::pConfig()->get(local_user(), 'curweather', 'last');
+		$cdate = DI::pConfig()->get(Session::getLocalUser(), 'curweather', 'last');
 		$cached = unserialize($cached);
 
 		if ($cdate + $cachetime > $now->getTimestamp()) {
@@ -81,7 +81,7 @@ function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cacheti
 		'icon'        => (string) $res->weather['icon'],
 	];
 
-	DI::pConfig()->set(local_user(), 'curweather', 'last', $now->getTimestamp());
+	DI::pConfig()->set(Session::getLocalUser(), 'curweather', 'last', $now->getTimestamp());
 	DI::cache()->set('curweather'.md5($url), serialize($r), Duration::HOUR);
 
 	return $r;
@@ -89,7 +89,7 @@ function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cacheti
 
 function curweather_network_mod_init(App $a, string &$body)
 {
-	if (!intval(DI::pConfig()->get(local_user(), 'curweather', 'curweather_enable'))) {
+	if (!intval(DI::pConfig()->get(Session::getLocalUser(), 'curweather', 'curweather_enable'))) {
 		return;
 	}
 
@@ -104,11 +104,11 @@ function curweather_network_mod_init(App $a, string &$body)
 	// those parameters will be used to get: cloud status, temperature, preassure
 	// and relative humidity for display, also the relevent area of the map is
 	// linked from lat/log of the reply of OWMp
-	$rpt = DI::pConfig()->get(local_user(), 'curweather', 'curweather_loc');
+	$rpt = DI::pConfig()->get(Session::getLocalUser(), 'curweather', 'curweather_loc');
 
 	// Set the language to the browsers language or default and use metric units
 	$lang  = DI::session()->get('language', DI::config()->get('system', 'language'));
-	$units = DI::pConfig()->get( local_user(), 'curweather', 'curweather_units');
+	$units = DI::pConfig()->get(Session::getLocalUser(), 'curweather', 'curweather_units');
 	$appid = DI::config()->get('curweather', 'appid');
 	$cachetime = intval(DI::config()->get('curweather', 'cachetime'));
 
@@ -155,23 +155,23 @@ function curweather_network_mod_init(App $a, string &$body)
 
 function curweather_addon_settings_post(App $a, $post)
 {
-	if (!local_user() || empty($_POST['curweather-settings-submit'])) {
+	if (!Session::getLocalUser() || empty($_POST['curweather-settings-submit'])) {
 		return;
 	}
 
-	DI::pConfig()->set(local_user(), 'curweather', 'curweather_loc'   , trim($_POST['curweather_loc']));
-	DI::pConfig()->set(local_user(), 'curweather', 'curweather_enable', intval($_POST['curweather_enable']));
-	DI::pConfig()->set(local_user(), 'curweather', 'curweather_units' , trim($_POST['curweather_units']));
+	DI::pConfig()->set(Session::getLocalUser(), 'curweather', 'curweather_loc'   , trim($_POST['curweather_loc']));
+	DI::pConfig()->set(Session::getLocalUser(), 'curweather', 'curweather_enable', intval($_POST['curweather_enable']));
+	DI::pConfig()->set(Session::getLocalUser(), 'curweather', 'curweather_units' , trim($_POST['curweather_units']));
 }
 
 function curweather_addon_settings(App $a, array &$data)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$curweather_loc   = DI::pConfig()->get(local_user(), 'curweather', 'curweather_loc');
-	$curweather_units = DI::pConfig()->get(local_user(), 'curweather', 'curweather_units');
+	$curweather_loc   = DI::pConfig()->get(Session::getLocalUser(), 'curweather', 'curweather_loc');
+	$curweather_units = DI::pConfig()->get(Session::getLocalUser(), 'curweather', 'curweather_units');
 	$appid            = DI::config()->get('curweather', 'appid');
 
 	if ($appid == '') {
@@ -180,7 +180,7 @@ function curweather_addon_settings(App $a, array &$data)
 		$noappidtext = '';
 	}
 
-	$enabled = intval(DI::pConfig()->get(local_user(), 'curweather', 'curweather_enable'));
+	$enabled = intval(DI::pConfig()->get(Session::getLocalUser(), 'curweather', 'curweather_enable'));
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/curweather/');
 	$html = Renderer::replaceMacros($t, [

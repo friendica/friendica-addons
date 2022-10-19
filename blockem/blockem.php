@@ -10,6 +10,7 @@
 use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\DI;
 use Friendica\Util\Strings;
 
@@ -28,11 +29,11 @@ function blockem_install()
 
 function blockem_addon_settings(App $a, array &$data)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$words   = DI::pConfig()->get(local_user(), 'blockem', 'words', '');
+	$words   = DI::pConfig()->get(Session::getLocalUser(), 'blockem', 'words', '');
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/blockem/');
 	$html = Renderer::replaceMacros($t, [
@@ -49,12 +50,12 @@ function blockem_addon_settings(App $a, array &$data)
 
 function blockem_addon_settings_post(App $a, array &$b)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
 	if (!empty($_POST['blockem-submit'])) {
-		DI::pConfig()->set(local_user(), 'blockem', 'words', trim($_POST['blockem-words']));
+		DI::pConfig()->set(Session::getLocalUser(), 'blockem', 'words', trim($_POST['blockem-words']));
 	}
 }
 
@@ -91,14 +92,14 @@ function blockem_enotify_store(App $a, array &$b)
 
 function blockem_prepare_body_content_filter(App $a, array &$hook_data)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
 	$profiles_string = null;
 
-	if (local_user()) {
-		$profiles_string = DI::pConfig()->get(local_user(), 'blockem', 'words');
+	if (Session::getLocalUser()) {
+		$profiles_string = DI::pConfig()->get(Session::getLocalUser(), 'blockem', 'words');
 	}
 
 	if ($profiles_string) {
@@ -132,11 +133,11 @@ function blockem_conversation_start(App $a, array &$b)
 {
 	global $blockem_words;
 
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$words = DI::pConfig()->get(local_user(), 'blockem', 'words');
+	$words = DI::pConfig()->get(Session::getLocalUser(), 'blockem', 'words');
 
 	if ($words) {
 		$blockem_words = explode(',', $words);
@@ -164,7 +165,7 @@ function blockem_item_photo_menu(App $a, array &$b)
 {
 	global $blockem_words;
 
-	if (!local_user() || $b['item']['self']) {
+	if (!Session::getLocalUser() || $b['item']['self']) {
 		return;
 	}
 
@@ -195,11 +196,11 @@ function blockem_module() {}
 
 function blockem_init(App $a)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$words = DI::pConfig()->get(local_user(), 'blockem', 'words');
+	$words = DI::pConfig()->get(Session::getLocalUser(), 'blockem', 'words');
 
 	if (array_key_exists('block', $_GET) && $_GET['block']) {
 		if (strlen($words)) {
@@ -224,6 +225,6 @@ function blockem_init(App $a)
 		$words = implode(',', $newarr);
 	}
 
-	DI::pConfig()->set(local_user(), 'blockem', 'words', $words);
+	DI::pConfig()->set(Session::getLocalUser(), 'blockem', 'words', $words);
 	exit();
 }

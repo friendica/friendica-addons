@@ -23,6 +23,7 @@ use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\DI;
 
 function randplace_install()
@@ -64,12 +65,12 @@ function randplace_post_hook(App $a, &$item)
 	 */
 	Logger::notice('randplace invoked');
 
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		/* non-zero if this is a logged in user of this system */
 		return;
 	}
 
-	if (local_user() != $item['uid']) {
+	if (Session::getLocalUser() != $item['uid']) {
 		/* Does this person own the post? */
 		return;
 	}
@@ -81,7 +82,7 @@ function randplace_post_hook(App $a, &$item)
 
 	/* Retrieve our personal config setting */
 
-	$active = DI::pConfig()->get(local_user(), 'randplace', 'enable');
+	$active = DI::pConfig()->get(Session::getLocalUser(), 'randplace', 'enable');
 
 	if (!$active) {
 		return;
@@ -122,12 +123,12 @@ function randplace_post_hook(App $a, &$item)
  */
 function randplace_settings_post(App $a, $post)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
 	if ($_POST['randplace-submit']) {
-		DI::pConfig()->set(local_user(), 'randplace', 'enable', intval($_POST['randplace']));
+		DI::pConfig()->set(Session::getLocalUser(), 'randplace', 'enable', intval($_POST['randplace']));
 	}
 }
 
@@ -138,11 +139,11 @@ function randplace_settings_post(App $a, $post)
  */
 function randplace_settings(App &$a, array &$data)
 {
-	if(!local_user()) {
+	if(!Session::getLocalUser()) {
 		return;
 	}
 
-	$enabled = DI::pConfig()->get(local_user(),'randplace','enable');
+	$enabled = DI::pConfig()->get(Session::getLocalUser(),'randplace','enable');
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/randplace/');
 	$html = Renderer::replaceMacros($t, [
