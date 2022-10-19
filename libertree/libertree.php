@@ -108,7 +108,7 @@ function libertree_post_local(App $a, array &$b)
 		return;
 	}
 
-	if ((!Session::getLocalUser()) || (Session::getLocalUser() != $b['uid'])) {
+	if (!Session::getLocalUser() || (Session::getLocalUser() != $b['uid'])) {
 		return;
 	}
 

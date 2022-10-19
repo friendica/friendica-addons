@@ -73,19 +73,19 @@ function windowsphonepush_module() {}
  * We will make sure we've got a valid user account
  * and if so set our configuration setting for this person.
  */
-function windowsphonepush_settings_post(App $a, $post)
+function windowsphonepush_settings_post(App $a, array $post)
 {
-	if (!Session::getLocalUser() || empty($_POST['windowsphonepush-submit'])) {
+	if (!Session::getLocalUser() || empty($post['windowsphonepush-submit'])) {
 		return;
 	}
-	$enable = intval($_POST['windowsphonepush']);
+	$enable = intval($post['windowsphonepush']);
 	DI::pConfig()->set(Session::getLocalUser(), 'windowsphonepush', 'enable', $enable);
 
 	if ($enable) {
 		DI::pConfig()->set(Session::getLocalUser(), 'windowsphonepush', 'counterunseen', 0);
 	}
 
-	DI::pConfig()->set(Session::getLocalUser(), 'windowsphonepush', 'senditemtext', intval($_POST['windowsphonepush-senditemtext']));
+	DI::pConfig()->set(Session::getLocalUser(), 'windowsphonepush', 'senditemtext', intval($post['windowsphonepush-senditemtext']));
 }
 
 /* Called from the Addon Setting form.
@@ -97,9 +97,9 @@ function windowsphonepush_settings(App &$a, array &$data)
 		return;
 	}
 
-	$enabled = DI::pConfig()->get(Session::getLocalUser(), 'windowsphonepush', 'enable');
+	$enabled      = DI::pConfig()->get(Session::getLocalUser(), 'windowsphonepush', 'enable');
 	$senditemtext = DI::pConfig()->get(Session::getLocalUser(), 'windowsphonepush', 'senditemtext');
-	$device_url = DI::pConfig()->get(Session::getLocalUser(), 'windowsphonepush', 'device_url');
+	$device_url   = DI::pConfig()->get(Session::getLocalUser(), 'windowsphonepush', 'device_url');
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/windowsphonepush/');
 	$html = Renderer::replaceMacros($t, [
@@ -334,12 +334,12 @@ function windowsphonepush_showsettings()
 		return;
 	}
 
-	$enable = DI::pConfig()->get(Session::getLocalUser(), 'windowsphonepush', 'enable');
-	$device_url = DI::pConfig()->get(Session::getLocalUser(), 'windowsphonepush', 'device_url');
-	$senditemtext = DI::pConfig()->get(Session::getLocalUser(), 'windowsphonepush', 'senditemtext');
-	$lastpushid = DI::pConfig()->get(Session::getLocalUser(), 'windowsphonepush', 'lastpushid');
+	$enable        = DI::pConfig()->get(Session::getLocalUser(), 'windowsphonepush', 'enable');
+	$device_url    = DI::pConfig()->get(Session::getLocalUser(), 'windowsphonepush', 'device_url');
+	$senditemtext  = DI::pConfig()->get(Session::getLocalUser(), 'windowsphonepush', 'senditemtext');
+	$lastpushid    = DI::pConfig()->get(Session::getLocalUser(), 'windowsphonepush', 'lastpushid');
 	$counterunseen = DI::pConfig()->get(Session::getLocalUser(), 'windowsphonepush', 'counterunseen');
-	$addonversion = "2.0";
+	$addonversion  = "2.0";
 
 	if (!$device_url) {
 		$device_url = "";

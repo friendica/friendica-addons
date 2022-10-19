@@ -139,9 +139,9 @@ function pumpio_registerclient(App $a, $host)
 function pumpio_connect(App $a)
 {
 	// Define the needed keys
-	$consumer_key = DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'consumer_key');
+	$consumer_key    = DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'consumer_key');
 	$consumer_secret = DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'consumer_secret');
-	$hostname = DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'host');
+	$hostname        = DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'host');
 
 	if ((($consumer_key == '') || ($consumer_secret == '')) && ($hostname != '')) {
 		Logger::notice('pumpio_connect: register client');
@@ -149,7 +149,7 @@ function pumpio_connect(App $a)
 		DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'consumer_key', $clientdata->client_id);
 		DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'consumer_secret', $clientdata->client_secret);
 
-		$consumer_key = DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'consumer_key');
+		$consumer_key    = DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'consumer_key');
 		$consumer_secret = DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'consumer_secret');
 
 		Logger::info('pumpio_connect: ckey: ' . $consumer_key . ' csecrect: ' . $consumer_secret);
@@ -463,13 +463,13 @@ function pumpio_send(App $a, array &$b)
 	// Support for native shares
 	// http://<hostname>/api/<type>/shares?id=<the-object-id>
 
-	$oauth_token = DI::pConfig()->get($b['uid'], 'pumpio', 'oauth_token');
+	$oauth_token        = DI::pConfig()->get($b['uid'], 'pumpio', 'oauth_token');
 	$oauth_token_secret = DI::pConfig()->get($b['uid'], 'pumpio', 'oauth_token_secret');
-	$consumer_key = DI::pConfig()->get($b['uid'], 'pumpio', 'consumer_key');
-	$consumer_secret = DI::pConfig()->get($b['uid'], 'pumpio', 'consumer_secret');
+	$consumer_key       = DI::pConfig()->get($b['uid'], 'pumpio', 'consumer_key');
+	$consumer_secret    = DI::pConfig()->get($b['uid'], 'pumpio', 'consumer_secret');
 
-	$host = DI::pConfig()->get($b['uid'], 'pumpio', 'host');
-	$user = DI::pConfig()->get($b['uid'], 'pumpio', 'user');
+	$host   = DI::pConfig()->get($b['uid'], 'pumpio', 'host');
+	$user   = DI::pConfig()->get($b['uid'], 'pumpio', 'user');
 	$public = DI::pConfig()->get($b['uid'], 'pumpio', 'public');
 
 	if ($oauth_token && $oauth_token_secret) {
@@ -700,10 +700,10 @@ function pumpio_cron(App $a, $b)
 
 function pumpio_fetchtimeline(App $a, int $uid)
 {
-	$ckey    = DI::pConfig()->get($uid, 'pumpio', 'consumer_key');
-	$csecret = DI::pConfig()->get($uid, 'pumpio', 'consumer_secret');
-	$otoken  = DI::pConfig()->get($uid, 'pumpio', 'oauth_token');
-	$osecret = DI::pConfig()->get($uid, 'pumpio', 'oauth_token_secret');
+	$ckey     = DI::pConfig()->get($uid, 'pumpio', 'consumer_key');
+	$csecret  = DI::pConfig()->get($uid, 'pumpio', 'consumer_secret');
+	$otoken   = DI::pConfig()->get($uid, 'pumpio', 'oauth_token');
+	$osecret  = DI::pConfig()->get($uid, 'pumpio', 'oauth_token_secret');
 	$lastdate = DI::pConfig()->get($uid, 'pumpio', 'lastdate');
 	$hostname = DI::pConfig()->get($uid, 'pumpio', 'host');
 	$username = DI::pConfig()->get($uid, 'pumpio', 'user');
@@ -1125,7 +1125,6 @@ function pumpio_dopost(App $a, $client, int $uid, array $self, $post, string $ow
 		$reply->generator->displayName = 'pumpio';
 		$reply->published = $post->object->inReplyTo->published;
 		$reply->received = $post->object->inReplyTo->updated;
-		$reply->url = $post->object->inReplyTo->url;
 		pumpio_dopost($a, $client, $uid, $self, $reply, $own_id, false);
 
 		$postarray['thr-parent'] = $post->object->inReplyTo->id;
@@ -1219,7 +1218,7 @@ function pumpio_dopost(App $a, $client, int $uid, array $self, $post, string $ow
 
 function pumpio_fetchinbox(App $a, int $uid)
 {
-	$ckey= DI::pConfig()->get($uid, 'pumpio', 'consumer_key');
+	$ckey     = DI::pConfig()->get($uid, 'pumpio', 'consumer_key');
 	$csecret  = DI::pConfig()->get($uid, 'pumpio', 'consumer_secret');
 	$otoken   = DI::pConfig()->get($uid, 'pumpio', 'oauth_token');
 	$osecret  = DI::pConfig()->get($uid, 'pumpio', 'oauth_token_secret');
@@ -1285,7 +1284,7 @@ function pumpio_fetchinbox(App $a, int $uid)
 
 function pumpio_getallusers(App &$a, int $uid)
 {
-	$ckey= DI::pConfig()->get($uid, 'pumpio', 'consumer_key');
+	$ckey     = DI::pConfig()->get($uid, 'pumpio', 'consumer_key');
 	$csecret  = DI::pConfig()->get($uid, 'pumpio', 'consumer_secret');
 	$otoken   = DI::pConfig()->get($uid, 'pumpio', 'oauth_token');
 	$osecret  = DI::pConfig()->get($uid, 'pumpio', 'oauth_token_secret');

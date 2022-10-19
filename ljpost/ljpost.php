@@ -54,7 +54,7 @@ function ljpost_settings(App &$a, array &$data)
 		return;
 	}
 
-	$enabled = DI::pConfig()->get(Session::getLocalUser(), 'ljpost', 'post', false);
+	$enabled     = DI::pConfig()->get(Session::getLocalUser(), 'ljpost', 'post', false);
 	$ij_username = DI::pConfig()->get(Session::getLocalUser(), 'ljpost', 'ij_username');
 	$def_enabled = DI::pConfig()->get(Session::getLocalUser(), 'ljpost', 'post_by_default');
 
@@ -92,7 +92,7 @@ function ljpost_post_local(App $a, array &$b)
 		return;
 	}
 
-	if ((!Session::getLocalUser()) || (Session::getLocalUser() != $b['uid'])) {
+	if (!Session::getLocalUser() || (Session::getLocalUser() != $b['uid'])) {
 		return;
 	}
 
