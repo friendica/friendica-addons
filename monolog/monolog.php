@@ -8,7 +8,7 @@
 
 use Friendica\App;
 use Friendica\Core\Hook;
-use Friendica\Addon\Monolog\IntrospectionProcessor;
+use Friendica\Addon\monolog\src\IntrospectionProcessor;
 use Friendica\DI;
 use Psr\Log\LogLevel;
 

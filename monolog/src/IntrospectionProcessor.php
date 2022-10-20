@@ -19,7 +19,7 @@
  *
  */
 
-namespace Friendica\Addon\Monolog;
+namespace Friendica\Addon\monolog\src;
 
 use Friendica\Core\Logger\Util\Introspection;
 use Monolog\Logger;

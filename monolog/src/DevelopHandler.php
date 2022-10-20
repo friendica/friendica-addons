@@ -19,7 +19,7 @@
  *
  */
 
-namespace Friendica\Addon\Monolog;
+namespace Friendica\Addon\monolog\src;
 
 use Friendica\App\Request;
 use Monolog\Handler;
