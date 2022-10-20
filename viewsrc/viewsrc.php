@@ -9,7 +9,6 @@
 
 use Friendica\App;
 use Friendica\Core\Hook;
-use Friendica\Core\Session;
 use Friendica\DI;
 
 function viewsrc_install()
@@ -33,7 +32,7 @@ EOS;
 
 function viewsrc_item_photo_menu(App $a, array &$b)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 

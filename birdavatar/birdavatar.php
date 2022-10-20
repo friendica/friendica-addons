@@ -10,7 +10,6 @@ use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
-use Friendica\Core\Session;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Contact;
@@ -37,14 +36,14 @@ function birdavatar_install()
  */
 function birdavatar_addon_settings(App $a, array &$data)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/birdavatar/');
 	$html = Renderer::replaceMacros($t, [
 		'$uncache'      => time(),
-		'$uid'          => Session::getLocalUser(),
+		'$uid'          => DI::userSession()->getLocalUserId(),
 		'$setrandomize' => DI::l10n()->t('Set default profile avatar or randomize the bird.'),
 	]);
 
@@ -55,7 +54,7 @@ function birdavatar_addon_settings(App $a, array &$data)
 		'submit' => [
 			'birdavatar-usebird'   => DI::l10n()->t('Use Bird as Avatar'),
 			'birdavatar-morebird'  => DI::l10n()->t('More Random Bird!'),
-			'birdavatar-emailbird' => DI::pConfig()->get(Session::getLocalUser(), 'birdavatar', 'seed', false) ? DI::l10n()->t('Reset to email Bird') : null,
+			'birdavatar-emailbird' => DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'birdavatar', 'seed', false) ? DI::l10n()->t('Reset to email Bird') : null,
 		],
 	];
 }
@@ -65,50 +64,50 @@ function birdavatar_addon_settings(App $a, array &$data)
  */
 function birdavatar_addon_settings_post(App $a, &$s)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
 	if (!empty($_POST['birdavatar-usebird'])) {
-		$url = DI::baseUrl()->get() . '/birdavatar/' . Session::getLocalUser() . '?ts=' . time();
+		$url = DI::baseUrl()->get() . '/birdavatar/' . DI::userSession()->getLocalUserId() . '?ts=' . time();
 
-		$self = DBA::selectFirst('contact', ['id'], ['uid' => Session::getLocalUser(), 'self' => true]);
+		$self = DBA::selectFirst('contact', ['id'], ['uid' => DI::userSession()->getLocalUserId(), 'self' => true]);
 		if (!DBA::isResult($self)) {
 			DI::sysmsg()->addNotice(DI::l10n()->t("The bird has not found itself."));
 			return;
 		}
 
-		Photo::importProfilePhoto($url, Session::getLocalUser(), $self['id']);
+		Photo::importProfilePhoto($url, DI::userSession()->getLocalUserId(), $self['id']);
 
-		$condition = ['uid' => Session::getLocalUser(), 'contact-id' => $self['id']];
+		$condition = ['uid' => DI::userSession()->getLocalUserId(), 'contact-id' => $self['id']];
 		$photo     = DBA::selectFirst('photo', ['resource-id'], $condition);
 		if (!DBA::isResult($photo)) {
 			DI::sysmsg()->addNotice(DI::l10n()->t('There was an error, the bird flew away.'));
 			return;
 		}
 
-		DBA::update('photo', ['profile' => false], ['profile' => true, 'uid' => Session::getLocalUser()]);
+		DBA::update('photo', ['profile' => false], ['profile' => true, 'uid' => DI::userSession()->getLocalUserId()]);
 
 		$fields = ['profile' => true, 'album' => DI::l10n()->t('Profile Photos'), 'contact-id' => 0];
-		DBA::update('photo', $fields, ['uid' => Session::getLocalUser(), 'resource-id' => $photo['resource-id']]);
+		DBA::update('photo', $fields, ['uid' => DI::userSession()->getLocalUserId(), 'resource-id' => $photo['resource-id']]);
 
-		Photo::importProfilePhoto($url, Session::getLocalUser(), $self['id']);
+		Photo::importProfilePhoto($url, DI::userSession()->getLocalUserId(), $self['id']);
 
-		Contact::updateSelfFromUserID(Session::getLocalUser(), true);
+		Contact::updateSelfFromUserID(DI::userSession()->getLocalUserId(), true);
 
 		// Update global directory in background
-		Profile::publishUpdate(Session::getLocalUser());
+		Profile::publishUpdate(DI::userSession()->getLocalUserId());
 
 		DI::sysmsg()->addInfo(DI::l10n()->t('Meow!'));
 		return;
 	}
 
 	if (!empty($_POST['birdavatar-morebird'])) {
-		DI::pConfig()->set(Session::getLocalUser(), 'birdavatar', 'seed', time());
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'birdavatar', 'seed', time());
 	}
 
 	if (!empty($_POST['birdavatar-emailbird'])) {
-		DI::pConfig()->delete(Session::getLocalUser(), 'birdavatar', 'seed');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'birdavatar', 'seed');
 	}
 }
 

@@ -11,7 +11,6 @@ use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
-use Friendica\Core\Session;
 use Friendica\DI;
 
 function planets_install()
@@ -43,12 +42,12 @@ function planets_post_hook(App $a, &$item)
 {
 	Logger::notice('planets invoked');
 
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		/* non-zero if this is a logged in user of this system */
 		return;
 	}
 
-	if (Session::getLocalUser() != $item['uid']) {
+	if (DI::userSession()->getLocalUserId() != $item['uid']) {
 		/* Does this person own the post? */
 		return;
 	}
@@ -59,7 +58,7 @@ function planets_post_hook(App $a, &$item)
 	}
 
 	/* Retrieve our personal config setting */
-	$active = DI::pConfig()->get(Session::getLocalUser(), 'planets', 'enable');
+	$active = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'planets', 'enable');
 
 	if (!$active) {
 		return;
@@ -96,11 +95,11 @@ function planets_post_hook(App $a, &$item)
 
 function planets_settings_post(App $a, $post)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 	if ($_POST['planets-submit']) {
-		DI::pConfig()->set(Session::getLocalUser(), 'planets', 'enable' ,intval($_POST['planets']));
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'planets', 'enable' ,intval($_POST['planets']));
 	}
 }
 
@@ -116,11 +115,11 @@ function planets_settings_post(App $a, $post)
 
 function planets_settings(App &$a, array &$data)
 {
-	if(!Session::getLocalUser()) {
+	if(!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
-	$enabled = DI::pConfig()->get(Session::getLocalUser(),'planets','enable');
+	$enabled = DI::pConfig()->get(DI::userSession()->getLocalUserId(),'planets','enable');
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/planets/');
 	$html = Renderer::replaceMacros($t, [

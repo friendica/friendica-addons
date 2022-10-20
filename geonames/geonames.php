@@ -12,7 +12,6 @@ use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Core\Config\Util\ConfigFileLoader;
-use Friendica\Core\Session;
 use Friendica\Util\XML;
 
 function geonames_install()
@@ -49,11 +48,11 @@ function geonames_post_hook(App $a, array &$item)
 
 	Logger::notice('geonames invoked');
 
-	if (!Session::getLocalUser()) {   /* non-zero if this is a logged in user of this system */
+	if (!DI::userSession()->getLocalUserId()) {   /* non-zero if this is a logged in user of this system */
 		return;
 	}
 
-	if (Session::getLocalUser() != $item['uid']) {   /* Does this person own the post? */
+	if (DI::userSession()->getLocalUserId() != $item['uid']) {   /* Does this person own the post? */
 		return;
 	}
 
@@ -64,7 +63,7 @@ function geonames_post_hook(App $a, array &$item)
 	/* Retrieve our personal config setting */
 
 	$geo_account = DI::config()->get('geonames', 'username');
-	$active = DI::pConfig()->get(Session::getLocalUser(), 'geonames', 'enable');
+	$active = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'geonames', 'enable');
 
 	if (!$geo_account || !$active) {
 		return;
@@ -103,11 +102,11 @@ function geonames_post_hook(App $a, array &$item)
  */
 function geonames_addon_settings_post(App $a, array $post)
 {
-	if (!Session::getLocalUser() || empty($_POST['geonames-submit'])) {
+	if (!DI::userSession()->getLocalUserId() || empty($_POST['geonames-submit'])) {
 		return;
 	}
 
-	DI::pConfig()->set(Session::getLocalUser(), 'geonames', 'enable', intval($_POST['geonames-enable']));
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'geonames', 'enable', intval($_POST['geonames-enable']));
 }
 
 /**
@@ -120,7 +119,7 @@ function geonames_addon_settings_post(App $a, array $post)
  */
 function geonames_addon_settings(App $a, array &$data)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
@@ -129,7 +128,7 @@ function geonames_addon_settings(App $a, array &$data)
 		return;
 	}
 
-	$enabled = intval(DI::pConfig()->get(Session::getLocalUser(), 'geonames', 'enable'));
+	$enabled = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'geonames', 'enable'));
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/geonames/');
 	$html = Renderer::replaceMacros($t, [
