@@ -10,7 +10,6 @@ use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
-use Friendica\Core\Session;
 use Friendica\DI;
 
 function numfriends_install() {
@@ -30,11 +29,11 @@ function numfriends_install() {
  *
  */
 function numfriends_settings_post(App $a, $post) {
-	if (! Session::getLocalUser() || empty($_POST['numfriends-submit'])) {
+	if (! DI::userSession()->getLocalUserId() || empty($_POST['numfriends-submit'])) {
 		return;
 	}
 
-	DI::pConfig()->set(Session::getLocalUser(), 'system', 'display_friend_count', intval($_POST['numfriends']));
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'system', 'display_friend_count', intval($_POST['numfriends']));
 }
 
 
@@ -46,11 +45,11 @@ function numfriends_settings_post(App $a, $post) {
  */
 function numfriends_settings(App &$a, array &$data)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
-	$numfriends = DI::pConfig()->get(Session::getLocalUser(), 'system', 'display_friend_count', 24);
+	$numfriends = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'system', 'display_friend_count', 24);
 	
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/numfriends/');
 	$html = Renderer::replaceMacros($t, [

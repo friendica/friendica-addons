@@ -10,7 +10,6 @@ use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
-use Friendica\Core\Session;
 use Friendica\DI;
 
 function group_text_install()
@@ -30,11 +29,11 @@ function group_text_install()
 
 function group_text_settings_post(App $a, array $post)
 {
-	if (!Session::getLocalUser() || empty($post['group_text-submit'])) {
+	if (!DI::userSession()->getLocalUserId() || empty($post['group_text-submit'])) {
 		return;
 	}
 
-	DI::pConfig()->set(Session::getLocalUser(), 'system', 'groupedit_image_limit', intval($post['group_text']));
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'system', 'groupedit_image_limit', intval($post['group_text']));
 }
 
 
@@ -47,11 +46,11 @@ function group_text_settings_post(App $a, array $post)
 
 function group_text_settings(App &$a, array &$data)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
-	$enabled = DI::pConfig()->get(Session::getLocalUser(), 'system', 'groupedit_image_limit');
+	$enabled = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'system', 'groupedit_image_limit');
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/group_text/');
 	$html = Renderer::replaceMacros($t, [

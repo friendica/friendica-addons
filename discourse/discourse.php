@@ -14,7 +14,6 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Protocol;
 use Friendica\Core\Renderer;
-use Friendica\Core\Session;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Contact;
@@ -39,11 +38,11 @@ function discourse_install()
 
 function discourse_settings(App $a, array &$data)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
-	$enabled = intval(DI::pConfig()->get(Session::getLocalUser(), 'discourse', 'enabled'));
+	$enabled = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'discourse', 'enabled'));
 
 	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/discourse/');
 	$html = Renderer::replaceMacros($t, [
@@ -61,11 +60,11 @@ function discourse_settings(App $a, array &$data)
 
 function discourse_settings_post(App $a)
 {
-	if (!Session::getLocalUser() || empty($_POST['discourse-submit'])) {
+	if (!DI::userSession()->getLocalUserId() || empty($_POST['discourse-submit'])) {
                 return;
         }
 
-	DI::pConfig()->set(Session::getLocalUser(), 'discourse', 'enabled', intval($_POST['enabled']));
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'discourse', 'enabled', intval($_POST['enabled']));
 }
 
 function discourse_email_getmessage(App $a, &$message)

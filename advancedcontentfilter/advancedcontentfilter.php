@@ -39,7 +39,6 @@ use Friendica\Content\Text\Markdown;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
-use Friendica\Core\Session;
 use Friendica\Database\DBA;
 use Friendica\Database\DBStructure;
 use Friendica\DI;
@@ -124,21 +123,21 @@ function advancedcontentfilter_prepare_body_content_filter(App $a, &$hook_data)
 		$expressionLanguage = new ExpressionLanguage\ExpressionLanguage();
 	}
 
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
 	$vars = advancedcontentfilter_get_filter_fields($hook_data['item']);
 
-	$rules = DI::cache()->get('rules_' . Session::getLocalUser());
+	$rules = DI::cache()->get('rules_' . DI::userSession()->getLocalUserId());
 	if (!isset($rules)) {
 		$rules = DBA::toArray(DBA::select(
 			'advancedcontentfilter_rules',
 			['name', 'expression', 'serialized'],
-			['uid' => Session::getLocalUser(), 'active' => true]
+			['uid' => DI::userSession()->getLocalUserId(), 'active' => true]
 		));
 
-		DI::cache()->set('rules_' . Session::getLocalUser(), $rules);
+		DI::cache()->set('rules_' . DI::userSession()->getLocalUserId(), $rules);
 	}
 
 	if ($rules) {
@@ -166,7 +165,7 @@ function advancedcontentfilter_prepare_body_content_filter(App $a, &$hook_data)
 
 function advancedcontentfilter_addon_settings(App $a, array &$data)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
@@ -204,12 +203,12 @@ function advancedcontentfilter_init(App $a)
 
 function advancedcontentfilter_content(App $a)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return Login::form('/' . implode('/', DI::args()->getArgv()));
 	}
 
 	if (DI::args()->getArgc() > 1 && DI::args()->getArgv()[1] == 'help') {
-		$user = User::getById(Session::getLocalUser());
+		$user = User::getById(DI::userSession()->getLocalUserId());
 
 		$lang = $user['language'];
 
@@ -273,9 +272,9 @@ function advancedcontentfilter_build_fields($data)
 
 	if (!empty($data['expression'])) {
 		// Using a dummy item to validate the field existence
-		$condition = ["(`uid` = ? OR `uid` = 0)", Session::getLocalUser()];
+		$condition = ["(`uid` = ? OR `uid` = 0)", DI::userSession()->getLocalUserId()];
 		$params = ['order' => ['uid' => true]];
-		$item_row = Post::selectFirstForUser(Session::getLocalUser(), [], $condition, $params);
+		$item_row = Post::selectFirstForUser(DI::userSession()->getLocalUserId(), [], $condition, $params);
 
 		if (!DBA::isResult($item_row)) {
 			throw new HTTPException\NotFoundException(DI::l10n()->t('This addon requires this node having at least one post'));
@@ -308,29 +307,29 @@ function advancedcontentfilter_build_fields($data)
 
 function advancedcontentfilter_get_rules()
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		throw new HTTPException\UnauthorizedException(DI::l10n()->t('You must be logged in to use this method'));
 	}
 
-	$rules = DBA::toArray(DBA::select('advancedcontentfilter_rules', [], ['uid' => Session::getLocalUser()]));
+	$rules = DBA::toArray(DBA::select('advancedcontentfilter_rules', [], ['uid' => DI::userSession()->getLocalUserId()]));
 
 	return json_encode($rules);
 }
 
 function advancedcontentfilter_get_rules_id(ServerRequestInterface $request, ResponseInterface $response, $args)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		throw new HTTPException\UnauthorizedException(DI::l10n()->t('You must be logged in to use this method'));
 	}
 
-	$rule = DBA::selectFirst('advancedcontentfilter_rules', [], ['id' => $args['id'], 'uid' => Session::getLocalUser()]);
+	$rule = DBA::selectFirst('advancedcontentfilter_rules', [], ['id' => $args['id'], 'uid' => DI::userSession()->getLocalUserId()]);
 
 	return json_encode($rule);
 }
 
 function advancedcontentfilter_post_rules(ServerRequestInterface $request)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		throw new HTTPException\UnauthorizedException(DI::l10n()->t('You must be logged in to use this method'));
 	}
 
@@ -350,7 +349,7 @@ function advancedcontentfilter_post_rules(ServerRequestInterface $request)
 		throw new HTTPException\BadRequestException(DI::l10n()->t('The rule name and expression are required.'));
 	}
 
-	$fields['uid'] = Session::getLocalUser();
+	$fields['uid'] = DI::userSession()->getLocalUserId();
 	$fields['created'] = DateTimeFormat::utcNow();
 
 	if (!DBA::insert('advancedcontentfilter_rules', $fields)) {
@@ -359,14 +358,14 @@ function advancedcontentfilter_post_rules(ServerRequestInterface $request)
 
 	$rule = DBA::selectFirst('advancedcontentfilter_rules', [], ['id' => DBA::lastInsertId()]);
 
-	DI::cache()->delete('rules_' . Session::getLocalUser());
+	DI::cache()->delete('rules_' . DI::userSession()->getLocalUserId());
 
 	return json_encode(['message' => DI::l10n()->t('Rule successfully added'), 'rule' => $rule]);
 }
 
 function advancedcontentfilter_put_rules_id(ServerRequestInterface $request, ResponseInterface $response, $args)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		throw new HTTPException\UnauthorizedException(DI::l10n()->t('You must be logged in to use this method'));
 	}
 
@@ -374,7 +373,7 @@ function advancedcontentfilter_put_rules_id(ServerRequestInterface $request, Res
 		throw new HTTPException\BadRequestException(DI::l10n()->t('Invalid form security token, please refresh the page.'));
 	}
 
-	if (!DBA::exists('advancedcontentfilter_rules', ['id' => $args['id'], 'uid' => Session::getLocalUser()])) {
+	if (!DBA::exists('advancedcontentfilter_rules', ['id' => $args['id'], 'uid' => DI::userSession()->getLocalUserId()])) {
 		throw new HTTPException\NotFoundException(DI::l10n()->t('Rule doesn\'t exist or doesn\'t belong to you.'));
 	}
 
@@ -390,14 +389,14 @@ function advancedcontentfilter_put_rules_id(ServerRequestInterface $request, Res
 		throw new HTTPException\ServiceUnavailableException(DBA::errorMessage());
 	}
 
-	DI::cache()->delete('rules_' . Session::getLocalUser());
+	DI::cache()->delete('rules_' . DI::userSession()->getLocalUserId());
 
 	return json_encode(['message' => DI::l10n()->t('Rule successfully updated')]);
 }
 
 function advancedcontentfilter_delete_rules_id(ServerRequestInterface $request, ResponseInterface $response, $args)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		throw new HTTPException\UnauthorizedException(DI::l10n()->t('You must be logged in to use this method'));
 	}
 
@@ -405,7 +404,7 @@ function advancedcontentfilter_delete_rules_id(ServerRequestInterface $request, 
 		throw new HTTPException\BadRequestException(DI::l10n()->t('Invalid form security token, please refresh the page.'));
 	}
 
-	if (!DBA::exists('advancedcontentfilter_rules', ['id' => $args['id'], 'uid' => Session::getLocalUser()])) {
+	if (!DBA::exists('advancedcontentfilter_rules', ['id' => $args['id'], 'uid' => DI::userSession()->getLocalUserId()])) {
 		throw new HTTPException\NotFoundException(DI::l10n()->t('Rule doesn\'t exist or doesn\'t belong to you.'));
 	}
 
@@ -413,14 +412,14 @@ function advancedcontentfilter_delete_rules_id(ServerRequestInterface $request, 
 		throw new HTTPException\ServiceUnavailableException(DBA::errorMessage());
 	}
 
-	DI::cache()->delete('rules_' . Session::getLocalUser());
+	DI::cache()->delete('rules_' . DI::userSession()->getLocalUserId());
 
 	return json_encode(['message' => DI::l10n()->t('Rule successfully deleted')]);
 }
 
 function advancedcontentfilter_get_variables_guid(ServerRequestInterface $request, ResponseInterface $response, $args)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		throw new HTTPException\UnauthorizedException(DI::l10n()->t('You must be logged in to use this method'));
 	}
 
@@ -428,9 +427,9 @@ function advancedcontentfilter_get_variables_guid(ServerRequestInterface $reques
 		throw new HTTPException\BadRequestException(DI::l10n()->t('Missing argument: guid.'));
 	}
 
-	$condition = ["`guid` = ? AND (`uid` = ? OR `uid` = 0)", $args['guid'], Session::getLocalUser()];
+	$condition = ["`guid` = ? AND (`uid` = ? OR `uid` = 0)", $args['guid'], DI::userSession()->getLocalUserId()];
 	$params = ['order' => ['uid' => true]];
-	$item_row = Post::selectFirstForUser(Session::getLocalUser(), [], $condition, $params);
+	$item_row = Post::selectFirstForUser(DI::userSession()->getLocalUserId(), [], $condition, $params);
 
 	if (!DBA::isResult($item_row)) {
 		throw new HTTPException\NotFoundException(DI::l10n()->t('Unknown post with guid: %s', $args['guid']));

@@ -11,7 +11,6 @@ use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
-use Friendica\Core\Session;
 use Friendica\DI;
 use Friendica\Object\EMail\IEmail;
 
@@ -39,12 +38,12 @@ function securemail_install()
  */
 function securemail_settings(App &$a, array &$data)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
-	$enabled   = intval(DI::pConfig()->get(Session::getLocalUser(), 'securemail', 'enable'));
-	$publickey = DI::pConfig()->get(Session::getLocalUser(), 'securemail', 'pkey');
+	$enabled   = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'securemail', 'enable'));
+	$publickey = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'securemail', 'pkey');
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/securemail/');
 	$html = Renderer::replaceMacros($t, [
@@ -75,20 +74,20 @@ function securemail_settings(App &$a, array &$data)
  */
 function securemail_settings_post(App &$a, array &$b)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
 	if (!empty($_POST['securemail-submit']) || !empty($_POST['securemail-test'])) {
-		DI::pConfig()->set(Session::getLocalUser(), 'securemail', 'pkey', trim($_POST['securemail-pkey']));
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'securemail', 'pkey', trim($_POST['securemail-pkey']));
 		$enable = (!empty($_POST['securemail-enable']) ? 1 : 0);
-		DI::pConfig()->set(Session::getLocalUser(), 'securemail', 'enable', $enable);
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'securemail', 'enable', $enable);
 
 		if (!empty($_POST['securemail-test'])) {
 			$res = DI::emailer()->send(new SecureTestEmail(DI::app(), DI::config(), DI::pConfig(), DI::baseUrl()));
 
 			// revert to saved value
-			DI::pConfig()->set(Session::getLocalUser(), 'securemail', 'enable', $enable);
+			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'securemail', 'enable', $enable);
 
 			if ($res) {
 				DI::sysmsg()->addInfo(DI::l10n()->t('Test email sent'));

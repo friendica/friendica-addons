@@ -11,7 +11,6 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
-use Friendica\Core\Session;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\User;
@@ -118,7 +117,7 @@ function saml_sso_initiate(App $a, array &$b)
 
 	$auth = new \OneLogin\Saml2\Auth(saml_settings());
 	$ssoBuiltUrl = $auth->login(null, [], false, false, true);
-	$_SESSION['AuthNRequestID'] = $auth->getLastRequestID();
+	DI::session()->set('AuthNRequestID', $auth->getLastRequestID());
 	header('Pragma: no-cache');
 	header('Cache-Control: no-cache, must-revalidate');
 	header('Location: ' . $ssoBuiltUrl);
@@ -130,12 +129,12 @@ function saml_sso_reply(App $a)
 	$auth = new \OneLogin\Saml2\Auth(saml_settings());
 	$requestID = null;
 
-	if (isset($_SESSION) && isset($_SESSION['AuthNRequestID'])) {
-		$requestID = $_SESSION['AuthNRequestID'];
+	if (DI::session()->exists('AuthNRequestID')) {
+		$requestID = DI::session()->get('AuthNRequestID');
 	}
 
 	$auth->processResponse($requestID);
-	unset($_SESSION['AuthNRequestID']);
+	DI::session()->remove('AuthNRequestID');
 
 	$errors = $auth->getErrors();
 
@@ -184,7 +183,7 @@ function saml_slo_initiate(App $a, array &$b)
 	$auth = new \OneLogin\Saml2\Auth(saml_settings());
 
 	$sloBuiltUrl = $auth->logout();
-	$_SESSION['LogoutRequestID'] = $auth->getLastRequestID();
+	DI::session()->set('LogoutRequestID', $auth->getLastRequestID());
 	header('Pragma: no-cache');
 	header('Cache-Control: no-cache, must-revalidate');
 	header('Location: ' . $sloBuiltUrl);
@@ -195,8 +194,8 @@ function saml_slo_reply()
 {
 	$auth = new \OneLogin\Saml2\Auth(saml_settings());
 
-	if (isset($_SESSION) && isset($_SESSION['LogoutRequestID'])) {
-		$requestID = $_SESSION['LogoutRequestID'];
+	if (DI::session()->exists('LogoutRequestID')) {
+		$requestID = DI::session()->get('LogoutRequestID');
 	} else {
 		$requestID = null;
 	}

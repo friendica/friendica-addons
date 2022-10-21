@@ -11,7 +11,6 @@
 use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
-use Friendica\Core\Session;
 use Friendica\DI;
 
 function mathjax_install()
@@ -23,20 +22,20 @@ function mathjax_install()
 
 function mathjax_settings_post(App $a)
 {
-	if (!Session::getLocalUser() || empty($_POST['mathjax-submit'])) {
+	if (!DI::userSession()->getLocalUserId() || empty($_POST['mathjax-submit'])) {
 		return;
 	}
 
-	DI::pConfig()->set(Session::getLocalUser(), 'mathjax', 'use', intval($_POST['mathjax_use']));
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'mathjax', 'use', intval($_POST['mathjax_use']));
 }
 
 function mathjax_settings(App $a, array &$data)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
-	$use = DI::pConfig()->get(Session::getLocalUser(), 'mathjax', 'use', false);
+	$use = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'mathjax', 'use', false);
 
 	$tpl = Renderer::getMarkupTemplate('settings.tpl', 'addon/mathjax');
 	$html = Renderer::replaceMacros($tpl, [
@@ -55,7 +54,7 @@ function mathjax_footer(App $a, string &$body)
 {
 	//  if the visitor of the page is not a local_user, use MathJax
 	//  otherwise check the users settings.
-	if (!Session::getLocalUser() || DI::pConfig()->get(Session::getLocalUser(), 'mathjax', 'use', false)) {
+	if (!DI::userSession()->getLocalUserId() || DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'mathjax', 'use', false)) {
 		DI::page()->registerFooterScript(__DIR__ . '/asset/MathJax.js?config=TeX-MML-AM_CHTML');
 		DI::page()->registerFooterScript(__DIR__ . '/mathjax.js');
 	}

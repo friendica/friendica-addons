@@ -10,7 +10,6 @@
 use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
-use Friendica\Core\Session;
 use Friendica\DI;
 
 function startpage_install() {
@@ -21,11 +20,11 @@ function startpage_install() {
 
 function startpage_home_init(App $a, $b)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
-	$page = DI::pConfig()->get(Session::getLocalUser(), 'startpage', 'startpage');
+	$page = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'startpage', 'startpage');
 	if (strlen($page)) {
 		DI::baseUrl()->redirect($page);
 	}
@@ -43,12 +42,12 @@ function startpage_home_init(App $a, $b)
 
 function startpage_settings_post(App $a, $post)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
 	if (!empty($_POST['startpage-submit'])) {
-		DI::pConfig()->set(Session::getLocalUser(), 'startpage', 'startpage', strip_tags(trim($_POST['startpage'])));
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'startpage', 'startpage', strip_tags(trim($_POST['startpage'])));
 	}
 }
 
@@ -60,11 +59,11 @@ function startpage_settings_post(App $a, $post)
  */
 function startpage_settings(App &$a, array &$data)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
-	$startpage = DI::pConfig()->get(Session::getLocalUser(), 'startpage', 'startpage');
+	$startpage = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'startpage', 'startpage');
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/startpage/');
 	$html = Renderer::replaceMacros($t, [

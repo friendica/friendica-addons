@@ -85,7 +85,6 @@ use Friendica\Model\Tag;
 use Friendica\Model\User;
 use Friendica\Protocol\Activity;
 use Friendica\Core\Config\Util\ConfigFileLoader;
-use Friendica\Core\Session;
 use Friendica\Core\System;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Images;
@@ -205,17 +204,17 @@ function twitter_api_contact(string $apiPath, array $contact, int $uid): ?bool
 
 function twitter_jot_nets(App $a, array &$jotnets_fields)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
-	if (DI::pConfig()->get(Session::getLocalUser(), 'twitter', 'post')) {
+	if (DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'post')) {
 		$jotnets_fields[] = [
 			'type' => 'checkbox',
 			'field' => [
 				'twitter_enable',
 				DI::l10n()->t('Post to Twitter'),
-				DI::pConfig()->get(Session::getLocalUser(), 'twitter', 'post_by_default')
+				DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'post_by_default')
 			]
 		];
 	}
@@ -224,7 +223,7 @@ function twitter_jot_nets(App $a, array &$jotnets_fields)
 
 function twitter_settings_post(App $a)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 	// don't check twitter settings if twitter submit button is not clicked
@@ -237,18 +236,18 @@ function twitter_settings_post(App $a)
 		 * if the twitter-disconnect checkbox is set, clear the OAuth key/secret pair
 		 * from the user configuration
 		 */
-		DI::pConfig()->delete(Session::getLocalUser(), 'twitter', 'consumerkey');
-		DI::pConfig()->delete(Session::getLocalUser(), 'twitter', 'consumersecret');
-		DI::pConfig()->delete(Session::getLocalUser(), 'twitter', 'oauthtoken');
-		DI::pConfig()->delete(Session::getLocalUser(), 'twitter', 'oauthsecret');
-		DI::pConfig()->delete(Session::getLocalUser(), 'twitter', 'post');
-		DI::pConfig()->delete(Session::getLocalUser(), 'twitter', 'post_by_default');
-		DI::pConfig()->delete(Session::getLocalUser(), 'twitter', 'lastid');
-		DI::pConfig()->delete(Session::getLocalUser(), 'twitter', 'thread');
-		DI::pConfig()->delete(Session::getLocalUser(), 'twitter', 'mirror_posts');
-		DI::pConfig()->delete(Session::getLocalUser(), 'twitter', 'import');
-		DI::pConfig()->delete(Session::getLocalUser(), 'twitter', 'create_user');
-		DI::pConfig()->delete(Session::getLocalUser(), 'twitter', 'own_id');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'consumerkey');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'consumersecret');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'oauthtoken');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'oauthsecret');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'post');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'post_by_default');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'lastid');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'thread');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'mirror_posts');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'import');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'create_user');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'own_id');
 	} else {
 		if (isset($_POST['twitter-pin'])) {
 			//  if the user supplied us with a PIN from Twitter, let the magic of OAuth happen
@@ -266,9 +265,9 @@ function twitter_settings_post(App $a)
 				$connection = new TwitterOAuth($ckey, $csecret, $_POST['twitter-token'], $_POST['twitter-token2']);
 				$token = $connection->oauth('oauth/access_token', ['oauth_verifier' => $_POST['twitter-pin']]);
 				//  ok, now that we have the Access Token, save them in the user config
-				DI::pConfig()->set(Session::getLocalUser(), 'twitter', 'oauthtoken', $token['oauth_token']);
-				DI::pConfig()->set(Session::getLocalUser(), 'twitter', 'oauthsecret', $token['oauth_token_secret']);
-				DI::pConfig()->set(Session::getLocalUser(), 'twitter', 'post', 1);
+				DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'oauthtoken', $token['oauth_token']);
+				DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'oauthsecret', $token['oauth_token_secret']);
+				DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'post', 1);
 			} catch(Exception $e) {
 				DI::sysmsg()->addNotice($e->getMessage());
 			} catch(TwitterOAuthException $e) {
@@ -277,15 +276,15 @@ function twitter_settings_post(App $a)
 		} else {
 			//  if no PIN is supplied in the POST variables, the user has changed the setting
 			//  to post a tweet for every new __public__ posting to the wall
-			DI::pConfig()->set(Session::getLocalUser(), 'twitter', 'post', intval($_POST['twitter-enable']));
-			DI::pConfig()->set(Session::getLocalUser(), 'twitter', 'post_by_default', intval($_POST['twitter-default']));
-			DI::pConfig()->set(Session::getLocalUser(), 'twitter', 'thread', intval($_POST['twitter-thread']));
-			DI::pConfig()->set(Session::getLocalUser(), 'twitter', 'mirror_posts', intval($_POST['twitter-mirror']));
-			DI::pConfig()->set(Session::getLocalUser(), 'twitter', 'import', intval($_POST['twitter-import']));
-			DI::pConfig()->set(Session::getLocalUser(), 'twitter', 'create_user', intval($_POST['twitter-create_user']));
+			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'post', intval($_POST['twitter-enable']));
+			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'post_by_default', intval($_POST['twitter-default']));
+			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'thread', intval($_POST['twitter-thread']));
+			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'mirror_posts', intval($_POST['twitter-mirror']));
+			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'import', intval($_POST['twitter-import']));
+			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'create_user', intval($_POST['twitter-create_user']));
 
 			if (!intval($_POST['twitter-mirror'])) {
-				DI::pConfig()->delete(Session::getLocalUser(), 'twitter', 'lastid');
+				DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'lastid');
 			}
 		}
 	}
@@ -293,11 +292,11 @@ function twitter_settings_post(App $a)
 
 function twitter_settings(App $a, array &$data)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
-	$user = User::getById(Session::getLocalUser());
+	$user = User::getById(DI::userSession()->getLocalUserId());
 
 	DI::page()->registerStylesheet(__DIR__ . '/twitter.css', 'all');
 
@@ -308,15 +307,15 @@ function twitter_settings(App $a, array &$data)
 	 */
 	$ckey    = DI::config()->get('twitter', 'consumerkey');
 	$csecret = DI::config()->get('twitter', 'consumersecret');
-	$otoken  = DI::pConfig()->get(Session::getLocalUser(), 'twitter', 'oauthtoken');
-	$osecret = DI::pConfig()->get(Session::getLocalUser(), 'twitter', 'oauthsecret');
+	$otoken  = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'oauthtoken');
+	$osecret = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'oauthsecret');
 
-	$enabled            = intval(DI::pConfig()->get(Session::getLocalUser(), 'twitter', 'post'));
-	$defenabled         = intval(DI::pConfig()->get(Session::getLocalUser(), 'twitter', 'post_by_default'));
-	$threadenabled      = intval(DI::pConfig()->get(Session::getLocalUser(), 'twitter', 'thread'));
-	$mirrorenabled      = intval(DI::pConfig()->get(Session::getLocalUser(), 'twitter', 'mirror_posts'));
-	$importenabled      = intval(DI::pConfig()->get(Session::getLocalUser(), 'twitter', 'import'));
-	$create_userenabled = intval(DI::pConfig()->get(Session::getLocalUser(), 'twitter', 'create_user'));
+	$enabled            = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'post'));
+	$defenabled         = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'post_by_default'));
+	$threadenabled      = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'thread'));
+	$mirrorenabled      = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'mirror_posts'));
+	$importenabled      = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'import'));
+	$create_userenabled = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'create_user'));
 
 	// Hide the submit button by default
 	$submit = '';
@@ -466,15 +465,15 @@ function twitter_post_local(App $a, array &$b)
 		return;
 	}
 
-	if (!Session::getLocalUser() || (Session::getLocalUser() != $b['uid'])) {
+	if (!DI::userSession()->getLocalUserId() || (DI::userSession()->getLocalUserId() != $b['uid'])) {
 		return;
 	}
 
-	$twitter_post = intval(DI::pConfig()->get(Session::getLocalUser(), 'twitter', 'post'));
+	$twitter_post = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'post'));
 	$twitter_enable = (($twitter_post && !empty($_REQUEST['twitter_enable'])) ? intval($_REQUEST['twitter_enable']) : 0);
 
 	// if API is used, default to the chosen settings
-	if ($b['api_source'] && intval(DI::pConfig()->get(Session::getLocalUser(), 'twitter', 'post_by_default'))) {
+	if ($b['api_source'] && intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'post_by_default'))) {
 		$twitter_enable = 1;
 	}
 
@@ -1070,7 +1069,7 @@ function twitter_prepare_body(App $a, array &$b)
 		$item = $b['item'];
 		$item['plink'] = DI::baseUrl()->get() . '/display/' . $item['guid'];
 
-		$condition = ['uri' => $item['thr-parent'], 'uid' => Session::getLocalUser()];
+		$condition = ['uri' => $item['thr-parent'], 'uid' => DI::userSession()->getLocalUserId()];
 		$orig_post = Post::selectFirst(['author-link'], $condition);
 		if (DBA::isResult($orig_post)) {
 			$nicknameplain = preg_replace("=https?://twitter.com/(.*)=ism", "$1", $orig_post['author-link']);

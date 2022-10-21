@@ -11,7 +11,6 @@
 use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
-use Friendica\Core\Session;
 use Friendica\DI;
 
 function nsfw_install()
@@ -54,12 +53,12 @@ function nsfw_extract_photos($body)
 
 function nsfw_addon_settings(App &$a, array &$data)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
-	$enabled = !DI::pConfig()->get(Session::getLocalUser(), 'nsfw', 'disable');
-	$words   = DI::pConfig()->get(Session::getLocalUser(), 'nsfw', 'words', 'nsfw,');
+	$enabled = !DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'nsfw', 'disable');
+	$words   = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'nsfw', 'words', 'nsfw,');
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/nsfw/');
 	$html = Renderer::replaceMacros($t, [
@@ -77,27 +76,27 @@ function nsfw_addon_settings(App &$a, array &$data)
 
 function nsfw_addon_settings_post(App $a, array &$b)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
 	if (!empty($_POST['nsfw-submit'])) {
-		DI::pConfig()->set(Session::getLocalUser(), 'nsfw', 'words', trim($_POST['nsfw-words']));
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'nsfw', 'words', trim($_POST['nsfw-words']));
 		$enable = (!empty($_POST['nsfw-enable']) ? intval($_POST['nsfw-enable']) : 0);
 		$disable = 1 - $enable;
-		DI::pConfig()->set(Session::getLocalUser(), 'nsfw', 'disable', $disable);
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'nsfw', 'disable', $disable);
 	}
 }
 
 function nsfw_prepare_body_content_filter(App $a, &$hook_data)
 {
 	$words = null;
-	if (DI::pConfig()->get(Session::getLocalUser(), 'nsfw', 'disable')) {
+	if (DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'nsfw', 'disable')) {
 		return;
 	}
 
-	if (Session::getLocalUser()) {
-		$words = DI::pConfig()->get(Session::getLocalUser(), 'nsfw', 'words');
+	if (DI::userSession()->getLocalUserId()) {
+		$words = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'nsfw', 'words');
 	}
 
 	if ($words) {

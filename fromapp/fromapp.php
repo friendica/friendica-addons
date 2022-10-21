@@ -11,7 +11,6 @@ use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
-use Friendica\Core\Session;
 use Friendica\DI;
 
 function fromapp_install()
@@ -24,22 +23,22 @@ function fromapp_install()
 
 function fromapp_settings_post(App $a, $post)
 {
-	if (!Session::getLocalUser() || empty($_POST['fromapp-submit'])) {
+	if (!DI::userSession()->getLocalUserId() || empty($_POST['fromapp-submit'])) {
 		return;
 	}
 
-	DI::pConfig()->set(Session::getLocalUser(), 'fromapp', 'app', $_POST['fromapp-input']);
-	DI::pConfig()->set(Session::getLocalUser(), 'fromapp', 'force', intval($_POST['fromapp-force']));
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'fromapp', 'app', $_POST['fromapp-input']);
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'fromapp', 'force', intval($_POST['fromapp-force']));
 }
 
 function fromapp_settings(App &$a, array &$data)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
-	$fromapp = DI::pConfig()->get(Session::getLocalUser(), 'fromapp', 'app', '');
-	$force   = intval(DI::pConfig()->get(Session::getLocalUser(), 'fromapp', 'force'));
+	$fromapp = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'fromapp', 'app', '');
+	$force   = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'fromapp', 'force'));
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/fromapp/');
 	$html = Renderer::replaceMacros($t, [
@@ -56,16 +55,16 @@ function fromapp_settings(App &$a, array &$data)
 
 function fromapp_post_hook(App $a, &$item)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
-	if (Session::getLocalUser() != $item['uid']) {
+	if (DI::userSession()->getLocalUserId() != $item['uid']) {
 		return;
 	}
 
-	$app = DI::pConfig()->get(Session::getLocalUser(), 'fromapp', 'app');
-	$force = intval(DI::pConfig()->get(Session::getLocalUser(), 'fromapp', 'force'));
+	$app = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'fromapp', 'app');
+	$force = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'fromapp', 'force'));
 
 	if (is_null($app) || (! strlen($app))) {
 		return;

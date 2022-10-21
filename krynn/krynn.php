@@ -14,7 +14,6 @@ use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
-use Friendica\Core\Session;
 use Friendica\DI;
 
 function krynn_install()
@@ -44,12 +43,12 @@ function krynn_post_hook(App $a, &$item)
 	 *      - A status post by a profile owner
 	 *      - The profile owner must have allowed our addon
 	 */
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		/* non-zero if this is a logged in user of this system */
 		return;
 	}
 
-	if (Session::getLocalUser() != $item['uid']) {
+	if (DI::userSession()->getLocalUserId() != $item['uid']) {
 		/* Does this person own the post? */
 		return;
 	}
@@ -60,7 +59,7 @@ function krynn_post_hook(App $a, &$item)
 	}
 
 	/* Retrieve our personal config setting */
-	$active = DI::pConfig()->get(Session::getLocalUser(), 'krynn', 'enable');
+	$active = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'krynn', 'enable');
 
 	if (!$active) {
 		return;
@@ -91,12 +90,12 @@ function krynn_post_hook(App $a, &$item)
  */
 function krynn_settings_post(App $a, $post)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
 	if ($_POST['krynn-submit']) {
-		DI::pConfig()->set(Session::getLocalUser(),'krynn','enable',intval($_POST['krynn']));
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(),'krynn','enable',intval($_POST['krynn']));
 	}
 }
 
@@ -106,11 +105,11 @@ function krynn_settings_post(App $a, $post)
  */
 function krynn_settings(App &$a, array &$data)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
-	$enabled = DI::pConfig()->get(Session::getLocalUser(),'krynn','enable');
+	$enabled = DI::pConfig()->get(DI::userSession()->getLocalUserId(),'krynn','enable');
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/krynn/');
 	$html = Renderer::replaceMacros($t, [

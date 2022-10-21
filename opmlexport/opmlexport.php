@@ -15,7 +15,6 @@ use Friendica\Network\HTTPException;
 use Friendica\Database\DBA;
 use Friendica\Core\Renderer;
 use Friendica\Core\Protocol;
-use Friendica\Core\Session;
 use Friendica\Model\Contact;
 use Friendica\Model\User;
 
@@ -30,7 +29,7 @@ function opmlexport_install()
 function opmlexport(App $a)
 {
 	$condition = [
-		'uid' => Session::getLocalUser(),
+		'uid' => DI::userSession()->getLocalUserId(),
 		'self' => false,
 		'deleted' => false,
 		'archive' => false,
@@ -39,7 +38,7 @@ function opmlexport(App $a)
 		'network' => Protocol::FEED
 	];
 	$data = Contact::selectToArray([], $condition, ['order' => ['name']]);
-	$user = User::getById(Session::getLocalUser());
+	$user = User::getById(DI::userSession()->getLocalUserId());
 
 	$xml = new \DOMDocument( '1.0', 'utf-8' );
 	$opml = $xml->createElement('opml');
@@ -71,7 +70,7 @@ function opmlexport(App $a)
 
 function opmlexport_addon_settings(App $a, array &$data)
 {
-	if (!Session::getLocalUser()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
@@ -85,7 +84,7 @@ function opmlexport_addon_settings(App $a, array &$data)
 
 function opmlexport_addon_settings_post(App $a, array &$b)
 {
-	if (!Session::getLocalUser() || empty($_POST['opmlexport-submit'])) {
+	if (!DI::userSession()->getLocalUserId() || empty($_POST['opmlexport-submit'])) {
 		return;
 	}
 
