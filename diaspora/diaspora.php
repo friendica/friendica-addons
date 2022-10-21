@@ -94,7 +94,7 @@ function diaspora_settings(App $a, array &$data)
 	$html = Renderer::replaceMacros($t, [
 		'$l10n' => [
 			'info_header'  => DI::l10n()->t('Information'),
-			'error_header' => DI::l10n()->t('Error'),
+			'error_header' => DI::l10n()->tt('Error', 'Errors', 1),
 		],
 
 		'$info'  => $info,
