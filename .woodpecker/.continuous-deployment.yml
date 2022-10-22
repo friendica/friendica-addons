@@ -1,3 +1,8 @@
+# This prevents executing this pipeline at other servers than ci.friendi.ca
+labels:
+  location: friendica
+  type: releaser
+
 skip_clone: true
 
 pipeline:
@@ -10,7 +15,6 @@ pipeline:
       repo: friendica/friendica-addons
       branch: [ develop, '*-rc' ]
       event: push
-      instance: releaser.ci.friendi.ca
   clone_friendica_addon:
     image: alpine/git
     commands:
@@ -25,7 +29,6 @@ pipeline:
       repo: friendica/friendica-addons
       branch: [ develop, '*-rc' ]
       event: push
-      instance: releaser.ci.friendi.ca
   restore_cache:
     image: meltwater/drone-cache:dev
     settings:
@@ -41,7 +44,6 @@ pipeline:
       repo: friendica/friendica-addons
       branch: [ develop, '*-rc' ]
       event: push
-      instance: releaser.ci.friendi.ca
   composer_install:
     image: friendicaci/php7.4:php7.4.18
     commands:
@@ -54,7 +56,6 @@ pipeline:
       repo: friendica/friendica-addons
       branch: [ develop, '*-rc' ]
       event: push
-      instance: releaser.ci.friendi.ca
   create_artifacts:
     image: debian
     commands:
@@ -83,7 +84,6 @@ pipeline:
       repo: friendica/friendica-addons
       branch: [ develop, '*-rc' ]
       event: push
-      instance: releaser.ci.friendi.ca
   sign_artifacts:
     image: plugins/gpgsign
     settings:
@@ -100,7 +100,6 @@ pipeline:
       repo: friendica/friendica-addons
       branch: [ develop, '*-rc' ]
       event: push
-      instance: releaser.ci.friendi.ca
   publish_artifacts:
     image: alpine
     commands:
@@ -111,4 +110,3 @@ pipeline:
       repo: friendica/friendica-addons
       branch: [ develop, '*-rc' ]
       event: push
-      instance: releaser.ci.friendi.ca
