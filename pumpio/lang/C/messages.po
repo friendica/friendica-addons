@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-21 19:17-0500\n"
+"POT-Creation-Date: 2022-10-29 20:48+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,76 +17,76 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: pumpio.php:57
+#: pumpio.php:63
 msgid "Permission denied."
 msgstr ""
 
-#: pumpio.php:152
+#: pumpio.php:160
 #, php-format
 msgid "Unable to register the client at the pump.io server '%s'."
 msgstr ""
 
-#: pumpio.php:192
+#: pumpio.php:200
 msgid "You are now authenticated to pumpio."
 msgstr ""
 
-#: pumpio.php:193
+#: pumpio.php:201
 msgid "return to the connector page"
 msgstr ""
 
-#: pumpio.php:213
+#: pumpio.php:221
 msgid "Post to pumpio"
 msgstr ""
 
-#: pumpio.php:237
+#: pumpio.php:245
 msgid "Save Settings"
 msgstr ""
 
-#: pumpio.php:239
+#: pumpio.php:247
 msgid "Delete this preset"
 msgstr ""
 
-#: pumpio.php:245
+#: pumpio.php:253
 msgid "Authenticate your pump.io connection"
 msgstr ""
 
-#: pumpio.php:252
+#: pumpio.php:260
 msgid "Pump.io servername (without \"http://\" or \"https://\" )"
 msgstr ""
 
-#: pumpio.php:253
+#: pumpio.php:261
 msgid "Pump.io username (without the servername)"
 msgstr ""
 
-#: pumpio.php:254
+#: pumpio.php:262
 msgid "Import the remote timeline"
 msgstr ""
 
-#: pumpio.php:255
+#: pumpio.php:263
 msgid "Enable Pump.io Post Addon"
 msgstr ""
 
-#: pumpio.php:256
+#: pumpio.php:264
 msgid "Post to Pump.io by default"
 msgstr ""
 
-#: pumpio.php:257
+#: pumpio.php:265
 msgid "Should posts be public?"
 msgstr ""
 
-#: pumpio.php:258
+#: pumpio.php:266
 msgid "Mirror all public posts"
 msgstr ""
 
-#: pumpio.php:263
+#: pumpio.php:271
 msgid "Pump.io Import/Export/Mirror"
 msgstr ""
 
-#: pumpio.php:920
+#: pumpio.php:938
 msgid "status"
 msgstr ""
 
-#: pumpio.php:924
+#: pumpio.php:942
 #, php-format
 msgid "%1$s likes %2$s's %3$s"
 msgstr ""
