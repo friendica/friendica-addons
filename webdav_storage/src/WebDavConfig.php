@@ -5,8 +5,8 @@ namespace Friendica\Addon\webdav_storage\src;
 use Friendica\Core\Config\Capability\IManageConfigValues;
 use Friendica\Core\L10n;
 use Friendica\Core\Storage\Capability\ICanConfigureStorage;
-use Friendica\Network\HTTPClient\Client\HttpClientOptions;
-use Friendica\Network\HTTPClient\Capability\ICanSendHttpRequests;
+use Friendica\Library\Network\HTTPClient\Client\HttpClientOptions;
+use Friendica\Library\Network\HTTPClient\Capability\ICanSendHttpRequests;
 
 /**
  * The WebDav Backend Storage configuration class
@@ -24,7 +24,7 @@ class WebDavConfig implements ICanConfigureStorage
 	/** @var string */
 	private $url;
 
-	/** @var \Friendica\Network\HTTPClient\Capability\ICanSendHttpRequests */
+	/** @var \Friendica\Library\Network\HTTPClient\Capability\ICanSendHttpRequests */
 	private $client;
 
 	/** @var array */

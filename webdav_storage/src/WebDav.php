@@ -6,8 +6,8 @@ use Exception;
 use Friendica\Core\Storage\Capability\ICanWriteToStorage;
 use Friendica\Core\Storage\Exception\ReferenceStorageException;
 use Friendica\Core\Storage\Exception\StorageException;
-use Friendica\Network\HTTPClient\Client\HttpClientOptions;
-use Friendica\Network\HTTPClient\Capability\ICanSendHttpRequests;
+use Friendica\Library\Network\HTTPClient\Client\HttpClientOptions;
+use Friendica\Library\Network\HTTPClient\Capability\ICanSendHttpRequests;
 use Friendica\Util\Strings;
 use Psr\Log\LoggerInterface;
 
