@@ -396,7 +396,7 @@ function pumpio_send(App $a, array &$b)
 
 	Logger::debug('pumpio_send: parameter ', $b);
 
-	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], $b['body']);
+	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], DI::contentItem()->addSharedPost($b));
 
 	if ($b['parent'] != $b['id']) {
 		// Looking if its a reply to a pumpio post

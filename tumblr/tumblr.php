@@ -331,7 +331,7 @@ function tumblr_send(App $a, array &$b) {
 		return;
 	}
 
-	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], $b['body']);
+	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], DI::contentItem()->addSharedPost($b));
 
 	$oauth_token = DI::pConfig()->get($b['uid'], "tumblr", "oauth_token");
 	$oauth_token_secret = DI::pConfig()->get($b['uid'], "tumblr", "oauth_token_secret");

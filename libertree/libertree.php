@@ -157,7 +157,7 @@ function libertree_send(App $a, array &$b)
 		return;
 	}
 
-	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], $b['body']);
+	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], DI::contentItem()->addSharedPost($b));
 
 	$ltree_api_token = DI::pConfig()->get($b['uid'],'libertree','libertree_api_token');
 	$ltree_url = DI::pConfig()->get($b['uid'],'libertree','libertree_url');

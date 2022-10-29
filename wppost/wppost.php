@@ -172,7 +172,7 @@ function wppost_send(App $a, array &$b)
 		return;
 	}
 
-	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], $b['body']);
+	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], DI::contentItem()->addSharedPost($b));
 
 	$wp_username = XML::escape(DI::pConfig()->get($b['uid'], 'wppost', 'wp_username'));
 	$wp_password = XML::escape(DI::pConfig()->get($b['uid'], 'wppost', 'wp_password'));
