@@ -17,6 +17,6 @@
 	</script>
 
 	<!-- JS -->
-	<script src="{{$baseurl}}/view/asset/vue/dist/vue.min.js"></script>
+	<script src="{{$baseurl}}/addon/advancedcontentfilter/asset/vue/dist/vue.min.js"></script>
 	<script src="{{$baseurl}}/addon/advancedcontentfilter/advancedcontentfilter.js"></script>
 </div>
