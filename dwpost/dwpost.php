@@ -134,7 +134,7 @@ function dwpost_send(App $a, array &$b)
 		return;
 	}
 
-	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], $b['body']);
+	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], DI::contentItem()->addSharedPost($b));
 
 	/*
 	 * dreamwidth post in the LJ user's timezone.

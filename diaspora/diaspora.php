@@ -202,7 +202,7 @@ function diaspora_send(App $a, array &$b)
 		return;
 	}
 
-	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], $b['body']);
+	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], DI::contentItem()->addSharedPost($b));
 
 	// Dont't post if the post doesn't belong to us.
 	// This is a check for forum postings
