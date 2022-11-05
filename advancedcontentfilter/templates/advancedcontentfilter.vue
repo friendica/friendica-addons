@@ -7,7 +7,7 @@
 	3. Replace the render and staticRenderFns members in advancedcontentfilter.js by the contents of the anonymous() functions
 -->
 <div id="rules">
-	<p><a href="settings/addon">🔙 {{ messages.backtosettings }}</a></p>
+	<p><a href="settings/addons">🔙 {{ messages.backtosettings }}</a></p>
 	<h1>
 		{{ messages.title }}
 		&nbsp;
