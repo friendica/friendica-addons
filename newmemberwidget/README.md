@@ -10,8 +10,8 @@ introduction pages at /newmember and optionally
  * a welcome message you might want to send to your new members.
 
 There is no extra styling added for this added, so it should work with any
-theme you have selected, or your user selects. But it was only tested with
-duepuntozero,quattro and clean.
+theme you have selected, or your user selects. However, it wasn't tested
+with frio nor vier.
 
 Testing it
 ----------
