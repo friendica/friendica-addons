@@ -185,7 +185,7 @@ function windowsphonepush_cron()
 					if (substr($body, 0, 4) == "[url") {
 						$body = "URL/Image ...";
 					} else {
-						$body = BBCode::convertForUriId($item['uri-id'], $body, BBCode::API);
+						$body = BBCode::convertForUriId($item['uri-id'], $body, BBCode::MASTODON_API);
 						$body = HTML::toPlaintext($body, 0);
 						$body = ((strlen($body) > 137) ? substr($body, 0, 137) . "..." : $body);
 					}
