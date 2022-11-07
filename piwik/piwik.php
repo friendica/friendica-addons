@@ -50,7 +50,7 @@ function piwik_load_config(App $a, ConfigFileLoader $loader)
 	$a->getConfigCache()->load($loader->loadAddonConfig('piwik'));
 }
 
-function piwik_analytics(App $a, array &$b)
+function piwik_analytics(App $a, string &$b)
 {
 	/*
 	 *   styling of every HTML block added by this addon is done in the
