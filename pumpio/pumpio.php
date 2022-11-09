@@ -63,9 +63,6 @@ function pumpio_content(App $a)
 		return '';
 	}
 
-	require_once 'mod/settings.php';
-	settings_init($a);
-
 	if (isset(DI::args()->getArgv()[1])) {
 		switch (DI::args()->getArgv()[1]) {
 			case 'connect':

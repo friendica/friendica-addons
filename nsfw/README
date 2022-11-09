@@ -7,7 +7,7 @@ Scans the message content for the string 'nsfw'
 with a "click to open/close" link, default is closed.
 
 If you click on the 'Not safe for work' addon under
-/settings/addon a text field appears, where you can
+/settings/addons a text field appears, where you can
 extend the list of search terms. The terms must be
 seperated by commas.
 
