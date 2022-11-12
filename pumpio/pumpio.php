@@ -1226,7 +1226,7 @@ function pumpio_fetchinbox(App $a, int $uid)
 	$self = User::getOwnerDataById($uid);
 
 	$lastitems = DBA::p("SELECT `uri` FROM `post-thread-user`
-		INNER JOIN `post-view` ON `post-view`.`id` = `post-thread-user`.`id`
+		INNER JOIN `post-view` ON `post-view`.`uri-id` = `post-thread-user`.`uri-id`
 		WHERE `post-thread-user`.`network` = ? AND `post-thread-user`.`uid` = ? AND `post-view`.`extid` != ''
 		ORDER BY `post-thread-user`.`commented` DESC LIMIT 10", Protocol::PUMPIO, $uid);
 
