@@ -22,3 +22,4 @@
 {{include file="field_checkbox.tpl" field=$mirror}}
 {{include file="field_checkbox.tpl" field=$import}}
 {{include file="field_checkbox.tpl" field=$create_user}}
+{{include file="field_checkbox.tpl" field=$auto_follow}}

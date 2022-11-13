@@ -247,6 +247,7 @@ function twitter_settings_post(App $a)
 		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'mirror_posts');
 		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'import');
 		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'create_user');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'auto_follow');
 		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'own_id');
 	} else {
 		if (isset($_POST['twitter-pin'])) {
@@ -282,6 +283,7 @@ function twitter_settings_post(App $a)
 			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'mirror_posts', intval($_POST['twitter-mirror']));
 			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'import', intval($_POST['twitter-import']));
 			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'create_user', intval($_POST['twitter-create_user']));
+			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'auto_follow', intval($_POST['twitter-auto_follow']));
 
 			if (!intval($_POST['twitter-mirror'])) {
 				DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'lastid');
@@ -316,6 +318,7 @@ function twitter_settings(App $a, array &$data)
 	$mirrorenabled      = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'mirror_posts'));
 	$importenabled      = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'import'));
 	$create_userenabled = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'create_user'));
+	$auto_followenabled = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'auto_follow'));
 
 	// Hide the submit button by default
 	$submit = '';
@@ -387,6 +390,7 @@ function twitter_settings(App $a, array &$data)
 					'$mirror'      => ['twitter-mirror', DI::l10n()->t('Mirror all posts from twitter that are no replies'), $mirrorenabled],
 					'$import'      => ['twitter-import', DI::l10n()->t('Import the remote timeline'), $importenabled],
 					'$create_user' => ['twitter-create_user', DI::l10n()->t('Automatically create contacts'), $create_userenabled, DI::l10n()->t('This will automatically create a contact in Friendica as soon as you receive a message from an existing contact via the Twitter network. If you do not enable this, you need to manually add those Twitter contacts in Friendica from whom you would like to see posts here.')],
+					'$auto_follow' => ['twitter-auto_follow', DI::l10n()->t('Follow in fediverse'), $auto_followenabled, DI::l10n()->t('Automatically subscribe to the contact in the fediverse, when a fediverse account is mentioned in name or description and we are following the Twitter contact.')],
 				]);
 
 				// Enable the default submit button
@@ -1533,7 +1537,84 @@ function twitter_fetch_contact($uid, $data, $create_user)
 
 	Contact::updateAvatar($contact_id, $avatar);
 
+	if (Contact::isSharing($contact_id, $uid, true) && DI::pConfig()->get($uid, 'twitter', 'auto_follow')) {
+		twitter_auto_follow($uid, $data);
+	}
+
 	return $contact_id;
+}
+
+/**
+ * Follow a fediverse account that is proived in the name or the profile
+ *
+ * @param integer $uid
+ * @param object $data
+ */
+function twitter_auto_follow(int $uid, object $data)
+{
+	$addrpattern = '([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6})';
+
+	// Search for user@domain.tld in the name
+	if (preg_match('#' . $addrpattern . '#', $data->name, $match)) {
+		if (twitter_add_contact($match[1], true, $uid)) {
+			return;
+		}
+	}
+
+	// Search for @user@domain.tld in the description
+	if (preg_match('#@' . $addrpattern . '#', $data->description, $match)) {
+		if (twitter_add_contact($match[1], true, $uid)) {
+			return;
+		}
+	}
+
+	// Search for user@domain.tld in the description
+	// We don't probe here, since this could be a mail address
+	if (preg_match('#' . $addrpattern . '#', $data->description, $match)) {
+		if (twitter_add_contact($match[1], false, $uid)) {
+			return;
+		}
+	}
+
+	// Search for profile links in the description
+	foreach ($data->entities->description->urls as $url) {
+		if (!empty($url->expanded_url)) {
+			// We only probe on Mastodon style URL to reduce the number of unsuccessful probes
+			twitter_add_contact($url->expanded_url, strpos($url->expanded_url, '@'), $uid);
+		}
+	} 
+}
+
+/**
+ * Check if the provided address is a fediverse account and adds it
+ *
+ * @param string $addr
+ * @param boolean $probe
+ * @param integer $uid
+ * @return boolean
+ */
+function twitter_add_contact(string $addr, bool $probe, int $uid): bool
+{
+	$contact = Contact::getByURL($addr, $probe ? null : false, ['id', 'url', 'network']);
+	if (empty($contact)) {
+		Logger::debug('Not a contact address', ['uid' => $uid, 'probe' => $probe, 'addr' => $addr]);
+		return false;
+	}
+
+	if (!in_array($contact['network'], Protocol::FEDERATED)) {
+		Logger::debug('Not a federated network', ['uid' => $uid, 'addr' => $addr, 'contact' => $contact]);
+		return false;
+	}
+
+	if (Contact::isSharing($contact['id'], $uid)) {
+		Logger::debug('Contact has already been added', ['uid' => $uid, 'addr' => $addr, 'contact' => $contact]);
+		return true;
+	}
+
+	Logger::info('Add contact', ['uid' => $uid, 'addr' => $addr, 'contact' => $contact]);
+	Worker::add(Worker::PRIORITY_LOW, 'AddContact', $uid, $contact['url']);
+
+	return true;
 }
 
 /**
