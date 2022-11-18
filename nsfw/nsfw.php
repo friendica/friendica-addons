@@ -64,7 +64,7 @@ function nsfw_addon_settings(App &$a, array &$data)
 	$html = Renderer::replaceMacros($t, [
 		'$info'    => DI::l10n()->t('This addon searches for specified words/text in posts and collapses them. It can be used to filter content tagged with for instance #NSFW that may be deemed inappropriate at certain times or places, such as being at work. It is also useful for hiding irrelevant or annoying content from direct view.'),
 		'$enabled' => ['nsfw-enable', DI::l10n()->t('Enable Content filter'), $enabled],
-		'$words'   => ['nsfw-words', DI::l10n()->t('Comma separated list of keywords to hide'), $words, DI::l10n()->t('Use /expression/ to provide regular expressions')],
+		'$words'   => ['nsfw-words', DI::l10n()->t('Comma separated list of keywords to hide'), $words, DI::l10n()->t('Use /expression/ to provide regular expressions, #tag to specfically match hashtags (case-insensitive), or regular words (case-sensitive)')],
 	]);
 
 	$data = [
@@ -125,7 +125,7 @@ function nsfw_prepare_body_content_filter(App $a, &$hook_data)
 					$found = nsfw_find_word_in_item_tags($hook_data['item']['hashtags'], substr($word, 1));
 					break;
 				default:
-					$found = stripos($body, $word) !== false || nsfw_find_word_in_item_tags($hook_data['item']['tags'], $word);
+					$found = strpos($body, $word) !== false || nsfw_find_word_in_item_tags($hook_data['item']['tags'], $word);
 					break;
 			}
 
