@@ -99,10 +99,10 @@ function pumpio_registerclient(App $a, $host)
 		$application_name = DI::baseUrl()->getHostname();
 	}
 
-	$adminlist = explode(',', str_replace(' ', '', DI::config()->get('config', 'admin_email')));
+	$firstAdmin = User::getFirstAdmin(['email']);
 
 	$params['type'] = 'client_associate';
-	$params['contacts'] = $adminlist[0];
+	$params['contacts'] = $firstAdmin['email'];
 	$params['application_type'] = 'native';
 	$params['application_name'] = $application_name;
 	$params['logo_url'] = DI::baseUrl()->get() . '/images/friendica-256.png';

@@ -40,15 +40,17 @@ function notifyall_post(App $a)
 		return;
 	}
 
+	$condition = ['account_removed' => false, 'account_expired' => false];
+
 	// if this is a test, send it only to the admin(s)
 	// admin_email might be a comma separated list, but we need "a@b','c@d','e@f
 	if (intval($_REQUEST['test'])) {
-		$email = DI::config()->get('config', 'admin_email');
-		$email = "'" . str_replace([" ",","], ["","','"], $email) . "'";
-	}
-	$sql_extra = ((intval($_REQUEST['test'])) ? sprintf(" AND `email` in ( %s )", $email) : '');
+		$adminEmails = \Friendica\Model\User::getAdminListForEmailing(['email']);
 
-	$recipients = DBA::p("SELECT DISTINCT `email` FROM `user` WHERE `verified` AND NOT `account_removed` AND NOT `account_expired` $sql_extra");
+		$condition['email'] = array_column($adminEmails, 'email');
+	}
+
+	$recipients = DBA::p("SELECT DISTINCT `email` FROM `user`" . DBA::buildCondition($condition));
 
 	if (! $recipients) {
 		DI::sysmsg()->addNotice(DI::l10n()->t('No recipients found.'));
