@@ -266,7 +266,7 @@ function tumblr_hook_fork(App $a, array &$b)
 	$post = $b['data'];
 
 	if ($post['deleted'] || $post['private'] || ($post['created'] !== $post['edited']) ||
-		!strstr($post['postopts'], 'tumblr') || ($post['parent'] != $post['id'])) {
+		!strstr($post['postopts'] ?? '', 'tumblr') || ($post['parent'] != $post['id'])) {
 		$b['execute'] = false;
 		return;
 	}
@@ -442,4 +442,3 @@ function tumblr_send(App $a, array &$b) {
 		}
 	}
 }
-
