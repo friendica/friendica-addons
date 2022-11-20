@@ -26,32 +26,7 @@
  * Note when using with Windows Active Directory: you may need to set TLS_CACERT in your site
  * ldap.conf file to the signing cert for your LDAP server.
  *
- * The configuration options for this module may be set in the config/addon.config.php file
- * e.g.:
- *
- * [ldapauth]
- * ; ldap hostname server - required
- * ldap_server = host.example.com
- * ; dn to search users - required
- * ldap_searchdn = ou=users,dc=example,dc=com
- * ; attribute to find username - required
- * ldap_userattr = uid
- *
- * ; admin dn - optional - only if ldap server dont have anonymous access
- * ldap_binddn = cn=admin,dc=example,dc=com
- * ; admin password - optional - only if ldap server dont have anonymous access
- * ldap_bindpw = password
- *
- * ; for create Friendica account if user exist in ldap
- * ;     required an email and a simple (beautiful) nickname on user ldap object
- * ;   active account creation - optional - default none
- * ldap_autocreateaccount = true
- * ;   attribute to get email - optional - default : 'mail'
- * ldap_autocreateaccount_emailattribute = mail
- * ;   attribute to get nickname - optional - default : 'givenName'
- * ldap_autocreateaccount_nameattribute = cn
- *
- * ...etc.
+ * The configuration options for this module are described in the config/ldapauth.config.php file
  */
 
 use Friendica\App;

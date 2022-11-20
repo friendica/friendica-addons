@@ -6,12 +6,14 @@ Testdrive is a Friendica addon which implements automatic account expiration so 
 
 When an account is created on the site, it is given a hard expiration date of
 
-	'testdrive' => [
-		'expiredays' => 30,
-	],
+	return [
+		'testdrive' => [
+			'expiredays' => 30,
+		],
+	];
 
-Set this in your `config/addon.config.php` file to allow a 30 day test drive period.
-By default no expiration period is defined in case the addon is activated accidentally.
+Set this in your `config/testdrive.config.php` file to allow a 30-day test drive period.
+By default, no expiration period is defined in case the addon is activated accidentally.
 
 There is no opportunity to extend an expired account using this addon.
 Expiration is final.

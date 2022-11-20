@@ -38,11 +38,13 @@ Open the `config/local.config.php` file and add "gravatar" to the list of activa
 		...
 	]
 
-You can add two configuration variables for the addon to the `config/addon.config.php` file:
+You can add two configuration variables for the addon to the `config/gravatar.config.php` file:
 
-    'gravatar' => [
-        'default_avatar' => 'identicon',
-        'rating' => 'g',
-    ],
+	return [
+		'gravatar' => [
+			'default_avatar' => 'identicon',
+			'rating' => 'g',
+		],
+	];
 
 [1]: http://www.gravatar.com/site/implement/images/ "See documentation at Gravatar for more information"

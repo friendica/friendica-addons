@@ -16,14 +16,16 @@ Simply fill in the fields in the impressium settings page in the addons area of 
 
 Manual Configuration
 --------------------
-If you for any reason you prefer to use a configuration file instead, you can set the following variables in the `config/addon.config.php` file
+If you for any reason you prefer to use a configuration file instead, you can set the following variables in the `config/impressum.config.php` file
 
-	'impressum' => [
-        'owner' => '',           This is the Name of the Operator
-        'ownerprofile' => '',    This is an optional Friendica account where the above owner name will link to
-        'email' => '',           A contact email address (optional)
-                                 Will be displayed slightly obfuscated as name(at)example(dot)com
-        'postal' => '',          Should contain a postal address where you can be reached at (optional)
-        'notes' => '',           Additional informations that should be displayed in the Impressum block
-        'footer_text' => '',     Text that will be displayed at the bottom of the pages.
-    ],
+	return [
+		'impressum' => [
+			'owner' => '',           // This is the Name of the Operator
+			'ownerprofile' => '',    // This is an optional Friendica account where the above owner name will link to
+			'email' => '',           // A contact email address (optional)
+									 // Will be displayed slightly obfuscated as name(at)example(dot)com
+			'postal' => '',          // Should contain a postal address where you can be reached at (optional)
+			'notes' => '',           // Additional informations that should be displayed in the Impressum block
+			'footer_text' => '',     // Text that will be displayed at the bottom of the pages.
+		],
+	];
