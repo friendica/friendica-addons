@@ -108,7 +108,7 @@ function saml_is_configured()
 		DI::config()->get('saml', 'idp_cert');
 }
 
-function saml_sso_initiate(App $a, array &$b)
+function saml_sso_initiate(App $a, string &$body)
 {
 	if (!saml_is_configured()) {
 		Logger::warning('SAML SSO tried to trigger, but the SAML addon is not configured yet!');
@@ -173,7 +173,7 @@ function saml_sso_reply(App $a)
 	}
 }
 
-function saml_slo_initiate(App $a, array &$b)
+function saml_slo_initiate(App $a, string &$body)
 {
 	if (!saml_is_configured()) {
 		Logger::warning('SAML SLO tried to trigger, but the SAML addon is not configured yet!');
