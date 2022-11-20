@@ -107,7 +107,7 @@ function wppost_hook_fork(App $a, array &$b)
 	$post = $b['data'];
 
 	if ($post['deleted'] || $post['private'] || ($post['created'] !== $post['edited']) ||
-		!strstr($post['postopts'], 'wppost') || ($post['parent'] != $post['id'])) {
+		!strstr($post['postopts'] ?? '', 'wppost') || ($post['parent'] != $post['id'])) {
 		$b['execute'] = false;
 		return;
 	}
