@@ -125,7 +125,7 @@ function twitter_install()
 
 function twitter_load_config(App $a, ConfigFileLoader $loader)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('twitter'));
+	$a->getConfigCache()->load($loader->loadAddonConfig('twitter'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 function twitter_check_item_notification(App $a, array &$notification_data)

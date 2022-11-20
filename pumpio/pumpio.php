@@ -320,7 +320,7 @@ function pumpio_settings_post(App $a, array &$b)
 
 function pumpio_load_config(App $a, ConfigFileLoader $loader)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('pumpio'));
+	$a->getConfigCache()->load($loader->loadAddonConfig('pumpio'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 function pumpio_hook_fork(App $a, array &$b)

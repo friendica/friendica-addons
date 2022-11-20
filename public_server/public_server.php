@@ -29,7 +29,7 @@ function public_server_install()
 
 function public_server_load_config(App $a, ConfigFileLoader $loader)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('public_server'));
+	$a->getConfigCache()->load($loader->loadAddonConfig('public_server'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 function public_server_register_account(App $a, $b)

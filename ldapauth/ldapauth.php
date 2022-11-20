@@ -45,7 +45,7 @@ function ldapauth_install()
 
 function ldapauth_load_config(App $a, ConfigFileLoader $loader)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('ldapauth'));
+	$a->getConfigCache()->load($loader->loadAddonConfig('ldapauth'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 function ldapauth_hook_authenticate(App $a, array &$b)
