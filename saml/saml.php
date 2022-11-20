@@ -173,7 +173,7 @@ function saml_sso_reply(App $a)
 	}
 }
 
-function saml_slo_initiate(App $a, string &$body)
+function saml_slo_initiate(App $a)
 {
 	if (!saml_is_configured()) {
 		Logger::warning('SAML SLO tried to trigger, but the SAML addon is not configured yet!');
