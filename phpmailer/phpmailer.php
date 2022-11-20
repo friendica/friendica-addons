@@ -25,7 +25,7 @@ function phpmailer_install()
 
 function phpmailer_load_config(App $a, ConfigFileLoader $loader)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('phpmailer'));
+	$a->getConfigCache()->load($loader->loadAddonConfig('phpmailer'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 /**

@@ -27,7 +27,7 @@ function testdrive_install()
 
 function testdrive_load_config(App $a, ConfigFileLoader $loader)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('testdrive'));
+	$a->getConfigCache()->load($loader->loadAddonConfig('testdrive'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 function testdrive_globaldir_update(App $a, array &$b)

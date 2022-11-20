@@ -26,7 +26,7 @@ function libravatar_install()
 
 function libravatar_load_config(App $a, ConfigFileLoader $loader)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('libravatar'));
+	$a->getConfigCache()->load($loader->loadAddonConfig('libravatar'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 /**

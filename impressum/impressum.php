@@ -56,7 +56,7 @@ function impressum_footer(App $a, string &$body)
 
 function impressum_load_config(App $a, ConfigFileLoader $loader)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('impressum'));
+	$a->getConfigCache()->load($loader->loadAddonConfig('impressum'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 function impressum_show(App $a, string &$body)

@@ -7,10 +7,12 @@ Use [Geonames service](https://www.geonames.org) to resolve nearest populated lo
 
 ## Installation
 
-Pre-requisite: Register a username at https://www.geonames.org/login and set it in `config/addon.config.php`
+Pre-requisite: Register a username at https://www.geonames.org/login and set it in `config/geonames.config.php`:
 
-    'geonames' => [
-        'username' => 'your_username'
-    ],
+	return [
+		'geonames' => [
+			'username' => 'your_username'
+		],
+	];
 
 Also visit https://geonames.org/manageaccount and enable access to the free web services.

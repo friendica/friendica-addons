@@ -30,14 +30,16 @@ Open the `config/local.config.php` file and add "piwik" to the list of activated
         ...
     ]
 
-You can change 4 more configuration variables for the addon in the `config/addon.config.php` file:
+You can change 4 more configuration variables for the addon in the `config/piwik.config.php` file:
 
-	'piwik' => [
-        'baseurl' => 'example.com/piwik/',
-        'sideid' => 1,
-        'optout' => true,
-        'async' => false,
-    ],
+	return [
+		'piwik' => [
+			'baseurl' => 'example.com/piwik/',
+			'sideid' => 1,
+			'optout' => true,
+			'async' => false,
+		],
+	];
 
 Configuration fields
 ---------------------
