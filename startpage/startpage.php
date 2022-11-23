@@ -25,10 +25,9 @@ function startpage_home_init(App $a, $b)
 	}
 
 	$page = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'startpage', 'startpage');
-	if (strlen($page)) {
+	if ($page) {
 		DI::baseUrl()->redirect($page);
 	}
-	return;
 }
 
 /**
