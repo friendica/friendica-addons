@@ -780,40 +780,30 @@ function pumpio_fetchtimeline(App $a, int $uid)
 			}
 
 			if ($public && !stristr($post->generator->displayName, $application_name)) {
-				$_SESSION['authenticated'] = true;
-				$_SESSION['uid'] = $uid;
-
-				unset($_REQUEST);
-				$_REQUEST['api_source'] = true;
-				$_REQUEST['profile_uid'] = $uid;
-				$_REQUEST['source'] = 'pump.io';
-
-				if (isset($post->object->id)) {
-					$_REQUEST['message_id'] = Protocol::PUMPIO . ':' . $post->object->id;
-				}
+				$postarray['uid'] = $uid;
+				$postarray['app'] = 'pump.io';
 
 				if ($post->object->displayName != '') {
-					$_REQUEST['title'] = HTML::toBBCode($post->object->displayName);
+					$postarray['title'] = HTML::toBBCode($post->object->displayName);
 				} else {
-					$_REQUEST['title'] = '';
+					$postarray['title'] = '';
 				}
 
-				$_REQUEST['body'] = HTML::toBBCode($post->object->content);
+				$postarray['body'] = HTML::toBBCode($post->object->content);
 
 				// To-Do: Picture has to be cached and stored locally
 				if ($post->object->fullImage->url != '') {
 					if ($post->object->fullImage->pump_io->proxyURL != '') {
-						$_REQUEST['body'] = '[url=' . $post->object->fullImage->pump_io->proxyURL . '][img]' . $post->object->image->pump_io->proxyURL . "[/img][/url]\n" . $_REQUEST['body'];
+						$postarray['body'] = '[url=' . $post->object->fullImage->pump_io->proxyURL . '][img]' . $post->object->image->pump_io->proxyURL . "[/img][/url]\n" . $postarray['body'];
 					} else {
-						$_REQUEST['body'] = '[url=' . $post->object->fullImage->url . '][img]' . $post->object->image->url . "[/img][/url]\n" . $_REQUEST['body'];
+						$postarray['body'] = '[url=' . $post->object->fullImage->url . '][img]' . $post->object->image->url . "[/img][/url]\n" . $postarray['body'];
 					}
 				}
 
 				Logger::notice('pumpio: posting for user ' . $uid);
 
-				require_once 'mod/item.php';
+				Item::insert($postarray, true);
 
-				item_post($a);
 				Logger::notice('pumpio: posting done - user ' . $uid);
 			}
 		}

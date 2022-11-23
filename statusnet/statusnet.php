@@ -762,7 +762,6 @@ function statusnet_fetchtimeline(App $a, int $uid)
 	$osecret = DI::pConfig()->get($uid, 'statusnet', 'oauthsecret');
 	$lastid  = DI::pConfig()->get($uid, 'statusnet', 'lastid');
 
-	require_once 'mod/item.php';
 	//  get the application name for the SN app
 	//  1st try personal config, then system config and fallback to the
 	//  hostname of the node if neither one is set.
@@ -819,46 +818,33 @@ function statusnet_fetchtimeline(App $a, int $uid)
 			}
 
 			if (!stristr($post->source, $application_name)) {
-				$_SESSION['authenticated'] = true;
-				$_SESSION['uid'] = $uid;
+				$postarray['uid'] = $uid;
+				$postarray['app'] = $post->source;
+				$postarray['extid'] = Protocol::STATUSNET;
 
-				unset($_REQUEST);
-				$_REQUEST['api_source'] = true;
-				$_REQUEST['profile_uid'] = $uid;
-				//$_REQUEST['source'] = 'StatusNet';
-				$_REQUEST['source'] = $post->source;
-				$_REQUEST['extid'] = Protocol::STATUSNET;
+				$postarray['title'] = '';
 
-				if (isset($post->id)) {
-					$_REQUEST['message_id'] = Item::newURI(Protocol::STATUSNET . ':' . $post->id);
-				}
-
-				//$_REQUEST['date'] = $post->created_at;
-
-				$_REQUEST['title'] = '';
-
-				$_REQUEST['body'] = $post->text;
+				$postarray['body'] = $post->text;
 				if (is_string($post->place->name)) {
-					$_REQUEST['location'] = $post->place->name;
+					$postarray['location'] = $post->place->name;
 				}
 
 				if (is_string($post->place->full_name)) {
-					$_REQUEST['location'] = $post->place->full_name;
+					$postarray['location'] = $post->place->full_name;
 				}
 
 				if (is_array($post->geo->coordinates)) {
-					$_REQUEST['coord'] = $post->geo->coordinates[0] . ' ' . $post->geo->coordinates[1];
+					$postarray['coord'] = $post->geo->coordinates[0] . ' ' . $post->geo->coordinates[1];
 				}
 
 				if (is_array($post->coordinates->coordinates)) {
-					$_REQUEST['coord'] = $post->coordinates->coordinates[1] . ' ' . $post->coordinates->coordinates[0];
+					$postarray['coord'] = $post->coordinates->coordinates[1] . ' ' . $post->coordinates->coordinates[0];
 				}
 
-				//print_r($_REQUEST);
-				if ($_REQUEST['body'] != '') {
+				if ($postarray['body'] != '') {
 					Logger::notice('statusnet: posting for user ' . $uid);
 
-					item_post($a);
+					Item::insert($postarray, true);
 				}
 			}
 		}
