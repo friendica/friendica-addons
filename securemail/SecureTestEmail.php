@@ -25,6 +25,7 @@ use Friendica\App;
 use Friendica\App\BaseURL;
 use Friendica\Core\Config\Capability\IManageConfigValues;
 use Friendica\Core\PConfig\Capability\IManagePersonalConfigValues;
+use Friendica\DI;
 use Friendica\Model\User;
 use Friendica\Object\Email;
 

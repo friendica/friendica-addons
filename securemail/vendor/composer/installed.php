@@ -1,42 +1,60 @@
 <?php return array (
   'root' => 
   array (
-    'pretty_version' => 'dev-develop',
-    'version' => 'dev-develop',
+    'pretty_version' => '1.0.0+no-version-set',
+    'version' => '1.0.0.0',
     'aliases' => 
     array (
     ),
-    'reference' => 'fb77e3c5ea0bcc6497dd6f24960b3d9ff1a159bd',
+    'reference' => NULL,
     'name' => 'friendica-addons/securemail',
   ),
   'versions' => 
   array (
     'friendica-addons/securemail' => 
     array (
-      'pretty_version' => 'dev-develop',
-      'version' => 'dev-develop',
+      'pretty_version' => '1.0.0+no-version-set',
+      'version' => '1.0.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'fb77e3c5ea0bcc6497dd6f24960b3d9ff1a159bd',
+      'reference' => NULL,
+    ),
+    'paragonie/constant_time_encoding' => 
+    array (
+      'pretty_version' => 'v2.6.3',
+      'version' => '2.6.3.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '58c3f47f650c94ec05a151692652a868995d2938',
+    ),
+    'paragonie/random_compat' => 
+    array (
+      'pretty_version' => 'v9.99.100',
+      'version' => '9.99.100.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '996434e5492cb4c3edcb9168db6fbb1359ef965a',
     ),
     'phpseclib/phpseclib' => 
     array (
-      'pretty_version' => '2.0.34',
-      'version' => '2.0.34.0',
+      'pretty_version' => '3.0.17',
+      'version' => '3.0.17.0',
       'aliases' => 
       array (
       ),
-      'reference' => '98a6fe587f3481aea319eef7e656d02cfe1675ec',
+      'reference' => 'dbc2307d5c69aeb22db136c52e91130d7f2ca761',
     ),
     'singpolyma/openpgp-php' => 
     array (
-      'pretty_version' => '0.5.0',
-      'version' => '0.5.0.0',
+      'pretty_version' => '0.6.0',
+      'version' => '0.6.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '69292f6a46ed7f687083bfb8974b161a41ab213c',
+      'reference' => '1c3bdcd2d9c6113c2d6b768e208e7432a48d3a1e',
     ),
   ),
 );

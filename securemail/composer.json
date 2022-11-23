@@ -10,12 +10,14 @@
         }
     ],
     "require": {
-        "phpseclib/phpseclib": "^2.0",
-        "singpolyma/openpgp-php": "^0.5.0"
+        "singpolyma/openpgp-php": "0.6.0"
     },
     "license": "AGPL-3.0+",
     "minimum-stability": "stable",
     "config": {
-        "autoloader-suffix": "SecuremailAddon"
+        "autoloader-suffix": "SecuremailAddon",
+        "platform": {
+            "php": "7.3"
+        }
     }
 }
