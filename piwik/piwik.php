@@ -16,14 +16,17 @@
  *
  *   Configuration:
  *     Use the administration panel to configure the Piwik tracking addon, or
- *     in case you don't use this add the following lines to your config/addon.config.php
+ *     in case you don't use this, add the following lines to your config/piwik.config.php
  *     file:
  *
- *     [piwik]
- *     baseurl = example.com/piwik/
- *     sideid = 1
- *     optout = true ;set to false to disable
- *     async = false ;set to true to enable
+ *      return [
+ *          'piwik' => [
+ *              'baseurl' => '',
+ *              'sideid' => '',
+ *              'optout' => true,
+ *              'async' => false,
+ *          ],
+ *      ];
  *
  *     Change the siteid to the ID that the Piwik tracker for your Friendica
  *     installation has. Alter the baseurl to fit your needs, don't care
@@ -47,7 +50,7 @@ function piwik_install() {
 
 function piwik_load_config(App $a, ConfigFileLoader $loader)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('piwik'));
+	$a->getConfigCache()->load($loader->loadAddonConfig('piwik'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 function piwik_analytics(App $a, string &$b)
@@ -60,7 +63,7 @@ function piwik_analytics(App $a, string &$b)
 	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/piwik/piwik.css' . '" media="all" />';
 
 	/*
-	 *   Get the configuration variables from the config/addon.config.php file.
+	 *   Get the configuration values.
 	 */
 	$baseurl = DI::config()->get('piwik', 'baseurl');
 	$siteid  = DI::config()->get('piwik', 'siteid');

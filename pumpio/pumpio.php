@@ -99,10 +99,10 @@ function pumpio_registerclient(App $a, $host)
 		$application_name = DI::baseUrl()->getHostname();
 	}
 
-	$adminlist = explode(',', str_replace(' ', '', DI::config()->get('config', 'admin_email')));
+	$firstAdmin = User::getFirstAdmin(['email']);
 
 	$params['type'] = 'client_associate';
-	$params['contacts'] = $adminlist[0];
+	$params['contacts'] = $firstAdmin['email'];
 	$params['application_type'] = 'native';
 	$params['application_name'] = $application_name;
 	$params['logo_url'] = DI::baseUrl()->get() . '/images/friendica-256.png';
@@ -320,7 +320,7 @@ function pumpio_settings_post(App $a, array &$b)
 
 function pumpio_load_config(App $a, ConfigFileLoader $loader)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('pumpio'));
+	$a->getConfigCache()->load($loader->loadAddonConfig('pumpio'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 function pumpio_hook_fork(App $a, array &$b)

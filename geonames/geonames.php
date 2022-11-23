@@ -35,7 +35,7 @@ function geonames_install()
 
 function geonames_load_config(App $a, ConfigFileLoader $loader)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('geonames'));
+	$a->getConfigCache()->load($loader->loadAddonConfig('geonames'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 function geonames_post_hook(App $a, array &$item)

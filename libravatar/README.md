@@ -31,10 +31,12 @@ Open the `config/local.config.php` file and add "libravatar" to the list of acti
         ...
     ]
 
-You can add one configuration variables for the addon to the `config/addon.config.php` file:
+You can add one configuration variables for the addon to the `config/libravatar.config.php` file:
 
-    'libravatar' => [
-        'default_avatar' => 'identicon',
-    ],
+	return [
+		'libravatar' => [
+			'default_avatar' => 'identicon',
+		],
+	];
 
 [1]: http://wiki.libravatar.org/api/ "See API documentation at Libravatar for more information"

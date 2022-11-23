@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-21 19:15-0500\n"
+"POT-Creation-Date: 2022-11-18 11:57-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,7 +34,9 @@ msgid "Comma separated list of keywords to hide"
 msgstr ""
 
 #: nsfw.php:67
-msgid "Use /expression/ to provide regular expressions"
+msgid ""
+"Use /expression/ to provide regular expressions, #tag to specfically match "
+"hashtags (case-insensitive), or regular words (case-sensitive)"
 msgstr ""
 
 #: nsfw.php:72

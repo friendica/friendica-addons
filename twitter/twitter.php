@@ -48,12 +48,14 @@
  *     we do not need "Twitter as login". When you've registered the app you get the
  *     OAuth Consumer key and secret pair for your application/site.
  *
- *     Add this key pair to your global config/addon.config.php or use the admin panel.
+ *     Add this key pair to your config/twitter.config.php file or use the admin panel.
  *
- *     	'twitter' => [
- * 		    'consumerkey' => '',
- *  		'consumersecret' => '',
- *      ],
+ *     	return [
+ *          'twitter' => [
+ * 		        'consumerkey' => '',
+ *  		    'consumersecret' => '',
+ *          ],
+ *      ];
  *
  *     To activate the addon itself add it to the system.addon
  *     setting. After this, your user can configure their Twitter account settings
@@ -123,7 +125,7 @@ function twitter_install()
 
 function twitter_load_config(App $a, ConfigFileLoader $loader)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('twitter'));
+	$a->getConfigCache()->load($loader->loadAddonConfig('twitter'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 function twitter_check_item_notification(App $a, array &$notification_data)
@@ -440,7 +442,7 @@ function twitter_hook_fork(App $a, array &$b)
 		return;
 	}
 
-	if (substr($post['app'], 0, 7) == 'Twitter') {
+	if (substr($post['app'] ?? '', 0, 7) == 'Twitter') {
 		DI::logger()->info('No Twitter app');
 		$b['execute'] = false;
 		return;
@@ -455,7 +457,7 @@ function twitter_hook_fork(App $a, array &$b)
 		}
 	} else {
 		// Comments are never exported when we don't import the twitter timeline
-		if (!strstr($post['postopts'], 'twitter') || ($post['parent'] != $post['id']) || $post['private']) {
+		if (!strstr($post['postopts'] ?? '', 'twitter') || ($post['parent'] != $post['id']) || $post['private']) {
 			DI::logger()->info('Comments are never exported when we don\'t import the twitter timeline');
 			$b['execute'] = false;
 			return;
@@ -1582,7 +1584,7 @@ function twitter_auto_follow(int $uid, object $data)
 			// We only probe on Mastodon style URL to reduce the number of unsuccessful probes
 			twitter_add_contact($url->expanded_url, strpos($url->expanded_url, '@'), $uid);
 		}
-	} 
+	}
 }
 
 /**
