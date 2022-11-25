@@ -41,12 +41,14 @@ function fancybox_render(App $a, array &$b)
 	}
 	$html = $b['html'];
 	while (preg_match($pattern, $html, $matches, PREG_OFFSET_CAPTURE)) {
-		if (is_array($matches)) $matches = $matches[0];
-		$part = $matches[0];
+		if (is_array($matches)) {
+			$matches = $matches[0];
+		}
+		$part     = $matches[0];
 		$replaced = str_replace('<a href', '<a data-fancybox="' . $gallery . '" href', $part);
 		$replaced = str_replace('<div class="body-attach"', '<div class="body-attach done"', $replaced);
-		$html = str_replace($part, $replaced, $html);
+		$html     = str_replace($part, $replaced, $html);
 	}
-	$html = str_replace('class="body-attach done"', 'class="body-attach"', $html);
+	$html      = str_replace('class="body-attach done"', 'class="body-attach"', $html);
 	$b['html'] = $html;
 }
