@@ -54,8 +54,8 @@ function rendertime_page_end(App $a, string &$o)
 	$duration = microtime(true) - $profiler->get('start');
 
 	$ignored_modules = [
-		\Friendica\Module\Profile\Photos\Browser::class,
-		\Friendica\Module\Profile\Attachment\Browser::class,
+		\Friendica\Module\Media\PhotosBrowser::class,
+		\Friendica\Module\Media\AttachmentBrowser::class,
 	];
 	$ignored = in_array(DI::router()->getModuleClass(), $ignored_modules);
 
