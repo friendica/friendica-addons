@@ -7,15 +7,15 @@
 # Andreas H., 2014
 # hoergen <hoergen@hoergen.org>, 2018
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014
-# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018,2022
 # Ulf Rompe <transifex.com@rompe.org>, 2019
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-21 19:15-0500\n"
-"PO-Revision-Date: 2021-12-22 17:22+0000\n"
-"Last-Translator: Transifex Bot <>\n"
+"POT-Creation-Date: 2022-11-18 11:57-0500\n"
+"PO-Revision-Date: 2014-06-23 10:34+0000\n"
+"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018,2022\n"
 "Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -40,8 +40,10 @@ msgid "Comma separated list of keywords to hide"
 msgstr "Durch Kommata getrennte Liste von Schlüsselwörtern, die verborgen werden sollen"
 
 #: nsfw.php:67
-msgid "Use /expression/ to provide regular expressions"
-msgstr "Verwende /expression/, um Reguläre Ausdrücke zu verwenden"
+msgid ""
+"Use /expression/ to provide regular expressions, #tag to specfically match "
+"hashtags (case-insensitive), or regular words (case-sensitive)"
+msgstr "Verwende /ausdruck/ für reguläre Ausdrücke, #tag um einen speziellen Hashtag zu filtern (unabhängig von der Groß- und Kleinschreibung) oder einfache Wörter (Groß- und Kleinschreibung beachten)."
 
 #: nsfw.php:72
 msgid "Content Filter (NSFW and more)"
