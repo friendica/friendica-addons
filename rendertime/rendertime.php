@@ -89,7 +89,7 @@ function rendertime_page_end(App $a, string &$o)
 
 		if ($profiler->isRendertime()) {
 			$o .= '<pre>';
-			$o .= $profiler->getRendertimeString(DI::config()->get('rendertime', 'minimal_time', 0));
+			$o .= $profiler->getRendertimeString(floatval(DI::config()->get('rendertime', 'minimal_time', 0)));
 			$o .= '</pre>';
 		}
 	}
