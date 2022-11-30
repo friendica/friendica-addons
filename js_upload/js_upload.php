@@ -221,7 +221,7 @@ class qqFileUploader
 //		}
 
 
-		$maximagesize = DI::config()->get('system', 'maximagesize');
+		$maximagesize = Strings::getBytesFromShorthand(DI::config()->get('system', 'maximagesize'));
 
 		if (($maximagesize) && ($size > $maximagesize)) {
 			return ['error' => DI::l10n()->t('Image exceeds size limit of %s', Strings::formatBytes($maximagesize))];
