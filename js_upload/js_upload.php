@@ -39,7 +39,7 @@ function js_upload_form(App $a, array &$b)
 		'$cancel' => DI::l10n()->t('Cancel'),
 		'$failed' => DI::l10n()->t('Failed'),
 		'$post_url' => $b['post_url'],
-		'$maximagesize' => intval(DI::config()->get('system', 'maximagesize')),
+		'$maximagesize' => Strings::getBytesFromShorthand(DI::config()->get('system', 'maximagesize')),
 	]);
 }
 
@@ -51,7 +51,7 @@ function js_upload_post_init(App $a, array &$b)
 	$allowedExtensions = ['jpeg', 'gif', 'png', 'jpg'];
 
 	// max file size in bytes
-	$sizeLimit = DI::config()->get('system', 'maximagesize');
+	$sizeLimit = Strings::getBytesFromShorthand(DI::config()->get('system', 'maximagesize'));
 
 	$uploader = new qqFileUploader($allowedExtensions, $sizeLimit);
 
@@ -198,21 +198,6 @@ class qqFileUploader
 			$this->file = false;
 		}
 
-	}
-
-	private function toBytes($str)
-	{
-		$val = trim($str);
-		$last = strtolower($str[strlen($str) - 1]);
-		switch ($last) {
-			case 'g':
-				$val *= 1024;
-			case 'm':
-				$val *= 1024;
-			case 'k':
-				$val *= 1024;
-		}
-		return $val;
 	}
 
 	/**
