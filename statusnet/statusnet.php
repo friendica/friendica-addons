@@ -366,7 +366,7 @@ function statusnet_hook_fork(App $a, array &$b)
 		}
 	} else {
 		// Comments are never exported when we don't import the GNU Social timeline
-		if (!strstr($post['postopts'], 'statusnet') || ($post['parent'] != $post['id']) || $post['private']) {
+		if (strpos($post['postopts'] ?? '', 'statusnet') === false || ($post['parent'] != $post['id']) || $post['private']) {
 			$b['execute'] = false;
 			return;
 		}

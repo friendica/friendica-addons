@@ -126,7 +126,7 @@ function dwpost_send(App $a, array &$b)
 		return;
 	}
 
-	if (!strstr($b['postopts'],'dwpost')) {
+	if (strpos($b['postopts'] ?? '', 'dwpost') === false) {
 		return;
 	}
 
