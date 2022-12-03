@@ -882,7 +882,7 @@ function twitter_post_hook(App $a, array &$b)
 			}
 
 			if (!empty($application_name)) {
-				DI::config()->set('twitter', 'application_name', strip_tags($result->source));
+				DI::config()->set('twitter', 'application_name', strip_tags($application_name));
 			}
 		}
 	}
