@@ -2,7 +2,7 @@
 /**
  * Name: Fancybox
  * Description: Open media attachments of posts into a fancybox overlay.
- * Version: 1.01
+ * Version: 1.03
  * Author: Grischa Brockhaus <grischa@brockha.us>
  */
 
@@ -28,27 +28,43 @@ function fancybox_footer(App $a, string &$str)
 	DI::page()->registerFooterScript(__DIR__ . '/asset/fancybox/fancybox.config.js');
 }
 
-function fancybox_render(App $a, array &$b)
-{
-	$matches = [];
-	$pattern = '#<div class="body-attach">.*?</div>#s';
-	$gallery = 'gallery';
-	if (array_key_exists('item', $b)) {
-		$item = $b['item'];
-		if (array_key_exists('uri-id', $item)) {
-			$gallery = $gallery . '-' . $item['uri-id'];
-		}
+function fancybox_render($a, array &$b){
+	$gallery = 'gallery-' . $b['item']['uri-id'] ?? random_int(1000000, 10000000);
+
+	// prevent urls in <div class="type-link"> to be replaced
+	$b['html'] = preg_replace_callback(
+		'#<div class="type-link">.*?</div>#s',
+		function ($matches) use ($gallery) {
+			return str_replace('<a href', '<a data-nofancybox="" href', $matches[0]);
+		},
+		$b['html']
+	);
+
+	// This processes images inlined in posts
+	// Frio / Vier hooks für lightbox are un-hooked in fancybox-config.js. So this works for them, too!
+	//if (!in_array($a->getCurrentTheme(),['vier','frio']))
+	{
+		// normal post inline linked images
+		$b['html'] = preg_replace_callback(
+			'#<a[^>]*href="([^"]*)"[^>]*>(<img[^>]*src="[^"]*"[^>]*>)</a>#',
+			function ($matches)  use ($gallery) {
+				// don't touch URLS marked as not "fancyable".. ;-)
+				if (preg_match('#data-nofancybox#', $matches[0]))
+				{
+					return $matches[0];
+				}
+				return '<a data-fancybox="' . $gallery . '" href="'. $matches[1] .'">' . $matches[2] .'</a>';
+			},
+			$b['html']
+		);
 	}
-	$html = $b['html'];
-	while (preg_match($pattern, $html, $matches, PREG_OFFSET_CAPTURE)) {
-		if (is_array($matches)) {
-			$matches = $matches[0];
-		}
-		$part     = $matches[0];
-		$replaced = str_replace('<a href', '<a data-fancybox="' . $gallery . '" href', $part);
-		$replaced = str_replace('<div class="body-attach"', '<div class="body-attach done"', $replaced);
-		$html     = str_replace($part, $replaced, $html);
-	}
-	$html      = str_replace('class="body-attach done"', 'class="body-attach"', $html);
-	$b['html'] = $html;
+
+	// Local content images attached:
+	$b['html'] = preg_replace_callback(
+		'#<div class="body-attach">.*?</div>#s',
+		function ($matches) use ($gallery) {
+			return str_replace('<a href', '<a data-fancybox="' . $gallery . '" href', $matches[0]);
+		},
+		$b['html']
+	);
 }
