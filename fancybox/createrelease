@@ -11,7 +11,7 @@ rm $MODULE/dist/*
 # create release for actual version
 zip -r9 $MODULE/dist/release.zip $MODULE/* -x $MODULE/dist/\* -x $MODULE/test/\* $MODULE/createrelease
 
-echo release/release.zip created.
+echo dist/release.zip created.
 
 cd $MODULE
 

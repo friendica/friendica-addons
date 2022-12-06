@@ -1,3 +1,13 @@
+### Version 1.03
+
+* imgages in body-attach with title / alt attribute get them removed while adding fancy attributes
+* Added fancybox to image inlined in posts. Un-hooked the old lightbox from frio and vier and excahnged that with fancybox hooks.
+* Excluded images in "type-link" divs from being "fancied" as they have no images but pages linked to. 
+
+### Version 1.02
+
+* [MrPetovan](https://github.com/MrPetovan) optimized my noob regular expression code. 
+
 ### Version 1.01
 
 * One gallery for each post

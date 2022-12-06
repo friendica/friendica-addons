@@ -2,7 +2,7 @@
 /**
  * Name: Fancybox
  * Description: Open media attachments of posts into a fancybox overlay.
- * Version: 1.01
+ * Version: 1.03
  * Author: Grischa Brockhaus <grischa@brockha.us>
  */
 
@@ -28,27 +28,33 @@ function fancybox_footer(App $a, string &$str)
 	DI::page()->registerFooterScript(__DIR__ . '/asset/fancybox/fancybox.config.js');
 }
 
-function fancybox_render(App $a, array &$b)
-{
-	$matches = [];
-	$pattern = '#<div class="body-attach">.*?</div>#s';
-	$gallery = 'gallery';
-	if (array_key_exists('item', $b)) {
-		$item = $b['item'];
-		if (array_key_exists('uri-id', $item)) {
-			$gallery = $gallery . '-' . $item['uri-id'];
+function fancybox_render(App $a, array &$b){
+	$gallery = 'gallery-' . $b['item']['uri-id'] ?? random_int(1000000, 10000000);
+
+	// performWithEscapedBlocks escapes block defined with 2nd par pattern that won't be processed.
+	// We don't want to touch images in class="type-link":
+	$b['html'] = \Friendica\Util\Strings::performWithEscapedBlocks(
+		$b['html'],
+		'#<div class="type-link">.*?</div>#s',
+		function ($text) use ($gallery) {
+			// This processes images inlined in posts
+			// Frio / Vier hooks für lightbox are un-hooked in fancybox-config.js. So this works for them, too!
+			//if (!in_array($a->getCurrentTheme(),['vier','frio']))
+			$text = preg_replace(
+				'#<a[^>]*href="([^"]*)"[^>]*>(<img[^>]*src="[^"]*"[^>]*>)</a>#',
+				'<a data-fancybox="' . $gallery . '" href="$1">$2</a>',
+				$text);
+
+			// Local content images attached:
+			$text = preg_replace_callback(
+				'#<div class="body-attach">.*?</div>#s',
+				function ($matches) use ($gallery) {
+					return str_replace('<a href', '<a data-fancybox="' . $gallery . '" href', $matches[0]);
+				},
+				$text
+			);
+
+			return $text;
 		}
-	}
-	$html = $b['html'];
-	while (preg_match($pattern, $html, $matches, PREG_OFFSET_CAPTURE)) {
-		if (is_array($matches)) {
-			$matches = $matches[0];
-		}
-		$part     = $matches[0];
-		$replaced = str_replace('<a href', '<a data-fancybox="' . $gallery . '" href', $part);
-		$replaced = str_replace('<div class="body-attach"', '<div class="body-attach done"', $replaced);
-		$html     = str_replace($part, $replaced, $html);
-	}
-	$html      = str_replace('class="body-attach done"', 'class="body-attach"', $html);
-	$b['html'] = $html;
+	);
 }
