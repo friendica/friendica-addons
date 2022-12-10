@@ -48,12 +48,14 @@
  *     we do not need "Twitter as login". When you've registered the app you get the
  *     OAuth Consumer key and secret pair for your application/site.
  *
- *     Add this key pair to your global config/addon.config.php or use the admin panel.
+ *     Add this key pair to your config/twitter.config.php file or use the admin panel.
  *
- *     	'twitter' => [
- * 		    'consumerkey' => '',
- *  		'consumersecret' => '',
- *      ],
+ *     	return [
+ *          'twitter' => [
+ * 		        'consumerkey' => '',
+ *  		    'consumersecret' => '',
+ *          ],
+ *      ];
  *
  *     To activate the addon itself add it to the system.addon
  *     setting. After this, your user can configure their Twitter account settings
@@ -86,6 +88,7 @@ use Friendica\Model\User;
 use Friendica\Protocol\Activity;
 use Friendica\Core\Config\Util\ConfigFileLoader;
 use Friendica\Core\System;
+use Friendica\Model\Photo;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Images;
 use Friendica\Util\Strings;
@@ -123,7 +126,7 @@ function twitter_install()
 
 function twitter_load_config(App $a, ConfigFileLoader $loader)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('twitter'));
+	$a->getConfigCache()->load($loader->loadAddonConfig('twitter'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 function twitter_check_item_notification(App $a, array &$notification_data)
@@ -204,17 +207,17 @@ function twitter_api_contact(string $apiPath, array $contact, int $uid): ?bool
 
 function twitter_jot_nets(App $a, array &$jotnets_fields)
 {
-	if (!local_user()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
-	if (DI::pConfig()->get(local_user(), 'twitter', 'post')) {
+	if (DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'post')) {
 		$jotnets_fields[] = [
 			'type' => 'checkbox',
 			'field' => [
 				'twitter_enable',
 				DI::l10n()->t('Post to Twitter'),
-				DI::pConfig()->get(local_user(), 'twitter', 'post_by_default')
+				DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'post_by_default')
 			]
 		];
 	}
@@ -223,7 +226,7 @@ function twitter_jot_nets(App $a, array &$jotnets_fields)
 
 function twitter_settings_post(App $a)
 {
-	if (!local_user()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 	// don't check twitter settings if twitter submit button is not clicked
@@ -236,18 +239,19 @@ function twitter_settings_post(App $a)
 		 * if the twitter-disconnect checkbox is set, clear the OAuth key/secret pair
 		 * from the user configuration
 		 */
-		DI::pConfig()->delete(local_user(), 'twitter', 'consumerkey');
-		DI::pConfig()->delete(local_user(), 'twitter', 'consumersecret');
-		DI::pConfig()->delete(local_user(), 'twitter', 'oauthtoken');
-		DI::pConfig()->delete(local_user(), 'twitter', 'oauthsecret');
-		DI::pConfig()->delete(local_user(), 'twitter', 'post');
-		DI::pConfig()->delete(local_user(), 'twitter', 'post_by_default');
-		DI::pConfig()->delete(local_user(), 'twitter', 'lastid');
-		DI::pConfig()->delete(local_user(), 'twitter', 'thread');
-		DI::pConfig()->delete(local_user(), 'twitter', 'mirror_posts');
-		DI::pConfig()->delete(local_user(), 'twitter', 'import');
-		DI::pConfig()->delete(local_user(), 'twitter', 'create_user');
-		DI::pConfig()->delete(local_user(), 'twitter', 'own_id');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'consumerkey');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'consumersecret');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'oauthtoken');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'oauthsecret');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'post');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'post_by_default');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'lastid');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'thread');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'mirror_posts');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'import');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'create_user');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'auto_follow');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'own_id');
 	} else {
 		if (isset($_POST['twitter-pin'])) {
 			//  if the user supplied us with a PIN from Twitter, let the magic of OAuth happen
@@ -265,26 +269,27 @@ function twitter_settings_post(App $a)
 				$connection = new TwitterOAuth($ckey, $csecret, $_POST['twitter-token'], $_POST['twitter-token2']);
 				$token = $connection->oauth('oauth/access_token', ['oauth_verifier' => $_POST['twitter-pin']]);
 				//  ok, now that we have the Access Token, save them in the user config
-				DI::pConfig()->set(local_user(), 'twitter', 'oauthtoken', $token['oauth_token']);
-				DI::pConfig()->set(local_user(), 'twitter', 'oauthsecret', $token['oauth_token_secret']);
-				DI::pConfig()->set(local_user(), 'twitter', 'post', 1);
+				DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'oauthtoken', $token['oauth_token']);
+				DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'oauthsecret', $token['oauth_token_secret']);
+				DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'post', 1);
 			} catch(Exception $e) {
-				notice($e->getMessage());
+				DI::sysmsg()->addNotice($e->getMessage());
 			} catch(TwitterOAuthException $e) {
-				notice($e->getMessage());
+				DI::sysmsg()->addNotice($e->getMessage());
 			}
 		} else {
 			//  if no PIN is supplied in the POST variables, the user has changed the setting
 			//  to post a tweet for every new __public__ posting to the wall
-			DI::pConfig()->set(local_user(), 'twitter', 'post', intval($_POST['twitter-enable']));
-			DI::pConfig()->set(local_user(), 'twitter', 'post_by_default', intval($_POST['twitter-default']));
-			DI::pConfig()->set(local_user(), 'twitter', 'thread', intval($_POST['twitter-thread']));
-			DI::pConfig()->set(local_user(), 'twitter', 'mirror_posts', intval($_POST['twitter-mirror']));
-			DI::pConfig()->set(local_user(), 'twitter', 'import', intval($_POST['twitter-import']));
-			DI::pConfig()->set(local_user(), 'twitter', 'create_user', intval($_POST['twitter-create_user']));
+			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'post', intval($_POST['twitter-enable']));
+			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'post_by_default', intval($_POST['twitter-default']));
+			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'thread', intval($_POST['twitter-thread']));
+			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'mirror_posts', intval($_POST['twitter-mirror']));
+			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'import', intval($_POST['twitter-import']));
+			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'create_user', intval($_POST['twitter-create_user']));
+			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'auto_follow', intval($_POST['twitter-auto_follow']));
 
 			if (!intval($_POST['twitter-mirror'])) {
-				DI::pConfig()->delete(local_user(), 'twitter', 'lastid');
+				DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'twitter', 'lastid');
 			}
 		}
 	}
@@ -292,11 +297,11 @@ function twitter_settings_post(App $a)
 
 function twitter_settings(App $a, array &$data)
 {
-	if (!local_user()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
-	$user = User::getById(local_user());
+	$user = User::getById(DI::userSession()->getLocalUserId());
 
 	DI::page()->registerStylesheet(__DIR__ . '/twitter.css', 'all');
 
@@ -307,15 +312,16 @@ function twitter_settings(App $a, array &$data)
 	 */
 	$ckey    = DI::config()->get('twitter', 'consumerkey');
 	$csecret = DI::config()->get('twitter', 'consumersecret');
-	$otoken  = DI::pConfig()->get(local_user(), 'twitter', 'oauthtoken');
-	$osecret = DI::pConfig()->get(local_user(), 'twitter', 'oauthsecret');
+	$otoken  = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'oauthtoken');
+	$osecret = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'oauthsecret');
 
-	$enabled            = intval(DI::pConfig()->get(local_user(), 'twitter', 'post'));
-	$defenabled         = intval(DI::pConfig()->get(local_user(), 'twitter', 'post_by_default'));
-	$threadenabled      = intval(DI::pConfig()->get(local_user(), 'twitter', 'thread'));
-	$mirrorenabled      = intval(DI::pConfig()->get(local_user(), 'twitter', 'mirror_posts'));
-	$importenabled      = intval(DI::pConfig()->get(local_user(), 'twitter', 'import'));
-	$create_userenabled = intval(DI::pConfig()->get(local_user(), 'twitter', 'create_user'));
+	$enabled            = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'post'));
+	$defenabled         = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'post_by_default'));
+	$threadenabled      = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'thread'));
+	$mirrorenabled      = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'mirror_posts'));
+	$importenabled      = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'import'));
+	$create_userenabled = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'create_user'));
+	$auto_followenabled = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'auto_follow'));
 
 	// Hide the submit button by default
 	$submit = '';
@@ -387,6 +393,7 @@ function twitter_settings(App $a, array &$data)
 					'$mirror'      => ['twitter-mirror', DI::l10n()->t('Mirror all posts from twitter that are no replies'), $mirrorenabled],
 					'$import'      => ['twitter-import', DI::l10n()->t('Import the remote timeline'), $importenabled],
 					'$create_user' => ['twitter-create_user', DI::l10n()->t('Automatically create contacts'), $create_userenabled, DI::l10n()->t('This will automatically create a contact in Friendica as soon as you receive a message from an existing contact via the Twitter network. If you do not enable this, you need to manually add those Twitter contacts in Friendica from whom you would like to see posts here.')],
+					'$auto_follow' => ['twitter-auto_follow', DI::l10n()->t('Follow in fediverse'), $auto_followenabled, DI::l10n()->t('Automatically subscribe to the contact in the fediverse, when a fediverse account is mentioned in name or description and we are following the Twitter contact.')],
 				]);
 
 				// Enable the default submit button
@@ -436,7 +443,7 @@ function twitter_hook_fork(App $a, array &$b)
 		return;
 	}
 
-	if (substr($post['app'], 0, 7) == 'Twitter') {
+	if (substr($post['app'] ?? '', 0, 7) == 'Twitter') {
 		DI::logger()->info('No Twitter app');
 		$b['execute'] = false;
 		return;
@@ -451,7 +458,7 @@ function twitter_hook_fork(App $a, array &$b)
 		}
 	} else {
 		// Comments are never exported when we don't import the twitter timeline
-		if (!strstr($post['postopts'], 'twitter') || ($post['parent'] != $post['id']) || $post['private']) {
+		if (!strstr($post['postopts'] ?? '', 'twitter') || ($post['parent'] != $post['id']) || $post['private']) {
 			DI::logger()->info('Comments are never exported when we don\'t import the twitter timeline');
 			$b['execute'] = false;
 			return;
@@ -465,15 +472,15 @@ function twitter_post_local(App $a, array &$b)
 		return;
 	}
 
-	if (!local_user() || (local_user() != $b['uid'])) {
+	if (!DI::userSession()->getLocalUserId() || (DI::userSession()->getLocalUserId() != $b['uid'])) {
 		return;
 	}
 
-	$twitter_post = intval(DI::pConfig()->get(local_user(), 'twitter', 'post'));
+	$twitter_post = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'post'));
 	$twitter_enable = (($twitter_post && !empty($_REQUEST['twitter_enable'])) ? intval($_REQUEST['twitter_enable']) : 0);
 
 	// if API is used, default to the chosen settings
-	if ($b['api_source'] && intval(DI::pConfig()->get(local_user(), 'twitter', 'post_by_default'))) {
+	if ($b['api_source'] && intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'post_by_default'))) {
 		$twitter_enable = 1;
 	}
 
@@ -551,14 +558,14 @@ function twitter_item_by_link(App $a, array &$hookData)
 		empty(DI::pConfig()->get($hookData['uid'], 'twitter', 'oauthtoken'))
 		|| empty(DI::pConfig()->get($hookData['uid'], 'twitter', 'oauthsecret'))
 	) {
-		notice(DI::l10n()->t('Please connect a Twitter account in your Social Network settings to import Twitter posts.'));
+		DI::sysmsg()->addNotice(DI::l10n()->t('Please connect a Twitter account in your Social Network settings to import Twitter posts.'));
 		return;
 	}
 
 	$status = twitter_statuses_show($matches[1]);
 
 	if (empty($status->id_str)) {
-		notice(DI::l10n()->t('Twitter post not found.'));
+		DI::sysmsg()->addNotice(DI::l10n()->t('Twitter post not found.'));
 		return;
 	}
 
@@ -643,7 +650,7 @@ function twitter_post_hook(App $a, array &$b)
 		return;
 	}
 
-	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], $b['body']);
+	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], DI::contentItem()->addSharedPost($b));
 
 	$thr_parent = null;
 
@@ -775,37 +782,29 @@ function twitter_post_hook(App $a, array &$b)
 		// and now tweet it :-)
 		$post = [];
 
-		if (!empty($msgarr['images'])) {
-			Logger::info('Got images', ['id' => $b['id'], 'images' => $msgarr['images']]);
+		if (!empty($msgarr['images']) || !empty($msgarr['remote_images'])) {
+			Logger::info('Got images', ['id' => $b['id'], 'images' => $msgarr['images'], 'remote_images' => $msgarr['remote_images']]);
 			try {
 				$media_ids = [];
-				foreach ($msgarr['images'] as $image) {
+				foreach ($msgarr['images'] ?? [] as $image) {
 					if (count($media_ids) == 4) {
 						continue;
 					}
+					try {
+						$media_ids[] = twitter_upload_image($connection, $cb, $image, $b);
+					} catch (\Throwable $th) {
+						Logger::warning('Error while uploading image', ['code' => $th->getCode(), 'message' => $th->getMessage()]);
+					}
+				}
 
-					$img_str = DI::httpClient()->fetch($image['url']);
-
-					$tempfile = tempnam(System::getTempPath(), 'cache');
-					file_put_contents($tempfile, $img_str);
-
-					Logger::info('Uploading', ['id' => $b['id'], 'image' => $image['url']]);
-					$media = $connection->upload('media/upload', ['media' => $tempfile]);
-
-					unlink($tempfile);
-
-					if (isset($media->media_id_string)) {
-						$media_ids[] = $media->media_id_string;
-
-						if (!empty($image['description'])) {
-							$data = ['media_id' => $media->media_id_string,
-								'alt_text' => ['text' => substr($image['description'], 0, 420)]];
-							$ret = $cb->media_metadata_create($data);
-							Logger::info('Metadata create', ['id' => $b['id'], 'data' => $data, 'return' => $ret]);
-						}
-					} else {
-						Logger::error('Failed upload', ['id' => $b['id'], 'image' => $image['url'], 'return' => $media]);
-						throw new Exception('Failed upload of ' . $image['url']);
+				foreach ($msgarr['remote_images'] ?? [] as $image) {
+					if (count($media_ids) == 4) {
+						continue;
+					}
+					try {
+						$media_ids[] = twitter_upload_image($connection, $cb, $image, $b);
+					} catch (\Throwable $th) {
+						Logger::warning('Error while uploading image', ['code' => $th->getCode(), 'message' => $th->getMessage()]);
 					}
 				}
 				$post['media_ids'] = implode(',', $media_ids);
@@ -876,10 +875,43 @@ function twitter_post_hook(App $a, array &$b)
 			}
 
 			if (!empty($application_name)) {
-				DI::config()->set('twitter', 'application_name', strip_tags($result->source));
+				DI::config()->set('twitter', 'application_name', strip_tags($application_name));
 			}
 		}
 	}
+}
+
+function twitter_upload_image($connection, $cb, array $image, array $item)
+{
+	if (!empty($image['id'])) {
+		$photo = Photo::selectFirst([], ['id' => $image['id']]);
+	} else {
+		$photo = Photo::createPhotoForExternalResource($image['url']);
+	}
+
+	$tempfile = tempnam(System::getTempPath(), 'cache');
+	file_put_contents($tempfile, Photo::getImageForPhoto($photo));
+
+	Logger::info('Uploading', ['id' => $item['id'], 'image' => $image]);
+	$media = $connection->upload('media/upload', ['media' => $tempfile]);
+
+	unlink($tempfile);
+
+	if (isset($media->media_id_string)) {
+		$media_id = $media->media_id_string;
+
+		if (!empty($image['description'])) {
+			$data = ['media_id' => $media->media_id_string,
+				'alt_text' => ['text' => substr($image['description'], 0, 420)]];
+			$ret = $cb->media_metadata_create($data);
+			Logger::info('Metadata create', ['id' => $item['id'], 'data' => $data, 'return' => $ret]);
+		}
+	} else {
+		Logger::error('Failed upload', ['id' => $item['id'], 'image' => $image['url'], 'return' => $media]);
+		throw new Exception('Failed upload of ' . $image['url']);
+	}
+
+	return $media_id;
 }
 
 function twitter_delete_item(array $item)
@@ -986,7 +1018,7 @@ function twitter_cron(App $a)
 	$pconfigs = DBA::selectToArray('pconfig', [], ['cat' => 'twitter', 'k' => 'mirror_posts', 'v' => true]);
 	foreach ($pconfigs as $rr) {
 		Logger::notice('Fetching', ['user' => $rr['uid']]);
-		Worker::add(['priority' => PRIORITY_MEDIUM, 'force_priority' => true], 'addon/twitter/twitter_sync.php', 1, (int) $rr['uid']);
+		Worker::add(['priority' => Worker::PRIORITY_MEDIUM, 'force_priority' => true], 'addon/twitter/twitter_sync.php', 1, (int) $rr['uid']);
 	}
 
 	$abandon_days = intval(DI::config()->get('system', 'account_abandon_days'));
@@ -1006,7 +1038,7 @@ function twitter_cron(App $a)
 		}
 
 		Logger::notice('importing timeline', ['user' => $rr['uid']]);
-		Worker::add(['priority' => PRIORITY_MEDIUM, 'force_priority' => true], 'addon/twitter/twitter_sync.php', 2, (int) $rr['uid']);
+		Worker::add(['priority' => Worker::PRIORITY_MEDIUM, 'force_priority' => true], 'addon/twitter/twitter_sync.php', 2, (int) $rr['uid']);
 		/*
 			// To-Do
 			// check for new contacts once a day
@@ -1069,7 +1101,7 @@ function twitter_prepare_body(App $a, array &$b)
 		$item = $b['item'];
 		$item['plink'] = DI::baseUrl()->get() . '/display/' . $item['guid'];
 
-		$condition = ['uri' => $item['thr-parent'], 'uid' => local_user()];
+		$condition = ['uri' => $item['thr-parent'], 'uid' => DI::userSession()->getLocalUserId()];
 		$orig_post = Post::selectFirst(['author-link'], $condition);
 		if (DBA::isResult($orig_post)) {
 			$nicknameplain = preg_replace("=https?://twitter.com/(.*)=ism", "$1", $orig_post['author-link']);
@@ -1333,7 +1365,7 @@ function twitter_fetchtimeline(App $a, int $uid): void
 
 			Logger::info('Posting mirror post', ['twitter-id' => $post->id_str, 'uid' => $uid]);
 
-			Post\Delayed::add($mirrorpost['extid'], $mirrorpost, PRIORITY_MEDIUM, Post\Delayed::UNPREPARED);
+			Post\Delayed::add($mirrorpost['extid'], $mirrorpost, Worker::PRIORITY_MEDIUM, Post\Delayed::PREPARED);
 		}
 	}
 	DI::pConfig()->set($uid, 'twitter', 'lastid', $lastid);
@@ -1533,7 +1565,84 @@ function twitter_fetch_contact($uid, $data, $create_user)
 
 	Contact::updateAvatar($contact_id, $avatar);
 
+	if (Contact::isSharing($contact_id, $uid, true) && DI::pConfig()->get($uid, 'twitter', 'auto_follow')) {
+		twitter_auto_follow($uid, $data);
+	}
+
 	return $contact_id;
+}
+
+/**
+ * Follow a fediverse account that is proived in the name or the profile
+ *
+ * @param integer $uid
+ * @param object $data
+ */
+function twitter_auto_follow(int $uid, object $data)
+{
+	$addrpattern = '([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6})';
+
+	// Search for user@domain.tld in the name
+	if (preg_match('#' . $addrpattern . '#', $data->name, $match)) {
+		if (twitter_add_contact($match[1], true, $uid)) {
+			return;
+		}
+	}
+
+	// Search for @user@domain.tld in the description
+	if (preg_match('#@' . $addrpattern . '#', $data->description, $match)) {
+		if (twitter_add_contact($match[1], true, $uid)) {
+			return;
+		}
+	}
+
+	// Search for user@domain.tld in the description
+	// We don't probe here, since this could be a mail address
+	if (preg_match('#' . $addrpattern . '#', $data->description, $match)) {
+		if (twitter_add_contact($match[1], false, $uid)) {
+			return;
+		}
+	}
+
+	// Search for profile links in the description
+	foreach ($data->entities->description->urls as $url) {
+		if (!empty($url->expanded_url)) {
+			// We only probe on Mastodon style URL to reduce the number of unsuccessful probes
+			twitter_add_contact($url->expanded_url, strpos($url->expanded_url, '@'), $uid);
+		}
+	}
+}
+
+/**
+ * Check if the provided address is a fediverse account and adds it
+ *
+ * @param string $addr
+ * @param boolean $probe
+ * @param integer $uid
+ * @return boolean
+ */
+function twitter_add_contact(string $addr, bool $probe, int $uid): bool
+{
+	$contact = Contact::getByURL($addr, $probe ? null : false, ['id', 'url', 'network']);
+	if (empty($contact)) {
+		Logger::debug('Not a contact address', ['uid' => $uid, 'probe' => $probe, 'addr' => $addr]);
+		return false;
+	}
+
+	if (!in_array($contact['network'], Protocol::FEDERATED)) {
+		Logger::debug('Not a federated network', ['uid' => $uid, 'addr' => $addr, 'contact' => $contact]);
+		return false;
+	}
+
+	if (Contact::isSharing($contact['id'], $uid)) {
+		Logger::debug('Contact has already been added', ['uid' => $uid, 'addr' => $addr, 'contact' => $contact]);
+		return true;
+	}
+
+	Logger::info('Add contact', ['uid' => $uid, 'addr' => $addr, 'contact' => $contact]);
+	Worker::add(Worker::PRIORITY_LOW, 'AddContact', $uid, $contact['url']);
+
+	return true;
 }
 
 /**
@@ -1827,7 +1936,7 @@ function twitter_createpost(App $a, int $uid, $post, array $self, $create_user, 
 
 		$item = Post::selectFirst(['uri'], ['uri' => $thr_parent, 'uid' => $uid]);
 		if (!DBA::isResult($item)) {
-			$item = Post::selectFirst(['uri'], ['extid' => $thr_parent, 'uid' => $uid, 'gravity' => GRAVITY_COMMENT]);
+			$item = Post::selectFirst(['uri'], ['extid' => $thr_parent, 'uid' => $uid, 'gravity' => Item::GRAVITY_COMMENT]);
 		}
 
 		if (DBA::isResult($item)) {
@@ -1948,7 +2057,7 @@ function twitter_createpost(App $a, int $uid, $post, array $self, $create_user, 
 
 			// CHange the other post into a reshare activity
 			$postarray['verb'] = Activity::ANNOUNCE;
-			$postarray['gravity'] = GRAVITY_ACTIVITY;
+			$postarray['gravity'] = Item::GRAVITY_ACTIVITY;
 			$postarray['object-type'] = Activity\ObjectType::NOTE;
 
 			$postarray['thr-parent'] = $retweet['uri'];
@@ -2191,7 +2300,7 @@ function twitter_fetchhometimeline(App $a, int $uid): void
 			if (empty($postarray['thr-parent'])) {
 				$contact = DBA::selectFirst('contact', [], ['id' => $postarray['contact-id'], 'self' => false]);
 				if (DBA::isResult($contact) && Item::isRemoteSelf($contact, $postarray)) {
-					$notify = PRIORITY_MEDIUM;
+					$notify = Worker::PRIORITY_MEDIUM;
 				}
 			}
 
