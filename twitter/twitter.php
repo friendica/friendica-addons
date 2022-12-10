@@ -88,6 +88,7 @@ use Friendica\Model\User;
 use Friendica\Protocol\Activity;
 use Friendica\Core\Config\Util\ConfigFileLoader;
 use Friendica\Core\System;
+use Friendica\Model\Photo;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Images;
 use Friendica\Util\Strings;
@@ -781,37 +782,29 @@ function twitter_post_hook(App $a, array &$b)
 		// and now tweet it :-)
 		$post = [];
 
-		if (!empty($msgarr['images'])) {
-			Logger::info('Got images', ['id' => $b['id'], 'images' => $msgarr['images']]);
+		if (!empty($msgarr['images']) || !empty($msgarr['remote_images'])) {
+			Logger::info('Got images', ['id' => $b['id'], 'images' => $msgarr['images'], 'remote_images' => $msgarr['remote_images']]);
 			try {
 				$media_ids = [];
-				foreach ($msgarr['images'] as $image) {
+				foreach ($msgarr['images'] ?? [] as $image) {
 					if (count($media_ids) == 4) {
 						continue;
 					}
+					try {
+						$media_ids[] = twitter_upload_image($connection, $cb, $image, $b);
+					} catch (\Throwable $th) {
+						Logger::warning('Error while uploading image', ['code' => $th->getCode(), 'message' => $th->getMessage()]);
+					}
+				}
 
-					$img_str = DI::httpClient()->fetch($image['url']);
-
-					$tempfile = tempnam(System::getTempPath(), 'cache');
-					file_put_contents($tempfile, $img_str);
-
-					Logger::info('Uploading', ['id' => $b['id'], 'image' => $image['url']]);
-					$media = $connection->upload('media/upload', ['media' => $tempfile]);
-
-					unlink($tempfile);
-
-					if (isset($media->media_id_string)) {
-						$media_ids[] = $media->media_id_string;
-
-						if (!empty($image['description'])) {
-							$data = ['media_id' => $media->media_id_string,
-								'alt_text' => ['text' => substr($image['description'], 0, 420)]];
-							$ret = $cb->media_metadata_create($data);
-							Logger::info('Metadata create', ['id' => $b['id'], 'data' => $data, 'return' => $ret]);
-						}
-					} else {
-						Logger::error('Failed upload', ['id' => $b['id'], 'image' => $image['url'], 'return' => $media]);
-						throw new Exception('Failed upload of ' . $image['url']);
+				foreach ($msgarr['remote_images'] ?? [] as $image) {
+					if (count($media_ids) == 4) {
+						continue;
+					}
+					try {
+						$media_ids[] = twitter_upload_image($connection, $cb, $image, $b);
+					} catch (\Throwable $th) {
+						Logger::warning('Error while uploading image', ['code' => $th->getCode(), 'message' => $th->getMessage()]);
 					}
 				}
 				$post['media_ids'] = implode(',', $media_ids);
@@ -886,6 +879,39 @@ function twitter_post_hook(App $a, array &$b)
 			}
 		}
 	}
+}
+
+function twitter_upload_image($connection, $cb, array $image, array $item)
+{
+	if (!empty($image['id'])) {
+		$photo = Photo::selectFirst([], ['id' => $image['id']]);
+	} else {
+		$photo = Photo::createPhotoForExternalResource($image['url']);
+	}
+
+	$tempfile = tempnam(System::getTempPath(), 'cache');
+	file_put_contents($tempfile, Photo::getImageForPhoto($photo));
+
+	Logger::info('Uploading', ['id' => $item['id'], 'image' => $image]);
+	$media = $connection->upload('media/upload', ['media' => $tempfile]);
+
+	unlink($tempfile);
+
+	if (isset($media->media_id_string)) {
+		$media_id = $media->media_id_string;
+
+		if (!empty($image['description'])) {
+			$data = ['media_id' => $media->media_id_string,
+				'alt_text' => ['text' => substr($image['description'], 0, 420)]];
+			$ret = $cb->media_metadata_create($data);
+			Logger::info('Metadata create', ['id' => $item['id'], 'data' => $data, 'return' => $ret]);
+		}
+	} else {
+		Logger::error('Failed upload', ['id' => $item['id'], 'image' => $image['url'], 'return' => $media]);
+		throw new Exception('Failed upload of ' . $image['url']);
+	}
+
+	return $media_id;
 }
 
 function twitter_delete_item(array $item)
