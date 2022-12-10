@@ -81,9 +81,23 @@ function nsfw_addon_settings_post(App $a, array &$b)
 	}
 
 	if (!empty($_POST['nsfw-submit'])) {
-		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'nsfw', 'words', trim($_POST['nsfw-words']));
-		$enable = (!empty($_POST['nsfw-enable']) ? intval($_POST['nsfw-enable']) : 0);
+		$enable = !empty($_POST['nsfw-enable']) ? intval($_POST['nsfw-enable']) : 0;
 		$disable = 1 - $enable;
+
+		$words = trim($_POST['nsfw-words']);
+		$word_list = explode(',', $words);
+		foreach ($word_list as $word) {
+			$word = trim($word);
+			if (!$words || $word[0] != '/') {
+				continue;
+			}
+
+			if (@preg_match($word, '') === false) {
+				DI::sysmsg()->addNotice(DI::l10n()->t('Regular expression "%s" fails to compile', $word));
+			};
+		}
+
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'nsfw', 'words', $words);
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'nsfw', 'disable', $disable);
 	}
 }
@@ -118,7 +132,7 @@ function nsfw_prepare_body_content_filter(App $a, &$hook_data)
 			$tag_search = false;
 			switch ($word[0]) {
 				case '/'; // Regular expression
-					$found = preg_match($word, $body);
+					$found = @preg_match($word, $body);
 					break;
 				case '#': // Hashtag-only search
 					$tag_search = true;

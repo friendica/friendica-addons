@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-18 11:57-0500\n"
+"POT-Creation-Date: 2022-12-10 14:42-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,12 +43,17 @@ msgstr ""
 msgid "Content Filter (NSFW and more)"
 msgstr ""
 
-#: nsfw.php:140
+#: nsfw.php:96
+#, php-format
+msgid "Regular expression \"%s\" fails to compile"
+msgstr ""
+
+#: nsfw.php:154
 #, php-format
 msgid "Filtered tag: %s"
 msgstr ""
 
-#: nsfw.php:142
+#: nsfw.php:156
 #, php-format
 msgid "Filtered word: %s"
 msgstr ""
