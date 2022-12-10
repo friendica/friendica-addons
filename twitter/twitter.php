@@ -783,7 +783,7 @@ function twitter_post_hook(App $a, array &$b)
 		$post = [];
 
 		if (!empty($msgarr['images']) || !empty($msgarr['remote_images'])) {
-			Logger::info('Got images', ['id' => $b['id'], 'images' => $msgarr['images'], 'remote_images' => $msgarr['remote_images']]);
+			Logger::info('Got images', ['id' => $b['id'], 'images' => $msgarr['images'] ?? [], 'remote_images' => $msgarr['remote_images'] ?? []]);
 			try {
 				$media_ids = [];
 				foreach ($msgarr['images'] ?? [] as $image) {
