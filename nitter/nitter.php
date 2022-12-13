@@ -71,6 +71,6 @@ function nitter_render(App $a, array &$b)
 		$replaced = true;
 	}
 	if ($replaced) {
-		$b['html'] .= '<hr><p>' . DI::l10n()->t('In an attempt to protect your privacy, links to Twitter in this posting were replaced by links to the Nitter instance at %s', $nitter) . '</p>';
+		$b['html'] .= '<hr><p>' . DI::l10n()->t('(Nitter addon enabled: Twitter links via %s)', $nitter) . '</p>';
 	}
 }
