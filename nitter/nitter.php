@@ -49,7 +49,7 @@ function nitter_addon_admin(App $a, string &$o)
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/nitter/');
 	$o = Renderer::replaceMacros($t, [
 		'$settingdescription' => DI::l10n()->t('Which nitter server shall be used for the replacements in the post bodies? Use the URL with servername and protocol.  See %s for a list of available public Nitter servers.', 'https://github.com/zedeus/nitter/wiki/Instances'),
-		'$nitterserver' => ['nitterserver', DI::l10n()->t('Nitter server'), $nitterserver, 'http://example.com'], 
+		'$nitterserver' => ['nitterserver', DI::l10n()->t('Nitter server'), $nitterserver, 'https://example.com'], 
 		'$submit' => DI::l10n()->t('Save Settings'),
 	]);
 }
