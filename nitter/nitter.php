@@ -71,6 +71,6 @@ function nitter_render(App $a, array &$b)
 		$replaced = true;
 	}
 	if ($replaced) {
-		$b['html'] .= '<hr><p>' . DI::l10n()->t('(Nitter addon enabled: Twitter links via %s)', $nitter) . '</p>';
+		$b['html'] .= '<hr><p><small>' . DI::l10n()->t('(Nitter addon enabled: Twitter links via %s)', $nitter) . '</small></p>';
 	}
 }
