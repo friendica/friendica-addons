@@ -2,7 +2,7 @@
 /**
  * Name: Fancybox
  * Description: Open media attachments of posts into a fancybox overlay.
- * Version: 1.03
+ * Version: 1.04
  * Author: Grischa Brockhaus <grischa@brockha.us>
  */
 
@@ -47,7 +47,7 @@ function fancybox_render(App $a, array &$b){
 
 			// Local content images attached:
 			$text = preg_replace_callback(
-				'#<div class="body-attach">.*?</div>#s',
+				'#<div class="(body-attach|imagegrid-column)">.*?</div>#s',
 				function ($matches) use ($gallery) {
 					return str_replace('<a href', '<a data-fancybox="' . $gallery . '" href', $matches[0]);
 				},

@@ -2,8 +2,6 @@ MODULE=fancybox
 
 cd ..
 
-# read actual version from module.json
-
 # old releases not needed anymore
 mkdir -p $MODULE/dist
 rm $MODULE/dist/*
