@@ -123,7 +123,7 @@ function pumpio_registerclient(App $a, $host)
 
 	if ($curl_info['http_code'] == '200') {
 		$values = json_decode($s);
-		Logger::info('pumpio_registerclient: success ', $values);
+		Logger::info('pumpio_registerclient: success ', (array)$values);
 		return $values;
 	}
 	Logger::info('pumpio_registerclient: failed: ', $curl_info);
