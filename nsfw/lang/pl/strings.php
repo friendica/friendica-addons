@@ -8,7 +8,6 @@ function string_plural_select_pl($n){
 $a->strings['This addon searches for specified words/text in posts and collapses them. It can be used to filter content tagged with for instance #NSFW that may be deemed inappropriate at certain times or places, such as being at work. It is also useful for hiding irrelevant or annoying content from direct view.'] = 'Ten dodatek szuka określonych słów/tekstów w postach i zwija je. Może służyć do filtrowania treści oznaczonych np. NSFW, które mogą zostać uznane za nieodpowiednie w określonych momentach lub miejscach, na przykład w pracy. Jest to również przydatne do ukrywania nieistotnych lub irytujących treści z bezpośredniego widoku.';
 $a->strings['Enable Content filter'] = 'Włącz filtr treści';
 $a->strings['Comma separated list of keywords to hide'] = 'Rozdzielana przecinkami lista słów kluczowych do ukrycia';
-$a->strings['Use /expression/ to provide regular expressions'] = 'Użyj /wyrażenia/, aby zapewnić wyrażenia regularne';
 $a->strings['Content Filter (NSFW and more)'] = 'Filtr zawartości (NSFW i więcej)';
-$a->strings['Filtered tag: %s'] = 'Filtrowane tagów: %s';
+$a->strings['Filtered tag: %s'] = 'Filtrowane znaczników: %s';
 $a->strings['Filtered word: %s'] = 'Filtrowane słowo: %s';
