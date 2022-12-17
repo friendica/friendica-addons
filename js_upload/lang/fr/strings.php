@@ -12,4 +12,5 @@ $a->strings['Failed'] = 'Echec';
 $a->strings['No files were uploaded.'] = 'Aucun fichier téléchargé';
 $a->strings['Uploaded file is empty'] = 'Le fichier téléchargé est vide';
 $a->strings['Image exceeds size limit of %s'] = 'L\'image dépasse la taille limite de %s';
+$a->strings['File has an invalid extension, it should be one of %s.'] = 'Le fichier a une extension invalide, elle devrait être parmi celles-ci : %s.';
 $a->strings['Upload was cancelled, or server error encountered'] = 'Le téléchargement a été annulé ou le server a rencontré une erreur';

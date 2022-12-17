@@ -7,6 +7,7 @@
 # bob lebonche <lebonche@tutanota.com>, 2021
 # ButterflyOfFire, 2020
 # Hypolite Petovan <hypolite@mrpetovan.com>, 2022
+# Nicolas Derive, 2022
 # StefOfficiel <pichard.stephane@free.fr>, 2015
 msgid ""
 msgstr ""
@@ -14,7 +15,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-03-23 23:53-0400\n"
 "PO-Revision-Date: 2014-06-23 08:46+0000\n"
-"Last-Translator: Hypolite Petovan <hypolite@mrpetovan.com>, 2022\n"
+"Last-Translator: Nicolas Derive, 2022\n"
 "Language-Team: French (http://www.transifex.com/Friendica/friendica/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -54,7 +55,7 @@ msgstr "L'image dépasse la taille limite de %s"
 #: js_upload.php:245
 #, php-format
 msgid "File has an invalid extension, it should be one of %s."
-msgstr ""
+msgstr "Le fichier a une extension invalide, elle devrait être parmi celles-ci : %s."
 
 #: js_upload.php:256
 msgid "Upload was cancelled, or server error encountered"

@@ -14,7 +14,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-11-21 19:17-0500\n"
 "PO-Revision-Date: 2014-06-23 12:54+0000\n"
-"Last-Translator: Hypolite Petovan <hypolite@mrpetovan.com>, 2022\n"
+"Last-Translator: Nicolas Derive, 2022\n"
 "Language-Team: French (http://www.transifex.com/Friendica/friendica/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -51,7 +51,7 @@ msgid ""
 "details from unknown viewers?</em>) the link potentially included in public "
 "postings relayed to GNU Social will lead the visitor to a blank page "
 "informing the visitor that the access to your profile has been restricted."
-msgstr ""
+msgstr "<strong>Note</strong>: En lien avec vos paramètres de confidentialité (<em>Masquer vos détails de profil de visiteurs inconnus ?</em>) le lien potentiellement inclus dans vos publications publiques relayées à GNU Social emmèneront le visiteur à une page blanche l'informant que l'accès à votre profil a été restreint."
 
 #: statusnet.php:263
 msgid "Clear OAuth configuration"
@@ -70,7 +70,7 @@ msgid ""
 "There are preconfigured OAuth key pairs for some GNU Social servers "
 "available. If you are using one of them, please use these credentials. If "
 "not feel free to connect to any other GNU Social instance (see below)."
-msgstr ""
+msgstr "Il y a des paires des clés OAuth préconfigurées disponibles pour certains serveurs GNU Social. Si vous utilisez l'une d'elles, merci d'utiliser ces identifiants. Si non, soyez libre de vous connecter à n'importe quelle autre instance GNU Social (voir ci-dessous)."
 
 #: statusnet.php:285
 msgid "Provide your own OAuth Credentials"
@@ -83,7 +83,7 @@ msgid ""
 "pair here and enter the API base root.<br />Before you register your own "
 "OAuth key pair ask the administrator if there is already a key pair for this"
 " Friendica installation at your favorite GNU Social installation."
-msgstr ""
+msgstr "Aucune paire de clés cliente pour GNU Social n'a été trouvée. Enregistrez votre compte Friendica comme une application de bureau sur votre compte GNU Social, copiez la paire de clés cliente ici et saisissez la racine de base de l'API. <br />Avant d'enregistrer votre propre paire de clés, demandez à l'administrateur si il y a déjà une paire de clés pour cette installation de Friendica sur votre installation GNU Social favorite."
 
 #: statusnet.php:287
 msgid ""
@@ -91,7 +91,7 @@ msgid ""
 "security code from GNU Social which you have to copy into the input box "
 "below and submit the form. Only your <strong>public</strong> posts will be "
 "posted to GNU Social."
-msgstr ""
+msgstr "Pour vous connecter à votre compte GNU Social, cliquez sur le bouton ci-dessous pour obtenir un code de sécurité de GNU Social, que vous devrez copier dans le champ de saisie ci-dessous, puis validez le formulaire. Seules vos publications <strong>publiques</strong> seront relayées sur GNU Social."
 
 #: statusnet.php:288
 msgid "Log in with GNU Social"
@@ -131,7 +131,7 @@ msgid ""
 "If enabled all your <strong>public</strong> postings can be posted to the "
 "associated GNU Social account. You can choose to do so by default (here) or "
 "for every posting separately in the posting options when writing the entry."
-msgstr ""
+msgstr "Si activé, toutes vos publications <strong>publiques</strong> pourront être relayées sur le compte GNU Social associé. Vous pouvez choisir de faire cela par défaut (ici) ou individuellement pour chaque publication dans les options de publications au moment ou vous la créez."
 
 #: statusnet.php:314
 msgid "Post to GNU Social by default"

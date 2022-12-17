@@ -1,0 +1,58 @@
+# ADDON nsfw
+# Copyright (C)
+# This file is distributed under the same license as the Friendica nsfw addon package.
+# 
+# 
+# Translators:
+# Nicolas Derive, 2022
+# StefOfficiel <pichard.stephane@free.fr>, 2015
+# Vincent Vindarel <vindarel@mailz.org>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-11-18 11:57-0500\n"
+"PO-Revision-Date: 2014-06-23 10:34+0000\n"
+"Last-Translator: Nicolas Derive, 2022\n"
+"Language-Team: French (http://www.transifex.com/Friendica/friendica/language/fr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+
+#: nsfw.php:65
+msgid ""
+"This addon searches for specified words/text in posts and collapses them. It"
+" can be used to filter content tagged with for instance #NSFW that may be "
+"deemed inappropriate at certain times or places, such as being at work. It "
+"is also useful for hiding irrelevant or annoying content from direct view."
+msgstr "Cette extension recherche des mots/textes spécifiés dans les publications et les masque. Elle peut être utilisée pour filtrer le contenu étiqueté par exemple avec #NSFW qui peut être considéré comme inapproprié à certains moments ou endroits, comme par exemple au travail. Elle est aussi utile pour cacher du contenu non pertinent ou ennuyeux d'une vue directe."
+
+#: nsfw.php:66
+msgid "Enable Content filter"
+msgstr "Activer le filtrage de contenu"
+
+#: nsfw.php:67
+msgid "Comma separated list of keywords to hide"
+msgstr "Liste de mots-clés - séparés par des virgules - à cacher"
+
+#: nsfw.php:67
+msgid ""
+"Use /expression/ to provide regular expressions, #tag to specfically match "
+"hashtags (case-insensitive), or regular words (case-sensitive)"
+msgstr "Utiliser /expression/ pour fournir des expressions régulières, #tag pour correspondre à un mot-dièse (hashtag, insensible à la casse), ou des mots classiques (sensible à la casse)"
+
+#: nsfw.php:72
+msgid "Content Filter (NSFW and more)"
+msgstr "Filtre de contenu (NSFW et autres)"
+
+#: nsfw.php:140
+#, php-format
+msgid "Filtered tag: %s"
+msgstr "Tag filtré: %s"
+
+#: nsfw.php:142
+#, php-format
+msgid "Filtered word: %s"
+msgstr "Mot filtré: %s"
