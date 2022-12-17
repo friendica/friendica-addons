@@ -6,4 +6,5 @@ function string_plural_select_fr($n){
 	if (($n == 0 || $n == 1)) { return 0; } else if ($n != 0 && $n % 1000000 == 0) { return 1; } else  { return 2; }
 }}
 $a->strings['Comma separated profile URLs to block'] = 'Liste d\'URLs de profils à bloquer séparées par des virgules';
+$a->strings['Superblock'] = 'Superblock';
 $a->strings['Block Completely'] = 'Bloquer complètement';

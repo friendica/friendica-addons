@@ -15,5 +15,6 @@ $a->strings['Your message for new members. You can use bbcode here.'] = 'Votre m
 $a->strings['Add a link to global support forum'] = 'Ajouter un lien vers le forum de support global';
 $a->strings['Should a link to the global support forum be displayed?'] = 'Montrer un lien vers le forum de support global?';
 $a->strings['Add a link to the local support forum'] = 'Ajouter un lien vers le forum de support local';
+$a->strings['If you have a local support forum and want to have a link displayed in the widget, check this box.'] = 'Si vous avez un forum d\'assistance local et désirez avoir un lien affiché dans l\'appliquette/widget, cochez cette case.';
 $a->strings['Name of the local support group'] = 'Nom du groupe de support local';
 $a->strings['If you checked the above, specify the <em>nickname</em> of the local support group here (i.e. helpers)'] = 'Si vous avez coché la case ci-dessus, spécifiez le <em>nom d\'utilisateur</em> du groupe de support local (par ex. "helpers")';

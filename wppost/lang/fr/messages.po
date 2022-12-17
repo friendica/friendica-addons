@@ -1,0 +1,72 @@
+# ADDON wppost
+# Copyright (C)
+# This file is distributed under the same license as the Friendica wppost addon package.
+# 
+# 
+# Translators:
+# Hypolite Petovan <hypolite@mrpetovan.com>, 2022
+# Nicolas Derive, 2022
+# StefOfficiel <pichard.stephane@free.fr>, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-21 19:18-0500\n"
+"PO-Revision-Date: 2014-06-23 13:07+0000\n"
+"Last-Translator: Nicolas Derive, 2022\n"
+"Language-Team: French (http://www.transifex.com/Friendica/friendica/language/fr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+
+#: wppost.php:41
+msgid "Post to Wordpress"
+msgstr "Publier sur Wordpress"
+
+#: wppost.php:65
+msgid "Enable Wordpress Post Addon"
+msgstr "Activer l'extension WordPress"
+
+#: wppost.php:66
+msgid "Wordpress username"
+msgstr "Nom d'utilisateur WordPress"
+
+#: wppost.php:67
+msgid "Wordpress password"
+msgstr "Mot de passe WordPress"
+
+#: wppost.php:68
+msgid "WordPress API URL"
+msgstr "URL de l'API WordPress"
+
+#: wppost.php:69
+msgid "Post to Wordpress by default"
+msgstr "Publier sur WordPress par défaut"
+
+#: wppost.php:70
+msgid "Provide a backlink to the Friendica post"
+msgstr "Fournit un rétrolien vers la publication Friendica"
+
+#: wppost.php:71
+msgid ""
+"Text for the backlink, e.g. Read the original post and comment stream on "
+"Friendica."
+msgstr "Le texte du rétrolien, par exemple Lire la publication d'origine et le fil de commentaires sur Friendica."
+
+#: wppost.php:72
+msgid "Don't post messages that are too short"
+msgstr "Ne pas publier de message trop court"
+
+#: wppost.php:77
+msgid "Wordpress Export"
+msgstr "Export WordPress"
+
+#: wppost.php:182
+msgid "Read the orig­i­nal post and com­ment stream on Friendica"
+msgstr "Lire la publication d'origine et le fil de commentaires sur Friendica"
+
+#: wppost.php:240
+msgid "Post from Friendica"
+msgstr "Publier depuis Friendica"

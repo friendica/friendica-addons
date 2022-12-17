@@ -5,6 +5,7 @@
 # 
 # Translators:
 # Hypolite Petovan <hypolite@mrpetovan.com>, 2022
+# Nicolas Derive, 2022
 # StefOfficiel <pichard.stephane@free.fr>, 2015
 msgid ""
 msgstr ""
@@ -12,7 +13,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: 2014-06-23 10:26+0000\n"
-"Last-Translator: Hypolite Petovan <hypolite@mrpetovan.com>, 2022\n"
+"Last-Translator: Nicolas Derive, 2022\n"
 "Language-Team: French (http://www.transifex.com/Friendica/friendica/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -64,7 +65,7 @@ msgstr "Ajouter un lien vers le forum de support local"
 msgid ""
 "If you have a local support forum and want to have a link displayed in the "
 "widget, check this box."
-msgstr ""
+msgstr "Si vous avez un forum d'assistance local et désirez avoir un lien affiché dans l'appliquette/widget, cochez cette case."
 
 #: newmemberwidget.php:69
 msgid "Name of the local support group"
