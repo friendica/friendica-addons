@@ -2,7 +2,7 @@
 /**
  * Name: Fancybox
  * Description: Open media attachments of posts into a fancybox overlay.
- * Version: 1.04
+ * Version: 1.05
  * Author: Grischa Brockhaus <grischa@brockha.us>
  */
 
