@@ -1,3 +1,11 @@
+### Version 1.05
+
+* Added ALT and TITLE of original IMG to fancybox popup.
+
+### Version 1.04
+
+* Update supporting upcoming imnagegrid in posts
+ 
 ### Version 1.03
 
 * imgages in body-attach with title / alt attribute get them removed while adding fancy attributes
