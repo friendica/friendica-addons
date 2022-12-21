@@ -16,9 +16,6 @@
         {{/if}}
 
 		{{include file="field_checkbox.tpl" field=$default}}
-		{{include file="field_checkbox.tpl" field=$mirror}}
-		{{include file="field_checkbox.tpl" field=$import}}
-		{{*include file="field_checkbox.tpl" field=$create_user*}}
 	{{else}}
 		<p>{{$l10n.oauth_info}}</p>
 		<a href="{{$authorize_url}}" target="_statusnet"><img src="addon/statusnet/signinwithstatusnet.png" alt="{{$l10n.oauth_alt}}"></a>
