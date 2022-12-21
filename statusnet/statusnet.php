@@ -296,19 +296,7 @@ function statusnet_hook_fork(App $a, array &$b)
 
 	$post = $b['data'];
 
-	// Deleting and editing is not supported by the addon
-	if ($post['deleted'] || ($post['created'] !== $post['edited'])) {
-		$b['execute'] = false;
-		return;
-	}
-
-	if ($post['app'] == 'StatusNet') {
-		$b['execute'] = false;
-		return;
-	}
-
-	// Comments are never exported when we don't import the GNU Social timeline
-	if (strpos($post['postopts'] ?? '', 'statusnet') === false || ($post['parent'] != $post['id']) || $post['private']) {
+	if ($post['deleted'] || ($post['created'] !== $post['edited']) || strpos($post['postopts'] ?? '', 'statusnet') === false || ($post['parent'] != $post['id']) || $post['private']) {
 		$b['execute'] = false;
 		return;
 	}
