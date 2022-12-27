@@ -26,7 +26,7 @@ use Friendica\Network\HTTPClient\Client\HttpClientAccept;
 use Friendica\Network\HTTPClient\Client\HttpClientOptions;
 use Friendica\Protocol\Activity;
 use Friendica\Protocol\ActivityNamespace;
-use Friendica\Core\Config\Util\ConfigFileLoader;
+use Friendica\Core\Config\Util\ConfigFileManager;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Strings;
 use Friendica\Util\XML;
@@ -318,9 +318,9 @@ function pumpio_settings_post(App $a, array &$b)
 	}
 }
 
-function pumpio_load_config(App $a, ConfigFileLoader $loader)
+function pumpio_load_config(App $a, ConfigFileManager $configFileManager)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('pumpio'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	$a->getConfigCache()->load($configFileManager->loadAddonConfig('pumpio'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 function pumpio_hook_fork(App $a, array &$b)

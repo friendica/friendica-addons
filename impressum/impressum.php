@@ -13,7 +13,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
-use Friendica\Core\Config\Util\ConfigFileLoader;
+use Friendica\Core\Config\Util\ConfigFileManager;
 use Friendica\Util\Proxy as ProxyUtils;
 
 function impressum_install()
@@ -54,9 +54,9 @@ function impressum_footer(App $a, string &$body)
 	}
 }
 
-function impressum_load_config(App $a, ConfigFileLoader $loader)
+function impressum_load_config(App $a, ConfigFileManager $configFileManager)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('impressum'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	$a->getConfigCache()->load($configFileManager->loadAddonConfig('impressum'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 function impressum_show(App $a, string &$body)

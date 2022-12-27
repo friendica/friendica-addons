@@ -229,33 +229,35 @@ class S3Config implements ICanConfigureStorage
 			];
 		}
 
-		$this->config->set('s3', 'access_key', ($this->accessKey = new HiddenString($data['access_key']))->getString());
-		$this->config->set('s3', 'secret_key', ($this->secretKey = new HiddenString($data['secret_key']))->getString());
-		$this->config->set('s3', 'bucket', ($this->bucket = $bucket));
+		$this->config->set('s3', 'access_key', ($this->accessKey = new HiddenString($data['access_key']))->getString(), false);
+		$this->config->set('s3', 'secret_key', ($this->secretKey = new HiddenString($data['secret_key']))->getString(), false);
+		$this->config->set('s3', 'bucket', ($this->bucket = $bucket), false);
 
 		if ($s3Config->getUseLegacyPathStyle()) {
-			$this->config->set('s3', 'legacy', '1');
+			$this->config->set('s3', 'legacy', '1', false);
 		} else {
-			$this->config->delete('s3', 'legacy');
+			$this->config->delete('s3', 'legacy', false);
 		}
 		if ($s3Config->getDualstackUrl()) {
-			$this->config->set('s3', 'dual_stack', '1');
+			$this->config->set('s3', 'dual_stack', '1', false);
 		} else {
-			$this->config->delete('s3', 'dual_stack');
+			$this->config->delete('s3', 'dual_stack', false);
 		}
-		$this->config->set('s3','signature_method', $s3Config->getSignatureMethod());
+		$this->config->set('s3','signature_method', $s3Config->getSignatureMethod(), false);
 
 		if (!empty($data['endpoint'])) {
-			$this->config->set('s3', 'endpoint', $s3Config->getEndpoint());
+			$this->config->set('s3', 'endpoint', $s3Config->getEndpoint(), false);
 		} else {
-			$this->config->delete('s3', 'endpoint');
+			$this->config->delete('s3', 'endpoint', false);
 		}
 
 		if (!empty($data['region'])) {
-			$this->config->set('s3', 'region', $s3Config->getRegion());
+			$this->config->set('s3', 'region', $s3Config->getRegion(), false);
 		} else {
-			$this->config->delete('s3', 'region');
+			$this->config->delete('s3', 'region', false);
 		}
+
+		$this->config->save();
 
 		return $feedback;
 	}

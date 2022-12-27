@@ -13,7 +13,7 @@ use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
-use Friendica\Core\Config\Util\ConfigFileLoader;
+use Friendica\Core\Config\Util\ConfigFileManager;
 use Friendica\Util\Strings;
 
 /**
@@ -26,9 +26,9 @@ function gravatar_install() {
 	Logger::notice("registered gravatar in avatar_lookup hook");
 }
 
-function gravatar_load_config(App $a, ConfigFileLoader $loader)
+function gravatar_load_config(App $a, ConfigFileManager $configFileManager)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('gravatar'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	$a->getConfigCache()->load($configFileManager->loadAddonConfig('gravatar'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 /**

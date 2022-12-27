@@ -12,7 +12,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
-use Friendica\Core\Config\Util\ConfigFileLoader;
+use Friendica\Core\Config\Util\ConfigFileManager;
 
 /**
  * Installs the addon hook
@@ -24,9 +24,9 @@ function libravatar_install()
 	Logger::notice("registered libravatar in avatar_lookup hook");
 }
 
-function libravatar_load_config(App $a, ConfigFileLoader $loader)
+function libravatar_load_config(App $a, ConfigFileManager $configFileManager)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('libravatar'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	$a->getConfigCache()->load($configFileManager->loadAddonConfig('libravatar'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 /**

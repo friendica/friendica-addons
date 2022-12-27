@@ -15,7 +15,7 @@ use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Notification;
 use Friendica\Model\User;
-use Friendica\Core\Config\Util\ConfigFileLoader;
+use Friendica\Core\Config\Util\ConfigFileManager;
 use Friendica\Util\DateTimeFormat;
 
 function public_server_install()
@@ -27,9 +27,9 @@ function public_server_install()
 	Hook::register('logged_in', 'addon/public_server/public_server.php', 'public_server_login');
 }
 
-function public_server_load_config(App $a, ConfigFileLoader $loader)
+function public_server_load_config(App $a, ConfigFileManager $configFileManager)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('public_server'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	$a->getConfigCache()->load($configFileManager->loadAddonConfig('public_server'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 function public_server_register_account(App $a, $b)

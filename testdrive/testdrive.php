@@ -13,7 +13,7 @@ use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Notification;
 use Friendica\Model\User;
-use Friendica\Core\Config\Util\ConfigFileLoader;
+use Friendica\Core\Config\Util\ConfigFileManager;
 use Friendica\Util\DateTimeFormat;
 
 function testdrive_install()
@@ -25,9 +25,9 @@ function testdrive_install()
 	Hook::register('globaldir_update','addon/testdrive/testdrive.php', 'testdrive_globaldir_update');
 }
 
-function testdrive_load_config(App $a, ConfigFileLoader $loader)
+function testdrive_load_config(App $a, ConfigFileManager $configFileManager)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('testdrive'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	$a->getConfigCache()->load($configFileManager->loadAddonConfig('testdrive'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 function testdrive_globaldir_update(App $a, array &$b)

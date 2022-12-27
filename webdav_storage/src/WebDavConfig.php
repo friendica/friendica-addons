@@ -144,10 +144,11 @@ class WebDavConfig implements ICanConfigureStorage
 			];
 		}
 
-		$this->config->set('webdav', 'url', $url);
-		$this->config->set('webdav', 'username', $username);
-		$this->config->set('webdav', 'password', $password);
-		$this->config->set('webdav', 'auth_type', $authType);
+		$this->config->set('webdav', 'url', $url, false);
+		$this->config->set('webdav', 'username', $username, false);
+		$this->config->set('webdav', 'password', $password, false);
+		$this->config->set('webdav', 'auth_type', $authType, false);
+		$this->config->save();
 
 		$this->url = $url;
 

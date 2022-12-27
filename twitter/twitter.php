@@ -86,7 +86,7 @@ use Friendica\Model\Post;
 use Friendica\Model\Tag;
 use Friendica\Model\User;
 use Friendica\Protocol\Activity;
-use Friendica\Core\Config\Util\ConfigFileLoader;
+use Friendica\Core\Config\Util\ConfigFileManager;
 use Friendica\Core\System;
 use Friendica\Model\Photo;
 use Friendica\Util\DateTimeFormat;
@@ -124,9 +124,9 @@ function twitter_install()
 
 // Hook functions
 
-function twitter_load_config(App $a, ConfigFileLoader $loader)
+function twitter_load_config(App $a, ConfigFileManager $configFileManager)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('twitter'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	$a->getConfigCache()->load($configFileManager->loadAddonConfig('twitter'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 function twitter_check_item_notification(App $a, array &$notification_data)
