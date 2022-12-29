@@ -631,7 +631,7 @@ function pumpio_sync(App $a)
 		return;
 	}
 
-	$last = DI::config()->get('pumpio', 'last_poll');
+	$last = DI::keyValue()->get('pumpio_last_poll');
 
 	$poll_interval = intval(DI::config()->get('pumpio', 'poll_interval', PUMPIO_DEFAULT_POLL_INTERVAL));
 
@@ -685,7 +685,7 @@ function pumpio_sync(App $a)
 
 	Logger::notice('pumpio: cron_end');
 
-	DI::config()->set('pumpio', 'last_poll', time());
+	DI::keyValue()->set('pumpio_last_poll', time());
 }
 
 function pumpio_cron(App $a, $b)

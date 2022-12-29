@@ -999,7 +999,7 @@ function twitter_addon_admin(App $a, string &$o)
 
 function twitter_cron(App $a)
 {
-	$last = DI::config()->get('twitter', 'last_poll');
+	$last = DI::keyValue()->get('twitter_last_poll');
 
 	$poll_interval = intval(DI::config()->get('twitter', 'poll_interval'));
 	if (!$poll_interval) {
@@ -1057,7 +1057,7 @@ function twitter_cron(App $a)
 
 	Logger::notice('twitter: cron_end');
 
-	DI::config()->set('twitter', 'last_poll', time());
+	DI::keyValue()->set('twitter_last_poll', time());
 }
 
 function twitter_expire(App $a)
