@@ -164,7 +164,7 @@ function leistungsschutzrecht_is_member_site(string $url): bool
 
 function leistungsschutzrecht_cron(App $a, $b)
 {
-	$last = DI::config()->get('leistungsschutzrecht', 'last_poll');
+	$last = DI::keyValue()->get('leistungsschutzrecht_last_poll');
 
 	if ($last) {
 		$next = $last + 86400;
@@ -174,5 +174,5 @@ function leistungsschutzrecht_cron(App $a, $b)
 		}
 	}
 	leistungsschutzrecht_fetchsites();
-	DI::config()->set('leistungsschutzrecht', 'last_poll', time());
+	DI::keyValue()->set('leistungsschutzrecht_last_poll', time());
 }
