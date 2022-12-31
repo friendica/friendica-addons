@@ -4,6 +4,7 @@
  * Description: The TicTacToe game application
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
+ * Status: unsupported
  */
 
 use Friendica\App;
