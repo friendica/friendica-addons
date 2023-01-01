@@ -15,7 +15,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
-use Friendica\Core\Config\Util\ConfigFileLoader;
+use Friendica\Core\Config\Util\ConfigFileManager;
 use Friendica\Util\Strings;
 
 const OSM_TMS = 'https://www.openstreetmap.org';
@@ -35,7 +35,7 @@ function openstreetmap_install()
 	Logger::notice("installed openstreetmap");
 }
 
-function openstreetmap_load_config(App $a, ConfigFileLoader $loader)
+function openstreetmap_load_config(App $a, ConfigFileManager $loader)
 {
 	$a->getConfigCache()->load($loader->loadAddonConfig('openstreetmap'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }

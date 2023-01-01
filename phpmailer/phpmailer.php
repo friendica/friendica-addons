@@ -11,7 +11,7 @@ use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\DI;
 use Friendica\Object\EMail\IEmail;
-use Friendica\Core\Config\Util\ConfigFileLoader;
+use Friendica\Core\Config\Util\ConfigFileManager;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -23,7 +23,7 @@ function phpmailer_install()
 	Hook::register('emailer_send_prepare', __FILE__, 'phpmailer_emailer_send_prepare', 5);
 }
 
-function phpmailer_load_config(App $a, ConfigFileLoader $loader)
+function phpmailer_load_config(App $a, ConfigFileManager $loader)
 {
 	$a->getConfigCache()->load($loader->loadAddonConfig('phpmailer'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
