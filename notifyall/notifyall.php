@@ -50,7 +50,7 @@ function notifyall_post(App $a)
 		$condition['email'] = array_column($adminEmails, 'email');
 	}
 
-	$recipients = DBA::p("SELECT DISTINCT `email` FROM `user`" . DBA::buildCondition($condition));
+	$recipients = DBA::p("SELECT DISTINCT `email` FROM `user`" . DBA::buildCondition($condition), $condition);
 
 	if (! $recipients) {
 		DI::sysmsg()->addNotice(DI::l10n()->t('No recipients found.'));
