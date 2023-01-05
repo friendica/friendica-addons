@@ -30,12 +30,13 @@ Gravatar lets users self-rate their images to be used at appropriate audiences. 
 See more information at [Gravatar][1].
 
 ## Alternative Configuration
-Open the `config/local.config.php` file and add "gravatar" to the list of activated addons:
+Open the `config/node.config.php` file and add "gravatar" to the list of activated addons:
 
-	'system' => [
+	'addons' => [
 		...
-		'addon' => '...,gravatar'
-		...
+		'gravatar' => [
+			admin => true,			
+		],
 	]
 
 You can add two configuration variables for the addon to the `config/gravatar.config.php` file:

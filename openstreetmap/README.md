@@ -34,13 +34,14 @@ zoom level available.
 
 ## Alternative Configuration
 
-Open the `config/local.config.php` file and add "openstreetmap" to the list of activated addons.
+Open the `config/node.config.php` file and add "openstreetmap" to the list of activated addons.
 
-     'system' => [
-         ...
-         'addon' => '...,openstreetmap'
-         ...
-     ]
+	'addons' => [
+		...
+		'openstreetmap' => [
+			admin => true,			
+		],
+	]
 
 You can set configuration variables for the addon in the `config/openstreetmap.config.php` file:
 

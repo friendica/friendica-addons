@@ -93,7 +93,7 @@ function gravatar_addon_admin (App $a, string &$o)
 	];
 
 	// Check if Libravatar is enabled and show warning
-	if (DBA::exists('addon', ['name' => 'libravatar', 'installed' => true])) {
+	if (!empty(DI::config()->get('addons', 'libravatar'))) {
 		$o = '<h5>' .DI::l10n()->t('Information') .'</h5><p>' .DI::l10n()->t('Libravatar addon is installed, too. Please disable Libravatar addon or this Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if nothing was found at Libravatar.') .'</p><br><br>';
 	}
 
