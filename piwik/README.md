@@ -22,13 +22,14 @@ The easiest way to configure this addon is by activating the admin panels of you
 
 If you don't want to use the admin panel, you can configure the addon through the `config/local.config.php` file.
 
-Open the `config/local.config.php` file and add "piwik" to the list of activated addons.
+Open the `config/node.config.php` file and add "piwik" to the list of activated addons.
 
-    'system' => [
-        ...
-        'addon' => '...,piwik'
-        ...
-    ]
+	'addons' => [
+		...
+		'piwik' => [
+			admin => true,			
+		],
+	]
 
 You can change 4 more configuration variables for the addon in the `config/piwik.config.php` file:
 
