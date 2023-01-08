@@ -5,6 +5,7 @@
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  * Author: Roland Haeder <https://f.haeder.net/roland>
+ * Status: unsupported
  */
 
 use Friendica\App;
