@@ -374,6 +374,8 @@ function mailstream_send(string $message_id, array $item, array $user): bool
 
 	require_once (dirname(__file__) . '/phpmailer/class.phpmailer.php');
 
+	$item['body'] = Post\Media::addAttachmentsToBody($item['uri-id'], $item['body']);
+
 	$attachments = [];
 	mailstream_do_images($item, $attachments);
 	$frommail = DI::config()->get('mailstream', 'frommail');
