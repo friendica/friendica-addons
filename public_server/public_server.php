@@ -55,6 +55,7 @@ function public_server_cron(App $a, $b)
 	foreach ($users as $rr) {
 		DI::notify()->createFromArray([
 			'type' => Notification\Type::SYSTEM,
+			'event' => 'SYSTEM_PUBLIC_SERVER_EXPIRATION',
 			'uid' => $rr['uid'],
 			'system_type' => 'public_server_expire',
 			'source_name'  => DI::l10n()->t('Administrator'),
