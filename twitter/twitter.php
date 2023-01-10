@@ -2304,6 +2304,8 @@ function twitter_fetchhometimeline(App $a, int $uid): void
 				}
 			}
 
+			$postarray['wall'] = (bool)$notify;
+
 			$item = Item::insert($postarray, $notify);
 			$postarray['id'] = $item;
 
