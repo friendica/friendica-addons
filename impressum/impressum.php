@@ -61,31 +61,30 @@ function impressum_load_config(App $a, ConfigFileManager $loader)
 
 function impressum_show(App $a, string &$body)
 {
-	$body .= '<h3>' . DI::l10n()->t('Impressum') . '</h3>';
-	$owner = DI::config()->get('impressum', 'owner');
+	$body          .= '<h3>' . DI::l10n()->t('Impressum') . '</h3>';
+	$owner         = DI::config()->get('impressum', 'owner');
 	$owner_profile = DI::config()->get('impressum', 'ownerprofile');
-	$postal = ProxyUtils::proxifyHtml(BBCode::convert(DI::config()->get('impressum', 'postal')));
-	$notes = ProxyUtils::proxifyHtml(BBCode::convert(DI::config()->get('impressum', 'notes')));
-	$email = obfuscate_email( DI::config()->get('impressum', 'email') );
+	$postal        = ProxyUtils::proxifyHtml(BBCode::convert(DI::config()->get('impressum', 'postal')));
+	$notes         = ProxyUtils::proxifyHtml(BBCode::convert(DI::config()->get('impressum', 'notes')));
 
-	if (strlen($owner)) {
-		if (strlen($owner_profile)) {
+	if ($owner) {
+		if ($owner_profile) {
 			$tmp = '<a href="' . $owner_profile . '">' . $owner . '</a>';
 		} else {
 			$tmp = $owner;
 		}
 
-		if (strlen($email)) {
-			$body .= '<p><strong>' . DI::l10n()->t('Site Owner').'</strong>: ' . $tmp .'<br /><strong>' . DI::l10n()->t('Email Address') . '</strong>: ' . $email . '</p>';
+		if ($email = DI::config()->get('impressum', 'email')) {
+			$body .= '<p><strong>' . DI::l10n()->t('Site Owner').'</strong>: ' . $tmp .'<br /><strong>' . DI::l10n()->t('Email Address') . '</strong>: ' . obfuscate_email($email) . '</p>';
 		} else {
 			$body .= '<p><strong>' . DI::l10n()->t('Site Owner').'</strong>: ' . $tmp .'</p>';
 		}
 
-		if (strlen($postal)) {
+		if ($postal) {
 			$body .= '<p><strong>' . DI::l10n()->t('Postal Address') . '</strong><br />' . $postal . '</p>';
 		}
 
-		if (strlen($notes)) {
+		if ($notes) {
 			$body .= '<p>' . $notes . '</p>';
 		}
 	} else {
