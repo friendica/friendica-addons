@@ -45,7 +45,7 @@ function keycloakpassword_request($client_id, $secret, $url, $params = [])
 	return $res;
 }
 
-function keycloakpassword_authenticate(App $a, array &$b)
+function keycloakpassword_authenticate(array &$b)
 {
 	if (empty($b['password'])) {
 		return;
@@ -110,7 +110,7 @@ function keycloakpassword_admin_input($key, $label, $description)
 	];
 }
 
-function keycloakpassword_addon_admin(App $a, string &$o)
+function keycloakpassword_addon_admin(string &$o)
 {
 	$form =
 		keycloakpassword_admin_input(
@@ -140,7 +140,7 @@ function keycloakpassword_addon_admin(App $a, string &$o)
 	$o = Renderer::replaceMacros($t, $form);
 }
 
-function keycloakpassword_addon_admin_post(App $a)
+function keycloakpassword_addon_admin_post()
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;

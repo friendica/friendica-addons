@@ -24,12 +24,12 @@ function showmore_dyn_install()
 	Hook::register('addon_settings_post',  __FILE__, 'showmore_dyn_settings_post');
 }
 
-function showmore_dyn_head(App $a, string &$body)
+function showmore_dyn_head(string &$body)
 {
 	DI::page()->registerStylesheet(__DIR__ . '/showmore_dyn.css');
 }
 
-function showmore_dyn_footer(App $a, string &$body)
+function showmore_dyn_footer(string &$body)
 {
 	DI::page()->registerFooterScript(__DIR__ . '/showmore_dyn.js');
 }
@@ -45,7 +45,7 @@ function showmore_dyn_settings_post()
 	}
 }
 
-function showmore_dyn_settings(App &$a, array &$data)
+function showmore_dyn_settings(array &$data)
 {
 	if(!DI::userSession()->getLocalUserId()) {
 		return;

@@ -28,14 +28,13 @@ function cookienotice_install()
  * cookienotice_addon_admin
  * creates the admins config panel
  *
- * @param App    $a
  * @param string $s The existing config panel html so far
  *
  * @return void
  */
-function cookienotice_addon_admin(App $a, &$s)
+function cookienotice_addon_admin(&$s)
 {
-	if (!$a->isSiteAdmin()) {
+	if (!DI::userSession()->isSiteAdmin()) {
 		return;
 	}
 
@@ -57,12 +56,11 @@ function cookienotice_addon_admin(App $a, &$s)
  * cookienotice_addon_admin_post
  * handles the post request from the admin panel
  *
- * @param App    $a
  * @return void
  */
-function cookienotice_addon_admin_post(App $a)
+function cookienotice_addon_admin_post()
 {
-	if (!$a->isSiteAdmin()) {
+	if (!DI::userSession()->isSiteAdmin()) {
 		return;
 	}
 
@@ -77,12 +75,11 @@ function cookienotice_addon_admin_post(App $a)
  * page_content_top hook
  * adds css and scripts to the <head> section of the html
  *
- * @param App    $a
  * @param string $b unused - the header html incl. nav
  *
  * @return void
  */
-function cookienotice_page_content_top(App $a, string &$b)
+function cookienotice_page_content_top(string &$b)
 {
 	DI::page()->registerStylesheet(__DIR__ . '/cookienotice.css');
 	DI::page()->registerFooterScript(__DIR__ . '/cookienotice.js');
@@ -93,12 +90,11 @@ function cookienotice_page_content_top(App $a, string &$b)
  * page_end hook
  * ads our cookienotice box to the end of the html
  *
- * @param App    $a
  * @param string $b the page html
  *
  * @return void
  */
-function cookienotice_page_end(App $a, string &$b)
+function cookienotice_page_end(string &$b)
 {
 	$text = (string)DI::config()->get('cookienotice', 'text', DI::l10n()->t('This website uses cookies to recognize revisiting and logged in users. You accept the usage of these cookies by continue browsing this website.'));
 	$oktext = (string)DI::config()->get('cookienotice', 'oktext', DI::l10n()->t('OK'));

@@ -54,7 +54,7 @@ function randplace_uninstall()
 	Logger::notice("removed randplace");
 }
 
-function randplace_post_hook(App $a, &$item)
+function randplace_post_hook(&$item)
 {
 	/*
 	 * An item was posted on the local system.
@@ -120,7 +120,7 @@ function randplace_post_hook(App $a, &$item)
  * We will make sure we've got a valid user account
  * and if so set our configuration setting for this person.
  */
-function randplace_settings_post(App $a, $post)
+function randplace_settings_post($post)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -136,7 +136,7 @@ function randplace_settings_post(App $a, $post)
  * Called from the Addon Setting form.
  * Add our own settings info to the page.
  */
-function randplace_settings(App &$a, array &$data)
+function randplace_settings(array &$data)
 {
 	if(!DI::userSession()->getLocalUserId()) {
 		return;

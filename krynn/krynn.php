@@ -35,7 +35,7 @@ function krynn_install()
 	Logger::notice("installed krynn");
 }
 
-function krynn_post_hook(App $a, &$item)
+function krynn_post_hook(&$item)
 {
 	/**
 	 * An item was posted on the local system.
@@ -88,7 +88,7 @@ function krynn_post_hook(App $a, &$item)
  * We will make sure we've got a valid user account
  * and if so set our configuration setting for this person.
  */
-function krynn_settings_post(App $a, $post)
+function krynn_settings_post($post)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -103,7 +103,7 @@ function krynn_settings_post(App $a, $post)
  * Called from the addon Setting form.
  * Add our own settings info to the page.
  */
-function krynn_settings(App &$a, array &$data)
+function krynn_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;

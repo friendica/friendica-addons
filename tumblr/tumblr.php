@@ -36,7 +36,7 @@ function tumblr_install()
  */
 function tumblr_module() {}
 
-function tumblr_content(App $a)
+function tumblr_content()
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		DI::sysmsg()->addNotice(DI::l10n()->t('Permission denied.'));
@@ -46,11 +46,11 @@ function tumblr_content(App $a)
 	if (isset(DI::args()->getArgv()[1])) {
 		switch (DI::args()->getArgv()[1]) {
 			case "connect":
-				$o = tumblr_connect($a);
+				$o = tumblr_connect();
 				break;
 
 			case "callback":
-				$o = tumblr_callback($a);
+				$o = tumblr_callback();
 				break;
 
 			default:
@@ -58,13 +58,13 @@ function tumblr_content(App $a)
 				break;
 		}
 	} else {
-		$o = tumblr_connect($a);
+		$o = tumblr_connect();
 	}
 
 	return $o;
 }
 
-function tumblr_addon_admin(App $a, string &$o)
+function tumblr_addon_admin(string &$o)
 {
 	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/tumblr/" );
 
@@ -76,13 +76,13 @@ function tumblr_addon_admin(App $a, string &$o)
 	]);
 }
 
-function tumblr_addon_admin_post(App $a)
+function tumblr_addon_admin_post()
 {
 	DI::config()->set('tumblr', 'consumer_key', trim($_POST['consumer_key'] ?? ''));
 	DI::config()->set('tumblr', 'consumer_secret', trim($_POST['consumer_secret'] ?? ''));
 }
 
-function tumblr_connect(App $a)
+function tumblr_connect()
 {
 	// Start a session.  This is necessary to hold on to  a few keys the callback script will also need
 	session_start();
@@ -137,7 +137,7 @@ function tumblr_connect(App $a)
 	return $o;
 }
 
-function tumblr_callback(App $a)
+function tumblr_callback()
 {
 	// Start a session, load the library
 	session_start();
@@ -180,7 +180,7 @@ function tumblr_callback(App $a)
 	return $o;
 }
 
-function tumblr_jot_nets(App $a, array &$jotnets_fields)
+function tumblr_jot_nets(array &$jotnets_fields)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -198,7 +198,7 @@ function tumblr_jot_nets(App $a, array &$jotnets_fields)
 	}
 }
 
-function tumblr_settings(App $a, array &$data)
+function tumblr_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -248,7 +248,7 @@ function tumblr_settings(App $a, array &$data)
 	];
 }
 
-function tumblr_settings_post(App $a, array &$b)
+function tumblr_settings_post(array &$b)
 {
 	if (!empty($_POST['tumblr-submit'])) {
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'tumblr', 'post',            intval($_POST['tumblr']));
@@ -257,7 +257,7 @@ function tumblr_settings_post(App $a, array &$b)
 	}
 }
 
-function tumblr_hook_fork(App $a, array &$b)
+function tumblr_hook_fork(array &$b)
 {
 	if ($b['name'] != 'notifier_normal') {
 		return;
@@ -272,7 +272,7 @@ function tumblr_hook_fork(App $a, array &$b)
 	}
 }
 
-function tumblr_post_local(App $a, array &$b)
+function tumblr_post_local(array &$b)
 {
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 
@@ -310,7 +310,7 @@ function tumblr_post_local(App $a, array &$b)
 
 
 
-function tumblr_send(App $a, array &$b) {
+function tumblr_send(array &$b) {
 
 	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;

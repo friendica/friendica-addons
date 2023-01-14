@@ -25,17 +25,17 @@ function testdrive_install()
 	Hook::register('globaldir_update','addon/testdrive/testdrive.php', 'testdrive_globaldir_update');
 }
 
-function testdrive_load_config(App $a, ConfigFileManager $loader)
+function testdrive_load_config(ConfigFileManager $loader)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('testdrive'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	DI::app()->getConfigCache()->load($loader->loadAddonConfig('testdrive'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
-function testdrive_globaldir_update(App $a, array &$b)
+function testdrive_globaldir_update(array &$b)
 {
 	$b['url'] = '';
 }
 
-function testdrive_register_account(App $a, $b)
+function testdrive_register_account($b)
 {
 	$uid = $b;
 
@@ -48,7 +48,7 @@ function testdrive_register_account(App $a, $b)
 }
 
 
-function testdrive_cron(App $a, $b)
+function testdrive_cron($b)
 {
 	$users = DBA::selectToArray('user', [], ["`account_expires_on` < ? AND `expire_notification_sent` <= ?",
 		DateTimeFormat::utc('now + 5 days'), DBA::NULL_DATETIME]);
@@ -72,7 +72,7 @@ function testdrive_cron(App $a, $b)
 	}
 }
 
-function testdrive_enotify(App $a, array &$b)
+function testdrive_enotify(array &$b)
 {
 	if (!empty($b['params']) && $b['params']['type'] == Notification\Type::SYSTEM
 		&& !empty($b['params']['system_type']) && $b['params']['system_type'] === 'testdrive_expire') {

@@ -38,7 +38,7 @@ function planets_install()
  *      - A status post by a profile owner
  *      - The profile owner must have allowed our addon
  */
-function planets_post_hook(App $a, &$item)
+function planets_post_hook(&$item)
 {
 	Logger::notice('planets invoked');
 
@@ -93,7 +93,7 @@ function planets_post_hook(App $a, &$item)
  *
  */
 
-function planets_settings_post(App $a, $post)
+function planets_settings_post($post)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -113,7 +113,7 @@ function planets_settings_post(App $a, $post)
 
 
 
-function planets_settings(App &$a, array &$data)
+function planets_settings(array &$data)
 {
 	if(!DI::userSession()->getLocalUserId()) {
 		return;

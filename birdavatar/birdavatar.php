@@ -34,7 +34,7 @@ function birdavatar_install()
 /**
  * Bird avatar user settings page
  */
-function birdavatar_addon_settings(App $a, array &$data)
+function birdavatar_addon_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -62,7 +62,7 @@ function birdavatar_addon_settings(App $a, array &$data)
 /**
  * Bird avatar user settings POST handle
  */
-function birdavatar_addon_settings_post(App $a, &$s)
+function birdavatar_addon_settings_post(&$s)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -114,10 +114,9 @@ function birdavatar_addon_settings_post(App $a, &$s)
 /**
  * Returns the URL to the bird avatar
  *
- * @param $a array
  * @param &$b array
  */
-function birdavatar_lookup(App $a, array &$b)
+function birdavatar_lookup(array &$b)
 {
 	$user = DBA::selectFirst('user', ['uid'], ['email' => $b['email']]);
 	if (DBA::isResult($user)) {
@@ -149,7 +148,7 @@ function birdavatar_module() {}
  * @throws NotFoundException
  *
  */
-function birdavatar_content(App $a)
+function birdavatar_content()
 {
 	if (DI::args()->getArgc() < 2 || DI::args()->getArgc() > 3) {
 		throw new NotFoundException(); // this should be catched on index and show default "not found" page.

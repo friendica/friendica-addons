@@ -19,7 +19,7 @@ function irc_install()
 	Hook::register('addon_settings_post', 'addon/irc/irc.php', 'irc_addon_settings_post');
 }
 
-function irc_addon_settings(App &$a, array &$data)
+function irc_addon_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -42,7 +42,7 @@ function irc_addon_settings(App &$a, array &$data)
 	];
 }
 
-function irc_addon_settings_post(App $a, array &$b)
+function irc_addon_settings_post(array &$b)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -59,7 +59,7 @@ function irc_addon_settings_post(App $a, array &$b)
 	}
 }
 
-function irc_app_menu(App $a, array &$b)
+function irc_app_menu(array &$b)
 {
 	$b['app_menu'][] = '<div class="app-title"><a href="irc">' . DI::l10n()->t('IRC Chatroom') . '</a></div>';
 }
@@ -71,7 +71,7 @@ function irc_app_menu(App $a, array &$b)
  */
 function irc_module() {}
 
-function irc_content(App $a)
+function irc_content()
 {
 	$baseurl = DI::baseUrl()->get() . '/addon/irc';
 	$o = '';
@@ -124,9 +124,9 @@ EOT;
 	return $o;
 }
 
-function irc_addon_admin_post (App $a)
+function irc_addon_admin_post ()
 {
-	if (!$a->isSiteAdmin()) {
+	if (!DI::userSession()->isSiteAdmin()) {
 		return;
 	}
 
@@ -135,7 +135,7 @@ function irc_addon_admin_post (App $a)
 		DI::config()->set('irc', 'sitechats', trim($_POST['sitechats']));
 	}
 }
-function irc_addon_admin (App $a, string &$o) {
+function irc_addon_admin (string &$o) {
 	$sitechats = DI::config()->get('irc', 'sitechats'); /* popular channels */
 	$autochans = DI::config()->get('irc', 'autochans');  /* auto connect chans */
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/irc/' );

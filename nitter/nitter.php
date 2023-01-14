@@ -35,7 +35,7 @@ function nitter_install()
 
 /* Handle the send data from the admin settings
  */
-function nitter_addon_admin_post(App $a)
+function nitter_addon_admin_post()
 {
 	DI::config()->set('nitter', 'server', rtrim(trim($_POST['nitterserver']), '/'));
 }
@@ -43,7 +43,7 @@ function nitter_addon_admin_post(App $a)
 /* Hook into the admin settings to let the admin choose a
  * nitter server to use for the replacement.
  */
-function nitter_addon_admin(App $a, string &$o)
+function nitter_addon_admin(string &$o)
 {
 	$nitterserver = DI::config()->get('nitter', 'server');
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/nitter/');
@@ -57,7 +57,7 @@ function nitter_addon_admin(App $a, string &$o)
 /*
  *  replace "twitter.com" with "nitter.net"
  */
-function nitter_render(App $a, array &$b)
+function nitter_render(array &$b)
 {
 	// this needs to be a system setting
 	$replaced = false;

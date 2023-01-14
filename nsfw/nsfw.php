@@ -51,7 +51,7 @@ function nsfw_extract_photos($body)
 	return $new_body;
 }
 
-function nsfw_addon_settings(App &$a, array &$data)
+function nsfw_addon_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -74,7 +74,7 @@ function nsfw_addon_settings(App &$a, array &$data)
 	];
 }
 
-function nsfw_addon_settings_post(App $a, array &$b)
+function nsfw_addon_settings_post(array &$b)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -102,7 +102,7 @@ function nsfw_addon_settings_post(App $a, array &$b)
 	}
 }
 
-function nsfw_prepare_body_content_filter(App $a, &$hook_data)
+function nsfw_prepare_body_content_filter(&$hook_data)
 {
 	$words = null;
 	if (DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'nsfw', 'disable')) {

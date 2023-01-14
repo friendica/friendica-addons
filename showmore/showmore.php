@@ -21,7 +21,7 @@ function showmore_install()
 	Hook::register('addon_settings_post', 'addon/showmore/showmore.php', 'showmore_addon_settings_post');
 }
 
-function showmore_addon_settings(App &$a, array &$data)
+function showmore_addon_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -45,7 +45,7 @@ function showmore_addon_settings(App &$a, array &$data)
 	];
 }
 
-function showmore_addon_settings_post(App $a, array &$b)
+function showmore_addon_settings_post(array &$b)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -93,7 +93,7 @@ function get_body_length($body)
 	return strlen($string);
 }
 
-function showmore_prepare_body(App $a, &$hook_data)
+function showmore_prepare_body(&$hook_data)
 {
 	// No combination with content filters
 	if (!empty($hook_data['filter_reasons'])) {

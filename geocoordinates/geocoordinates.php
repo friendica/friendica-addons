@@ -77,12 +77,12 @@ function geocoordinates_resolve_item(array &$item)
 	}
 }
 
-function geocoordinates_post_hook(App $a, &$item)
+function geocoordinates_post_hook(&$item)
 {
 	geocoordinates_resolve_item($item);
 }
 
-function geocoordinates_addon_admin(App $a, string &$o)
+function geocoordinates_addon_admin(string &$o)
 {
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/geocoordinates/');
 
@@ -93,7 +93,7 @@ function geocoordinates_addon_admin(App $a, string &$o)
 	]);
 }
 
-function geocoordinates_addon_admin_post(App $a)
+function geocoordinates_addon_admin_post()
 {
 	DI::config()->set('geocoordinates', 'api_key', trim($_POST['api_key'] ?? ''));
 	DI::config()->set('geocoordinates', 'language', trim($_POST['language'] ?? ''));

@@ -35,12 +35,12 @@ function openstreetmap_install()
 	Logger::notice("installed openstreetmap");
 }
 
-function openstreetmap_load_config(App $a, ConfigFileManager $loader)
+function openstreetmap_load_config(ConfigFileManager $loader)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('openstreetmap'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	DI::app()->getConfigCache()->load($loader->loadAddonConfig('openstreetmap'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
-function openstreetmap_alterheader(App $a, &$navHtml)
+function openstreetmap_alterheader(&$navHtml)
 {
 	$addScriptTag = '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/openstreetmap/openstreetmap.js"></script>' . "\r\n";
 	DI::page()['htmlhead'] .= $addScriptTag;
@@ -52,10 +52,9 @@ function openstreetmap_alterheader(App $a, &$navHtml)
  * If an item has coordinates add link to a tile map server, e.g. openstreetmap.org.
  * If an item has a location open it with the help of OSM's Nominatim reverse geocode search.
  *
- * @param mixed $a
  * @param array& $item
  */
-function openstreetmap_location(App $a, &$item)
+function openstreetmap_location(array &$item)
 {
 	if (!(strlen($item['location']) || strlen($item['coord']))) {
 		return;
@@ -105,7 +104,7 @@ function openstreetmap_location(App $a, &$item)
 	$item['html'] = '<a target="map" title="' . $title . '" href= "' . $target . '">' . $title . '</a>';
 }
 
-function openstreetmap_get_coordinates(App $a, array &$b)
+function openstreetmap_get_coordinates(array &$b)
 {
 	$nomserver = DI::config()->get('openstreetmap', 'nomserver', OSM_NOM);
 
@@ -133,16 +132,16 @@ function openstreetmap_get_coordinates(App $a, array &$b)
 	}
 }
 
-function openstreetmap_generate_named_map(App $a, array &$b)
+function openstreetmap_generate_named_map(array &$b)
 {
-	openstreetmap_get_coordinates($a, $b);
+	openstreetmap_get_coordinates($b);
 
 	if (!empty($b['lat']) && !empty($b['lon'])) {
-		openstreetmap_generate_map($a, $b);
+		openstreetmap_generate_map($b);
 	}
 }
 
-function openstreetmap_generate_map(App $a, array &$b)
+function openstreetmap_generate_map(array &$b)
 {
 	$tmsserver = DI::config()->get('openstreetmap', 'tmsserver', OSM_TMS);
 
@@ -178,7 +177,7 @@ function openstreetmap_generate_map(App $a, array &$b)
 	Logger::debug('generate_map: ' . $b['html']);
 }
 
-function openstreetmap_addon_admin(App $a, string &$o)
+function openstreetmap_addon_admin(string &$o)
 {
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/openstreetmap/');
 	$tmsserver = DI::config()->get('openstreetmap', 'tmsserver', OSM_TMS);
@@ -200,7 +199,7 @@ function openstreetmap_addon_admin(App $a, string &$o)
 	]);
 }
 
-function openstreetmap_addon_admin_post(App $a)
+function openstreetmap_addon_admin_post()
 {
 	DI::config()->set('openstreetmap', 'tmsserver', ($_POST['tmsserver'] ?? '') ?: OSM_TMS);
 	DI::config()->set('openstreetmap', 'nomserver', ($_POST['nomserver'] ?? '') ?: OSM_NOM);

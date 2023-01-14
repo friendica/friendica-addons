@@ -25,7 +25,7 @@ function js_upload_install()
 	Hook::register('photo_post_end', __FILE__, 'js_upload_post_end');
 }
 
-function js_upload_form(App $a, array &$b)
+function js_upload_form(array &$b)
 {
 	$b['default_upload'] = false;
 
@@ -43,7 +43,7 @@ function js_upload_form(App $a, array &$b)
 	]);
 }
 
-function js_upload_post_init(App $a, array &$b)
+function js_upload_post_init(array &$b)
 {
 	global $js_upload_result, $js_upload_jsonresponse;
 
@@ -69,7 +69,7 @@ function js_upload_post_init(App $a, array &$b)
 	$js_upload_result = $result;
 }
 
-function js_upload_post_file(App $a, array &$b)
+function js_upload_post_file(array &$b)
 {
 	global $js_upload_result;
 
@@ -81,7 +81,7 @@ function js_upload_post_file(App $a, array &$b)
 
 }
 
-function js_upload_post_end(App $a, int &$b)
+function js_upload_post_end(int &$b)
 {
 	global $js_upload_jsonresponse;
 

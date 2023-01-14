@@ -18,7 +18,7 @@ function leistungsschutzrecht_install()
 	Hook::register('page_info_data', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
 }
 
-function leistungsschutzrecht_getsiteinfo(App $a, array &$siteinfo) {
+function leistungsschutzrecht_getsiteinfo(array &$siteinfo) {
 	if (!isset($siteinfo['url']) || empty($siteinfo['type'])) {
 		return;
 	}
@@ -162,7 +162,7 @@ function leistungsschutzrecht_is_member_site(string $url): bool
 	return isset($sites[$site]);
 }
 
-function leistungsschutzrecht_cron(App $a, $b)
+function leistungsschutzrecht_cron($b)
 {
 	$last = DI::keyValue()->get('leistungsschutzrecht_last_poll');
 

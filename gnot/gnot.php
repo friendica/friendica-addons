@@ -30,7 +30,7 @@ function gnot_install()
  * We will make sure we've got a valid user account
  * and if so set our configuration setting for this person.
  */
-function gnot_settings_post(App $a, $post) {
+function gnot_settings_post($post) {
 	if(! DI::userSession()->getLocalUserId() || empty($_POST['gnot-submit']))
 		return;
 
@@ -41,7 +41,7 @@ function gnot_settings_post(App $a, $post) {
  * Called from the Addon Setting form. 
  * Add our own settings info to the page.
  */
-function gnot_settings(App &$a, array &$data)
+function gnot_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -62,7 +62,7 @@ function gnot_settings(App &$a, array &$data)
 	];
 }
 
-function gnot_enotify_mail(App $a, array &$b)
+function gnot_enotify_mail(array &$b)
 {
 	if ((!$b['uid']) || (! intval(DI::pConfig()->get($b['uid'], 'gnot','enable')))) {
 		return;

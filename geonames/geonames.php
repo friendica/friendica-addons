@@ -33,12 +33,12 @@ function geonames_install()
 	Hook::register('addon_settings_post', __FILE__, 'geonames_addon_settings_post');
 }
 
-function geonames_load_config(App $a, ConfigFileManager $loader)
+function geonames_load_config(ConfigFileManager $loader)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('geonames'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	DI::app()->getConfigCache()->load($loader->loadAddonConfig('geonames'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
-function geonames_post_hook(App $a, array &$item)
+function geonames_post_hook(array &$item)
 {
 	/* An item was posted on the local system.
 	 * We are going to look for specific items:
@@ -97,10 +97,9 @@ function geonames_post_hook(App $a, array &$item)
  * We will make sure we've got a valid user account
  * and if so set our configuration setting for this person.
  *
- * @param App   $a
  * @param array $post The $_POST array
  */
-function geonames_addon_settings_post(App $a, array $post)
+function geonames_addon_settings_post(array $post)
 {
 	if (!DI::userSession()->getLocalUserId() || empty($_POST['geonames-submit'])) {
 		return;
@@ -113,11 +112,10 @@ function geonames_addon_settings_post(App $a, array $post)
  * Called from the Addon Setting form.
  * Add our own settings info to the page.
  *
- * @param App   $a
  * @param array $data
  * @throws Exception
  */
-function geonames_addon_settings(App $a, array &$data)
+function geonames_addon_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;

@@ -55,7 +55,7 @@ use Symfony\Component\ExpressionLanguage;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
-function advancedcontentfilter_install(App $a)
+function advancedcontentfilter_install()
 {
 	Hook::register('dbstructure_definition'     , __FILE__, 'advancedcontentfilter_dbstructure_definition');
 	Hook::register('prepare_body_content_filter', __FILE__, 'advancedcontentfilter_prepare_body_content_filter');
@@ -71,7 +71,7 @@ function advancedcontentfilter_install(App $a)
  * Hooks
  */
 
-function advancedcontentfilter_dbstructure_definition(App $a, &$database)
+function advancedcontentfilter_dbstructure_definition(&$database)
 {
 	$database['advancedcontentfilter_rules'] = [
 		'comment' => 'Advancedcontentfilter addon rules',
@@ -115,7 +115,7 @@ function advancedcontentfilter_get_filter_fields(array $item)
 	return $vars;
 }
 
-function advancedcontentfilter_prepare_body_content_filter(App $a, &$hook_data)
+function advancedcontentfilter_prepare_body_content_filter(&$hook_data)
 {
 	static $expressionLanguage;
 
@@ -163,7 +163,7 @@ function advancedcontentfilter_prepare_body_content_filter(App $a, &$hook_data)
 }
 
 
-function advancedcontentfilter_addon_settings(App $a, array &$data)
+function advancedcontentfilter_addon_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -187,7 +187,7 @@ function advancedcontentfilter_addon_settings(App $a, array &$data)
  */
 function advancedcontentfilter_module() {}
 
-function advancedcontentfilter_init(App $a)
+function advancedcontentfilter_init()
 {
 	if (DI::args()->getArgc() > 1 && DI::args()->getArgv()[1] == 'api') {
 		$slim = new \Slim\App();
@@ -201,7 +201,7 @@ function advancedcontentfilter_init(App $a)
 	}
 }
 
-function advancedcontentfilter_content(App $a)
+function advancedcontentfilter_content()
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return Login::form('/' . implode('/', DI::args()->getArgv()));
@@ -252,7 +252,7 @@ function advancedcontentfilter_content(App $a)
 				'rule_expression'   => DI::l10n()->t('Rule Expression'),
 				'cancel'            => DI::l10n()->t('Cancel'),
 			],
-			'$current_theme' => $a->getCurrentTheme(),
+			'$current_theme' => DI::app()->getCurrentTheme(),
 			'$rules' => advancedcontentfilter_get_rules(),
 			'$form_security_token' => BaseModule::getFormSecurityToken()
 		]);

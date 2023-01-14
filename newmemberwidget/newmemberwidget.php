@@ -19,7 +19,7 @@ function newmemberwidget_install()
 	Logger::notice('newmemberwidget installed');
 }
 
-function newmemberwidget_network_mod_init (App $a, $b)
+function newmemberwidget_network_mod_init ($b)
 {
 	if (empty($_SESSION['new_member'])) {
 		return;
@@ -46,7 +46,7 @@ function newmemberwidget_network_mod_init (App $a, $b)
 	DI::page()['aside'] = $t . DI::page()['aside'];
 }
 
-function newmemberwidget_addon_admin_post(App $a)
+function newmemberwidget_addon_admin_post()
 {
 	DI::config()->set('newmemberwidget', 'freetext',           (!empty($_POST['freetext']) ? trim($_POST['freetext']) : ""));
 	DI::config()->set('newmemberwidget', 'linkglobalsupport',  intval($_POST['linkglobalsupport']));
@@ -54,7 +54,7 @@ function newmemberwidget_addon_admin_post(App $a)
 	DI::config()->set('newmemberwidget', 'localsupport',       trim($_POST['localsupportname'] ?? ''));
 }
 
-function newmemberwidget_addon_admin(App $a, string &$o)
+function newmemberwidget_addon_admin(string &$o)
 {
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/newmemberwidget');
 

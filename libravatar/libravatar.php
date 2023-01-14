@@ -24,18 +24,17 @@ function libravatar_install()
 	Logger::notice("registered libravatar in avatar_lookup hook");
 }
 
-function libravatar_load_config(App $a, ConfigFileManager $loader)
+function libravatar_load_config(ConfigFileManager $loader)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('libravatar'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	DI::app()->getConfigCache()->load($loader->loadAddonConfig('libravatar'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 /**
  * Looks up the avatar at Libravatar and returns the URL.
  *
- * @param $a array
  * @param &$b array
  */
-function libravatar_lookup(array $a, array &$b)
+function libravatar_lookup(array &$b)
 {
 	$default_avatar = DI::config()->get('libravatar', 'default_avatar');
 	if (empty($default_avatar)) {
@@ -57,7 +56,7 @@ function libravatar_lookup(array $a, array &$b)
 /**
  * Display admin settings for this addon
  */
-function libravatar_addon_admin(App $a, string &$o)
+function libravatar_addon_admin(string &$o)
 {
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/libravatar');
 
@@ -88,7 +87,7 @@ function libravatar_addon_admin(App $a, string &$o)
 /**
  * Save admin settings
  */
-function libravatar_addon_admin_post(App $a)
+function libravatar_addon_admin_post()
 {
 	DI::config()->set('libravatar', 'default_avatar', trim($_POST['avatar'] ?? 'identicon'));
 }

@@ -14,7 +14,7 @@ function calc_install() {
 	Hook::register('app_menu', 'addon/calc/calc.php', 'calc_app_menu');
 }
 
-function calc_app_menu(App $a, array &$b)
+function calc_app_menu(array &$b)
 {
 	$b['app_menu'][] = '<div class="app-title"><a href="calc">Calculator</a></div>'; 
 }
@@ -26,7 +26,7 @@ function calc_app_menu(App $a, array &$b)
  */
 function calc_module() {}
 
-function calc_init(App $a)
+function calc_init()
 {
 	$x = <<< EOT
 

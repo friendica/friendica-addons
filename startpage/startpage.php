@@ -18,7 +18,7 @@ function startpage_install() {
 	Hook::register('addon_settings_post', 'addon/startpage/startpage.php', 'startpage_settings_post');
 }
 
-function startpage_home_init(App $a, $b)
+function startpage_home_init($b)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -39,7 +39,7 @@ function startpage_home_init(App $a, $b)
  *
  */
 
-function startpage_settings_post(App $a, $post)
+function startpage_settings_post($post)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -56,7 +56,7 @@ function startpage_settings_post(App $a, $post)
  * Add our own settings info to the page.
  *
  */
-function startpage_settings(App &$a, array &$data)
+function startpage_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;

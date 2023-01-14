@@ -17,7 +17,7 @@ function viewsrc_install()
 	Hook::register('page_end', 'addon/viewsrc/viewsrc.php', 'viewsrc_page_end');
 }
 
-function viewsrc_page_end(App $a, string &$o)
+function viewsrc_page_end(string &$o)
 {
 	DI::page()['htmlhead'] .= <<< EOS
 	<script>
@@ -30,7 +30,7 @@ function viewsrc_page_end(App $a, string &$o)
 EOS;
 }
 
-function viewsrc_item_photo_menu(App $a, array &$b)
+function viewsrc_item_photo_menu(array &$b)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;

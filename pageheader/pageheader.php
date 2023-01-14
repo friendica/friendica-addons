@@ -17,9 +17,9 @@ function pageheader_install() {
     Hook::register('page_content_top', __FILE__, 'pageheader_fetch');
 }
 
-function pageheader_addon_admin(App &$a, string &$s)
+function pageheader_addon_admin(string &$s)
 {
-	if (!$a->isSiteAdmin()) {
+	if (!DI::userSession()->isSiteAdmin()) {
 		return;
 	}
 
@@ -39,9 +39,9 @@ function pageheader_addon_admin(App &$a, string &$s)
 	return;
 }
 
-function pageheader_addon_admin_post(App $a)
+function pageheader_addon_admin_post()
 {
-	if (!$a->isSiteAdmin()) {
+	if (!DI::userSession()->isSiteAdmin()) {
 		return;
 	}
 
@@ -52,7 +52,7 @@ function pageheader_addon_admin_post(App $a)
 	}
 }
 
-function pageheader_fetch(App $a, string &$b)
+function pageheader_fetch(string &$b)
 {
 	if (file_exists('pageheader.html')) {
 		$s = file_get_contents('pageheader.html');

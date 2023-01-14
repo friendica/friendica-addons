@@ -21,11 +21,9 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 define('PW_LEN', 32); // number of characters to use for random passwords
 
-function saml_module($a)
-{
-}
+function saml_module() {}
 
-function saml_init(App $a)
+function saml_init()
 {
 	if (DI::args()->getArgc() < 2) {
 		return;
@@ -41,7 +39,7 @@ function saml_init(App $a)
 			saml_metadata();
 			break;
 		case 'sso':
-			saml_sso_reply($a);
+			saml_sso_reply();
 			break;
 		case 'slo':
 			saml_slo_reply();
@@ -79,12 +77,12 @@ function saml_install()
 	Hook::register('footer', __FILE__, 'saml_footer');
 }
 
-function saml_head(App $a, string &$body)
+function saml_head(string &$body)
 {
 	DI::page()->registerStylesheet(__DIR__ . '/saml.css');
 }
 
-function saml_footer(App $a, string &$body)
+function saml_footer(string &$body)
 {
 	$fragment = addslashes(BBCode::convert(DI::config()->get('saml', 'settings_statement')));
 	$body .= <<<EOL
@@ -108,7 +106,7 @@ function saml_is_configured()
 		DI::config()->get('saml', 'idp_cert');
 }
 
-function saml_sso_initiate(App $a, string &$body)
+function saml_sso_initiate(string &$body)
 {
 	if (!saml_is_configured()) {
 		Logger::warning('SAML SSO tried to trigger, but the SAML addon is not configured yet!');
@@ -124,7 +122,7 @@ function saml_sso_initiate(App $a, string &$body)
 	exit();
 }
 
-function saml_sso_reply(App $a)
+function saml_sso_reply()
 {
 	$auth = new \OneLogin\Saml2\Auth(saml_settings());
 	$requestID = null;
@@ -165,7 +163,7 @@ function saml_sso_reply(App $a)
 	}
 
 	if (!empty($user['uid'])) {
-		DI::auth()->setForUser($a, $user);
+		DI::auth()->setForUser($user);
 	}
 
 	if (isset($_POST['RelayState']) && Utils::getSelfURL() != $_POST['RelayState']) {
@@ -173,7 +171,7 @@ function saml_sso_reply(App $a)
 	}
 }
 
-function saml_slo_initiate(App $a)
+function saml_slo_initiate()
 {
 	if (!saml_is_configured()) {
 		Logger::warning('SAML SLO tried to trigger, but the SAML addon is not configured yet!');
@@ -224,7 +222,7 @@ function saml_input($key, $label, $description)
 	];
 }
 
-function saml_addon_admin(App $a, string &$o)
+function saml_addon_admin(string &$o)
 {
 	$form =
 		saml_input(
@@ -280,7 +278,7 @@ function saml_addon_admin(App $a, string &$o)
 	$o = Renderer::replaceMacros($t, $form);
 }
 
-function saml_addon_admin_post(App $a)
+function saml_addon_admin_post()
 {
 	$set = function ($key) {
 		$val = (!empty($_POST[$key]) ? trim($_POST[$key]) : '');

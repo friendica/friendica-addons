@@ -24,7 +24,7 @@ function webdav_storage_uninstall()
 	DI::storageManager()->unregister(WebDav::class);
 }
 
-function webdav_storage_instance(App $a, array &$data)
+function webdav_storage_instance(array &$data)
 {
 	if ($data['name'] == WebDav::getName()) {
 		$config          = new WebDavConfig(DI::l10n(), DI::config(), DI::httpClient());
@@ -32,7 +32,7 @@ function webdav_storage_instance(App $a, array &$data)
 	}
 }
 
-function webdav_storage_config(App $a, array &$data)
+function webdav_storage_config(array &$data)
 {
 	if ($data['name'] == WebDav::getName()) {
 		$data['storage_config'] = new WebDavConfig(DI::l10n(), DI::config(), DI::httpClient());

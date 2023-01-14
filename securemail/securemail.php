@@ -31,12 +31,11 @@ function securemail_install()
  *
  * @link  https://github.com/friendica/friendica/blob/develop/doc/Addons.md#addon_settings 'addon_settings' hook
  *
- * @param App    $a App instance
- * @param string $s output html
+ * @param array $data
  *
  * @see   App
  */
-function securemail_settings(App &$a, array &$data)
+function securemail_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -67,12 +66,11 @@ function securemail_settings(App &$a, array &$data)
  *
  * @link  https://github.com/friendica/friendica/blob/develop/doc/Addons.md#addon_settings_post 'addon_settings_post' hook
  *
- * @param App   $a App instance
  * @param array $b hook data
  *
  * @see   App
  */
-function securemail_settings_post(App &$a, array &$b)
+function securemail_settings_post(array &$b)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -103,12 +101,11 @@ function securemail_settings_post(App &$a, array &$b)
  *
  * @link  https://github.com/friendica/friendica/blob/develop/doc/Addons.md#emailer_send_prepare 'emailer_send_prepare' hook
  *
- * @param App   $a App instance
  * @param IEmail $email Email
  *
  * @see   App
  */
-function securemail_emailer_send_prepare(App &$a, IEmail &$email)
+function securemail_emailer_send_prepare(IEmail &$email)
 {
 	if (empty($email->getRecipientUid())) {
 		return;

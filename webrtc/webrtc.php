@@ -16,12 +16,12 @@ function webrtc_install() {
 	Hook::register('app_menu', 'addon/webrtc/webrtc.php', 'webrtc_app_menu');
 }
 
-function webrtc_app_menu(App $a, array &$b)
+function webrtc_app_menu(array &$b)
 {
 	$b['app_menu'][] = '<div class="app-title"><a href="webrtc">' . DI::l10n()->t('WebRTC Videochat') . '</a></div>';
 }
 
-function webrtc_addon_admin (App $a, string &$o)
+function webrtc_addon_admin (string &$o)
 {
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/webrtc/' );
 	$o = Renderer::replaceMacros($t, [
@@ -35,7 +35,7 @@ function webrtc_addon_admin (App $a, string &$o)
 	]);
 }
 
-function webrtc_addon_admin_post (App $a)
+function webrtc_addon_admin_post ()
 {
 	DI::config()->set('webrtc', 'webrtcurl', trim($_POST['webrtcurl'] ?? ''));
 }
@@ -47,7 +47,7 @@ function webrtc_addon_admin_post (App $a)
  */
 function webrtc_module() {}
 
-function webrtc_content(App $a): string
+function webrtc_content(): string
 {
 	$o = '';
 

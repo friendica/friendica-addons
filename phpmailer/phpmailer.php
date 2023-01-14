@@ -23,16 +23,15 @@ function phpmailer_install()
 	Hook::register('emailer_send_prepare', __FILE__, 'phpmailer_emailer_send_prepare', 5);
 }
 
-function phpmailer_load_config(App $a, ConfigFileManager $loader)
+function phpmailer_load_config(ConfigFileManager $loader)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('phpmailer'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	DI::app()->getConfigCache()->load($loader->loadAddonConfig('phpmailer'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 /**
- * @param App $a
  * @param IEmail $email
  */
-function phpmailer_emailer_send_prepare(App $a, IEmail &$email)
+function phpmailer_emailer_send_prepare(IEmail &$email)
 {
 	// Passing `true` enables exceptions
 	$mailer = new PHPMailer(true);

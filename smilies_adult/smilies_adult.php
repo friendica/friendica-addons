@@ -17,7 +17,7 @@ function smilies_adult_install() {
 	Hook::register('smilie', 'addon/smilies_adult/smilies_adult.php', 'smilies_adult_smilies');
 }
 
-function smilies_adult_smilies(App $a, array &$b)
+function smilies_adult_smilies(array &$b)
 {
 	$b['texts'][] = '(o)(o)';
 	$b['icons'][] = '<img class="smiley" src="' . DI::baseUrl()->get() . '/addon/smilies_adult/icons/tits.gif' . '" alt="' . '(o)(o)' . '" />';

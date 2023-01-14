@@ -36,19 +36,19 @@ function forumdirectory_install()
  */
 function forumdirectory_module() {}
 
-function forumdirectory_app_menu(App $a, array &$b)
+function forumdirectory_app_menu(array &$b)
 {
 	$b['app_menu'][] = '<div class="app-title"><a href="forumdirectory">' . DI::l10n()->t('Forum Directory') . '</a></div>';
 }
 
-function forumdirectory_init(App $a)
+function forumdirectory_init()
 {
 	if (DI::userSession()->getLocalUserId()) {
 		DI::page()['aside'] .= Widget::findPeople();
 	}
 }
 
-function forumdirectory_post(App $a)
+function forumdirectory_post()
 {
 	global $forumdirectory_search;
 
@@ -57,7 +57,7 @@ function forumdirectory_post(App $a)
 	}
 }
 
-function forumdirectory_content(App $a)
+function forumdirectory_content()
 {
 	global $forumdirectory_search;
 

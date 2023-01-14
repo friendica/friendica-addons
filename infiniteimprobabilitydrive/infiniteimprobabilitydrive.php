@@ -15,7 +15,7 @@ function infiniteimprobabilitydrive_install()
 	Hook::register('app_menu', 'addon/infiniteimprobabilitydrive/infiniteimprobabilitydrive.php', 'infiniteimprobabilitydrive_app_menu');
 }
 
-function infiniteimprobabilitydrive_app_menu(App $a, array &$b)
+function infiniteimprobabilitydrive_app_menu(array &$b)
 {
 	$b['app_menu'][] = '<div class="app-title"><a href="infiniteimprobabilitydrive">' . DI::l10n()->t('Infinite Improbability Drive') . '</a></div>';
 }
@@ -28,7 +28,7 @@ function infiniteimprobabilitydrive_app_menu(App $a, array &$b)
 function infiniteimprobabilitydrive_module() {}
 
 
-function infiniteimprobabilitydrive_content(App $a)
+function infiniteimprobabilitydrive_content()
 {
 	$baseurl = DI::baseUrl()->get() . '/addon/infiniteimprobabilitydrive';
 	$o = '';

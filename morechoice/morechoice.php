@@ -19,7 +19,7 @@ function morechoice_install() {
 	Hook::register('marital_selector', 'addon/morechoice/morechoice.php', 'morechoice_marital_selector');
 }
 
-function morechoice_gender_selector(App $a, array &$b) {
+function morechoice_gender_selector(array &$b) {
 	$b['Androgyne'] = DI::l10n()->t('Androgyne');
 	$b['Bear'] = DI::l10n()->t('Bear');
 	$b['Bigender'] = DI::l10n()->t('Bigender');
@@ -45,7 +45,7 @@ function morechoice_gender_selector(App $a, array &$b) {
 	$b['Hard to tell these days'] = DI::l10n()->t('Hard to tell these days');
 }
 
-function morechoice_sexpref_selector(App $a, array &$b) {
+function morechoice_sexpref_selector(array &$b) {
 	$b['Girls with big tits'] = DI::l10n()->t('Girls with big tits');
 	$b['Millionaires'] = DI::l10n()->t('Millionaires');
 	$b['Guys with big schlongs'] = DI::l10n()->t('Guys with big schlongs');
@@ -98,7 +98,7 @@ function morechoice_sexpref_selector(App $a, array &$b) {
 	$b['I\'d rather just have some chocolate'] = DI::l10n()->t('I\'d rather just have some chocolate');
 }
 
-function morechoice_marital_selector(App $a, array &$b) {
+function morechoice_marital_selector(array &$b) {
 	$b['Married to my job'] = DI::l10n()->t('Married to my job');
 	$b['Polygamist'] = DI::l10n()->t('Polygamist');
 	$b['Half married'] = DI::l10n()->t('Half married');

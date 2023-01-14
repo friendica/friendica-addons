@@ -27,12 +27,12 @@ function public_server_install()
 	Hook::register('logged_in', 'addon/public_server/public_server.php', 'public_server_login');
 }
 
-function public_server_load_config(App $a, ConfigFileManager $loader)
+function public_server_load_config(ConfigFileManager $loader)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('public_server'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	DI::app()->getConfigCache()->load($loader->loadAddonConfig('public_server'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
-function public_server_register_account(App $a, $b)
+function public_server_register_account($b)
 {
 	$uid = $b;
 
@@ -46,7 +46,7 @@ function public_server_register_account(App $a, $b)
 	DBA::update('user', $fields, ['uid' => $uid]);
 }
 
-function public_server_cron(App $a, $b)
+function public_server_cron($b)
 {
 	Logger::notice("public_server: cron start");
 
@@ -100,7 +100,7 @@ function public_server_cron(App $a, $b)
 	Logger::notice("public_server: cron end");
 }
 
-function public_server_enotify(App $a, array &$b)
+function public_server_enotify(array &$b)
 {
 	if (!empty($b['params']) && $b['params']['type'] == Notification\Type::SYSTEM
 		&& !empty($b['params']['system_type']) && $b['params']['system_type'] === 'public_server_expire') {
@@ -111,7 +111,7 @@ function public_server_enotify(App $a, array &$b)
 	}
 }
 
-function public_server_login(App $a, $b)
+function public_server_login($b)
 {
 	$days = DI::config()->get('public_server', 'expiredays');
 	if (!$days) {
@@ -123,7 +123,7 @@ function public_server_login(App $a, $b)
 	DBA::update('user', $fields, $condition);
 }
 
-function public_server_addon_admin_post(App $a)
+function public_server_addon_admin_post()
 {
 	BaseModule::checkFormSecurityTokenRedirectOnError('/admin/addons/publicserver', 'publicserver');
 
@@ -135,7 +135,7 @@ function public_server_addon_admin_post(App $a)
 	DI::config()->set('public_server', 'flagpostsexpire', trim($_POST['flagpostsexpire'] ?? ''));
 }
 
-function public_server_addon_admin(App $a, string &$o)
+function public_server_addon_admin(string &$o)
 {
 	$token = BaseModule::getFormSecurityToken('publicserver');
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/public_server');

@@ -20,7 +20,7 @@ function mathjax_install()
 	Hook::register('addon_settings_post', __FILE__, 'mathjax_settings_post');
 }
 
-function mathjax_settings_post(App $a)
+function mathjax_settings_post()
 {
 	if (!DI::userSession()->getLocalUserId() || empty($_POST['mathjax-submit'])) {
 		return;
@@ -29,7 +29,7 @@ function mathjax_settings_post(App $a)
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'mathjax', 'use', intval($_POST['mathjax_use']));
 }
 
-function mathjax_settings(App $a, array &$data)
+function mathjax_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -50,7 +50,7 @@ function mathjax_settings(App $a, array &$data)
 	];
 }
 
-function mathjax_footer(App $a, string &$body)
+function mathjax_footer(string &$body)
 {
 	//  if the visitor of the page is not a local_user, use MathJax
 	//  otherwise check the users settings.

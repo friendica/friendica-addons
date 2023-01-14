@@ -16,7 +16,7 @@ function tictac_install()
 	Hook::register('app_menu', 'addon/tictac/tictac.php', 'tictac_app_menu');
 }
 
-function tictac_app_menu(App $a, array &$b)
+function tictac_app_menu(array &$b)
 {
 	$b['app_menu'][] = '<div class="app-title"><a href="tictac">' . DI::l10n()->t('Three Dimensional Tic-Tac-Toe') . '</a></div>';
 }
@@ -28,7 +28,7 @@ function tictac_app_menu(App $a, array &$b)
  */
 function tictac_module() {}
 
-function tictac_content(App $a) {
+function tictac_content() {
 
 	$o = '';
 

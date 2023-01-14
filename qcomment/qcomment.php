@@ -31,12 +31,12 @@ function qcomment_install()
 	Hook::register('footer'             , __FILE__, 'qcomment_footer');
 }
 
-function qcomment_footer(App $a, string &$body)
+function qcomment_footer(string &$body)
 {
 	DI::page()->registerFooterScript('addon/qcomment/qcomment.js');
 }
 
-function qcomment_addon_settings(App &$a, array &$data)
+function qcomment_addon_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -57,7 +57,7 @@ function qcomment_addon_settings(App &$a, array &$data)
 	];
 }
 
-function qcomment_addon_settings_post(App $a, array &$b)
+function qcomment_addon_settings_post(array &$b)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;

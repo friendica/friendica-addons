@@ -14,7 +14,7 @@ use Psr\Log\LogLevel;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-function monolog_install(App $a)
+function monolog_install()
 {
 	Hook::register('logger_instance' , __FILE__, 'monolog_instance');
 }
@@ -24,7 +24,7 @@ function monolog_uninstall()
 	Hook::unregister('logger_instance', __FILE__, 'monolog_instance');
 }
 
-function monolog_instance(App $a, array &$data)
+function monolog_instance(array &$data)
 {
 	if ($data['name'] !== 'monolog') {
 		return;

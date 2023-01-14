@@ -43,7 +43,7 @@ function obfuscate_email (string $s): string
 	return $s;
 }
 
-function impressum_footer(App $a, string &$body)
+function impressum_footer(string &$body)
 {
 	$text = ProxyUtils::proxifyHtml(BBCode::convert(DI::config()->get('impressum', 'footer_text')));
 
@@ -54,12 +54,12 @@ function impressum_footer(App $a, string &$body)
 	}
 }
 
-function impressum_load_config(App $a, ConfigFileManager $loader)
+function impressum_load_config(ConfigFileManager $loader)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('impressum'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	DI::app()->getConfigCache()->load($loader->loadAddonConfig('impressum'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
-function impressum_show(App $a, string &$body)
+function impressum_show(string &$body)
 {
 	$body          .= '<h3>' . DI::l10n()->t('Impressum') . '</h3>';
 	$owner         = DI::config()->get('impressum', 'owner');
@@ -92,7 +92,7 @@ function impressum_show(App $a, string &$body)
 	}
 }
 
-function impressum_addon_admin_post (App $a)
+function impressum_addon_admin_post ()
 {
 	DI::config()->set('impressum', 'owner', strip_tags(trim($_POST['owner'] ?? '')));
 	DI::config()->set('impressum', 'ownerprofile', strip_tags(trim($_POST['ownerprofile'] ?? '')));
@@ -102,7 +102,7 @@ function impressum_addon_admin_post (App $a)
 	DI::config()->set('impressum', 'footer_text', strip_tags(trim($_POST['footer_text'] ?? '')));
 }
 
-function impressum_addon_admin (App $a, string &$o)
+function impressum_addon_admin (string &$o)
 {
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/impressum/' );
 	$o = Renderer::replaceMacros($t, [
