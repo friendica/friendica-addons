@@ -55,7 +55,7 @@ function blackout_install() {
 	Hook::register('page_header', 'addon/blackout/blackout.php', 'blackout_redirect');
 }
 
-function blackout_redirect (App $a, $b)
+function blackout_redirect ($b)
 {
 	// if we have a logged in user, don't throw her out
 	if (DI::userSession()->getLocalUserId()) {
@@ -83,7 +83,7 @@ function blackout_redirect (App $a, $b)
 	}
 }
 
-function blackout_addon_admin(App $a, string &$o)
+function blackout_addon_admin(string &$o)
 {
 	$mystart = DI::config()->get('blackout','begindate');
 	if (! is_string($mystart)) { $mystart = 'YYYY-MM-DD hh:mm'; }
@@ -112,7 +112,7 @@ function blackout_addon_admin(App $a, string &$o)
 	]);
 }
 
-function blackout_addon_admin_post (App $a)
+function blackout_addon_admin_post ()
 {
 	DI::config()->set('blackout', 'begindate', trim($_POST['startdate']));
 	DI::config()->set('blackout', 'enddate', trim($_POST['enddate']));

@@ -18,7 +18,7 @@ function googlemaps_install()
 	Logger::notice('installed googlemaps');
 }
 
-function googlemaps_location(App $a, &$item)
+function googlemaps_location(&$item)
 {
 	if (!(strlen($item['location']) || strlen($item['coord']))) {
 		return;

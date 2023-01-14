@@ -27,7 +27,7 @@ function group_text_install()
  *
  */
 
-function group_text_settings_post(App $a, array $post)
+function group_text_settings_post(array $post)
 {
 	if (!DI::userSession()->getLocalUserId() || empty($post['group_text-submit'])) {
 		return;
@@ -44,7 +44,7 @@ function group_text_settings_post(App $a, array $post)
  *
  */
 
-function group_text_settings(App &$a, array &$data)
+function group_text_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;

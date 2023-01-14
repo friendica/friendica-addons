@@ -17,7 +17,7 @@ function markdown_install() {
 	Hook::register('addon_settings_post',   __FILE__, 'markdown_addon_settings_post');
 }
 
-function markdown_addon_settings(App $a, array &$data)
+function markdown_addon_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -37,7 +37,7 @@ function markdown_addon_settings(App $a, array &$data)
 	];
 }
 
-function markdown_addon_settings_post(App $a, array &$b)
+function markdown_addon_settings_post(array &$b)
 {
 	if (!DI::userSession()->getLocalUserId() || empty($_POST['markdown-submit'])) {
 		return;
@@ -46,7 +46,7 @@ function markdown_addon_settings_post(App $a, array &$b)
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'markdown', 'enabled', intval($_POST['enabled']));
 }
 
-function markdown_post_local_start(App $a, &$request) {
+function markdown_post_local_start(&$request) {
 	if (empty($request['body']) || !DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'markdown', 'enabled')) {
 		return;
 	}

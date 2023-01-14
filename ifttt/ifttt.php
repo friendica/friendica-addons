@@ -32,7 +32,7 @@ function ifttt_module() {}
 
 function ifttt_content() {}
 
-function ifttt_settings(App $a, array &$data)
+function ifttt_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -55,7 +55,7 @@ function ifttt_settings(App $a, array &$data)
 			'new_photo_upload_body'   => DI::l10n()->t('Body for "new photo upload"'),
 			'new_link_post_body'      => DI::l10n()->t('Body for "new link post"'),
 		],
-		'$url'                     => DI::baseUrl()->get() . '/ifttt/' . $a->getLoggedInUserNickname(),
+		'$url'                     => DI::baseUrl()->get() . '/ifttt/' . DI::userSession()->getLocalUserNickname(),
 		'$new_status_message_body' => 'key=' . $key . '&type=status&msg=<<<{{Message}}>>>&date=<<<{{UpdatedAt}}>>>&url=<<<{{PageUrl}}>>>',
 		'$new_photo_upload_body'   => 'key=' . $key . '&type=photo&link=<<<{{Link}}>>>&image=<<<{{ImageSource}}>>>&msg=<<<{{Caption}}>>>&date=<<<{{CreatedAt}}>>>&url=<<<{{PageUrl}}>>>',
 		'$new_link_post_body'      => 'key=' . $key . '&type=link&link=<<<{{Link}}>>>&title=<<<{{Title}}>>>&msg=<<<{{Message}}>>>&description=<<<{{Description}}>>>&date=<<<{{CreatedAt}}>>>&url=<<<{{PageUrl}}>>>',
@@ -77,7 +77,7 @@ function ifttt_settings_post()
 	}
 }
 
-function ifttt_post(App $a)
+function ifttt_post()
 {
 	if (DI::args()->getArgc() != 2) {
 		return;

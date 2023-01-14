@@ -62,7 +62,7 @@ function statusnet_install()
 	Logger::notice('installed GNU Social');
 }
 
-function statusnet_jot_nets(App $a, array &$jotnets_fields)
+function statusnet_jot_nets(array &$jotnets_fields)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -80,7 +80,7 @@ function statusnet_jot_nets(App $a, array &$jotnets_fields)
 	}
 }
 
-function statusnet_settings_post(App $a, $post)
+function statusnet_settings_post($post)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -178,7 +178,7 @@ function statusnet_settings_post(App $a, $post)
 	}
 }
 
-function statusnet_settings(App $a, array &$data)
+function statusnet_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -288,7 +288,7 @@ function statusnet_settings(App $a, array &$data)
 	];
 }
 
-function statusnet_hook_fork(App $a, array &$b)
+function statusnet_hook_fork(array &$b)
 {
 	if ($b['name'] != 'notifier_normal') {
 		return;
@@ -302,7 +302,7 @@ function statusnet_hook_fork(App $a, array &$b)
 	}
 }
 
-function statusnet_post_local(App $a, array &$b)
+function statusnet_post_local(array &$b)
 {
 	if ($b['edit']) {
 		return;
@@ -331,7 +331,7 @@ function statusnet_post_local(App $a, array &$b)
 	$b['postopts'] .= 'statusnet';
 }
 
-function statusnet_post_hook(App $a, array &$b)
+function statusnet_post_hook(array &$b)
 {
 	/**
 	 * Post to GNU Social
@@ -426,7 +426,7 @@ function statusnet_post_hook(App $a, array &$b)
 	}
 }
 
-function statusnet_addon_admin_post(App $a)
+function statusnet_addon_admin_post()
 {
 	$sites = [];
 
@@ -458,7 +458,7 @@ function statusnet_addon_admin_post(App $a)
 	$sites = DI::config()->set('statusnet', 'sites', $sites);
 }
 
-function statusnet_addon_admin(App $a, string &$o)
+function statusnet_addon_admin(string &$o)
 {
 	$sites = DI::config()->get('statusnet', 'sites');
 	$sitesform = [];

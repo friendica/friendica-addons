@@ -36,7 +36,7 @@ function discourse_install()
 	Hook::register('connector_settings_post', __FILE__, 'discourse_settings_post');
 }
 
-function discourse_settings(App $a, array &$data)
+function discourse_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -58,7 +58,7 @@ function discourse_settings(App $a, array &$data)
 	];
 }
 
-function discourse_settings_post(App $a)
+function discourse_settings_post()
 {
 	if (!DI::userSession()->getLocalUserId() || empty($_POST['discourse-submit'])) {
                 return;
@@ -67,7 +67,7 @@ function discourse_settings_post(App $a)
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'discourse', 'enabled', intval($_POST['enabled']));
 }
 
-function discourse_email_getmessage(App $a, &$message)
+function discourse_email_getmessage(&$message)
 {
 	if (empty($message['item']['uid'])) {
 		return;

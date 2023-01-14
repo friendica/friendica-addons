@@ -25,7 +25,7 @@ function libertree_install()
 	Hook::register('connector_settings_post', 'addon/libertree/libertree.php', 'libertree_settings_post');
 }
 
-function libertree_jot_nets(App &$a, array &$jotnets_fields)
+function libertree_jot_nets(array &$jotnets_fields)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -43,7 +43,7 @@ function libertree_jot_nets(App &$a, array &$jotnets_fields)
 	}
 }
 
-function libertree_settings(App $a, array &$data)
+function libertree_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -71,7 +71,7 @@ function libertree_settings(App $a, array &$data)
 	];
 }
 
-function libertree_settings_post(App $a, array &$b)
+function libertree_settings_post(array &$b)
 {
 	if (!empty($_POST['libertree-submit'])) {
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(),'libertree','post',intval($_POST['libertree']));
@@ -83,7 +83,7 @@ function libertree_settings_post(App $a, array &$b)
 
 }
 
-function libertree_hook_fork(App &$a, array &$b)
+function libertree_hook_fork(array &$b)
 {
 	if ($b['name'] != 'notifier_normal') {
 		return;
@@ -98,7 +98,7 @@ function libertree_hook_fork(App &$a, array &$b)
 	}
 }
 
-function libertree_post_local(App $a, array &$b)
+function libertree_post_local(array &$b)
 {
 
 	// This can probably be changed to allow editing by pointing to a different API endpoint
@@ -134,7 +134,7 @@ function libertree_post_local(App $a, array &$b)
 	$b['postopts'] .= 'libertree';
 }
 
-function libertree_send(App $a, array &$b)
+function libertree_send(array &$b)
 {
 	Logger::notice('libertree_send: invoked');
 

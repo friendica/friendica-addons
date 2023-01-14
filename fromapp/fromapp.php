@@ -21,7 +21,7 @@ function fromapp_install()
 	Logger::notice("installed fromapp");
 }
 
-function fromapp_settings_post(App $a, $post)
+function fromapp_settings_post($post)
 {
 	if (!DI::userSession()->getLocalUserId() || empty($_POST['fromapp-submit'])) {
 		return;
@@ -31,7 +31,7 @@ function fromapp_settings_post(App $a, $post)
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'fromapp', 'force', intval($_POST['fromapp-force']));
 }
 
-function fromapp_settings(App &$a, array &$data)
+function fromapp_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -53,7 +53,7 @@ function fromapp_settings(App &$a, array &$data)
 	];
 }
 
-function fromapp_post_hook(App $a, &$item)
+function fromapp_post_hook(&$item)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;

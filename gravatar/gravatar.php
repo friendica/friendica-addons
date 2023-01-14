@@ -26,18 +26,17 @@ function gravatar_install() {
 	Logger::notice("registered gravatar in avatar_lookup hook");
 }
 
-function gravatar_load_config(App $a, ConfigFileManager $loader)
+function gravatar_load_config(ConfigFileManager $loader)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('gravatar'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	DI::app()->getConfigCache()->load($loader->loadAddonConfig('gravatar'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 /**
  * Looks up the avatar at gravatar.com and returns the URL.
  *
- * @param $a array
  * @param &$b array
  */
-function gravatar_lookup(App $a, array &$b)
+function gravatar_lookup(array &$b)
 {
 	$default_avatar = DI::config()->get('gravatar', 'default_avatar');
 	$rating = DI::config()->get('gravatar', 'rating');
@@ -62,7 +61,7 @@ function gravatar_lookup(App $a, array &$b)
 /**
  * Display admin settings for this addon
  */
-function gravatar_addon_admin (App $a, string &$o)
+function gravatar_addon_admin (string &$o)
 {
 	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/gravatar/" );
 
@@ -109,7 +108,7 @@ function gravatar_addon_admin (App $a, string &$o)
 /**
  * Save admin settings
  */
-function gravatar_addon_admin_post (App $a)
+function gravatar_addon_admin_post ()
 {
 	BaseModule::checkFormSecurityToken('gravatarsave');
 

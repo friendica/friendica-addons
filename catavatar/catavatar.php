@@ -35,7 +35,7 @@ function catavatar_install()
 /**
  * Cat avatar user settings page
  */
-function catavatar_addon_settings(App $a, array &$data)
+function catavatar_addon_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -63,7 +63,7 @@ function catavatar_addon_settings(App $a, array &$data)
 /**
  * Cat avatar user settings POST handle
  */
-function catavatar_addon_settings_post(App $a, &$s)
+function catavatar_addon_settings_post(&$s)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -115,10 +115,9 @@ function catavatar_addon_settings_post(App $a, &$s)
 /**
  * Returns the URL to the cat avatar
  *
- * @param $a array
  * @param &$b array
  */
-function catavatar_lookup(App $a, array &$b)
+function catavatar_lookup(array &$b)
 {
 	$user = DBA::selectFirst('user', ['uid'], ['email' => $b['email']]);
 	if (DBA::isResult($user)) {
@@ -150,7 +149,7 @@ function catavatar_module() {}
  * @throws NotFoundException
  *
  */
-function catavatar_content(App $a)
+function catavatar_content()
 {
 	if (DI::args()->getArgc() < 2 || DI::args()->getArgc() > 3) {
 		throw new NotFoundException(); // this should be catched on index and show default "not found" page.

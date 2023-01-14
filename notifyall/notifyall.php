@@ -22,15 +22,15 @@ use Friendica\DI;
  */
 function notifyall_module() {}
 
-function notifyall_addon_admin(App $a, string &$o)
+function notifyall_addon_admin(string &$o)
 {
 	$o = '<div></div>&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . DI::baseUrl()->get() . '/notifyall">' . DI::l10n()->t('Send email to all members') . '</a></br/>';
 }
 
 
-function notifyall_post(App $a)
+function notifyall_post()
 {
-	if (!$a->isSiteAdmin()) {
+	if (!DI::userSession()->isSiteAdmin()) {
 		return;
 	}
 
@@ -67,9 +67,9 @@ function notifyall_post(App $a)
 	DI::baseUrl()->redirect('admin');
 }
 
-function notifyall_content(App $a)
+function notifyall_content()
 {
-	if (!$a->isSiteAdmin()) {
+	if (!DI::userSession()->isSiteAdmin()) {
 		return '';
 	}
 

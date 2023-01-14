@@ -27,7 +27,7 @@ function wppost_install()
 	Hook::register('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
 }
 
-function wppost_jot_nets(App &$a, array &$jotnets_fields)
+function wppost_jot_nets(array &$jotnets_fields)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -46,7 +46,7 @@ function wppost_jot_nets(App &$a, array &$jotnets_fields)
 }
 
 
-function wppost_settings(App &$a, array &$data)
+function wppost_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -82,7 +82,7 @@ function wppost_settings(App &$a, array &$data)
 }
 
 
-function wppost_settings_post(App $a, array &$b)
+function wppost_settings_post(array &$b)
 {
 	if(!empty($_POST['wppost-submit'])) {
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'post'           , intval($_POST['wppost']));
@@ -98,7 +98,7 @@ function wppost_settings_post(App $a, array &$b)
 	}
 }
 
-function wppost_hook_fork(App $a, array &$b)
+function wppost_hook_fork(array &$b)
 {
 	if ($b['name'] != 'notifier_normal') {
 		return;
@@ -113,7 +113,7 @@ function wppost_hook_fork(App $a, array &$b)
 	}
 }
 
-function wppost_post_local(App $a, array &$b) {
+function wppost_post_local(array &$b) {
 
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 
@@ -151,7 +151,7 @@ function wppost_post_local(App $a, array &$b) {
 
 
 
-function wppost_send(App $a, array &$b)
+function wppost_send(array &$b)
 {
 	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;

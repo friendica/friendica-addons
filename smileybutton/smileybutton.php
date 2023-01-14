@@ -17,11 +17,10 @@ function smileybutton_install()
 	Hook::register('jot_tool', 'addon/smileybutton/smileybutton.php', 'smileybutton_jot_tool');
 }
 
-function smileybutton_jot_tool(App $a, string &$body)
+function smileybutton_jot_tool(string &$body)
 {
 	// Disable if theme is quattro
-	// TODO add style for quattro
-	if ($a->getCurrentTheme() == 'quattro') {
+	if (DI::app()->getCurrentTheme() == 'quattro') {
 		return;
 	}
 
@@ -98,7 +97,7 @@ function smileybutton_jot_tool(App $a, string &$body)
 	$s .= '</tr></table>';
 
 	//Add css to header
-	$css_file = __DIR__ . '/view/' . $a->getCurrentTheme() . '.css';
+	$css_file = __DIR__ . '/view/' . DI::app()->getCurrentTheme() . '.css';
 	if (!file_exists($css_file)) {
 		$css_file = __DIR__ . '/view/default.css';
 	}
@@ -106,7 +105,7 @@ function smileybutton_jot_tool(App $a, string &$body)
 	DI::page()->registerStylesheet($css_file);
 
 	//Get the correct image for the theme
-	$image = 'addon/smileybutton/view/' . $a->getCurrentTheme() . '.png';
+	$image = 'addon/smileybutton/view/' . DI::app()->getCurrentTheme() . '.png';
 	if (!file_exists($image)) {
 		$image = 'addon/smileybutton/view/default.png';
 	}

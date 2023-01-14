@@ -27,7 +27,7 @@ function blockem_install()
 	Hook::register('enotify_store'              , 'addon/blockem/blockem.php', 'blockem_enotify_store');
 }
 
-function blockem_addon_settings(App $a, array &$data)
+function blockem_addon_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -48,7 +48,7 @@ function blockem_addon_settings(App $a, array &$data)
 	];
 }
 
-function blockem_addon_settings_post(App $a, array &$b)
+function blockem_addon_settings_post(array &$b)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -59,7 +59,7 @@ function blockem_addon_settings_post(App $a, array &$b)
 	}
 }
 
-function blockem_enotify_store(App $a, array &$b)
+function blockem_enotify_store(array &$b)
 {
 	$words = DI::pConfig()->get($b['uid'], 'blockem', 'words');
 
@@ -90,7 +90,7 @@ function blockem_enotify_store(App $a, array &$b)
 	}
 }
 
-function blockem_prepare_body_content_filter(App $a, array &$hook_data)
+function blockem_prepare_body_content_filter(array &$hook_data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -122,14 +122,14 @@ function blockem_prepare_body_content_filter(App $a, array &$hook_data)
 	}
 }
 
-function blockem_display_item(App $a, array &$b = null)
+function blockem_display_item(array &$b = null)
 {
 	if (!empty($b['output']['body']) && strstr($b['output']['body'], 'id="blockem-wrap-')) {
 		$b['output']['thumb'] = DI::baseUrl()->get() . "/images/person-80.jpg";
 	}
 }
 
-function blockem_conversation_start(App $a, array &$b)
+function blockem_conversation_start(array &$b)
 {
 	global $blockem_words;
 
@@ -161,7 +161,7 @@ function blockemUnblock(author) {
 EOT;
 }
 
-function blockem_item_photo_menu(App $a, array &$b)
+function blockem_item_photo_menu(array &$b)
 {
 	global $blockem_words;
 
@@ -194,7 +194,7 @@ function blockem_item_photo_menu(App $a, array &$b)
  */
 function blockem_module() {}
 
-function blockem_init(App $a)
+function blockem_init()
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;

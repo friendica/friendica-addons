@@ -43,12 +43,12 @@ function ldapauth_install()
 	Hook::register('authenticate', 'addon/ldapauth/ldapauth.php', 'ldapauth_hook_authenticate');
 }
 
-function ldapauth_load_config(App $a, ConfigFileManager $loader)
+function ldapauth_load_config(ConfigFileManager $loader)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('ldapauth'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	DI::app()->getConfigCache()->load($loader->loadAddonConfig('ldapauth'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
-function ldapauth_hook_authenticate(App $a, array &$b)
+function ldapauth_hook_authenticate(array &$b)
 {
 	$user = ldapauth_authenticate($b['username'], $b['password']);
 	if (!empty($user['uid'])) {

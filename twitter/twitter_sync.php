@@ -5,8 +5,6 @@ use Friendica\DI;
 
 function twitter_sync_run($argv, $argc)
 {
-	$a = Friendica\DI::app();
-
 	require_once 'addon/twitter/twitter.php';
 
 	if (function_exists('sys_getloadavg')) {
@@ -26,8 +24,8 @@ function twitter_sync_run($argv, $argc)
 	$uid = intval($argv[2]);
 
 	if ($mode == 1) {
-		twitter_fetchtimeline($a, $uid);
+		twitter_fetchtimeline($uid);
 	} elseif ($mode == 2) {
-		twitter_fetchhometimeline($a, $uid);
+		twitter_fetchhometimeline($uid);
 	}
 }

@@ -3,8 +3,6 @@ use Friendica\Core\Logger;
 use Friendica\DI;
 
 function pumpio_sync_run(array $argv, int $argc) {
-	$a = Friendica\DI::app();
-
 	require_once 'addon/pumpio/pumpio.php';
 
 	if (function_exists('sys_getloadavg')) {
@@ -15,5 +13,5 @@ function pumpio_sync_run(array $argv, int $argc) {
 		}
 	}
 
-	pumpio_sync($a);
+	pumpio_sync();
 }

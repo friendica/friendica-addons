@@ -28,7 +28,7 @@ function ijpost_install()
 	Hook::register('connector_settings_post', 'addon/ijpost/ijpost.php', 'ijpost_settings_post');
 }
 
-function ijpost_jot_nets(App &$a, array &$jotnets_fields)
+function ijpost_jot_nets(array &$jotnets_fields)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -46,7 +46,7 @@ function ijpost_jot_nets(App &$a, array &$jotnets_fields)
 	}
 }
 
-function ijpost_settings(App &$a, array &$data)
+function ijpost_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -73,7 +73,7 @@ function ijpost_settings(App &$a, array &$data)
 	];
 }
 
-function ijpost_settings_post(App $a, array &$b)
+function ijpost_settings_post(array &$b)
 {
 	if (!empty($_POST['ijpost-submit'])) {
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'ijpost', 'post', intval($_POST['ijpost']));
@@ -83,7 +83,7 @@ function ijpost_settings_post(App $a, array &$b)
 	}
 }
 
-function ijpost_post_local(App $a, array &$b)
+function ijpost_post_local(array &$b)
 {
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 
@@ -118,7 +118,7 @@ function ijpost_post_local(App $a, array &$b)
 	$b['postopts'] .= 'ijpost';
 }
 
-function ijpost_send(App $a, array &$b)
+function ijpost_send(array &$b)
 {
 	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;

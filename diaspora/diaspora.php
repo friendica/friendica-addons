@@ -29,7 +29,7 @@ function diaspora_install()
 	Hook::register('connector_settings_post', 'addon/diaspora/diaspora.php', 'diaspora_settings_post');
 }
 
-function diaspora_jot_nets(App $a, array &$jotnets_fields)
+function diaspora_jot_nets(array &$jotnets_fields)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -47,7 +47,7 @@ function diaspora_jot_nets(App $a, array &$jotnets_fields)
 	}
 }
 
-function diaspora_settings(App $a, array &$data)
+function diaspora_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -117,7 +117,7 @@ function diaspora_settings(App $a, array &$data)
 }
 
 
-function diaspora_settings_post(App $a, array &$b)
+function diaspora_settings_post(array &$b)
 {
 	if (!empty($_POST['diaspora-submit'])) {
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(),'diaspora', 'post'           , intval($_POST['enabled']));
@@ -136,7 +136,7 @@ function diaspora_settings_post(App $a, array &$b)
 	}
 }
 
-function diaspora_hook_fork(App $a, array &$b)
+function diaspora_hook_fork(array &$b)
 {
 	if ($b['name'] != 'notifier_normal') {
 		return;
@@ -151,7 +151,7 @@ function diaspora_hook_fork(App $a, array &$b)
 	}
 }
 
-function diaspora_post_local(App $a, array &$b)
+function diaspora_post_local(array &$b)
 {
 	if ($b['edit']) {
 		return;
@@ -184,7 +184,7 @@ function diaspora_post_local(App $a, array &$b)
 	$b['postopts'] .= 'diaspora';
 }
 
-function diaspora_send(App $a, array &$b)
+function diaspora_send(array &$b)
 {
 	$hostname = DI::baseUrl()->getHostname();
 

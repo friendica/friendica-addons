@@ -17,18 +17,18 @@ function fancybox_install()
 	Hook::register('prepare_body_final', __FILE__, 'fancybox_render');
 }
 
-function fancybox_head(App $a, string &$b)
+function fancybox_head(string &$b)
 {
 	DI::page()->registerStylesheet(__DIR__ . '/asset/fancybox/jquery.fancybox.min.css');
 }
 
-function fancybox_footer(App $a, string &$str)
+function fancybox_footer(string &$str)
 {
 	DI::page()->registerFooterScript(__DIR__ . '/asset/fancybox/jquery.fancybox.min.js');
 	DI::page()->registerFooterScript(__DIR__ . '/asset/fancybox/fancybox.config.js');
 }
 
-function fancybox_render(App $a, array &$b){
+function fancybox_render(array &$b){
 	$gallery = 'gallery-' . $b['item']['uri-id'] ?? random_int(1000000, 10000000);
 
 	// performWithEscapedBlocks escapes block defined with 2nd par pattern that won't be processed.
@@ -39,7 +39,7 @@ function fancybox_render(App $a, array &$b){
 		function ($text) use ($gallery) {
 			// This processes images inlined in posts
 			// Frio / Vier hooks für lightbox are un-hooked in fancybox-config.js. So this works for them, too!
-			//if (!in_array($a->getCurrentTheme(),['vier','frio']))
+			//if (!in_array(DI::app()->getCurrentTheme(),['vier','frio']))
 			$text = preg_replace(
 				'#<a[^>]*href="([^"]*)"[^>]*>(<img[^>]*src="[^"]*"[^>]*>)</a>#',
 				'<a data-fancybox="' . $gallery . '" href="$1">$2</a>',

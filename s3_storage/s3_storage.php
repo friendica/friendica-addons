@@ -14,7 +14,7 @@ use Friendica\DI;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
-function s3_storage_install(App $a)
+function s3_storage_install()
 {
 	Hook::register('storage_instance' , __FILE__, 's3_storage_instance');
 	Hook::register('storage_config' , __FILE__, 's3_storage_config');
@@ -26,7 +26,7 @@ function s3_storage_uninstall()
 	DI::storageManager()->unregister(S3Client::class);
 }
 
-function s3_storage_instance(App $a, array &$data)
+function s3_storage_instance(array &$data)
 {
 	if ($data['name'] == S3Client::getName()) {
 		$config          = new S3Config(DI::l10n(), DI::config());
@@ -34,7 +34,7 @@ function s3_storage_instance(App $a, array &$data)
 	}
 }
 
-function s3_storage_config(App $a, array &$data)
+function s3_storage_config(array &$data)
 {
 	if ($data['name'] == S3Client::getName()) {
 		$data['storage_config'] = new S3Config(DI::l10n(), DI::config());

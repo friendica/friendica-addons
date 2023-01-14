@@ -31,7 +31,7 @@ function langfilter_install()
  * 3rd parse a SMARTY3 template, replacing some translateable strings for the form
  */
 
-function langfilter_addon_settings(App $a, array &$data)
+function langfilter_addon_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -67,7 +67,7 @@ function langfilter_addon_settings(App $a, array &$data)
  * 3rd save the settings to the DB for later usage
  */
 
-function langfilter_addon_settings_post(App $a, array &$b)
+function langfilter_addon_settings_post(array &$b)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -98,7 +98,7 @@ function langfilter_addon_settings_post(App $a, array &$b)
  *     expand it again.
  */
 
-function langfilter_prepare_body_content_filter(App $a, &$hook_data)
+function langfilter_prepare_body_content_filter(&$hook_data)
 {
 	$logged_user = DI::userSession()->getLocalUserId();
 	if (!$logged_user) {
@@ -107,7 +107,7 @@ function langfilter_prepare_body_content_filter(App $a, &$hook_data)
 
 	// Never filter own messages
 	// TODO: find a better way to extract this
-	$logged_user_profile = DI::baseUrl()->get() . '/profile/' . $a->getLoggedInUserNickname();
+	$logged_user_profile = DI::baseUrl()->get() . '/profile/' . DI::userSession()->getLocalUserNickname();
 	if ($logged_user_profile == $hook_data['item']['author-link']) {
 		return;
 	}

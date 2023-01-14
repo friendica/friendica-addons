@@ -22,11 +22,11 @@ function rendertime_uninstall()
 	DI::config()->delete('system', 'profiler');
 }
 
-function rendertime_init_1(App $a)
+function rendertime_init_1()
 {
 }
 
-function rendertime_addon_admin(App $a, string &$o)
+function rendertime_addon_admin(string &$o)
 {
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/rendertime/');
 
@@ -37,17 +37,16 @@ function rendertime_addon_admin(App $a, string &$o)
 	]);
 }
 
-function rendertime_addon_admin_post(App $a)
+function rendertime_addon_admin_post()
 {
 	DI::config()->set('rendertime', 'callstack', $_POST['callstack'] ?? false);
 	DI::config()->set('rendertime', 'minimal_time', $_POST['minimal_time'] ?? 0);
 }
 
 /**
- * @param App $a
  * @param string $o
  */
-function rendertime_page_end(App $a, string &$o)
+function rendertime_page_end(string &$o)
 {
 	$profiler = DI::profiler();
 
@@ -59,7 +58,7 @@ function rendertime_page_end(App $a, string &$o)
 	];
 	$ignored = in_array(DI::router()->getModuleClass(), $ignored_modules);
 
-	if ($a->isSiteAdmin() && (($_GET['mode'] ?? '') != 'minimal') && !DI::mode()->isMobile() && !DI::mode()->isMobile() && !$ignored) {
+	if (DI::userSession()->isSiteAdmin() && (($_GET['mode'] ?? '') != 'minimal') && !DI::mode()->isMobile() && !DI::mode()->isMobile() && !$ignored) {
 
 		$o = $o . '<div class="renderinfo">' . DI::l10n()->t("Database: %s/%s, Network: %s, Rendering: %s, Session: %s, I/O: %s, Other: %s, Total: %s",
 				round($profiler->get('database') - $profiler->get('database_write'), 3),

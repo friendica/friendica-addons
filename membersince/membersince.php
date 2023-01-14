@@ -17,9 +17,9 @@ function membersince_install()
 	Hook::register('profile_advanced', 'addon/membersince/membersince.php', 'membersince_display');
 }
 
-function membersince_display(App $a, array &$b)
+function membersince_display(array &$b)
 {
-	if ($a->getCurrentTheme() == 'frio') {
+	if (DI::app()->getCurrentTheme() == 'frio') {
 		// Works in Frio.
 		$doc = new DOMDocument();
 		$doc->loadHTML(mb_convert_encoding($b, 'HTML-ENTITIES', 'UTF-8'));
@@ -39,7 +39,7 @@ function membersince_display(App $a, array &$b)
 		$label->setAttribute('class', 'col-lg-4 col-md-4 col-sm-4 col-xs-12 profile-label-name text-muted');
 
 		// The div for the register date of the profile owner.
-		$entry = $doc->createElement('div', DateTimeFormat::local($a->profile['register_date']));
+		$entry = $doc->createElement('div', DateTimeFormat::local(DI::app()->profile['register_date']));
 		$entry->setAttribute('class', 'col-lg-8 col-md-8 col-sm-8 col-xs-12 profile-entry');
 
 		$div->appendChild($hr);
@@ -50,6 +50,6 @@ function membersince_display(App $a, array &$b)
 		$b = $doc->saveHTML();
 	} else {
 		// Works in Vier.
-		$b = preg_replace('/<\/dl>/', "</dl>\n\n\n<dl id=\"aprofile-membersince\" class=\"aprofile\">\n<dt>" . DI::l10n()->t('Member since:') . "</dt>\n<dd>" . DateTimeFormat::local($a->profile['register_date']) . "</dd>\n</dl>", $b, 1);
+		$b = preg_replace('/<\/dl>/', "</dl>\n\n\n<dl id=\"aprofile-membersince\" class=\"aprofile\">\n<dt>" . DI::l10n()->t('Member since:') . "</dt>\n<dd>" . DateTimeFormat::local(DI::app()->profile['register_date']) . "</dd>\n</dl>", $b, 1);
 	}
 }

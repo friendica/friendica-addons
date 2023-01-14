@@ -48,12 +48,12 @@ function piwik_install() {
 	Logger::notice("installed piwik addon");
 }
 
-function piwik_load_config(App $a, ConfigFileManager $loader)
+function piwik_load_config(ConfigFileManager $loader)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('piwik'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	DI::app()->getConfigCache()->load($loader->loadAddonConfig('piwik'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
-function piwik_analytics(App $a, string &$b)
+function piwik_analytics(string &$b)
 {
 	/*
 	 *   styling of every HTML block added by this addon is done in the
@@ -94,7 +94,7 @@ function piwik_analytics(App $a, string &$b)
 		$b .= "</div>";
 	}
 }
-function piwik_addon_admin (App $a, string &$o)
+function piwik_addon_admin (string &$o)
 {
 	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/piwik/" );
 
@@ -107,7 +107,7 @@ function piwik_addon_admin (App $a, string &$o)
 	]);
 }
 
-function piwik_addon_admin_post(App $a)
+function piwik_addon_admin_post()
 {
 	DI::config()->set('piwik', 'baseurl', trim($_POST['baseurl'] ?? ''));
 	DI::config()->set('piwik', 'siteid', trim($_POST['siteid'] ?? ''));

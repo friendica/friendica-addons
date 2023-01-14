@@ -34,7 +34,7 @@ use Friendica\Object\Email;
  */
 class SecureTestEmail extends Email
 {
-	public function __construct(App $a, IManageConfigValues $config, IManagePersonalConfigValues $pConfig, BaseURL $baseUrl)
+	public function __construct(IManageConfigValues $config, IManagePersonalConfigValues $pConfig, BaseURL $baseUrl)
 	{
 		$sitename = $config->get('config', 'sitename');
 

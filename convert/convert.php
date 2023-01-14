@@ -13,7 +13,7 @@ function convert_install() {
 	Hook::register('app_menu', 'addon/convert/convert.php', 'convert_app_menu');
 }
 
-function convert_app_menu(App $a, array &$b)
+function convert_app_menu(array &$b)
 {
 	$b['app_menu'][] = '<div class="app-title"><a href="convert">Units Conversion</a></div>';
 }
@@ -21,7 +21,7 @@ function convert_app_menu(App $a, array &$b)
 
 function convert_module() {}
 
-function convert_content(App $a) {
+function convert_content() {
 	// @TODO UnitConverter uses a deprecated constructor with the class' name
 	// @TODO Let's one day rewrite this to a modern composer package
 	include 'UnitConvertor.php';

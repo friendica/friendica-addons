@@ -65,12 +65,12 @@ function nominatim_resolve_item(array &$item)
 	}
 }
 
-function nominatim_post_hook(App $a, array &$item)
+function nominatim_post_hook(array &$item)
 {
 	nominatim_resolve_item($item);
 }
 
-function nominatim_addon_admin(App $a, string &$o)
+function nominatim_addon_admin(string &$o)
 {
 
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/nominatim/');
@@ -81,7 +81,7 @@ function nominatim_addon_admin(App $a, string &$o)
 	]);
 }
 
-function nominatim_addon_admin_post(App $a)
+function nominatim_addon_admin_post()
 {
 	DI::config()->set('nominatim', 'language', (!empty($_POST['language']) ? trim($_POST['language']) : ''));
 }

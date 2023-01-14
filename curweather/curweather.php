@@ -86,7 +86,7 @@ function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cacheti
 	return $r;
 }
 
-function curweather_network_mod_init(App $a, string &$body)
+function curweather_network_mod_init(string &$body)
 {
 	if (!intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'curweather', 'curweather_enable'))) {
 		return;
@@ -152,7 +152,7 @@ function curweather_network_mod_init(App $a, string &$body)
 	DI::page()['aside'] = $curweather . DI::page()['aside'];
 }
 
-function curweather_addon_settings_post(App $a, $post)
+function curweather_addon_settings_post($post)
 {
 	if (!DI::userSession()->getLocalUserId() || empty($_POST['curweather-settings-submit'])) {
 		return;
@@ -163,7 +163,7 @@ function curweather_addon_settings_post(App $a, $post)
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'curweather', 'curweather_units' , trim($_POST['curweather_units']));
 }
 
-function curweather_addon_settings(App $a, array &$data)
+function curweather_addon_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -199,9 +199,9 @@ function curweather_addon_settings(App $a, array &$data)
 
 // Config stuff for the admin panel to let the admin of the node set a APPID
 // for accessing the API of openweathermap
-function curweather_addon_admin_post(App $a)
+function curweather_addon_admin_post()
 {
-	if (!$a->isSiteAdmin()) {
+	if (!DI::userSession()->isSiteAdmin()) {
 		return;
 	}
 
@@ -211,9 +211,9 @@ function curweather_addon_admin_post(App $a)
 	}
 }
 
-function curweather_addon_admin(App $a, string &$o)
+function curweather_addon_admin(string &$o)
 {
-	if (!$a->isSiteAdmin()) {
+	if (!DI::userSession()->isSiteAdmin()) {
 		return;
 	}
 

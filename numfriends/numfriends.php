@@ -28,7 +28,7 @@ function numfriends_install() {
  * and if so set our configuration setting for this person.
  *
  */
-function numfriends_settings_post(App $a, $post) {
+function numfriends_settings_post($post) {
 	if (! DI::userSession()->getLocalUserId() || empty($_POST['numfriends-submit'])) {
 		return;
 	}
@@ -43,7 +43,7 @@ function numfriends_settings_post(App $a, $post) {
  * Add our own settings info to the page.
  *
  */
-function numfriends_settings(App &$a, array &$data)
+function numfriends_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;

@@ -26,7 +26,7 @@ function opmlexport_install()
 }
 
 
-function opmlexport(App $a)
+function opmlexport()
 {
 	$condition = [
 		'uid' => DI::userSession()->getLocalUserId(),
@@ -68,7 +68,7 @@ function opmlexport(App $a)
 }
 
 
-function opmlexport_addon_settings(App $a, array &$data)
+function opmlexport_addon_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
@@ -82,11 +82,11 @@ function opmlexport_addon_settings(App $a, array &$data)
 }
 
 
-function opmlexport_addon_settings_post(App $a, array &$b)
+function opmlexport_addon_settings_post(array &$b)
 {
 	if (!DI::userSession()->getLocalUserId() || empty($_POST['opmlexport-submit'])) {
 		return;
 	}
 
-	opmlexport($a);
+	opmlexport();
 }
