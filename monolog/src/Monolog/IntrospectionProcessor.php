@@ -19,11 +19,10 @@
  *
  */
 
-namespace Friendica\Addon\monolog\src;
+namespace Friendica\Addon\monolog\src\Monolog;
 
 use Friendica\Core\Logger\Util\Introspection;
 use Monolog\Logger;
-use Monolog\LogRecord;
 use Monolog\Processor\ProcessorInterface;
 
 /**
@@ -42,19 +41,19 @@ class IntrospectionProcessor implements ProcessorInterface
 	public function __construct(Introspection $introspection, $level = Logger::DEBUG)
 	{
 		$this->level = Logger::toMonologLevel($level);
-		$introspection->addClasses(['Monolog\\']);
+		$introspection->addClasses(['Monolog\\', IntrospectionProcessor::class]);
 		$this->introspection = $introspection;
 	}
 
-	public function __invoke(LogRecord $record): LogRecord
+	public function __invoke(array $record): array
 	{
 		// return if the level is not high enough
-		if ($record->level < $this->level) {
+		if ($record['level'] < $this->level) {
 			return $record;
 		}
 		// we should have the call source now
-		$record->extra = array_merge(
-			$record->extra,
+		$record['extra'] = array_merge(
+			$record['extra'],
 			$this->introspection->getRecord()
 		);
 
