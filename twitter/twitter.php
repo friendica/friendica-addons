@@ -829,7 +829,7 @@ function twitter_post_hook(array &$b)
 			Logger::info('twitter_post send', ['id' => $b['id'], 'result' => $result]);
 
 			if (!empty($result->source)) {
-				DI::config()->set('twitter', 'application_name', strip_tags($result->source));
+				DI::keyValue()->set('twitter_application_name', strip_tags($result->source));
 			}
 
 			if (!empty($result->errors)) {
@@ -875,7 +875,7 @@ function twitter_post_hook(array &$b)
 			}
 
 			if (!empty($application_name)) {
-				DI::config()->set('twitter', 'application_name', strip_tags($application_name));
+				DI::keyValue()->set('twitter_application_name', strip_tags($application_name));
 			}
 		}
 	}
@@ -1288,7 +1288,7 @@ function twitter_fetchtimeline(int $uid): void
 	$osecret = DI::pConfig()->get($uid, 'twitter', 'oauthsecret');
 	$lastid  = DI::pConfig()->get($uid, 'twitter', 'lastid');
 
-	$application_name = DI::config()->get('twitter', 'application_name');
+	$application_name = DI::keyValue()->get('twitter_application_name');
 
 	if ($application_name == '') {
 		$application_name = DI::baseUrl()->getHostname();
@@ -2187,7 +2187,7 @@ function twitter_fetchhometimeline(int $uid): void
 
 	Logger::info('Fetching timeline', ['uid' => $uid]);
 
-	$application_name = DI::config()->get('twitter', 'application_name');
+	$application_name = DI::keyValue()->get('twitter_application_name');
 
 	if ($application_name == '') {
 		$application_name = DI::baseUrl()->getHostname();
