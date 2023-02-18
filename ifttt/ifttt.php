@@ -55,7 +55,7 @@ function ifttt_settings(array &$data)
 			'new_photo_upload_body'   => DI::l10n()->t('Body for "new photo upload"'),
 			'new_link_post_body'      => DI::l10n()->t('Body for "new link post"'),
 		],
-		'$url'                     => DI::baseUrl()->get() . '/ifttt/' . DI::userSession()->getLocalUserNickname(),
+		'$url'                     => DI::baseUrl() . '/ifttt/' . DI::userSession()->getLocalUserNickname(),
 		'$new_status_message_body' => 'key=' . $key . '&type=status&msg=<<<{{Message}}>>>&date=<<<{{UpdatedAt}}>>>&url=<<<{{PageUrl}}>>>',
 		'$new_photo_upload_body'   => 'key=' . $key . '&type=photo&link=<<<{{Link}}>>>&image=<<<{{ImageSource}}>>>&msg=<<<{{Caption}}>>>&date=<<<{{CreatedAt}}>>>&url=<<<{{PageUrl}}>>>',
 		'$new_link_post_body'      => 'key=' . $key . '&type=link&link=<<<{{Link}}>>>&title=<<<{{Title}}>>>&msg=<<<{{Message}}>>>&description=<<<{{Description}}>>>&date=<<<{{CreatedAt}}>>>&url=<<<{{PageUrl}}>>>',

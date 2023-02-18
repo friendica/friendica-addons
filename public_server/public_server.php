@@ -59,8 +59,8 @@ function public_server_cron($b)
 			'uid' => $rr['uid'],
 			'system_type' => 'public_server_expire',
 			'source_name'  => DI::l10n()->t('Administrator'),
-			'source_link'  => DI::baseUrl()->get(),
-			'source_photo' => DI::baseUrl()->get() . '/images/person-80.jpg',
+			'source_link'  => DI::baseUrl(),
+			'source_photo' => DI::baseUrl() . '/images/person-80.jpg',
 		]);
 
 		$fields = ['expire_notification_sent' => DateTimeFormat::utcNow()];
@@ -104,7 +104,7 @@ function public_server_enotify(array &$b)
 {
 	if (!empty($b['params']) && $b['params']['type'] == Notification\Type::SYSTEM
 		&& !empty($b['params']['system_type']) && $b['params']['system_type'] === 'public_server_expire') {
-		$b['itemlink'] = DI::baseUrl()->get();
+		$b['itemlink'] = DI::baseUrl();
 		$b['epreamble'] = $b['preamble'] = DI::l10n()->t('Your account on %s will expire in a few days.', DI::config()->get('system', 'sitename'));
 		$b['subject'] = DI::l10n()->t('Your Friendica account is about to expire.');
 		$b['body'] = DI::l10n()->t("Hi %1\$s,\n\nYour account on %2\$s will expire in less than five days. You may keep your account by logging in at least once every 30 days", $b['params']['to_name'], "[url=" . DI::config()->get('system', 'url') . "]" . DI::config()->get('config', 'sitename') . "[/url]");

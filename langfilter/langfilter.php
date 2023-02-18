@@ -107,7 +107,7 @@ function langfilter_prepare_body_content_filter(&$hook_data)
 
 	// Never filter own messages
 	// TODO: find a better way to extract this
-	$logged_user_profile = DI::baseUrl()->get() . '/profile/' . DI::userSession()->getLocalUserNickname();
+	$logged_user_profile = DI::baseUrl() . '/profile/' . DI::userSession()->getLocalUserNickname();
 	if ($logged_user_profile == $hook_data['item']['author-link']) {
 		return;
 	}

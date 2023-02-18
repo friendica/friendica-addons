@@ -92,7 +92,7 @@ function curweather_network_mod_init(string &$body)
 		return;
 	}
 
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/curweather/curweather.css' . '" media="all" />' . "\r\n";
+	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl() . '/addon/curweather/curweather.css' . '" media="all" />' . "\r\n";
 
 	// $rpt value is needed for location
 	// $lang will be taken from the browser session to honour user settings

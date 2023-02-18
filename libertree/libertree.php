@@ -162,7 +162,7 @@ function libertree_send(array &$b)
 	$ltree_api_token = DI::pConfig()->get($b['uid'],'libertree','libertree_api_token');
 	$ltree_url = DI::pConfig()->get($b['uid'],'libertree','libertree_url');
 	$ltree_blog = "$ltree_url/api/v1/posts/create/?token=$ltree_api_token";
-	$ltree_source = DI::baseUrl()->getHostname();
+	$ltree_source = DI::baseUrl()->getHost();
 
 	if ($b['app'] != "")
 		$ltree_source .= " (".$b['app'].")";

@@ -1100,7 +1100,7 @@ function twitter_prepare_body(array &$b)
 	if ($b['preview']) {
 		$max_char = 280;
 		$item = $b['item'];
-		$item['plink'] = DI::baseUrl()->get() . '/display/' . $item['guid'];
+		$item['plink'] = DI::baseUrl() . '/display/' . $item['guid'];
 
 		$condition = ['uri' => $item['thr-parent'], 'uid' => DI::userSession()->getLocalUserId()];
 		$orig_post = Post::selectFirst(['author-link'], $condition);
@@ -1292,7 +1292,7 @@ function twitter_fetchtimeline(int $uid): void
 	$application_name = DI::keyValue()->get('twitter_application_name') ?? '';
 
 	if ($application_name == '') {
-		$application_name = DI::baseUrl()->getHostname();
+		$application_name = DI::baseUrl()->getHost();
 	}
 
 	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
@@ -1694,7 +1694,7 @@ function twitter_expand_entities($body, stdClass $status)
 	$replacementList = [];
 
 	foreach ($status->entities->hashtags AS $hashtag) {
-		$replace = '#[url=' . DI::baseUrl()->get() . '/search?tag=' . $hashtag->text . ']' . $hashtag->text . '[/url]';
+		$replace = '#[url=' . DI::baseUrl() . '/search?tag=' . $hashtag->text . ']' . $hashtag->text . '[/url]';
 		$taglist['#' . $hashtag->text] = ['#', $hashtag->text, ''];
 
 		$replacementList[$hashtag->indices[0]] = [
@@ -2191,7 +2191,7 @@ function twitter_fetchhometimeline(int $uid): void
 	$application_name = DI::keyValue()->get('twitter_application_name') ?? '';
 
 	if ($application_name == '') {
-		$application_name = DI::baseUrl()->getHostname();
+		$application_name = DI::baseUrl()->getHost();
 	}
 
 	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);

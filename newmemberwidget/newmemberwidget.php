@@ -34,7 +34,7 @@ function newmemberwidget_network_mod_init ($b)
 	}
 
 	if (DI::config()->get('newmemberwidget','linklocalsupport', false)) {
-		$t .= '<a href="'.DI::baseUrl()->get().'/profile/'.DI::config()->get('newmemberwidget','localsupport').'" target="_new">'.DI::l10n()->t('Local Support Forum').'</a><br />';
+		$t .= '<a href="'.DI::baseUrl().'/profile/'.DI::config()->get('newmemberwidget','localsupport').'" target="_new">'.DI::l10n()->t('Local Support Forum').'</a><br />';
 	}
 
 	$ft = DI::config()->get('newmemberwidget','freetext', '');

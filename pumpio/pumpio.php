@@ -96,7 +96,7 @@ function pumpio_registerclient($host)
 	$application_name  = DI::config()->get('pumpio', 'application_name');
 
 	if ($application_name == '') {
-		$application_name = DI::baseUrl()->getHostname();
+		$application_name = DI::baseUrl()->getHost();
 	}
 
 	$firstAdmin = User::getFirstAdmin(['email']);
@@ -105,8 +105,8 @@ function pumpio_registerclient($host)
 	$params['contacts'] = $firstAdmin['email'];
 	$params['application_type'] = 'native';
 	$params['application_name'] = $application_name;
-	$params['logo_url'] = DI::baseUrl()->get() . '/images/friendica-256.png';
-	$params['redirect_uris'] = DI::baseUrl()->get() . '/pumpio/connect';
+	$params['logo_url'] = DI::baseUrl() . '/images/friendica-256.png';
+	$params['redirect_uris'] = DI::baseUrl() . '/pumpio/connect';
 
 	Logger::info('pumpio_registerclient: ' . $url . ' parameters', $params);
 
@@ -157,7 +157,7 @@ function pumpio_connect()
 	}
 
 	// The callback URL is the script that gets called after the user authenticates with pumpio
-	$callback_url = DI::baseUrl()->get() . '/pumpio/connect';
+	$callback_url = DI::baseUrl() . '/pumpio/connect';
 
 	// Let's begin.  First we need a Request Token.  The request token is required to send the user
 	// to pumpio's login page.
@@ -194,7 +194,7 @@ function pumpio_connect()
 	if ($success) {
 		Logger::notice('pumpio_connect: authenticated');
 		$o = DI::l10n()->t('You are now authenticated to pumpio.');
-		$o .= '<br /><a href="' . DI::baseUrl()->get() . '/settings/connectors">' . DI::l10n()->t('return to the connector page') . '</a>';
+		$o .= '<br /><a href="' . DI::baseUrl() . '/settings/connectors">' . DI::l10n()->t('return to the connector page') . '</a>';
 	} else {
 		Logger::notice('pumpio_connect: could not connect');
 		$o = 'Could not connect to pumpio. Refresh the page or try again later.';
@@ -252,7 +252,7 @@ function pumpio_settings(array &$data)
 		'$pumpio_user'        => $pumpio_user,
 		'$oauth_token'        => $oauth_token,
 		'$oauth_token_secret' => $oauth_token_secret,
-		'$authenticate_url'   => DI::baseUrl()->get() . '/pumpio/connect',
+		'$authenticate_url'   => DI::baseUrl() . '/pumpio/connect',
 		'$servername'         => ['pumpio_host', DI::l10n()->t('Pump.io servername (without "http://" or "https://" )'), $pumpio_host],
 		'$username'           => ['pumpio_user', DI::l10n()->t('Pump.io username (without the servername)'), $pumpio_user],
 		'$import'             => ['pumpio_import', DI::l10n()->t('Import the remote timeline'), $import_enabled],
@@ -711,7 +711,7 @@ function pumpio_fetchtimeline(int $uid)
 		$application_name  = DI::config()->get('pumpio', 'application_name');
 	}
 	if ($application_name == '') {
-		$application_name = DI::baseUrl()->getHostname();
+		$application_name = DI::baseUrl()->getHost();
 	}
 
 	$first_time = ($lastdate == '');

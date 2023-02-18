@@ -43,7 +43,7 @@ class NotifyAllEmail extends Email
 		}
 
 		if (!$config->get('config', 'sender_email')) {
-			$sender_email = 'noreply@' . $baseUrl->getHostname();
+			$sender_email = 'noreply@' . $baseUrl->getHost();
 		} else {
 			$sender_email = $config->get('config', 'sender_email');
 		}

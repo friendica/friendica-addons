@@ -186,7 +186,7 @@ function diaspora_post_local(array &$b)
 
 function diaspora_send(array &$b)
 {
-	$hostname = DI::baseUrl()->getHostname();
+	$hostname = DI::baseUrl()->getHost();
 
 	Logger::notice('diaspora_send: invoked');
 

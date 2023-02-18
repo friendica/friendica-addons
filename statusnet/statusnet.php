@@ -266,7 +266,7 @@ function statusnet_settings(array &$data)
 		'$request_token' => $request_token ?? null,
 		'$account'       => $account ?? null,
 
-		'$authenticate_url' => DI::baseUrl()->get() . '/statusnet/connect',
+		'$authenticate_url' => DI::baseUrl() . '/statusnet/connect',
 
 		'$consumerkey'    => ['statusnet-consumerkey', DI::l10n()->t('OAuth Consumer Key'), '', '', false, ' size="35'],
 		'$consumersecret' => ['statusnet-consumersecret', DI::l10n()->t('OAuth Consumer Secret'), '', '', false, ' size="35'],

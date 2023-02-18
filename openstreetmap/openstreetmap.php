@@ -42,7 +42,7 @@ function openstreetmap_load_config(ConfigFileManager $loader)
 
 function openstreetmap_alterheader(&$navHtml)
 {
-	$addScriptTag = '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/openstreetmap/openstreetmap.js"></script>' . "\r\n";
+	$addScriptTag = '<script type="text/javascript" src="' . DI::baseUrl() . '/addon/openstreetmap/openstreetmap.js"></script>' . "\r\n";
 	DI::page()['htmlhead'] .= $addScriptTag;
 }
 
@@ -145,7 +145,7 @@ function openstreetmap_generate_map(array &$b)
 {
 	$tmsserver = DI::config()->get('openstreetmap', 'tmsserver', OSM_TMS);
 
-	if (strpos(DI::baseUrl()->get(true), 'https:') !== false) {
+	if (strpos(DI::baseUrl(), 'https:') !== false) {
 		$tmsserver = str_replace('http:','https:',$tmsserver);
 	}
 

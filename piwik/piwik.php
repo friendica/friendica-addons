@@ -60,7 +60,7 @@ function piwik_analytics(string &$b)
 	 *   associated CSS file. We just have to tell Friendica to get it
 	 *   into the page header.
 	 */
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/piwik/piwik.css' . '" media="all" />';
+	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl() . '/addon/piwik/piwik.css' . '" media="all" />';
 
 	/*
 	 *   Get the configuration values.
