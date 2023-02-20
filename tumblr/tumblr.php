@@ -96,7 +96,7 @@ function tumblr_connect()
 
 	// The callback URL is the script that gets called after the user authenticates with tumblr
 	// In this example, it would be the included callback.php
-	$callback_url = DI::baseUrl()->get() . '/tumblr/callback';
+	$callback_url = DI::baseUrl() . '/tumblr/callback';
 
 	// Let's begin.  First we need a Request Token.  The request token is required to send the user
 	// to Tumblr's login page.
@@ -175,7 +175,7 @@ function tumblr_callback()
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'tumblr', 'oauth_token_secret', $access_token['oauth_token_secret']);
 
 	$o = DI::l10n()->t("You are now authenticated to tumblr.");
-	$o .= '<br /><a href="' . DI::baseUrl()->get() . '/settings/connectors">' . DI::l10n()->t("return to the connector page") . '</a>';
+	$o .= '<br /><a href="' . DI::baseUrl() . '/settings/connectors">' . DI::l10n()->t("return to the connector page") . '</a>';
 
 	return $o;
 }
@@ -232,7 +232,7 @@ function tumblr_settings(array &$data)
 			'noconnect' => DI::l10n()->t('You are not authenticated to tumblr'),
 		],
 
-		'$authenticate_url' => DI::baseUrl()->get() . '/tumblr/connect',
+		'$authenticate_url' => DI::baseUrl() . '/tumblr/connect',
 
 		'$enable'      => ['tumblr', DI::l10n()->t('Enable Tumblr Post Addon'), $enabled],
 		'$bydefault'   => ['tumblr_bydefault', DI::l10n()->t('Post to Tumblr by default'), $def_enabled],

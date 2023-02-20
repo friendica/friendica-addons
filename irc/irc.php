@@ -73,7 +73,7 @@ function irc_module() {}
 
 function irc_content()
 {
-	$baseurl = DI::baseUrl()->get() . '/addon/irc';
+	$baseurl = DI::baseUrl() . '/addon/irc';
 	$o = '';
 
 	/* set the list of popular channels */
@@ -95,7 +95,7 @@ function irc_content()
 
 	DI::page()['aside'] .= '<div class="widget"><h3>' . DI::l10n()->t('Popular Channels') . '</h3><ul>';
 	foreach ($chats as $chat) {
-		DI::page()['aside'] .= '<li><a href="' . DI::baseUrl()->get() . '/irc?channels=' . $chat . '" >' . '#' . $chat . '</a></li>';
+		DI::page()['aside'] .= '<li><a href="' . DI::baseUrl() . '/irc?channels=' . $chat . '" >' . '#' . $chat . '</a></li>';
 	}
 	DI::page()['aside'] .= '</ul></div>';
 

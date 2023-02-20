@@ -20,20 +20,20 @@ function smilies_adult_install() {
 function smilies_adult_smilies(array &$b)
 {
 	$b['texts'][] = '(o)(o)';
-	$b['icons'][] = '<img class="smiley" src="' . DI::baseUrl()->get() . '/addon/smilies_adult/icons/tits.gif' . '" alt="' . '(o)(o)' . '" />';
+	$b['icons'][] = '<img class="smiley" src="' . DI::baseUrl() . '/addon/smilies_adult/icons/tits.gif' . '" alt="' . '(o)(o)' . '" />';
 
 	$b['texts'][] = '(.)(.)';
-	$b['icons'][] = '<img class="smiley" src="' . DI::baseUrl()->get() . '/addon/smilies_adult/icons/tits.gif' . '" alt="' . '(.)(.)' . '" />';
+	$b['icons'][] = '<img class="smiley" src="' . DI::baseUrl() . '/addon/smilies_adult/icons/tits.gif' . '" alt="' . '(.)(.)' . '" />';
 
 	$b['texts'][] = ':bong';
-	$b['icons'][] = '<img class="smiley" src="' . DI::baseUrl()->get() . '/addon/smilies_adult/icons/bong.gif' . '" alt="' . ':bong' . '" />';
+	$b['icons'][] = '<img class="smiley" src="' . DI::baseUrl() . '/addon/smilies_adult/icons/bong.gif' . '" alt="' . ':bong' . '" />';
 
 	$b['texts'][] = ':sperm';
-	$b['icons'][] = '<img class="smiley" src="' . DI::baseUrl()->get() . '/addon/smilies_adult/icons/sperm.gif' . '" alt="' . ':sperm' . '" />';
+	$b['icons'][] = '<img class="smiley" src="' . DI::baseUrl() . '/addon/smilies_adult/icons/sperm.gif' . '" alt="' . ':sperm' . '" />';
 
 	$b['texts'][] = ':drunk';
-	$b['icons'][] = '<img class="smiley" src="' . DI::baseUrl()->get() . '/addon/smilies_adult/icons/drunk.gif' . '" alt="' . ':drunk' . '" />';
+	$b['icons'][] = '<img class="smiley" src="' . DI::baseUrl() . '/addon/smilies_adult/icons/drunk.gif' . '" alt="' . ':drunk' . '" />';
 
 	$b['texts'][] = ':finger';
-	$b['icons'][] = '<img class="smiley" src="' . DI::baseUrl()->get() . '/addon/smilies_adult/icons/finger.gif' . '" alt="' . ':finger' . '" />';
+	$b['icons'][] = '<img class="smiley" src="' . DI::baseUrl() . '/addon/smilies_adult/icons/finger.gif' . '" alt="' . ':finger' . '" />';
 }

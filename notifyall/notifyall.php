@@ -24,7 +24,7 @@ function notifyall_module() {}
 
 function notifyall_addon_admin(string &$o)
 {
-	$o = '<div></div>&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . DI::baseUrl()->get() . '/notifyall">' . DI::l10n()->t('Send email to all members') . '</a></br/>';
+	$o = '<div></div>&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . DI::baseUrl() . '/notifyall">' . DI::l10n()->t('Send email to all members') . '</a></br/>';
 }
 
 

@@ -69,7 +69,7 @@ function birdavatar_addon_settings_post(&$s)
 	}
 
 	if (!empty($_POST['birdavatar-usebird'])) {
-		$url = DI::baseUrl()->get() . '/birdavatar/' . DI::userSession()->getLocalUserId() . '?ts=' . time();
+		$url = DI::baseUrl() . '/birdavatar/' . DI::userSession()->getLocalUserId() . '?ts=' . time();
 
 		$self = DBA::selectFirst('contact', ['id'], ['uid' => DI::userSession()->getLocalUserId(), 'self' => true]);
 		if (!DBA::isResult($self)) {
@@ -120,9 +120,9 @@ function birdavatar_lookup(array &$b)
 {
 	$user = DBA::selectFirst('user', ['uid'], ['email' => $b['email']]);
 	if (DBA::isResult($user)) {
-		$url = DI::baseUrl()->get() . '/birdavatar/' . $user['uid'];
+		$url = DI::baseUrl() . '/birdavatar/' . $user['uid'];
 	} else {
-		$url = DI::baseUrl()->get() . '/birdavatar/' . md5(trim(strtolower($b['email'])));
+		$url = DI::baseUrl() . '/birdavatar/' . md5(trim(strtolower($b['email'])));
 	}
 
 	switch ($b['size']) {

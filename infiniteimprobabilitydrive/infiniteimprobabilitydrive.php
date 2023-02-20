@@ -30,13 +30,12 @@ function infiniteimprobabilitydrive_module() {}
 
 function infiniteimprobabilitydrive_content()
 {
-	$baseurl = DI::baseUrl()->get() . '/addon/infiniteimprobabilitydrive';
 	$o = '';
 
-	DI::page()['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.DI::baseUrl()->get().'/addon/infiniteimprobabilitydrive/infiniteimprobabilitydrive.css"/>';
+	DI::page()['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.DI::baseUrl().'/addon/infiniteimprobabilitydrive/infiniteimprobabilitydrive.css"/>';
 
 
-	$baseurl = DI::baseUrl()->get();
+	$baseurl = (string)DI::baseUrl();
 
 	$o .= <<< EOT
 

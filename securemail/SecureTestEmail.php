@@ -38,7 +38,7 @@ class SecureTestEmail extends Email
 	{
 		$sitename = $config->get('config', 'sitename');
 
-		$hostname = $baseUrl->getHostname();
+		$hostname = $baseUrl->getHost();
 		if (strpos($hostname, ':')) {
 			$hostname = substr($hostname, 0, strpos($hostname, ':'));
 		}

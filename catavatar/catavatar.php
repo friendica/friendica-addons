@@ -70,7 +70,7 @@ function catavatar_addon_settings_post(&$s)
 	}
 
 	if (!empty($_POST['catavatar-usecat'])) {
-		$url = DI::baseUrl()->get() . '/catavatar/' . DI::userSession()->getLocalUserId() . '?ts=' . time();
+		$url = DI::baseUrl() . '/catavatar/' . DI::userSession()->getLocalUserId() . '?ts=' . time();
 
 		$self = DBA::selectFirst('contact', ['id'], ['uid' => DI::userSession()->getLocalUserId(), 'self' => true]);
 		if (!DBA::isResult($self)) {
@@ -121,9 +121,9 @@ function catavatar_lookup(array &$b)
 {
 	$user = DBA::selectFirst('user', ['uid'], ['email' => $b['email']]);
 	if (DBA::isResult($user)) {
-		$url = DI::baseUrl()->get() . '/catavatar/' . $user['uid'];
+		$url = DI::baseUrl() . '/catavatar/' . $user['uid'];
 	} else {
-		$url = DI::baseUrl()->get() . '/catavatar/' . md5(trim(strtolower($b['email'])));
+		$url = DI::baseUrl() . '/catavatar/' . md5(trim(strtolower($b['email'])));
 	}
 
 	switch($b['size']) {
