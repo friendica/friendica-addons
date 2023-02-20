@@ -125,7 +125,7 @@ function blockem_prepare_body_content_filter(array &$hook_data)
 function blockem_display_item(array &$b = null)
 {
 	if (!empty($b['output']['body']) && strstr($b['output']['body'], 'id="blockem-wrap-')) {
-		$b['output']['thumb'] = DI::baseUrl() "/images/person-80.jpg";
+		$b['output']['thumb'] = DI::baseUrl() . "/images/person-80.jpg";
 	}
 }
 
