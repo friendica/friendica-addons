@@ -9,6 +9,11 @@ end_of_line = lf
 indent_style = tab
 trim_trailing_whitespace = true
 insert_final_newline = true
+quote_type = single
+
+[*.js]
+quote_type = double
+ij_javascript_use_double_quotes = true
 
 [*.yml]
 indent_style = space
