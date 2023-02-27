@@ -10,6 +10,7 @@ indent_style = tab
 trim_trailing_whitespace = true
 insert_final_newline = true
 quote_type = single
+max_line_length = off
 
 [*.js]
 quote_type = double
@@ -19,5 +20,10 @@ ij_javascript_use_double_quotes = true
 indent_style = space
 indent_size = 2
 
-[composer.json]
-indent_size = tab
+[*.xml]
+indent_style = space
+indent_size = 4
+
+[*.json]
+indent_style = space
+indent_size = 2
