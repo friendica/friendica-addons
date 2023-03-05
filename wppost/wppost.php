@@ -13,6 +13,7 @@ use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
+use Friendica\Model\Item;
 use Friendica\Model\Post;
 use Friendica\Util\XML;
 
