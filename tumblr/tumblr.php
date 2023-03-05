@@ -403,10 +403,6 @@ function tumblr_send(array &$b)
 				'<p>' . $params['caption'] . '</p>';
 		}
 
-		if (empty($params['caption']) && !empty($siteinfo['description'])) {
-			$params['caption'] = BBCode::convertForUriId($b['uri-id'], '[quote]' . $siteinfo['description'] . '[/quote]', BBCode::CONNECTORS);
-		}
-
 		$consumer_key    = DI::config()->get('tumblr', 'consumer_key');
 		$consumer_secret = DI::config()->get('tumblr', 'consumer_secret');
 
