@@ -9,13 +9,12 @@
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'tumblroauth.php';
 
-use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
-use Friendica\Database\DBA;
 use Friendica\DI;
+use Friendica\Model\Item;
 use Friendica\Model\Post;
 use Friendica\Model\Tag;
 
@@ -34,7 +33,9 @@ function tumblr_install()
  * existence of this method is checked to figure out if the addon offers a
  * module.
  */
-function tumblr_module() {}
+function tumblr_module()
+{
+}
 
 function tumblr_content()
 {
@@ -45,11 +46,11 @@ function tumblr_content()
 
 	if (isset(DI::args()->getArgv()[1])) {
 		switch (DI::args()->getArgv()[1]) {
-			case "connect":
+			case 'connect':
 				$o = tumblr_connect();
 				break;
 
-			case "callback":
+			case 'callback':
 				$o = tumblr_callback();
 				break;
 
@@ -66,13 +67,13 @@ function tumblr_content()
 
 function tumblr_addon_admin(string &$o)
 {
-	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/tumblr/" );
+	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/tumblr/');
 
 	$o = Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
 		// name, label, value, help, [extra values]
-		'$consumer_key' => ['consumer_key', DI::l10n()->t('Consumer Key'),  DI::config()->get('tumblr', 'consumer_key' ), ''],
-		'$consumer_secret' => ['consumer_secret', DI::l10n()->t('Consumer Secret'),  DI::config()->get('tumblr', 'consumer_secret' ), ''],
+		'$consumer_key' => ['consumer_key', DI::l10n()->t('Consumer Key'), DI::config()->get('tumblr', 'consumer_key'), ''],
+		'$consumer_secret' => ['consumer_secret', DI::l10n()->t('Consumer Secret'), DI::config()->get('tumblr', 'consumer_secret'), ''],
 	]);
 }
 
@@ -86,9 +87,6 @@ function tumblr_connect()
 {
 	// Start a session.  This is necessary to hold on to  a few keys the callback script will also need
 	session_start();
-
-	// Include the TumblrOAuth library
-	//require_once('addon/tumblr/tumblroauth/tumblroauth.php');
 
 	// Define the needed keys
 	$consumer_key = DI::config()->get('tumblr', 'consumer_key');
@@ -141,7 +139,6 @@ function tumblr_callback()
 {
 	// Start a session, load the library
 	session_start();
-	//require_once('addon/tumblr/tumblroauth/tumblroauth.php');
 
 	// Define the needed keys
 	$consumer_key = DI::config()->get('tumblr', 'consumer_key');
@@ -174,7 +171,7 @@ function tumblr_callback()
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'tumblr', 'oauth_token', $access_token['oauth_token']);
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'tumblr', 'oauth_token_secret', $access_token['oauth_token_secret']);
 
-	$o = DI::l10n()->t("You are now authenticated to tumblr.");
+	$o = DI::l10n()->t('You are now authenticated to tumblr.');
 	$o .= '<br /><a href="' . DI::baseUrl() . '/settings/connectors">' . DI::l10n()->t("return to the connector page") . '</a>';
 
 	return $o;
@@ -186,13 +183,13 @@ function tumblr_jot_nets(array &$jotnets_fields)
 		return;
 	}
 
-	if (DI::pConfig()->get(DI::userSession()->getLocalUserId(),'tumblr','post')) {
+	if (DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'tumblr', 'post')) {
 		$jotnets_fields[] = [
 			'type' => 'checkbox',
 			'field' => [
 				'tumblr_enable',
 				DI::l10n()->t('Post to Tumblr'),
-				DI::pConfig()->get(DI::userSession()->getLocalUserId(),'tumblr','post_by_default')
+				DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'tumblr', 'post_by_default')
 			]
 		];
 	}
@@ -219,7 +216,7 @@ function tumblr_settings(array &$data)
 		$userinfo  = $tum_oauth->get('user/info');
 
 		$blogs = array_map(function ($blog) {
-			return substr(str_replace(["http://", "https://"], ["", ""], $blog->url), 0, -1);
+			return substr(str_replace(['http://', 'https://'], ['', ''], $blog->url), 0, -1);
 		}, $userinfo->response->user->blogs);
 
 		$page_select = ['tumblr-page', DI::l10n()->t('Post to page:'), $page, '', $blogs];
@@ -265,8 +262,10 @@ function tumblr_hook_fork(array &$b)
 
 	$post = $b['data'];
 
-	if ($post['deleted'] || $post['private'] || ($post['created'] !== $post['edited']) ||
-		!strstr($post['postopts'] ?? '', 'tumblr') || ($post['parent'] != $post['id'])) {
+	if (
+		$post['deleted'] || $post['private'] || ($post['created'] !== $post['edited']) ||
+		!strstr($post['postopts'] ?? '', 'tumblr') || ($post['parent'] != $post['id'])
+	) {
 		$b['execute'] = false;
 		return;
 	}
@@ -307,35 +306,26 @@ function tumblr_post_local(array &$b)
 	$b['postopts'] .= 'tumblr';
 }
 
-
-
-
-function tumblr_send(array &$b) {
+function tumblr_send(array &$b)
+{
 
 	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;
 	}
 
-	if (! strstr($b['postopts'],'tumblr')) {
+	if (!strstr($b['postopts'], 'tumblr')) {
 		return;
 	}
 
-	if ($b['parent'] != $b['id']) {
-		return;
-	}
-
-	// Dont't post if the post doesn't belong to us.
-	// This is a check for forum postings
-	$self = DBA::selectFirst('contact', ['id'], ['uid' => $b['uid'], 'self' => true]);
-	if ($b['contact-id'] != $self['id']) {
+	if ($b['gravity'] != Item::GRAVITY_PARENT) {
 		return;
 	}
 
 	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], DI::contentItem()->addSharedPost($b));
 
-	$oauth_token = DI::pConfig()->get($b['uid'], "tumblr", "oauth_token");
-	$oauth_token_secret = DI::pConfig()->get($b['uid'], "tumblr", "oauth_token_secret");
-	$page = DI::pConfig()->get($b['uid'], "tumblr", "page");
+	$oauth_token = DI::pConfig()->get($b['uid'], 'tumblr', 'oauth_token');
+	$oauth_token_secret = DI::pConfig()->get($b['uid'], 'tumblr', 'oauth_token_secret');
+	$page = DI::pConfig()->get($b['uid'], 'tumblr', 'page');
 	$tmbl_blog = 'blog/' . $page . '/post';
 
 	if ($oauth_token && $oauth_token_secret && $tmbl_blog) {
@@ -343,7 +333,7 @@ function tumblr_send(array &$b) {
 
 		$tag_arr = [];
 
-		foreach($tags as $tag) {
+		foreach ($tags as $tag) {
 			$tag_arr[] = $tag['name'];
 		}
 
@@ -353,7 +343,12 @@ function tumblr_send(array &$b) {
 
 		$title = trim($b['title']);
 
-		$siteinfo = BBCode::getAttachedData($b["body"]);
+		$media = Post\Media::getByURIId($b['uri-id'], [Post\Media::HTML, Post\Media::AUDIO, Post\Media::VIDEO, Post\Media::IMAGE]);
+
+		$photo = array_search(Post\Media::IMAGE, array_column($media, 'type'));
+		$link  = array_search(Post\Media::HTML, array_column($media, 'type'));
+		$audio = array_search(Post\Media::AUDIO, array_column($media, 'type'));
+		$video = array_search(Post\Media::VIDEO, array_column($media, 'type'));
 
 		$params = [
 			'state'  => 'published',
@@ -362,77 +357,65 @@ function tumblr_send(array &$b) {
 			'format' => 'html',
 		];
 
-		if (!isset($siteinfo["type"])) {
-			$siteinfo["type"] = "";
-		}
+		$body = BBCode::removeShareInformation($b['body']);
 
-		if (($title == "") && isset($siteinfo["title"])) {
-			$title = $siteinfo["title"];
-		}
-
-		if (isset($siteinfo["text"])) {
-			$body = $siteinfo["text"];
-		} else {
-			$body = BBCode::removeShareInformation($b["body"]);
-		}
-
-		switch ($siteinfo["type"]) {
-			case "photo":
-				$params['type']    = "photo";
-				$params['caption'] = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);;
-
-				if (isset($siteinfo["url"])) {
-					$params['link'] = $siteinfo["url"];
-				}
-
-				$params['source'] = $siteinfo["image"];
-				break;
-
-			case "link":
-				$params['type']        = "link";
-				$params['title']       = $title;
-				$params['url']         = $siteinfo["url"];
-				$params['description'] = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
-				break;
-
-			case "audio":
-				$params['type']         = "audio";
-				$params['external_url'] = $siteinfo["url"];
-				$params['caption']      = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
-				break;
-
-			case "video":
-				$params['type']    = "video";
-				$params['embed']   = $siteinfo["url"];
+		if ($photo != false) {
+			$params['type'] = 'photo';
+			if (!empty($body)) {
 				$params['caption'] = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
-				break;
+			} elseif (!empty($params['caption'])) {
+				$params['caption'] = $photo['description'];
+			}
+			$params['source'] = $photo['url'];
+		} elseif ($link != false) {
+			$params['type']        = 'link';
+			$params['title']       = $link['name'];
+			$params['url']         = $link['url'];
+			$params['description'] = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
 
-			default:
-				$params['type']  = "text";
-				$params['title'] = $title;
-				$params['body']  = BBCode::convertForUriId($b['uri-id'], $b['body'], BBCode::CONNECTORS);
-				break;
+			if (!empty($link['preview'])) {
+				$params['thumbnail'] = $link['preview'];
+			}
+			if (!empty($link['description'])) {
+				$params['excerpt'] = $link['description'];
+			}
+			if (!empty($link['author-name'])) {
+				$params['author'] = $link['author-name'];
+			} elseif (!empty($link['publisher-name'])) {
+				$params['author'] = $link['publisher-name'];
+			}
+		} elseif ($audio != false) {
+			$params['type']         = 'audio';
+			$params['external_url'] = $audio['url'];
+			$params['caption']      = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
+		} elseif ($video != false) {
+			$params['type']    = 'video';
+			$params['embed']   = $video['url'];
+			$params['caption'] = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
+		} else {
+			$params['type']  = 'text';
+			$params['title'] = $title;
+			$params['body']  = BBCode::convertForUriId($b['uri-id'], $b['body'], BBCode::CONNECTORS);
 		}
 
-		if (isset($params['caption']) && (trim($title) != "")) {
-			$params['caption'] = '<h1>'.$title."</h1>".
-						"<p>".$params['caption']."</p>";
+		if (isset($params['caption']) && (trim($title) != '')) {
+			$params['caption'] = '<h1>' . $title . '</h1>' .
+				'<p>' . $params['caption'] . '</p>';
 		}
 
-		if (empty($params['caption']) && !empty($siteinfo["description"])) {
-			$params['caption'] = BBCode::convertForUriId($b['uri-id'], "[quote]" . $siteinfo["description"] . "[/quote]", BBCode::CONNECTORS);
+		if (empty($params['caption']) && !empty($siteinfo['description'])) {
+			$params['caption'] = BBCode::convertForUriId($b['uri-id'], '[quote]' . $siteinfo['description'] . '[/quote]', BBCode::CONNECTORS);
 		}
 
-		$consumer_key = DI::config()->get('tumblr','consumer_key');
-		$consumer_secret = DI::config()->get('tumblr','consumer_secret');
+		$consumer_key    = DI::config()->get('tumblr', 'consumer_key');
+		$consumer_secret = DI::config()->get('tumblr', 'consumer_secret');
 
 		$tum_oauth = new TumblrOAuth($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
 
 		// Make an API call with the TumblrOAuth instance.
-		$x = $tum_oauth->post($tmbl_blog,$params);
+		$x = $tum_oauth->post($tmbl_blog, $params);
 		$ret_code = $tum_oauth->http_code;
 
-		//print_r($params);
 		if ($ret_code == 201) {
 			Logger::notice('tumblr_send: success');
 		} elseif ($ret_code == 403) {

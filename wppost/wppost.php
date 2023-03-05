@@ -6,7 +6,6 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
 
-use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\HTML;
 use Friendica\Core\Hook;
@@ -33,13 +32,13 @@ function wppost_jot_nets(array &$jotnets_fields)
 		return;
 	}
 
-	if (DI::pConfig()->get(DI::userSession()->getLocalUserId(),'wppost','post')) {
+	if (DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'wppost', 'post')) {
 		$jotnets_fields[] = [
 			'type' => 'checkbox',
 			'field' => [
 				'wppost_enable',
 				DI::l10n()->t('Post to Wordpress'),
-				DI::pConfig()->get(DI::userSession()->getLocalUserId(),'wppost','post_by_default')
+				DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'wppost', 'post_by_default')
 			]
 		];
 	}
@@ -84,14 +83,14 @@ function wppost_settings(array &$data)
 
 function wppost_settings_post(array &$b)
 {
-	if(!empty($_POST['wppost-submit'])) {
-		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'post'           , intval($_POST['wppost']));
+	if (!empty($_POST['wppost-submit'])) {
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'post', intval($_POST['wppost']));
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'post_by_default', intval($_POST['wp_bydefault']));
-		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'wp_username'    ,   trim($_POST['wp_username']));
-		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'wp_password'    ,   trim($_POST['wp_password']));
-		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'wp_blog'        ,   trim($_POST['wp_blog']));
-		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'backlink'       , intval($_POST['wp_backlink']));
-		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'shortcheck'     , intval($_POST['wp_shortcheck']));
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'wp_username',   trim($_POST['wp_username']));
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'wp_password',   trim($_POST['wp_password']));
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'wp_blog',   trim($_POST['wp_blog']));
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'backlink', intval($_POST['wp_backlink']));
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'shortcheck', intval($_POST['wp_shortcheck']));
 		$wp_backlink_text = BBCode::convert(trim($_POST['wp_backlink_text']), false, BBCode::BACKLINK);
 		$wp_backlink_text = HTML::toPlaintext($wp_backlink_text, 0, true);
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'wp_backlink_text', $wp_backlink_text);
@@ -106,14 +105,17 @@ function wppost_hook_fork(array &$b)
 
 	$post = $b['data'];
 
-	if ($post['deleted'] || $post['private'] || ($post['created'] !== $post['edited']) ||
-		!strstr($post['postopts'] ?? '', 'wppost') || ($post['parent'] != $post['id'])) {
+	if (
+		$post['deleted'] || $post['private'] || ($post['created'] !== $post['edited']) ||
+		!strstr($post['postopts'] ?? '', 'wppost') || ($post['parent'] != $post['id'])
+	) {
 		$b['execute'] = false;
 		return;
 	}
 }
 
-function wppost_post_local(array &$b) {
+function wppost_post_local(array &$b)
+{
 
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 
@@ -153,15 +155,15 @@ function wppost_post_local(array &$b) {
 
 function wppost_send(array &$b)
 {
-	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
+	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;
 	}
 
-	if(! strstr($b['postopts'],'wppost')) {
+	if (!strstr($b['postopts'], 'wppost')) {
 		return;
 	}
 
-	if($b['parent'] != $b['id']) {
+	if ($b['gravity'] != Item::GRAVITY_PARENT) {
 		return;
 	}
 
@@ -176,8 +178,8 @@ function wppost_send(array &$b)
 
 	$wp_username = XML::escape(DI::pConfig()->get($b['uid'], 'wppost', 'wp_username'));
 	$wp_password = XML::escape(DI::pConfig()->get($b['uid'], 'wppost', 'wp_password'));
-	$wp_blog = DI::pConfig()->get($b['uid'],'wppost','wp_blog');
-	$wp_backlink_text = DI::pConfig()->get($b['uid'],'wppost','wp_backlink_text');
+	$wp_blog = DI::pConfig()->get($b['uid'], 'wppost', 'wp_blog');
+	$wp_backlink_text = DI::pConfig()->get($b['uid'], 'wppost', 'wp_backlink_text');
 	if ($wp_backlink_text == '') {
 		$wp_backlink_text = DI::l10n()->t('Read the orig­i­nal post and com­ment stream on Friendica');
 	}
@@ -187,15 +189,7 @@ function wppost_send(array &$b)
 
 		if (intval(DI::pConfig()->get($b['uid'], 'wppost', 'shortcheck'))) {
 			// Checking, if its a post that is worth a blog post
-			$postentry = false;
-			$siteinfo = BBCode::getAttachedData($b["body"]);
-
-			// Is it a link to an aricle, a video or a photo?
-			if (isset($siteinfo["type"])) {
-				if (in_array($siteinfo["type"], ["link", "audio", "video", "photo"])) {
-					$postentry = true;
-				}
-			}
+			$postentry = (bool)Post\Media::getByURIId($b['uri-id'], [Post\Media::HTML, Post\Media::AUDIO, Post\Media::VIDEO, Post\Media::IMAGE]);
 
 			// Does it have a title?
 			if ($wptitle != "") {
@@ -215,9 +209,9 @@ function wppost_send(array &$b)
 		// If the title is empty then try to guess
 		if ($wptitle == '') {
 			// Fetch information about the post
-			$siteinfo = BBCode::getAttachedData($b["body"]);
-			if (isset($siteinfo["title"])) {
-				$wptitle = $siteinfo["title"];
+			$media = Post\Media::getByURIId($b['uri-id'], [Post\Media::HTML]);
+			if (!empty($media) && !empty($media[0]['name']) && ($media[0]['name'] != $media[0]['url'])) {
+				$wptitle = $media[0]['name'];
 			}
 
 			// If no bookmark is found then take the first line
@@ -225,7 +219,7 @@ function wppost_send(array &$b)
 				// Remove the share element before fetching the first line
 				$title = trim(preg_replace("/\[share.*?\](.*?)\[\/share\]/ism", "\n$1\n", $b['body']));
 
-				$title = BBCode::toPlaintext($title)."\n";
+				$title = BBCode::toPlaintext($title) . "\n";
 				$pos = strpos($title, "\n");
 				$trailer = "";
 				if (($pos == 0) || ($pos > 100)) {
@@ -233,7 +227,7 @@ function wppost_send(array &$b)
 					$trailer = "...";
 				}
 
-				$wptitle = substr($title, 0, $pos).$trailer;
+				$wptitle = substr($title, 0, $pos) . $trailer;
 			}
 		}
 
@@ -244,10 +238,10 @@ function wppost_send(array &$b)
 		$post = preg_replace('/<a.*?href="(https?:\/\/www.youtube.com\/.*?)".*?>(.*?)<\/a>/ism', "\n$1\n", $post);
 		$post = preg_replace('/<a.*?href="(https?:\/\/youtu.be\/.*?)".*?>(.*?)<\/a>/ism', "\n$1\n", $post);
 
-		$post = $title.$post;
+		$post = $title . $post;
 
-		$wp_backlink = intval(DI::pConfig()->get($b['uid'],'wppost','backlink'));
-		if($wp_backlink && $b['plink']) {
+		$wp_backlink = intval(DI::pConfig()->get($b['uid'], 'wppost', 'backlink'));
+		if ($wp_backlink && $b['plink']) {
 			$post .= '<p><a href="' . $b['plink'] . '">' . $wp_backlink_text . '</a></p>';
 		}
 
