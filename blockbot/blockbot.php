@@ -8,9 +8,7 @@
  *
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
-use Friendica\Core\System;
 use Friendica\DI;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
 use Friendica\Core\Logger;
@@ -52,12 +50,15 @@ function blockbot_init_1()
 	$logdata = ['agent' => $_SERVER['HTTP_USER_AGENT'], 'uri' => $_SERVER['REQUEST_URI']];
 
 	// List of "good" crawlers
-	$good_agents = ['fediverse.space crawler', 'fediverse.network crawler', 'Active_Pods_CheckBot_3.0',
+	$good_agents = [
+		'fediverse.space crawler', 'fediverse.network crawler', 'Active_Pods_CheckBot_3.0',
 		'Social-Relay/', 'Test Certificate Info', 'Uptimebot/', 'GNUSocialBot', 'UptimeRobot/',
-		'PTST/', 'Zabbix', 'Poduptime/'];
+		'PTST/', 'Zabbix', 'Poduptime/'
+	];
 
 	// List of known crawlers.
-	$agents = ['SemrushBot', 's~feedly-nikon3', 'Qwantify/Bleriot/', 'ltx71', 'Sogou web spider/',
+	$agents = [
+		'SemrushBot', 's~feedly-nikon3', 'Qwantify/Bleriot/', 'ltx71', 'Sogou web spider/',
 		'Diffbot/', 'Twitterbot/', 'YisouSpider', 'evc-batch/', 'LivelapBot/', 'TrendsmapResolver/',
 		'PaperLiBot/', 'Nuzzel', 'um-LN/', 'Google Favicon', 'Datanyze', 'BLEXBot/', '360Spider',
 		'adscanner/', 'HeadlessChrome', 'wpif', 'startmebot/', 'Googlebot/', 'Applebot/',
@@ -79,7 +80,8 @@ function blockbot_init_1()
 		'Google-Apps-Script; beanserver;', 'woorankreview/', 'Seekport Crawler;', 'AHC/',
 		'SkypeUriPreview Preview/', 'Semanticbot/', 'Embed PHP library', 'XoviOnpageCrawler;',
 		'GetHPinfo.com-Bot/', 'BoardReader Favicon Fetcher', 'Google-Adwords-Instant', 'newspaper/',
-		'YurichevBot/', 'Crawling at Home Project', 'InfoTigerBot/'];
+		'YurichevBot/', 'Crawling at Home Project', 'InfoTigerBot/'
+	];
 
 	if (!DI::config()->get('blockbot', 'good_crawlers')) {
 		$agents = array_merge($agents, $good_agents);
@@ -114,7 +116,8 @@ function blockbot_init_1()
 	}
 
 	// List of false positives' strings of known "good" agents.
-	$agents = ['curl', 'zgrab', 'Go-http-client', 'curb', 'github.com', 'reqwest', 'Feedly/',
+	$agents = [
+		'curl', 'zgrab', 'Go-http-client', 'curb', 'github.com', 'reqwest', 'Feedly/',
 		'Python-urllib/', 'Liferea/', 'aiohttp/', 'WordPress.com Reader', 'hackney/',
 		'Faraday v', 'okhttp', 'UniversalFeedParser', 'PixelFedBot', 'python-requests',
 		'WordPress/', 'http.rb/', 'Apache-HttpClient/', 'WordPress.com;', 'Pleroma',
@@ -122,7 +125,8 @@ function blockbot_init_1()
 		'lua-resty-http/', 'Tiny Tiny RSS/', 'Wget/', 'PostmanRuntime/',
 		'W3C_Validator/', 'NetNewsWire', 'FeedValidator/', 'theoldreader.com', 'axios/',
 		'Paw/', 'PeerTube/', 'fedi.inex.dev', 'FediDB/', 'index.community crawler',
-		'Slackbot-LinkExpanding'];
+		'Slackbot-LinkExpanding'
+	];
 
 	if (DI::config()->get('blockbot', 'good_crawlers')) {
 		$agents = array_merge($agents, $good_agents);
@@ -130,11 +134,11 @@ function blockbot_init_1()
 
 	foreach ($agents as $agent) {
 		if (stristr($_SERVER['HTTP_USER_AGENT'], $agent)) {
-			logger::notice('False positive', $logdata);
+			logger::info('False positive', $logdata);
 			return;
 		}
 	}
 
-	logger::info('Blocked bot', $logdata);
+	logger::notice('Blocked bot', $logdata);
 	throw new ForbiddenException('Bots are not allowed');
 }
