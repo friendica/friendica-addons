@@ -364,33 +364,33 @@ function tumblr_send(array &$b)
 			if (!empty($body)) {
 				$params['caption'] = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
 			} elseif (!empty($params['caption'])) {
-				$params['caption'] = $photo['description'];
+				$params['caption'] = $media[$photo]['description'];
 			}
-			$params['source'] = $photo['url'];
+			$params['source'] = $media[$photo]['url'];
 		} elseif ($link != false) {
 			$params['type']        = 'link';
-			$params['title']       = $link['name'];
-			$params['url']         = $link['url'];
+			$params['title']       = $media[$link]['name'];
+			$params['url']         = $media[$link]['url'];
 			$params['description'] = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
 
-			if (!empty($link['preview'])) {
-				$params['thumbnail'] = $link['preview'];
+			if (!empty($media[$link]['preview'])) {
+				$params['thumbnail'] = $media[$link]['preview'];
 			}
-			if (!empty($link['description'])) {
-				$params['excerpt'] = $link['description'];
+			if (!empty($media[$link]['description'])) {
+				$params['excerpt'] = $media[$link]['description'];
 			}
-			if (!empty($link['author-name'])) {
-				$params['author'] = $link['author-name'];
-			} elseif (!empty($link['publisher-name'])) {
-				$params['author'] = $link['publisher-name'];
+			if (!empty($media[$link]['author-name'])) {
+				$params['author'] = $media[$link]['author-name'];
+			} elseif (!empty($media[$link]['publisher-name'])) {
+				$params['author'] = $media[$link]['publisher-name'];
 			}
 		} elseif ($audio != false) {
 			$params['type']         = 'audio';
-			$params['external_url'] = $audio['url'];
+			$params['external_url'] = $media[$audio]['url'];
 			$params['caption']      = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
 		} elseif ($video != false) {
 			$params['type']    = 'video';
-			$params['embed']   = $video['url'];
+			$params['embed']   = $media[$video]['url'];
 			$params['caption'] = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
 		} else {
 			$params['type']  = 'text';
