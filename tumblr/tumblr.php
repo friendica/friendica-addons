@@ -15,8 +15,10 @@ use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Model\Item;
+use Friendica\Model\Photo;
 use Friendica\Model\Post;
 use Friendica\Model\Tag;
+use Friendica\Util\Network;
 
 function tumblr_install()
 {
@@ -308,7 +310,6 @@ function tumblr_post_local(array &$b)
 
 function tumblr_send(array &$b)
 {
-
 	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;
 	}
@@ -321,7 +322,7 @@ function tumblr_send(array &$b)
 		return;
 	}
 
-	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], DI::contentItem()->addSharedPost($b));
+	$b['body'] = BBCode::removeAttachment($b['body']);
 
 	$oauth_token = DI::pConfig()->get($b['uid'], 'tumblr', 'oauth_token');
 	$oauth_token_secret = DI::pConfig()->get($b['uid'], 'tumblr', 'oauth_token_secret');
@@ -359,15 +360,21 @@ function tumblr_send(array &$b)
 
 		$body = BBCode::removeShareInformation($b['body']);
 
-		if ($photo != false) {
+		if ($photo !== false) {
 			$params['type'] = 'photo';
-			if (!empty($body)) {
-				$params['caption'] = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
-			} elseif (!empty($params['caption'])) {
-				$params['caption'] = $media[$photo]['description'];
+			$params['caption'] = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
+			$params['data'] = [];
+			foreach ($media as $photo) {
+				if ($photo['type'] == Post\Media::IMAGE) {
+					if (Network::isLocalLink($photo['url']) && ($data = Photo::getResourceData($photo['url']))) {
+						$photo = Photo::selectFirst([], ["`resource-id` = ? AND `scale` > ?", $data['guid'], 0]);
+						if (!empty($photo)) {
+							$params['data'][] = Photo::getImageDataForPhoto($photo);
+						}
+					}
+				}
 			}
-			$params['source'] = $media[$photo]['url'];
-		} elseif ($link != false) {
+		} elseif ($link !== false) {
 			$params['type']        = 'link';
 			$params['title']       = $media[$link]['name'];
 			$params['url']         = $media[$link]['url'];
@@ -381,14 +388,12 @@ function tumblr_send(array &$b)
 			}
 			if (!empty($media[$link]['author-name'])) {
 				$params['author'] = $media[$link]['author-name'];
-			} elseif (!empty($media[$link]['publisher-name'])) {
-				$params['author'] = $media[$link]['publisher-name'];
 			}
-		} elseif ($audio != false) {
+		} elseif ($audio !== false) {
 			$params['type']         = 'audio';
 			$params['external_url'] = $media[$audio]['url'];
 			$params['caption']      = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
-		} elseif ($video != false) {
+		} elseif ($video !== false) {
 			$params['type']    = 'video';
 			$params['embed']   = $media[$video]['url'];
 			$params['caption'] = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
@@ -413,11 +418,11 @@ function tumblr_send(array &$b)
 		$ret_code = $tum_oauth->http_code;
 
 		if ($ret_code == 201) {
-			Logger::notice('tumblr_send: success');
+			Logger::info('success', ['blog' => $tmbl_blog, 'params' => $params]);
 		} elseif ($ret_code == 403) {
-			Logger::notice('tumblr_send: authentication failure');
+			Logger::notice('authentication failure', ['blog' => $tmbl_blog, 'params' => $params]);
 		} else {
-			Logger::notice('tumblr_send: general error', ['error' => $x]);
+			Logger::notice('general error', ['blog' => $tmbl_blog, 'params' => $params, 'error' => $x]);
 		}
 	}
 }
