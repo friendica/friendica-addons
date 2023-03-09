@@ -359,6 +359,7 @@ function tumblr_send(array &$b)
 		];
 
 		$body = BBCode::removeShareInformation($b['body']);
+		$body = Post\Media::removeFromEndOfBody($body);
 
 		if ($photo !== false) {
 			$params['type'] = 'photo';
