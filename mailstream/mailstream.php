@@ -163,7 +163,7 @@ function mailstream_post_hook(App $a, array &$item)
 		return;
 	}
 	if ($item['verb'] == Activity::ANNOUNCE) {
-		Logger::debug('mailstream: announce item ' . $item['id']);
+		Logger::debug('mailstream: announce item ', ['item' => $item['id']]);
 		return;
 	}
 	if (DI::pConfig()->get($item['uid'], 'mailstream', 'nolikes')) {
