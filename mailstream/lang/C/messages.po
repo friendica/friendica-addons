@@ -29,68 +29,72 @@ msgstr ""
 msgid "Save Settings"
 msgstr ""
 
-#: mailstream.php:301
+#: mailstream.php:311
 msgid "Re:"
 msgstr ""
 
-#: mailstream.php:314 mailstream.php:317
+#: mailstream.php:324 mailstream.php:327
 msgid "Friendica post"
 msgstr ""
 
-#: mailstream.php:320
+#: mailstream.php:330
 msgid "Diaspora post"
 msgstr ""
 
-#: mailstream.php:330
+#: mailstream.php:340
 msgid "Feed item"
 msgstr ""
 
-#: mailstream.php:333
+#: mailstream.php:343
 msgid "Email"
 msgstr ""
 
-#: mailstream.php:335
+#: mailstream.php:345
 msgid "Friendica Item"
 msgstr ""
 
-#: mailstream.php:404
+#: mailstream.php:419
 msgid "Upstream"
 msgstr ""
 
-#: mailstream.php:405
+#: mailstream.php:420
+msgid "URI"
+msgstr ""
+
+#: mailstream.php:421
 msgid "Local"
 msgstr ""
 
-#: mailstream.php:481
+#: mailstream.php:499
 msgid "Enabled"
 msgstr ""
 
-#: mailstream.php:486
+#: mailstream.php:504
 msgid "Email Address"
 msgstr ""
 
-#: mailstream.php:488
+#: mailstream.php:506
 msgid "Leave blank to use your account email address"
 msgstr ""
 
-#: mailstream.php:492
+#: mailstream.php:510
 msgid "Exclude Likes"
 msgstr ""
 
-#: mailstream.php:494
+#: mailstream.php:512
 msgid "Check this to omit mailing \"Like\" notifications"
 msgstr ""
 
-#: mailstream.php:498
+#: mailstream.php:516
 msgid "Attach Images"
 msgstr ""
 
-#: mailstream.php:500
+#: mailstream.php:518
 msgid ""
 "Download images in posts and attach them to the email.  Useful for reading "
 "email while offline."
 msgstr ""
 
-#: mailstream.php:507
+#: mailstream.php:525
 msgid "Mail Stream Settings"
 msgstr ""
