@@ -147,7 +147,7 @@ function mailstream_post_hook(App $a, array &$item)
 	mailstream_check_version();
 
 	if (!DI::pConfig()->get($item['uid'], 'mailstream', 'enabled')) {
-		Logger::debug('mailstream: not enabled for item ' . $item['id'] . ' uid ' . $item['uid']);
+		Logger::debug('mailstream: not enabled.', ['item' => $item['id'], ' uid ' => $item['uid']]);
 		return;
 	}
 	if (!$item['uid']) {
