@@ -10,6 +10,7 @@
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'tumblroauth.php';
 
 use Friendica\Content\Text\BBCode;
+use Friendica\Content\Text\NPF;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
@@ -18,7 +19,12 @@ use Friendica\Model\Item;
 use Friendica\Model\Photo;
 use Friendica\Model\Post;
 use Friendica\Model\Tag;
+use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Subscriber\Oauth\Oauth1;
 
 function tumblr_install()
 {
@@ -109,14 +115,14 @@ function tumblr_connect()
 	$request_token = $tum_oauth->getRequestToken($callback_url);
 
 	// Store the request token and Request Token Secret as out callback.php script will need this
-	$_SESSION['request_token'] = $token = $request_token['oauth_token'];
-	$_SESSION['request_token_secret'] = $request_token['oauth_token_secret'];
+	DI::session()->set('request_token', $request_token['oauth_token']);
+	DI::session()->set('request_token_secret', $request_token['oauth_token_secret']);
 
 	// Check the HTTP Code.  It should be a 200 (OK), if it's anything else then something didn't work.
 	switch ($tum_oauth->http_code) {
 		case 200:
 			// Ask Tumblr to give us a special address to their login page
-			$url = $tum_oauth->getAuthorizeURL($token);
+			$url = $tum_oauth->getAuthorizeURL($request_token['oauth_token']);
 
 			// Redirect the user to the login URL given to us by Tumblr
 			header('Location: ' . $url);
@@ -143,7 +149,7 @@ function tumblr_callback()
 	session_start();
 
 	// Define the needed keys
-	$consumer_key = DI::config()->get('tumblr', 'consumer_key');
+	$consumer_key    = DI::config()->get('tumblr', 'consumer_key');
 	$consumer_secret = DI::config()->get('tumblr', 'consumer_secret');
 
 	// Once the user approves your app at Tumblr, they are sent back to this script.
@@ -153,14 +159,14 @@ function tumblr_callback()
 
 	// Create instance of TumblrOAuth.
 	// It'll need our Consumer Key and Secret as well as our Request Token and Secret
-	$tum_oauth = new TumblrOAuth($consumer_key, $consumer_secret, $_SESSION['request_token'], $_SESSION['request_token_secret']);
+	$tum_oauth = new TumblrOAuth($consumer_key, $consumer_secret);
 
 	// Ok, let's get an Access Token. We'll need to pass along our oauth_verifier which was given to us in the URL.
-	$access_token = $tum_oauth->getAccessToken($_REQUEST['oauth_verifier']);
+	$access_token = $tum_oauth->getAccessToken($_REQUEST['oauth_verifier'], DI::session()->get('request_token'), DI::session()->get('request_token_secret'));
 
 	// We're done with the Request Token and Secret so let's remove those.
-	unset($_SESSION['request_token']);
-	unset($_SESSION['request_token_secret']);
+	DI::session()->remove('request_token');
+	DI::session()->remove('request_token_secret');
 
 	// Make sure nothing went wrong.
 	if (200 == $tum_oauth->http_code) {
@@ -214,14 +220,20 @@ function tumblr_settings(array &$data)
 		$consumer_key    = DI::config()->get('tumblr', 'consumer_key');
 		$consumer_secret = DI::config()->get('tumblr', 'consumer_secret');
 
-		$tum_oauth = new TumblrOAuth($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
-		$userinfo  = $tum_oauth->get('user/info');
+		$blogs = [];
 
-		$blogs = array_map(function ($blog) {
-			return substr(str_replace(['http://', 'https://'], ['', ''], $blog->url), 0, -1);
-		}, $userinfo->response->user->blogs);
+		$connection = tumblr_client($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
+		if ($connection) {
+			$userinfo = tumblr_get($connection, 'user/info');
+			if (!empty($userinfo['success'])) {
+				foreach ($userinfo['data']->response->user->blogs as $blog) {
+					$url = parse_url($blog->url, PHP_URL_HOST);
+					$blogs[$url] = $url;
+				}
+			}
+		}
 
-		$page_select = ['tumblr-page', DI::l10n()->t('Post to page:'), $page, '', $blogs];
+		$page_select = ['tumblr_page', DI::l10n()->t('Post to page:'), $page, '', $blogs];
 	}
 
 	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/tumblr/');
@@ -322,108 +334,194 @@ function tumblr_send(array &$b)
 		return;
 	}
 
+	if (tumblr_send_npf($b)) {
+		return;
+	}
+
+	$connection = tumblr_connection($b['uid']);
+	if (empty($connection)) {
+		return;
+	}
+
 	$b['body'] = BBCode::removeAttachment($b['body']);
 
-	$oauth_token = DI::pConfig()->get($b['uid'], 'tumblr', 'oauth_token');
-	$oauth_token_secret = DI::pConfig()->get($b['uid'], 'tumblr', 'oauth_token_secret');
-	$page = DI::pConfig()->get($b['uid'], 'tumblr', 'page');
-	$tmbl_blog = 'blog/' . $page . '/post';
+	$title = trim($b['title']);
 
-	if ($oauth_token && $oauth_token_secret && $tmbl_blog) {
-		$tags = Tag::getByURIId($b['uri-id']);
+	$media = Post\Media::getByURIId($b['uri-id'], [Post\Media::HTML, Post\Media::AUDIO, Post\Media::VIDEO, Post\Media::IMAGE]);
 
-		$tag_arr = [];
+	$photo = array_search(Post\Media::IMAGE, array_column($media, 'type'));
+	$link  = array_search(Post\Media::HTML, array_column($media, 'type'));
+	$audio = array_search(Post\Media::AUDIO, array_column($media, 'type'));
+	$video = array_search(Post\Media::VIDEO, array_column($media, 'type'));
 
-		foreach ($tags as $tag) {
-			$tag_arr[] = $tag['name'];
-		}
+	$params = [
+		'state'  => 'published',
+		'tags'   => implode(',', array_column(Tag::getByURIId($b['uri-id']), 'name')),
+		'tweet'  => 'off',
+		'format' => 'html',
+	];
 
-		if (count($tag_arr)) {
-			$tags = implode(',', $tag_arr);
-		}
+	$body = BBCode::removeShareInformation($b['body']);
+	$body = Post\Media::removeFromEndOfBody($body);
 
-		$title = trim($b['title']);
-
-		$media = Post\Media::getByURIId($b['uri-id'], [Post\Media::HTML, Post\Media::AUDIO, Post\Media::VIDEO, Post\Media::IMAGE]);
-
-		$photo = array_search(Post\Media::IMAGE, array_column($media, 'type'));
-		$link  = array_search(Post\Media::HTML, array_column($media, 'type'));
-		$audio = array_search(Post\Media::AUDIO, array_column($media, 'type'));
-		$video = array_search(Post\Media::VIDEO, array_column($media, 'type'));
-
-		$params = [
-			'state'  => 'published',
-			'tags'   => $tags,
-			'tweet'  => 'off',
-			'format' => 'html',
-		];
-
-		$body = BBCode::removeShareInformation($b['body']);
-		$body = Post\Media::removeFromEndOfBody($body);
-
-		if ($photo !== false) {
-			$params['type'] = 'photo';
-			$params['caption'] = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
-			$params['data'] = [];
-			foreach ($media as $photo) {
-				if ($photo['type'] == Post\Media::IMAGE) {
-					if (Network::isLocalLink($photo['url']) && ($data = Photo::getResourceData($photo['url']))) {
-						$photo = Photo::selectFirst([], ["`resource-id` = ? AND `scale` > ?", $data['guid'], 0]);
-						if (!empty($photo)) {
-							$params['data'][] = Photo::getImageDataForPhoto($photo);
-						}
+	if ($photo !== false) {
+		$params['type'] = 'photo';
+		$params['caption'] = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
+		$params['data'] = [];
+		foreach ($media as $photo) {
+			if ($photo['type'] == Post\Media::IMAGE) {
+				if (Network::isLocalLink($photo['url']) && ($data = Photo::getResourceData($photo['url']))) {
+					$photo = Photo::selectFirst([], ["`resource-id` = ? AND `scale` > ?", $data['guid'], 0]);
+					if (!empty($photo)) {
+						$params['data'][] = Photo::getImageDataForPhoto($photo);
 					}
 				}
 			}
-		} elseif ($link !== false) {
-			$params['type']        = 'link';
-			$params['title']       = $media[$link]['name'];
-			$params['url']         = $media[$link]['url'];
-			$params['description'] = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
-
-			if (!empty($media[$link]['preview'])) {
-				$params['thumbnail'] = $media[$link]['preview'];
-			}
-			if (!empty($media[$link]['description'])) {
-				$params['excerpt'] = $media[$link]['description'];
-			}
-			if (!empty($media[$link]['author-name'])) {
-				$params['author'] = $media[$link]['author-name'];
-			}
-		} elseif ($audio !== false) {
-			$params['type']         = 'audio';
-			$params['external_url'] = $media[$audio]['url'];
-			$params['caption']      = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
-		} elseif ($video !== false) {
-			$params['type']    = 'video';
-			$params['embed']   = $media[$video]['url'];
-			$params['caption'] = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
-		} else {
-			$params['type']  = 'text';
-			$params['title'] = $title;
-			$params['body']  = BBCode::convertForUriId($b['uri-id'], $b['body'], BBCode::CONNECTORS);
 		}
+	} elseif ($link !== false) {
+		$params['type']        = 'link';
+		$params['title']       = $media[$link]['name'];
+		$params['url']         = $media[$link]['url'];
+		$params['description'] = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
 
-		if (isset($params['caption']) && (trim($title) != '')) {
-			$params['caption'] = '<h1>' . $title . '</h1>' .
-				'<p>' . $params['caption'] . '</p>';
+		if (!empty($media[$link]['preview'])) {
+			$params['thumbnail'] = $media[$link]['preview'];
 		}
-
-		$consumer_key    = DI::config()->get('tumblr', 'consumer_key');
-		$consumer_secret = DI::config()->get('tumblr', 'consumer_secret');
-
-		$tum_oauth = new TumblrOAuth($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
-
-		// Make an API call with the TumblrOAuth instance.
-		$x = $tum_oauth->post($tmbl_blog, $params);
-		$ret_code = $tum_oauth->http_code;
-
-		if ($ret_code == 201) {
-			Logger::info('success', ['blog' => $tmbl_blog, 'params' => $params]);
-		} elseif ($ret_code == 403) {
-			Logger::notice('authentication failure', ['blog' => $tmbl_blog, 'params' => $params]);
-		} else {
-			Logger::notice('general error', ['blog' => $tmbl_blog, 'params' => $params, 'error' => $x]);
+		if (!empty($media[$link]['description'])) {
+			$params['excerpt'] = $media[$link]['description'];
 		}
+		if (!empty($media[$link]['author-name'])) {
+			$params['author'] = $media[$link]['author-name'];
+		}
+	} elseif ($audio !== false) {
+		$params['type']         = 'audio';
+		$params['external_url'] = $media[$audio]['url'];
+		$params['caption']      = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
+	} elseif ($video !== false) {
+		$params['type']    = 'video';
+		$params['embed']   = $media[$video]['url'];
+		$params['caption'] = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
+	} else {
+		$params['type']  = 'text';
+		$params['title'] = $title;
+		$params['body']  = BBCode::convertForUriId($b['uri-id'], $b['body'], BBCode::CONNECTORS);
 	}
+
+	if (isset($params['caption']) && (trim($title) != '')) {
+		$params['caption'] = '<h1>' . $title . '</h1>' .
+			'<p>' . $params['caption'] . '</p>';
+	}
+
+	$page = DI::pConfig()->get($b['uid'], 'tumblr', 'page');
+
+	$result = tumblr_post($connection, 'blog/' . $page . '/post', $params);
+
+	if ($result['success']) {
+		Logger::info('success', ['blog' => $page, 'params' => $params]);
+		return true;
+	} else {
+		Logger::notice('error', ['blog' => $page, 'params' => $params, 'result' => $result['data']]);
+		return false;
+	}
+}
+
+function tumblr_send_npf(array $post): bool
+{
+	$page = DI::pConfig()->get($post['uid'], 'tumblr', 'page');
+
+	$connection = tumblr_connection($post['uid']);
+	if (empty($connection)) {
+		Logger::notice('Missing data, post will not be send to Tumblr.', ['uid' => $post['uid'], 'page' => $page, 'id' => $post['id']]);
+		// "true" is returned, since the legacy function will fail as well.
+		return true;
+	}
+	
+	$post['body'] = Post\Media::addAttachmentsToBody($post['uri-id'], $post['body']);
+	if (!empty($post['title'])) {
+		$post['body'] = '[h1]' . $post['title'] . "[/h1]\n" . $post['body'];
+	}
+
+	$params = [
+		'content'                => NPF::fromBBCode($post['body'], $post['uri-id']),
+		'state'                  => 'published',
+		'date'                   => DateTimeFormat::utc($post['created'], DateTimeFormat::ATOM),
+		'tags'                   => implode(',', array_column(Tag::getByURIId($post['uri-id']), 'name')),
+		'is_private'             => false,
+		'interactability_reblog' => 'everyone'
+	];
+
+	$result = tumblr_post($connection, 'blog/' . $page . '/posts', $params);
+
+	if ($result['success']) {
+		Logger::info('success', ['blog' => $page, 'params' => $params]);
+		return true;
+	} else {
+		Logger::notice('error', ['blog' => $page, 'params' => $params, 'result' => $result['data']]);
+		return false;
+	}
+}
+
+function tumblr_connection(int $uid): GuzzleHttp\Client|null
+{
+	$oauth_token        = DI::pConfig()->get($uid, 'tumblr', 'oauth_token');
+	$oauth_token_secret = DI::pConfig()->get($uid, 'tumblr', 'oauth_token_secret');
+
+	$page = DI::pConfig()->get($uid, 'tumblr', 'page');
+
+	$consumer_key    = DI::config()->get('tumblr', 'consumer_key');
+	$consumer_secret = DI::config()->get('tumblr', 'consumer_secret');
+
+	if (!$consumer_key || !$consumer_secret || !$oauth_token || !$oauth_token_secret || !$page) {
+		Logger::notice('Missing data, connection is not established', ['uid' => $uid, 'page' => $page]);
+		return null;
+	}
+	return tumblr_client($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
+}
+
+function tumblr_client(string $consumer_key, string $consumer_secret, string $oauth_token, string $oauth_token_secret): GuzzleHttp\Client
+{
+	$stack = HandlerStack::create();
+
+	$middleware = new Oauth1([
+		'consumer_key'    => $consumer_key,
+		'consumer_secret' => $consumer_secret,
+		'token'           => $oauth_token,
+		'token_secret'    => $oauth_token_secret
+	]);
+	$stack->push($middleware);
+	
+	return new Client([
+		'base_uri' => 'https://api.tumblr.com/v2/',
+		'handler' => $stack
+	]);
+}
+
+function tumblr_get($connection, string $url)
+{
+	try {
+		$res = $connection->get($url, ['auth' => 'oauth']);
+
+		$success = true;
+		$data    = json_decode($res->getBody()->getContents());
+	} catch (RequestException $exception) {
+		$success = false;
+		Logger::notice('Request failed', ['code' => $exception->getCode(), 'message' => $exception->getMessage()]);
+		$data    = json_decode($exception->getResponse()->getBody()->getContents());
+	}
+	return ['success' => $success, 'data' => $data];
+}
+
+function tumblr_post($connection, string $url, array $parameter)
+{
+	try {
+		$res = $connection->post($url, ['auth' => 'oauth', 'json' => $parameter]);
+
+		$success = true;
+		$data    = json_decode($res->getBody()->getContents());
+	} catch (RequestException $exception) {
+		$success = false;
+		Logger::notice('Post failed', ['code' => $exception->getCode(), 'message' => $exception->getMessage()]);
+		$data    = json_decode($exception->getResponse()->getBody()->getContents());
+	}
+	return ['success' => $success, 'data' => $data];
 }
