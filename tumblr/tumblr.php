@@ -14,6 +14,7 @@ use Friendica\Content\Text\NPF;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Core\System;
 use Friendica\DI;
 use Friendica\Model\Item;
 use Friendica\Model\Photo;
@@ -24,6 +25,7 @@ use Friendica\Util\Network;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Uri as Uri;
 use GuzzleHttp\Subscriber\Oauth\Oauth1;
 
 function tumblr_install()
@@ -125,7 +127,7 @@ function tumblr_connect()
 			$url = $tum_oauth->getAuthorizeURL($request_token['oauth_token']);
 
 			// Redirect the user to the login URL given to us by Tumblr
-			header('Location: ' . $url);
+			System::externalRedirect($url);
 
 			/*
 			 * That's it for our side.  The user is sent to a Tumblr Login page and
@@ -214,11 +216,11 @@ function tumblr_settings(array &$data)
 
 	$oauth_token        = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'tumblr', 'oauth_token');
 	$oauth_token_secret = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'tumblr', 'oauth_token_secret');
+	$consumer_key       = DI::config()->get('tumblr', 'consumer_key');
+	$consumer_secret    = DI::config()->get('tumblr', 'consumer_secret');
 
-	if ($oauth_token && $oauth_token_secret) {
-		$page            = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'tumblr', 'page');
-		$consumer_key    = DI::config()->get('tumblr', 'consumer_key');
-		$consumer_secret = DI::config()->get('tumblr', 'consumer_secret');
+	if ($consumer_key && $consumer_secret && $oauth_token && $oauth_token_secret) {
+		$page = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'tumblr', 'page');
 
 		$blogs = [];
 
@@ -227,9 +229,15 @@ function tumblr_settings(array &$data)
 			$userinfo = tumblr_get($connection, 'user/info');
 			if (!empty($userinfo['success'])) {
 				foreach ($userinfo['data']->response->user->blogs as $blog) {
-					$url = parse_url($blog->url, PHP_URL_HOST);
+					$uri = new Uri($blog->url);
+					$url = trim($uri->getHost() . $uri->getPath(), '/');
 					$blogs[$url] = $url;
 				}
+			}
+
+			if (empty($page) && !empty($blogs)) {
+				$page = reset($blogs);
+				DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'tumblr', 'page', $page);
 			}
 		}
 
