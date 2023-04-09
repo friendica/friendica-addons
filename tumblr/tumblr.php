@@ -25,7 +25,6 @@ use Friendica\Util\Network;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Uri as Uri;
 use GuzzleHttp\Subscriber\Oauth\Oauth1;
 
 function tumblr_install()
@@ -229,9 +228,7 @@ function tumblr_settings(array &$data)
 			$userinfo = tumblr_get($connection, 'user/info');
 			if (!empty($userinfo['success'])) {
 				foreach ($userinfo['data']->response->user->blogs as $blog) {
-					$uri = new Uri($blog->url);
-					$url = trim($uri->getHost() . $uri->getPath(), '/');
-					$blogs[$url] = $url;
+					$blogs[$blog->uuid] = $blog->name;
 				}
 			}
 
