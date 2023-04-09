@@ -4,72 +4,69 @@
 # 
 # 
 # Translators:
-# Michal Šupler <msupler@gmail.com>, 2014-2015
+# Aditoo, 2018
+# michal_s <msupler@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2015-02-11 19:41+0000\n"
-"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2014-06-23 08:33+0000\n"
+"Last-Translator: Aditoo, 2018\n"
+"Language-Team: Czech (http://app.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
-#: gravatar.php:71
+#: gravatar.php:78
 msgid "generic profile image"
 msgstr "generický profilový obrázek"
 
-#: gravatar.php:72
+#: gravatar.php:79
 msgid "random geometric pattern"
 msgstr "náhodný geometrický vzor"
 
-#: gravatar.php:73
+#: gravatar.php:80
 msgid "monster face"
 msgstr "tvář příšery"
 
-#: gravatar.php:74
+#: gravatar.php:81
 msgid "computer generated face"
 msgstr "počítačově generovaná tvář"
 
-#: gravatar.php:75
+#: gravatar.php:82
 msgid "retro arcade style face"
 msgstr "tvář v retro arkádovém stylu"
 
-#: gravatar.php:89
+#: gravatar.php:96
 msgid "Information"
 msgstr "Informace"
 
-#: gravatar.php:89
+#: gravatar.php:96
 msgid ""
 "Libravatar addon is installed, too. Please disable Libravatar addon or this "
 "Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if "
 "nothing was found at Libravatar."
-msgstr "Libravatar doplněk je také nainstalován. Prosím zakažte doplněk Libravatar nebo tento doplněk Gravatar.<br>Libravatar doplněk se vrátí k doplňku Gravatar, pokud na Libravataru nebude nic nalezeno."
+msgstr "Doplněk Libravatar je také nainstalován. Prosím zakažte doplněk Libravatar nebo tento doplněk Gravatar.<br>Doplněk Libravatar se přepne na Gravatar, pokud na Libravataru nebude nic nalezeno."
 
-#: gravatar.php:95
-msgid "Submit"
-msgstr "Odeslat"
+#: gravatar.php:102
+msgid "Save Settings"
+msgstr ""
 
-#: gravatar.php:96
+#: gravatar.php:103
 msgid "Default avatar image"
-msgstr "Defaultní obrázek avataru"
+msgstr "Výchozí avatarový obrázek"
 
-#: gravatar.php:96
+#: gravatar.php:103
 msgid "Select default avatar image if none was found at Gravatar. See README"
-msgstr "Nastavte defaulní obrázek avatara pokud ho již nemáte na Gravatar. Více viz. soubor README."
+msgstr "Nastavte výchozí avatarový obrázek, pokud ho již nemáte na Gravataru. Více viz. soubor README."
 
-#: gravatar.php:97
+#: gravatar.php:104
 msgid "Rating of images"
 msgstr "Hodnocení obrázků"
 
-#: gravatar.php:97
+#: gravatar.php:104
 msgid "Select the appropriate avatar rating for your site. See README"
-msgstr "Zadejte ohodnocení příslušného avatara pro vaši stránku. Viz README."
-
-#: gravatar.php:111
-msgid "Gravatar settings updated."
-msgstr "Nastavení Gravatar aktualizováno."
+msgstr "Zadejte příslušné ohodnocení avataru pro vaši stránku. Viz README."

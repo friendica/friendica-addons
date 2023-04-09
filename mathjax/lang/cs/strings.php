@@ -3,12 +3,7 @@
 if(! function_exists("string_plural_select_cs")) {
 function string_plural_select_cs($n){
 	$n = intval($n);
-	if (($n==1)) { return 0; } else if (($n>=2 && $n<=4)) { return 1; } else  { return 2; }
+	if (($n == 1 && $n % 1 == 0)) { return 0; } else if (($n >= 2 && $n <= 4 && $n % 1 == 0)) { return 1; } else if (($n % 1 != 0 )) { return 2; } else  { return 3; }
 }}
-$a->strings['Settings'] = 'Nastavení';
-$a->strings['The MathJax addon renders mathematical formulae written using the LaTeX syntax surrounded by the usual $$ or an eqnarray block in the postings of your wall,network tab and private mail.'] = 'Rozšíření MathJax vykresluje matematické vzorce zapsané s použitím syntaxe LaTeX označené obvyklými znaky $$ nebo v bloku "eqnarray"  v příspěvcích na vaší zdi, záložce síť a soukromých zprávách.';
-$a->strings['Use the MathJax renderer'] = 'Použít Mathjax vykreslování';
-$a->strings['Submit'] = 'Odeslat';
-$a->strings['Settings updated.'] = 'Nastavení aktualizováno.';
-$a->strings['MathJax Base URL'] = 'Základní MathJax adresa URL';
-$a->strings['The URL for the javascript file that should be included to use MathJax. Can be either the MathJax CDN or another installation of MathJax.'] = 'URL adresa na javascriptový soubor, který musí být obsažen pro použití MathJax. Může to být MathJax CDN nebo or jiná instalace MathJax.';
+$a->strings['The MathJax addon renders mathematical formulae written using the LaTeX syntax surrounded by the usual $$ or an eqnarray block in the postings of your wall,network tab and private mail.'] = 'Doplněk MathJax vykresluje matematické vzorce zapsané s použitím syntaxe LaTeX označené obvyklými znaky $$, nebo blok "eqnarray"  v příspěvcích na Vaší zdi, záložce Síť a soukromých zprávách.';
+$a->strings['Use the MathJax renderer'] = 'Použít vykreslování MathJax';

@@ -10,3 +10,4 @@ $a->strings['Enable LiveJournal Post Addon'] = 'LiveJournal-Post-Addon aktiviere
 $a->strings['LiveJournal username'] = 'LiveJournal-Benutzername';
 $a->strings['LiveJournal password'] = 'LiveJournal-Passwort';
 $a->strings['Post to LiveJournal by default'] = 'Standardmäßig bei LiveJournal veröffentlichen';
+$a->strings['LiveJournal Export'] = 'LiveJournal Export';

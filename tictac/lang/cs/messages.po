@@ -4,71 +4,72 @@
 # 
 # 
 # Translators:
-# Michal Šupler <msupler@gmail.com>, 2014
+# Aditoo, 2018
+# michal_s <msupler@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2014-07-28 18:18+0000\n"
-"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2014-06-23 12:57+0000\n"
+"Last-Translator: Aditoo, 2018\n"
+"Language-Team: Czech (http://app.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
-#: tictac.php:20
+#: tictac.php:16
 msgid "Three Dimensional Tic-Tac-Toe"
-msgstr "Trojrozměrné Tic-Tac-Toe"
+msgstr "Trojrozměrné piškvorky"
 
-#: tictac.php:53
+#: tictac.php:49
 msgid "3D Tic-Tac-Toe"
-msgstr "3D Tic-Tac-Toe"
+msgstr "3D piškvorky"
 
-#: tictac.php:58
+#: tictac.php:54
 msgid "New game"
 msgstr "Nová hra"
 
-#: tictac.php:59
+#: tictac.php:55
 msgid "New game with handicap"
 msgstr "Nová hra s handicapem"
 
-#: tictac.php:60
+#: tictac.php:56
 msgid ""
 "Three dimensional tic-tac-toe is just like the traditional game except that "
 "it is played on multiple levels simultaneously. "
-msgstr "Trojrozměrné tic-tac-toe je podobná této tradiční hře kromě toho, že se hraje na více úrovních současně."
+msgstr "Trojrozměrné piškvorky jsou podobné této tradiční hře kromě toho, že se hrají na více úrovních současně."
 
-#: tictac.php:61
+#: tictac.php:57
 msgid ""
 "In this case there are three levels. You win by getting three in a row on "
 "any level, as well as up, down, and diagonally across the different levels."
 msgstr "V tomto případě existují tři úrovně. Vyhrajete tím, že dostane tři v řadě na jakékoli úrovni, stejně jako nahoru, dolů a šikmo na různých úrovních."
 
-#: tictac.php:63
+#: tictac.php:59
 msgid ""
 "The handicap game disables the center position on the middle level because "
 "the player claiming this square often has an unfair advantage."
 msgstr "Hra s handicapem zakáže centrální pozici na střední úrovni, protože hráč zaujímající tuto polohu má často nespravedlivou výhodu."
 
-#: tictac.php:182
+#: tictac.php:178
 msgid "You go first..."
 msgstr "Vy začněte ..."
 
-#: tictac.php:187
+#: tictac.php:183
 msgid "I'm going first this time..."
 msgstr "Tentokrát začnu já..."
 
-#: tictac.php:193
+#: tictac.php:189
 msgid "You won!"
-msgstr "Vyhrál jste!"
+msgstr "Vyhrál/a jste!"
 
-#: tictac.php:199 tictac.php:224
+#: tictac.php:195 tictac.php:220
 msgid "\"Cat\" game!"
-msgstr "Pat hra!"
+msgstr "Remíza!"
 
-#: tictac.php:222
+#: tictac.php:218
 msgid "I won!"
 msgstr "Vyhrál jsem!"

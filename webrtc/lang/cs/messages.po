@@ -4,56 +4,53 @@
 # 
 # 
 # Translators:
-# Michal Šupler <msupler@gmail.com>, 2014
+# Aditoo, 2018
+# michal_s <msupler@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2014-07-02 15:10+0000\n"
-"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"POT-Creation-Date: 2022-04-29 15:56+0200\n"
+"PO-Revision-Date: 2014-06-23 13:05+0000\n"
+"Last-Translator: Aditoo, 2018\n"
+"Language-Team: Czech (http://app.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
-#: webrtc.php:20
+#: webrtc.php:18
 msgid "WebRTC Videochat"
 msgstr "WebRTC Videochat"
 
-#: webrtc.php:26
+#: webrtc.php:24
 msgid "Save Settings"
 msgstr "Uložit Nastavení"
 
-#: webrtc.php:27
+#: webrtc.php:25
 msgid "WebRTC Base URL"
-msgstr "WebRTC Base adresa URL"
+msgstr "Základní adresa URL WebRTC"
 
-#: webrtc.php:27
+#: webrtc.php:25
 msgid ""
 "Page your users will create a WebRTC chat room on. For example you could use"
 " https://live.mayfirst.org ."
-msgstr "Stránka, na které budou vaši uživatelé vytvářet  WebRTC chatovací místnosti. Například můžete zadat https://live.mayfirst.org."
+msgstr "Stránka, na které budou vaši uživatelé vytvářet chatovací místnosti WebRTC. Například můžete zadat https://live.mayfirst.org."
 
-#: webrtc.php:33
-msgid "Settings updated."
-msgstr "Nastavení aktualizováno."
-
-#: webrtc.php:47
+#: webrtc.php:44
 msgid "Video Chat"
 msgstr "Video Chat"
 
-#: webrtc.php:48
+#: webrtc.php:45
 msgid ""
-"WebRTC is a video and audio conferencing tool that works with Firefox "
-"(version 21 and above) and Chrome/Chromium (version 25 and above). Just "
-"create a new chat room and send the link to someone you want to chat with."
-msgstr "WebRTC je video a audio konferenční nástroj který funguje s prohlížeči Firefox (verze 21 a vyšší) a Chrome/Chromium (verze 25 a vyšší). Stačí vytvořit novou chatovací místnost a poslat link někomu, se kterým chcete chatovat."
+"WebRTC is a video and audio conferencing tool that works in all modern "
+"browsers. Just create a new chat room and send the link to someone you want "
+"to chat with."
+msgstr ""
 
-#: webrtc.php:50
+#: webrtc.php:47
 msgid ""
 "Please contact your friendica admin and send a reminder to configure the "
 "WebRTC addon."
-msgstr "Prosím kontaktujte vašeho administrátora serveru friendica a požádejte ho o konfiguraci WebRTC rozšíření."
+msgstr "Prosím kontaktujte administrátora Vašeho serveru Friendica a požádejte ho o konfiguraci doplňku WebRTC."
