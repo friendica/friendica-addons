@@ -510,8 +510,8 @@ function tumblr_get($connection, string $url)
 		$data    = json_decode($res->getBody()->getContents());
 	} catch (RequestException $exception) {
 		$success = false;
+		$data    = [];
 		Logger::notice('Request failed', ['code' => $exception->getCode(), 'message' => $exception->getMessage()]);
-		$data    = json_decode($exception->getResponse()->getBody()->getContents());
 	}
 	return ['success' => $success, 'data' => $data];
 }
@@ -525,8 +525,8 @@ function tumblr_post($connection, string $url, array $parameter)
 		$data    = json_decode($res->getBody()->getContents());
 	} catch (RequestException $exception) {
 		$success = false;
-		Logger::notice('Post failed', ['code' => $exception->getCode(), 'message' => $exception->getMessage()]);
 		$data    = json_decode($exception->getResponse()->getBody()->getContents());
+		Logger::notice('Post failed', ['code' => $exception->getCode(), 'message' => $exception->getMessage()]);
 	}
 	return ['success' => $success, 'data' => $data];
 }
