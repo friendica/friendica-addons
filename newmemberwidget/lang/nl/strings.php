@@ -8,3 +8,5 @@ function string_plural_select_nl($n){
 $a->strings['New Member'] = 'Nieuw lid';
 $a->strings['Tips for New Members'] = 'Tips voor nieuwe leden';
 $a->strings['Save Settings'] = 'Instellingen opslaan';
+$a->strings['Message'] = 'Bericht';
+$a->strings['Your message for new members. You can use bbcode here.'] = 'Uw bericht aan nieuwe leden. U kunt hier bbcode gebruiken.';

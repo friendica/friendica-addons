@@ -11,124 +11,116 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-25 17:17+0200\n"
-"PO-Revision-Date: 2018-07-05 17:03+0000\n"
-"Last-Translator: Aditoo\n"
-"Language-Team: Czech (http://www.transifex.com/Friendica/friendica/language/cs/)\n"
+"POT-Creation-Date: 2021-11-21 19:14-0500\n"
+"PO-Revision-Date: 2014-06-22 11:34+0000\n"
+"Last-Translator: Aditoo, 2018\n"
+"Language-Team: Czech (http://app.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
-#: curweather.php:31
-msgid "Error fetching weather data.\\nError was: "
-msgstr "Chyba při získávání dat o počasí.\\nChyba:"
+#: curweather.php:47
+msgid "Error fetching weather data. Error was: "
+msgstr ""
 
-#: curweather.php:111 curweather.php:172
+#: curweather.php:130
 msgid "Current Weather"
 msgstr "Aktuální počasí"
 
-#: curweather.php:118
+#: curweather.php:137
 msgid "Relative Humidity"
 msgstr "Relativní vlhkost vzduchu"
 
-#: curweather.php:119
+#: curweather.php:138
 msgid "Pressure"
 msgstr "Tlak"
 
-#: curweather.php:120
+#: curweather.php:139
 msgid "Wind"
 msgstr "Vítr"
 
-#: curweather.php:121
+#: curweather.php:140
 msgid "Last Updated"
 msgstr "Naposledy aktualizováno"
 
-#: curweather.php:122
+#: curweather.php:141
 msgid "Data by"
 msgstr "Data podle"
 
-#: curweather.php:123
+#: curweather.php:142
 msgid "Show on map"
 msgstr "Ukázat na mapě"
 
-#: curweather.php:128
+#: curweather.php:147
 msgid "There was a problem accessing the weather data. But have a look"
 msgstr "Při získávání dat o počasí nastala chyba. Podívejte se ale"
 
-#: curweather.php:130
+#: curweather.php:149
 msgid "at OpenWeatherMap"
 msgstr "na OpenWeatherMap"
 
-#: curweather.php:146
-msgid "Current Weather settings updated."
-msgstr "Nastavení pro Aktuální počasí aktualizováno."
-
-#: curweather.php:161
+#: curweather.php:178
 msgid "No APPID found, please contact your admin to obtain one."
 msgstr "Žádné APPID nebylo nalezeno, prosím kontaktujte svého administrátora pro získání APPID."
 
-#: curweather.php:171 curweather.php:200
-msgid "Save Settings"
-msgstr "Uložit nastavení"
-
-#: curweather.php:172
-msgid "Settings"
-msgstr "Nastavení"
-
-#: curweather.php:174
+#: curweather.php:188
 msgid "Enter either the name of your location or the zip code."
 msgstr "Zadejte buď název místa, kde se nacházíte, nebo PSČ."
 
-#: curweather.php:175
+#: curweather.php:189
 msgid "Your Location"
 msgstr "Vaše poloha"
 
-#: curweather.php:175
+#: curweather.php:189
 msgid ""
 "Identifier of your location (name or zip code), e.g. <em>Berlin,DE</em> or "
 "<em>14476,DE</em>."
 msgstr "Identifikátor vaší polohy (název nebo PSČ), např. <em>Praha,CZ</em> nebo <em>11000,CZ</em>."
 
-#: curweather.php:176
+#: curweather.php:190
 msgid "Units"
 msgstr "Jednotky"
 
-#: curweather.php:176
+#: curweather.php:190
 msgid "select if the temperature should be displayed in &deg;C or &deg;F"
 msgstr "vyberte, jestli by se teplota měla zobrazovat v &deg;C či &deg;F"
 
-#: curweather.php:177
+#: curweather.php:191
 msgid "Show weather data"
 msgstr "Ukázat data o počasí"
 
-#: curweather.php:190
-msgid "Curweather settings saved."
-msgstr "Nastavení Curwather uložena."
+#: curweather.php:196
+msgid "Current Weather Settings"
+msgstr ""
 
-#: curweather.php:201
+#: curweather.php:227
+msgid "Save Settings"
+msgstr "Uložit nastavení"
+
+#: curweather.php:230
 msgid "Caching Interval"
-msgstr "Ukládám interval do mezipaměti"
+msgstr "Interval mezipaměti"
 
-#: curweather.php:201
+#: curweather.php:232
 msgid ""
 "For how long should the weather data be cached? Choose according your "
 "OpenWeatherMap account type."
 msgstr "Na jak dlouho by vaše data o počasí měla být uložena v mezipaměti? Vyberte podle typu vašeho účtu na OpenWeatherMap."
 
-#: curweather.php:201
+#: curweather.php:233
 msgid "no cache"
 msgstr "žádná mezipaměť"
 
-#: curweather.php:201
+#: curweather.php:234 curweather.php:235 curweather.php:236 curweather.php:237
 msgid "minutes"
 msgstr "minut"
 
-#: curweather.php:202
+#: curweather.php:240
 msgid "Your APPID"
 msgstr "Vaše APPID"
 
-#: curweather.php:202
+#: curweather.php:240
 msgid "Your API key provided by OpenWeatherMap"
 msgstr "Váš API klíč poskytnutý OpenWetherMap"

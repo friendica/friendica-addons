@@ -4,43 +4,63 @@
 # 
 # 
 # Translators:
-# Michal Šupler <msupler@gmail.com>, 2014-2015
+# Aditoo, 2018
+# michal_s <msupler@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2015-02-11 19:39+0000\n"
-"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2014-06-23 11:01+0000\n"
+"Last-Translator: Aditoo, 2018\n"
+"Language-Team: Czech (http://app.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
-#: openstreetmap.php:94
+#: openstreetmap.php:167
+msgid "View Larger"
+msgstr ""
+
+#: openstreetmap.php:194
 msgid "Submit"
 msgstr "Odeslat"
 
-#: openstreetmap.php:95
+#: openstreetmap.php:195
 msgid "Tile Server URL"
 msgstr "URL adresa Tile serveru"
 
-#: openstreetmap.php:95
+#: openstreetmap.php:195
 msgid ""
 "A list of <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" "
-"target=\"_blank\">public tile servers</a>"
-msgstr "Seznam <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" target=\"_blank\">veřejných tile serverů</a>"
+"target=\"_blank\" rel=\"noopener noreferrer\">public tile servers</a>"
+msgstr ""
 
-#: openstreetmap.php:96
+#: openstreetmap.php:196
+msgid "Nominatim (reverse geocoding) Server URL"
+msgstr ""
+
+#: openstreetmap.php:196
+msgid ""
+"A list of <a href=\"http://wiki.openstreetmap.org/wiki/Nominatim\" "
+"target=\"_blank\" rel=\"noopener noreferrer\">Nominatim servers</a>"
+msgstr ""
+
+#: openstreetmap.php:197
 msgid "Default zoom"
-msgstr "Defaultní lupa"
+msgstr "Výchozí zvětšení"
 
-#: openstreetmap.php:96
-msgid "The default zoom level. (1:world, 18:highest)"
-msgstr "Defaultní nastavení lupy (1:svět, 18:nejvyšší)"
+#: openstreetmap.php:197
+msgid ""
+"The default zoom level. (1:world, 18:highest, also depends on tile server)"
+msgstr ""
 
-#: openstreetmap.php:104
-msgid "Settings updated."
-msgstr "Nastavení aktualizováno."
+#: openstreetmap.php:198
+msgid "Include marker on map"
+msgstr ""
+
+#: openstreetmap.php:198
+msgid "Include a marker on the map."
+msgstr ""

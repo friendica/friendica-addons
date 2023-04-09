@@ -10,5 +10,6 @@ $a->strings['Enable Content filter'] = 'Activer le filtrage de contenu';
 $a->strings['Comma separated list of keywords to hide'] = 'Liste de mots-clés - séparés par des virgules - à cacher';
 $a->strings['Use /expression/ to provide regular expressions, #tag to specfically match hashtags (case-insensitive), or regular words (case-sensitive)'] = 'Utiliser /expression/ pour fournir des expressions régulières, #tag pour correspondre à un mot-dièse (hashtag, insensible à la casse), ou des mots classiques (sensible à la casse)';
 $a->strings['Content Filter (NSFW and more)'] = 'Filtre de contenu (NSFW et autres)';
+$a->strings['Regular expression "%s" fails to compile'] = 'La compilation de l\'expression régulière "%s" a échoué';
 $a->strings['Filtered tag: %s'] = 'Tag filtré: %s';
 $a->strings['Filtered word: %s'] = 'Mot filtré: %s';

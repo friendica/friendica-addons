@@ -9,40 +9,40 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-21 19:17-0500\n"
-"PO-Revision-Date: 2022-01-16 01:06+0000\n"
-"Last-Translator: Kristoffer Grundström <lovaren@gmail.com>\n"
-"Language-Team: Swedish (http://www.transifex.com/Friendica/friendica/language/sv/)\n"
+"POT-Creation-Date: 2022-12-21 22:32+0000\n"
+"PO-Revision-Date: 2014-06-23 12:54+0000\n"
+"Last-Translator: Kristoffer Grundström <lovaren@gmail.com>, 2022\n"
+"Language-Team: Swedish (http://app.transifex.com/Friendica/friendica/language/sv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: sv\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: statusnet.php:97
+#: statusnet.php:76
 msgid "Post to GNU Social"
 msgstr ""
 
-#: statusnet.php:148
+#: statusnet.php:122
 msgid ""
 "Please contact your site administrator.<br />The provided API URL is not "
 "valid."
 msgstr ""
 
-#: statusnet.php:176
+#: statusnet.php:150
 msgid "We could not contact the GNU Social API with the Path you entered."
 msgstr ""
 
-#: statusnet.php:243 statusnet.php:656
+#: statusnet.php:208 statusnet.php:489
 msgid "Save Settings"
 msgstr "Spara inställningar"
 
-#: statusnet.php:255
+#: statusnet.php:220
 #, php-format
 msgid "Currently connected to: <a href=\"%s\" target=\"_statusnet\">%s</a>"
 msgstr ""
 
-#: statusnet.php:260
+#: statusnet.php:225
 msgid ""
 "<strong>Note</strong>: Due your privacy settings (<em>Hide your profile "
 "details from unknown viewers?</em>) the link potentially included in public "
@@ -50,30 +50,30 @@ msgid ""
 "informing the visitor that the access to your profile has been restricted."
 msgstr ""
 
-#: statusnet.php:263
+#: statusnet.php:228
 msgid "Clear OAuth configuration"
 msgstr ""
 
-#: statusnet.php:275
+#: statusnet.php:240
 msgid "Cancel GNU Social Connection"
 msgstr ""
 
-#: statusnet.php:283
+#: statusnet.php:247
 msgid "Globally Available GNU Social OAuthKeys"
 msgstr ""
 
-#: statusnet.php:284
+#: statusnet.php:248
 msgid ""
 "There are preconfigured OAuth key pairs for some GNU Social servers "
 "available. If you are using one of them, please use these credentials. If "
 "not feel free to connect to any other GNU Social instance (see below)."
 msgstr ""
 
-#: statusnet.php:285
+#: statusnet.php:249
 msgid "Provide your own OAuth Credentials"
 msgstr ""
 
-#: statusnet.php:286
+#: statusnet.php:250
 msgid ""
 "No consumer key pair for GNU Social found. Register your Friendica Account "
 "as a desktop application on your GNU Social account, copy the consumer key "
@@ -82,7 +82,7 @@ msgid ""
 " Friendica installation at your favorite GNU Social installation."
 msgstr ""
 
-#: statusnet.php:287
+#: statusnet.php:251
 msgid ""
 "To connect to your GNU Social account click the button below to get a "
 "security code from GNU Social which you have to copy into the input box "
@@ -90,86 +90,62 @@ msgid ""
 "posted to GNU Social."
 msgstr ""
 
-#: statusnet.php:288
+#: statusnet.php:252
 msgid "Log in with GNU Social"
 msgstr "Logga in med GNU Social"
 
-#: statusnet.php:289
+#: statusnet.php:253
 msgid "Cancel Connection Process"
 msgstr ""
 
-#: statusnet.php:290
+#: statusnet.php:254
 #, php-format
 msgid "Current GNU Social API is: %s"
 msgstr ""
 
-#: statusnet.php:307
+#: statusnet.php:271
 msgid "OAuth Consumer Key"
 msgstr ""
 
-#: statusnet.php:308
+#: statusnet.php:272
 msgid "OAuth Consumer Secret"
 msgstr ""
 
-#: statusnet.php:310 statusnet.php:636 statusnet.php:648
+#: statusnet.php:274 statusnet.php:469 statusnet.php:481
 msgid "Base API Path (remember the trailing /)"
 msgstr ""
 
-#: statusnet.php:311
+#: statusnet.php:275
 msgid "Copy the security code from GNU Social here"
 msgstr ""
 
-#: statusnet.php:313
+#: statusnet.php:277
 msgid "Allow posting to GNU Social"
 msgstr ""
 
-#: statusnet.php:313
+#: statusnet.php:277
 msgid ""
 "If enabled all your <strong>public</strong> postings can be posted to the "
 "associated GNU Social account. You can choose to do so by default (here) or "
 "for every posting separately in the posting options when writing the entry."
 msgstr ""
 
-#: statusnet.php:314
+#: statusnet.php:278
 msgid "Post to GNU Social by default"
 msgstr ""
 
-#: statusnet.php:315
-msgid "Mirror all public posts"
-msgstr ""
-
-#: statusnet.php:316
-msgid "Automatically create contacts"
-msgstr ""
-
-#: statusnet.php:317
-msgid "Import the remote timeline"
-msgstr ""
-
-#: statusnet.php:318
-msgid "Disabled"
-msgstr ""
-
-#: statusnet.php:319
-msgid "Full Timeline"
-msgstr "Fullständig tidslinje"
-
-#: statusnet.php:320
-msgid "Only Mentions"
-msgstr "Endast omnämningar"
-
-#: statusnet.php:326
+#: statusnet.php:283
 msgid "GNU Social Import/Export/Mirror"
 msgstr ""
 
-#: statusnet.php:647
+#: statusnet.php:480
 msgid "Site name"
 msgstr "Namn på sidan"
 
-#: statusnet.php:649
+#: statusnet.php:482
 msgid "Consumer Secret"
 msgstr "Kundhemlighet"
 
-#: statusnet.php:650
+#: statusnet.php:483
 msgid "Consumer Key"
 msgstr "Kundnyckel"

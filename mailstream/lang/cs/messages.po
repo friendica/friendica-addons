@@ -4,77 +4,96 @@
 # 
 # 
 # Translators:
-# Michal Šupler <msupler@gmail.com>, 2014
+# Aditoo, 2018
+# michal_s <msupler@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2014-07-07 19:19+0000\n"
-"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"POT-Creation-Date: 2021-11-21 19:15-0500\n"
+"PO-Revision-Date: 2014-06-23 09:54+0000\n"
+"Last-Translator: Aditoo, 2018\n"
+"Language-Team: Czech (http://app.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
-#: mailstream.php:55
+#: mailstream.php:77
 msgid "From Address"
 msgstr "Adresa odesílatele"
 
-#: mailstream.php:57
+#: mailstream.php:79
 msgid "Email address that stream items will appear to be from."
 msgstr "Adresa, která vysílá položky, se objeví jako odesílatel."
 
-#: mailstream.php:60 mailstream.php:282
+#: mailstream.php:82
 msgid "Save Settings"
-msgstr "Uložit Nastavení"
+msgstr "Uložit nastavení"
 
-#: mailstream.php:165
+#: mailstream.php:301
 msgid "Re:"
 msgstr "Re:"
 
-#: mailstream.php:173
+#: mailstream.php:314 mailstream.php:317
 msgid "Friendica post"
-msgstr "Friendica příspěvky"
+msgstr "Příspěvek z Friendica"
 
-#: mailstream.php:176
+#: mailstream.php:320
 msgid "Diaspora post"
-msgstr "Diaspora příspvěvky"
+msgstr "Příspěvek z Diaspora"
 
-#: mailstream.php:183
+#: mailstream.php:330
 msgid "Feed item"
-msgstr "Zdrojová položka"
+msgstr "Položka kanálu"
 
-#: mailstream.php:186
+#: mailstream.php:333
 msgid "Email"
 msgstr "E-mail"
 
-#: mailstream.php:188
+#: mailstream.php:335
 msgid "Friendica Item"
-msgstr "Friendica položka"
+msgstr "Položka z Friendica"
 
-#: mailstream.php:229
+#: mailstream.php:404
 msgid "Upstream"
 msgstr "Upstream"
 
-#: mailstream.php:230
+#: mailstream.php:405
 msgid "Local"
-msgstr "Lokální"
+msgstr "Místní"
 
-#: mailstream.php:274
-msgid "Email Address"
-msgstr "E-mailová adresa"
-
-#: mailstream.php:276
-msgid "Leave blank to use your account email address"
-msgstr "Ponechte prázdné pro použití vaší e-mailové adresy"
-
-#: mailstream.php:279
+#: mailstream.php:481
 msgid "Enabled"
 msgstr "Povoleno"
 
-#: mailstream.php:281
+#: mailstream.php:486
+msgid "Email Address"
+msgstr "E-mailová adresa"
+
+#: mailstream.php:488
+msgid "Leave blank to use your account email address"
+msgstr "Ponechte prázdné pro použití vaší e-mailové adresy"
+
+#: mailstream.php:492
+msgid "Exclude Likes"
+msgstr "Vynechávat \"lajky\""
+
+#: mailstream.php:494
+msgid "Check this to omit mailing \"Like\" notifications"
+msgstr "Zaškrtnutím vypnete posílání oznámení o \"To se mi líbí\""
+
+#: mailstream.php:498
+msgid "Attach Images"
+msgstr "Připojit obrázky"
+
+#: mailstream.php:500
+msgid ""
+"Download images in posts and attach them to the email.  Useful for reading "
+"email while offline."
+msgstr "Stahovat obrázky v příspěvcích a připojovat je k e-mailu. Užitečné pro čtení e-mailu, když jste offline."
+
+#: mailstream.php:507
 msgid "Mail Stream Settings"
-msgstr "Mail Stream nastavení"
+msgstr "Nastavení Mail Stream"

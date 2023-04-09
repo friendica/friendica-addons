@@ -5,52 +5,55 @@
 # 
 # Translators:
 # Jeroen De Meerleer <me@jeroened.be>, 2018
+# Ruud Schilders <ruud@schilders.it>, 2020
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-08-24 11:48+0000\n"
-"Last-Translator: Jeroen De Meerleer <me@jeroened.be>\n"
-"Language-Team: Dutch (http://www.transifex.com/Friendica/friendica/language/nl/)\n"
+"POT-Creation-Date: 2021-03-23 23:53-0400\n"
+"PO-Revision-Date: 2014-06-23 08:46+0000\n"
+"Last-Translator: Ruud Schilders <ruud@schilders.it>, 2020\n"
+"Language-Team: Dutch (http://app.transifex.com/Friendica/friendica/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: js_upload.php:43
-msgid "Upload a file"
-msgstr "Upload een bestand"
+#: js_upload.php:34
+msgid "Select files for upload"
+msgstr ""
 
-#: js_upload.php:44
+#: js_upload.php:35
 msgid "Drop files here to upload"
 msgstr "Sleep uw bestanden hier om ze te uploaden"
 
-#: js_upload.php:45
+#: js_upload.php:36
 msgid "Cancel"
-msgstr ""
+msgstr "Afbreken"
 
-#: js_upload.php:46
+#: js_upload.php:37
 msgid "Failed"
-msgstr ""
+msgstr "Mislukt"
 
-#: js_upload.php:303
+#: js_upload.php:215
 msgid "No files were uploaded."
-msgstr ""
+msgstr "Er waren geen bestanden geüpload."
 
-#: js_upload.php:309
+#: js_upload.php:221
 msgid "Uploaded file is empty"
+msgstr "Het geüploade bestand is leeg"
+
+#: js_upload.php:233
+#, php-format
+msgid "Image exceeds size limit of %s"
 msgstr ""
 
-#: js_upload.php:321
-msgid "Image exceeds size limit of "
+#: js_upload.php:245
+#, php-format
+msgid "File has an invalid extension, it should be one of %s."
 msgstr ""
 
-#: js_upload.php:332
-msgid "File has an invalid extension, it should be one of "
-msgstr ""
-
-#: js_upload.php:343
+#: js_upload.php:256
 msgid "Upload was cancelled, or server error encountered"
 msgstr ""

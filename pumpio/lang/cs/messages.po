@@ -10,94 +10,86 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2018-06-11 19:43+0000\n"
-"Last-Translator: Aditoo\n"
-"Language-Team: Czech (http://www.transifex.com/Friendica/friendica/language/cs/)\n"
+"POT-Creation-Date: 2021-11-21 19:17-0500\n"
+"PO-Revision-Date: 2014-06-23 11:30+0000\n"
+"Last-Translator: Aditoo, 2018\n"
+"Language-Team: Czech (http://app.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
-#: pumpio.php:38
+#: pumpio.php:57
 msgid "Permission denied."
 msgstr "Přístup odmítnut."
 
-#: pumpio.php:124
+#: pumpio.php:152
 #, php-format
 msgid "Unable to register the client at the pump.io server '%s'."
-msgstr "Nebylo možné registrovat klienta na pump.io serveru '%s'."
+msgstr "Nebylo možné registrovat klienta na serveru pump.io \"%s\"."
 
-#: pumpio.php:164
+#: pumpio.php:192
 msgid "You are now authenticated to pumpio."
-msgstr "Nyní jste přihlášen k pumpio."
+msgstr "Nyní jste přihlášen/a na pump.io."
 
-#: pumpio.php:165
+#: pumpio.php:193
 msgid "return to the connector page"
-msgstr "návrat ke stránce konektor"
+msgstr "návrat na stránku konektoru"
 
-#: pumpio.php:183
+#: pumpio.php:213
 msgid "Post to pumpio"
-msgstr "Příspěvek na pumpio"
+msgstr "Posílat na pump.io"
 
-#: pumpio.php:221 pumpio.php:225
-msgid "Pump.io Import/Export/Mirror"
-msgstr "Pump.oi Import/Export/Zrcadlení"
+#: pumpio.php:237
+msgid "Save Settings"
+msgstr "Uložit nastavení"
 
-#: pumpio.php:229
-msgid "pump.io username (without the servername)"
-msgstr "uživatelské jméno pump.io (bez jména serveru)"
+#: pumpio.php:239
+msgid "Delete this preset"
+msgstr ""
 
-#: pumpio.php:234
-msgid "pump.io servername (without \"http://\" or \"https://\" )"
-msgstr "jméno serveru pump.io  (bez \"http://\" nebo \"https://\" )"
-
-#: pumpio.php:246
+#: pumpio.php:245
 msgid "Authenticate your pump.io connection"
 msgstr "Přihlásit ke spojení na pump.io"
 
-#: pumpio.php:250
+#: pumpio.php:252
+msgid "Pump.io servername (without \"http://\" or \"https://\" )"
+msgstr ""
+
+#: pumpio.php:253
+msgid "Pump.io username (without the servername)"
+msgstr ""
+
+#: pumpio.php:254
 msgid "Import the remote timeline"
 msgstr "Importovat vzdálenou časovou osu"
 
 #: pumpio.php:255
-msgid "Enable pump.io Post Addon"
-msgstr "Povolit doplněk pumo.io Post"
+msgid "Enable Pump.io Post Addon"
+msgstr ""
 
-#: pumpio.php:260
-msgid "Post to pump.io by default"
-msgstr "Posílat příspěvky na pump.io automaticky"
+#: pumpio.php:256
+msgid "Post to Pump.io by default"
+msgstr ""
 
-#: pumpio.php:265
+#: pumpio.php:257
 msgid "Should posts be public?"
 msgstr "Mají být příspěvky veřejné?"
 
-#: pumpio.php:270
+#: pumpio.php:258
 msgid "Mirror all public posts"
 msgstr "Zrcadlit všechny veřejné příspěvky"
 
-#: pumpio.php:275
-msgid "Check to delete this preset"
-msgstr "Zaškrtnout pro smazání tohoto nastavení"
+#: pumpio.php:263
+msgid "Pump.io Import/Export/Mirror"
+msgstr "Import/Export/Zrcadlení Pump.io"
 
-#: pumpio.php:285
-msgid "Save Settings"
-msgstr "Uložit Nastavení"
-
-#: pumpio.php:515
-msgid "Pump.io post failed. Queued for retry."
-msgstr "Zaslání příspěvku na Pump.io selhalo. Příspěvek byl zařazen do fronty pro opakované odeslání."
-
-#: pumpio.php:587
-msgid "Pump.io like failed. Queued for retry."
-msgstr "Zaslání příspěvku na Pump.io zřejmě selhalo. Příspěvek byl zařazen do fronty pro opakované odeslání."
-
-#: pumpio.php:875
+#: pumpio.php:920
 msgid "status"
 msgstr "stav"
 
-#: pumpio.php:879
+#: pumpio.php:924
 #, php-format
 msgid "%1$s likes %2$s's %3$s"
-msgstr "%1$s se líbí %3$s %2$s"
+msgstr "Uživateli %1$s se líbí %3$s uživatele %2$s"

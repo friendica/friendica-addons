@@ -7,8 +7,6 @@ function string_plural_select_sv($n){
 }}
 $a->strings['Save Settings'] = 'Spara inställningar';
 $a->strings['Log in with GNU Social'] = 'Logga in med GNU Social';
-$a->strings['Full Timeline'] = 'Fullständig tidslinje';
-$a->strings['Only Mentions'] = 'Endast omnämningar';
 $a->strings['Site name'] = 'Namn på sidan';
 $a->strings['Consumer Secret'] = 'Kundhemlighet';
 $a->strings['Consumer Key'] = 'Kundnyckel';

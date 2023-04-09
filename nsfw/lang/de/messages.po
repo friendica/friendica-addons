@@ -6,6 +6,7 @@
 # Translators:
 # Andreas H., 2014
 # hoergen <hoergen@hoergen.org>, 2018
+# foss <oss@disr.it>, 2022
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018,2022
 # Ulf Rompe <transifex.com@rompe.org>, 2019
@@ -13,10 +14,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-18 11:57-0500\n"
+"POT-Creation-Date: 2022-12-10 14:42-0500\n"
 "PO-Revision-Date: 2014-06-23 10:34+0000\n"
-"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018,2022\n"
-"Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
+"Last-Translator: foss <oss@disr.it>, 2022\n"
+"Language-Team: German (http://app.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -49,12 +50,17 @@ msgstr "Verwende /ausdruck/ für reguläre Ausdrücke, #tag um einen speziellen 
 msgid "Content Filter (NSFW and more)"
 msgstr "Inhaltsfilter (NSFW und mehr)"
 
-#: nsfw.php:140
+#: nsfw.php:96
+#, php-format
+msgid "Regular expression \"%s\" fails to compile"
+msgstr "Regulärer Ausdruck \"%s\" schlägt beim Kompiliern fehl."
+
+#: nsfw.php:154
 #, php-format
 msgid "Filtered tag: %s"
 msgstr "Gefiltertes Schlagwort: %s"
 
-#: nsfw.php:142
+#: nsfw.php:156
 #, php-format
 msgid "Filtered word: %s"
 msgstr "Gefilterter Begriff: %s"
