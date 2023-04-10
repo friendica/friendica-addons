@@ -180,10 +180,7 @@ function tumblr_callback()
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'tumblr', 'oauth_token', $access_token['oauth_token']);
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'tumblr', 'oauth_token_secret', $access_token['oauth_token_secret']);
 
-	$o = DI::l10n()->t('You are now authenticated to tumblr.');
-	$o .= '<br /><a href="' . DI::baseUrl() . '/settings/connectors">' . DI::l10n()->t("return to the connector page") . '</a>';
-
-	return $o;
+	DI::baseUrl()->redirect('settings/connectors/tumblr');
 }
 
 function tumblr_jot_nets(array &$jotnets_fields)
@@ -213,31 +210,10 @@ function tumblr_settings(array &$data)
 	$enabled     = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'tumblr', 'post', false);
 	$def_enabled = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'tumblr', 'post_by_default', false);
 
-	$oauth_token        = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'tumblr', 'oauth_token');
-	$oauth_token_secret = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'tumblr', 'oauth_token_secret');
-	$consumer_key       = DI::config()->get('tumblr', 'consumer_key');
-	$consumer_secret    = DI::config()->get('tumblr', 'consumer_secret');
-
-	if ($consumer_key && $consumer_secret && $oauth_token && $oauth_token_secret) {
-		$page = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'tumblr', 'page');
-
-		$blogs = [];
-
-		$connection = tumblr_client($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
-		if ($connection) {
-			$userinfo = tumblr_get($connection, 'user/info');
-			if (!empty($userinfo['success'])) {
-				foreach ($userinfo['data']->response->user->blogs as $blog) {
-					$blogs[$blog->uuid] = $blog->name;
-				}
-			}
-
-			if (empty($page) && !empty($blogs)) {
-				$page = reset($blogs);
-				DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'tumblr', 'page', $page);
-			}
-		}
-
+	$blogs = tumblr_get_blogs(DI::userSession()->getLocalUserId());
+	if (!empty($blogs)) {
+		$page = tumblr_get_page(DI::userSession()->getLocalUserId(), $blogs);
+	
 		$page_select = ['tumblr_page', DI::l10n()->t('Post to page:'), $page, '', $blogs];
 	}
 
@@ -417,7 +393,7 @@ function tumblr_send(array &$b)
 			'<p>' . $params['caption'] . '</p>';
 	}
 
-	$page = DI::pConfig()->get($b['uid'], 'tumblr', 'page');
+	$page = tumblr_get_page($b['uid']);
 
 	$result = tumblr_post($connection, 'blog/' . $page . '/post', $params);
 
@@ -432,11 +408,11 @@ function tumblr_send(array &$b)
 
 function tumblr_send_npf(array $post): bool
 {
-	$page = DI::pConfig()->get($post['uid'], 'tumblr', 'page');
+	$page = tumblr_get_page($post['uid']);
 
 	$connection = tumblr_connection($post['uid']);
-	if (empty($connection)) {
-		Logger::notice('Missing data, post will not be send to Tumblr.', ['uid' => $post['uid'], 'page' => $page, 'id' => $post['id']]);
+	if (empty($page)) {
+		Logger::notice('Missing page, post will not be send to Tumblr.', ['uid' => $post['uid'], 'page' => $page, 'id' => $post['id']]);
 		// "true" is returned, since the legacy function will fail as well.
 		return true;
 	}
@@ -471,13 +447,11 @@ function tumblr_connection(int $uid): GuzzleHttp\Client|null
 	$oauth_token        = DI::pConfig()->get($uid, 'tumblr', 'oauth_token');
 	$oauth_token_secret = DI::pConfig()->get($uid, 'tumblr', 'oauth_token_secret');
 
-	$page = DI::pConfig()->get($uid, 'tumblr', 'page');
-
 	$consumer_key    = DI::config()->get('tumblr', 'consumer_key');
 	$consumer_secret = DI::config()->get('tumblr', 'consumer_secret');
 
-	if (!$consumer_key || !$consumer_secret || !$oauth_token || !$oauth_token_secret || !$page) {
-		Logger::notice('Missing data, connection is not established', ['uid' => $uid, 'page' => $page]);
+	if (!$consumer_key || !$consumer_secret || !$oauth_token || !$oauth_token_secret) {
+		Logger::notice('Missing data, connection is not established', ['uid' => $uid]);
 		return null;
 	}
 	return tumblr_client($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
@@ -499,6 +473,46 @@ function tumblr_client(string $consumer_key, string $consumer_secret, string $oa
 		'base_uri' => 'https://api.tumblr.com/v2/',
 		'handler' => $stack
 	]);
+}
+
+function tumblr_get_page(int $uid, array $blogs = [])
+{
+	$page = DI::pConfig()->get($uid, 'tumblr', 'page');
+
+	if (!empty($page) && (strpos($page, '/') === false)) {
+		return $page;
+	}
+
+	if (empty($blogs)) {
+		$blogs = tumblr_get_blogs($uid);
+	}
+
+	if (!empty($blogs)) {
+		$page = array_key_first($blogs);
+		DI::pConfig()->set($uid, 'tumblr', 'page', $page);
+		return $page;
+	}
+
+	return '';
+}
+
+function tumblr_get_blogs(int $uid)
+{
+	$connection = tumblr_connection($uid);
+	if (empty($connection)) {
+		return [];
+	}
+
+	$userinfo = tumblr_get($connection, 'user/info');
+	if (empty($userinfo['success'])) {
+		return [];
+	}
+
+	$blogs = [];
+	foreach ($userinfo['data']->response->user->blogs as $blog) {
+		$blogs[$blog->uuid] = $blog->name;
+	}
+	return $blogs;
 }
 
 function tumblr_get($connection, string $url)
