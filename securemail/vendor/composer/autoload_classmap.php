@@ -6,7 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'MCryptWrapper' => $vendorDir . '/singpolyma/openpgp-php/lib/openpgp_mcrypt_wrapper.php',
     'OpenPGP' => $vendorDir . '/singpolyma/openpgp-php/lib/openpgp.php',
     'OpenPGP_AsymmetricSessionKeyPacket' => $vendorDir . '/singpolyma/openpgp-php/lib/openpgp.php',
