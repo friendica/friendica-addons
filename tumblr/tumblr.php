@@ -442,7 +442,7 @@ function tumblr_send_npf(array $post): bool
 	}
 }
 
-function tumblr_connection(int $uid): GuzzleHttp\Client|null
+function tumblr_connection(int $uid): ?GuzzleHttp\Client
 {
 	$oauth_token        = DI::pConfig()->get($uid, 'tumblr', 'oauth_token');
 	$oauth_token_secret = DI::pConfig()->get($uid, 'tumblr', 'oauth_token_secret');
