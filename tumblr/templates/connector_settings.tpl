@@ -2,6 +2,7 @@
 
 {{include file="field_checkbox.tpl" field=$enable}}
 {{include file="field_checkbox.tpl" field=$bydefault}}
+{{include file="field_checkbox.tpl" field=$import}}
 
 {{if $page_select}}
 	{{include file="field_select.tpl" field=$page_select}}
