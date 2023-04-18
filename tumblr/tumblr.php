@@ -501,7 +501,7 @@ function tumblr_cron()
 	DI::keyValue()->set('tumblr_last_poll', time());
 }
 
-function tumblr_add_npf_data($html)
+function tumblr_add_npf_data(string $html, string $plink): string
 {
 	$doc = new DOMDocument();
 
@@ -514,8 +514,18 @@ function tumblr_add_npf_data($html)
 		if (empty($data)) {
 			continue;
 		}
-	
-		tumblr_replace_with_npf($doc, $node, PageInfo::getFooterFromUrl($data['url']));
+
+		tumblr_replace_with_npf($doc, $node, tumblr_get_type_replacement($data, $plink));
+	}
+
+	$list = $xpath->query('//div[@data-npf]');
+	foreach ($list as $node) {
+		$data = tumblr_get_npf_data($node);
+		if (empty($data)) {
+			continue;
+		}
+
+		tumblr_replace_with_npf($doc, $node, tumblr_get_type_replacement($data, $plink));
 	}
 
 	$list = $xpath->query('//figure[@data-provider="youtube"]');
@@ -527,7 +537,29 @@ function tumblr_add_npf_data($html)
 		tumblr_replace_with_npf($doc, $node, '[youtube]' . $attributes['data-url'] . '[/youtube]');
 	}
 
-	return $doc->saveHTML();	
+	return $doc->saveHTML();
+}
+
+function tumblr_get_type_replacement(array $data, string $plink): string
+{
+	switch ($data['type']) {
+		case 'poll':
+			$body = '[p][url=' . $plink. ']'. $data['question'] . '[/url][/p][ul]';
+			foreach ($data['answers'] as $answer) {
+				$body .= '[li]' . $answer['answer_text'] . '[/li]';
+			}
+			$body .= '[/ul]';
+			break;
+
+		case 'link':
+			$body = PageInfo::getFooterFromUrl($data['url']);
+
+		default:
+			Logger::notice('Unknown type', ['type' => $data['type'], 'data' => $data, 'plink' => $plink]);
+			$body = '';
+	}
+
+	return $body;
 }
 
 function tumblr_get_attributes($node): array
@@ -539,7 +571,7 @@ function tumblr_get_attributes($node): array
 	return $attributes;
 }
 
-function tumblr_get_npf_data($node): array
+function tumblr_get_npf_data(DOMNode $node): array
 {
 	$attributes = tumblr_get_attributes($node);
 	if (empty($attributes['data-npf'])) {
@@ -549,7 +581,7 @@ function tumblr_get_npf_data($node): array
 	return json_decode($attributes['data-npf'], true);
 }
 
-function tumblr_replace_with_npf($doc, $node, $replacement)
+function tumblr_replace_with_npf(DOMDocument $doc, DOMNode $node, string $replacement)
 {
 	$replace = $doc->createTextNode($replacement);
 	$node->parentNode->insertBefore($replace, $node);
@@ -631,7 +663,7 @@ function tumblr_get_content(array $item, stdClass $post): array
 	switch ($post->type) {
 		case 'text':
 			$item['title'] = $post->title;
-			$item['body'] = HTML::toBBCode($post->body);
+			$item['body'] = HTML::toBBCode(tumblr_add_npf_data($post->body, $post->post_url));
 			break;
 
 		case 'quote':
@@ -829,7 +861,7 @@ function tumblr_connection(int $uid): ?TumblrOAuth
 	return new TumblrOAuth($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
 }
 
-function tumblr_get_page(int $uid, array $blogs = [])
+function tumblr_get_page(int $uid, array $blogs = []): string
 {
 	$page = DI::pConfig()->get($uid, 'tumblr', 'page');
 
@@ -850,7 +882,7 @@ function tumblr_get_page(int $uid, array $blogs = [])
 	return '';
 }
 
-function tumblr_get_blogs(int $uid)
+function tumblr_get_blogs(int $uid): array
 {
 	$connection = tumblr_connection($uid);
 	if (empty($connection)) {
