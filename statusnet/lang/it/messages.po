@@ -5,14 +5,14 @@
 # 
 # Translators:
 # fabrixxm <fabrix.xm@gmail.com>, 2014-2015
-# Sylke Vicious <silkevicious@gmail.com>, 2020
+# Sylke Vicious <silkevicious@gmail.com>, 2020,2023
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-21 22:32+0000\n"
 "PO-Revision-Date: 2014-06-23 12:54+0000\n"
-"Last-Translator: Sylke Vicious <silkevicious@gmail.com>, 2020\n"
+"Last-Translator: Sylke Vicious <silkevicious@gmail.com>, 2020,2023\n"
 "Language-Team: Italian (http://app.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -41,7 +41,7 @@ msgstr "Salva Impostazioni"
 #: statusnet.php:220
 #, php-format
 msgid "Currently connected to: <a href=\"%s\" target=\"_statusnet\">%s</a>"
-msgstr ""
+msgstr "Attualmente connesso a: <a href=\"%s\" target=\"_statusnet\">%s</a>"
 
 #: statusnet.php:225
 msgid ""
@@ -81,7 +81,7 @@ msgid ""
 "pair here and enter the API base root.<br />Before you register your own "
 "OAuth key pair ask the administrator if there is already a key pair for this"
 " Friendica installation at your favorite GNU Social installation."
-msgstr ""
+msgstr "Coppia di chiavi consumer per GNU Social non trovata. Registra il tuo Account Friendica come applicazione desktop nel tuo account GNU Social, copia la coppia di chiavi consumer qui e inserisci il percorso delle API.<br />Prima di registrare una tua coppia di chiavi OAuth chiedi all'amministratore se esiste già una coppia di chiavi tra questa installazione Friendica e l'installazione GNU Social."
 
 #: statusnet.php:251
 msgid ""
@@ -102,7 +102,7 @@ msgstr "Annulla il processo di connessione"
 #: statusnet.php:254
 #, php-format
 msgid "Current GNU Social API is: %s"
-msgstr ""
+msgstr "La API attuale di GNU Social è: %s"
 
 #: statusnet.php:271
 msgid "OAuth Consumer Key"
@@ -133,7 +133,7 @@ msgstr "Se abilitato tutti i tuoi messaggi <strong>pubblici</strong> possono ess
 
 #: statusnet.php:278
 msgid "Post to GNU Social by default"
-msgstr ""
+msgstr "Pubblica su GNU Social per impostazione predefinita"
 
 #: statusnet.php:283
 msgid "GNU Social Import/Export/Mirror"

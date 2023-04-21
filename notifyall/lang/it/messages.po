@@ -15,12 +15,12 @@ msgstr ""
 "POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: 2016-08-14 19:29+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>, 2017\n"
-"Language-Team: Italian (https://www.transifex.com/Friendica/teams/12172/it/)\n"
+"Language-Team: Italian (https://app.transifex.com/Friendica/teams/12172/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: it\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #: NotifyAllEmail.php:40
 #, php-format

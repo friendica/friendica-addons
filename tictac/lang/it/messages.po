@@ -9,66 +9,66 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2017-09-20 06:09+0000\n"
-"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
-"Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2014-06-23 12:57+0000\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>, 2014\n"
+"Language-Team: Italian (http://app.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: it\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
-#: tictac.php:20
+#: tictac.php:16
 msgid "Three Dimensional Tic-Tac-Toe"
 msgstr "Tic-Tac-Toe tridimensionale"
 
-#: tictac.php:53
+#: tictac.php:49
 msgid "3D Tic-Tac-Toe"
 msgstr "3D Tic-Tac-Toe"
 
-#: tictac.php:58
+#: tictac.php:54
 msgid "New game"
 msgstr "Nuova partita"
 
-#: tictac.php:59
+#: tictac.php:55
 msgid "New game with handicap"
 msgstr "Nuova partita con handicap"
 
-#: tictac.php:60
+#: tictac.php:56
 msgid ""
 "Three dimensional tic-tac-toe is just like the traditional game except that "
 "it is played on multiple levels simultaneously. "
 msgstr "Tic-tac-toe tridimensionale è come il gioco tradizionale, solo che si gioca su livelli multipli contemporaneamente."
 
-#: tictac.php:61
+#: tictac.php:57
 msgid ""
 "In this case there are three levels. You win by getting three in a row on "
 "any level, as well as up, down, and diagonally across the different levels."
 msgstr "In questo caso ci sono tre livelli. Puoi vincere mettendo tre segni in fila su ogni livello, anche verso l'alto, il basso e diagonalmente anche attraverso i diversi livelli."
 
-#: tictac.php:63
+#: tictac.php:59
 msgid ""
 "The handicap game disables the center position on the middle level because "
 "the player claiming this square often has an unfair advantage."
 msgstr "L'handicap disabilita la casella centrale sul livello di mezzo, perchè il giocatore che si prende quella casella spesso ha un deciso vantaggio."
 
-#: tictac.php:182
+#: tictac.php:178
 msgid "You go first..."
 msgstr "Cominci tu..."
 
-#: tictac.php:187
+#: tictac.php:183
 msgid "I'm going first this time..."
 msgstr "Comincio io questa volta..."
 
-#: tictac.php:193
+#: tictac.php:189
 msgid "You won!"
 msgstr "Hai vinto!"
 
-#: tictac.php:199 tictac.php:224
+#: tictac.php:195 tictac.php:220
 msgid "\"Cat\" game!"
 msgstr "Stallo!"
 
-#: tictac.php:222
+#: tictac.php:218
 msgid "I won!"
 msgstr "Ho vinto!"

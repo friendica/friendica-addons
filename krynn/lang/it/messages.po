@@ -10,28 +10,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
-"PO-Revision-Date: 2021-04-19 11:11+0000\n"
-"Last-Translator: Sylke Vicious <silkevicious@gmail.com>\n"
-"Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
+"POT-Creation-Date: 2021-11-21 19:14-0500\n"
+"PO-Revision-Date: 2015-07-07 15:14+0000\n"
+"Last-Translator: Sylke Vicious <silkevicious@gmail.com>, 2021\n"
+"Language-Team: Italian (http://app.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: it\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
-#: krynn.php:132 krynn.php:136
-msgid "Krynn"
-msgstr "Krynn"
-
-#: krynn.php:141
-msgid "Krynn Settings"
-msgstr "Impostazioni Krynn"
-
-#: krynn.php:143
+#: krynn.php:127
 msgid "Enable Krynn Addon"
 msgstr "Abilita componente aggiuntivo Krynn"
 
-#: krynn.php:148
-msgid "Save Settings"
-msgstr "Salva Impostazioni"
+#: krynn.php:132
+msgid "Krynn Settings"
+msgstr "Impostazioni Krynn"
