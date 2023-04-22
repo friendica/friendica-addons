@@ -229,7 +229,7 @@ function tumblr_settings(array &$data)
 
 	$data = [
 		'connector' => 'tumblr',
-		'title'     => DI::l10n()->t('Tumblr Export'),
+		'title'     => DI::l10n()->t('Tumblr Import/Export'),
 		'image'     => 'images/tumblr.png',
 		'enabled'   => $enabled,
 		'html'      => $html,
@@ -272,10 +272,22 @@ function tumblr_hook_fork(array &$b)
 
 	$post = $b['data'];
 
-	if (
-		$post['deleted'] || $post['private'] || ($post['created'] !== $post['edited']) ||
-		!strstr($post['postopts'] ?? '', 'tumblr') || ($post['parent'] != $post['id'])
-	) {
+	// Editing is not supported by the addon
+	if (($post['created'] !== $post['edited']) && !$post['deleted']) {
+		DI::logger()->info('Editing is not supported by the addon');
+		$b['execute'] = false;
+		return;
+	}
+
+	if (DI::pConfig()->get($post['uid'], 'tumblr', 'import')) {
+		// Don't post if it isn't a reply to a tumblr post
+		if (($post['parent'] != $post['id']) && !Post::exists(['id' => $post['parent'], 'network' => Protocol::TUMBLR])) {
+			Logger::notice('No tumblr parent found', ['item' => $post['id']]);
+			$b['execute'] = false;
+			return;
+		}
+	} elseif (!strstr($post['postopts'] ?? '', 'tumblr') || ($post['parent'] != $post['id']) || $post['private']) {
+		DI::logger()->info('Activities are never exported when we don\'t import the tumblr timeline');
 		$b['execute'] = false;
 		return;
 	}
@@ -283,8 +295,6 @@ function tumblr_hook_fork(array &$b)
 
 function tumblr_post_local(array &$b)
 {
-	// This can probably be changed to allow editing by pointing to a different API endpoint
-
 	if ($b['edit']) {
 		return;
 	}
@@ -318,15 +328,63 @@ function tumblr_post_local(array &$b)
 
 function tumblr_send(array &$b)
 {
-	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
-		return;
-	}
-
-	if (!strstr($b['postopts'], 'tumblr')) {
+	if (($b['created'] !== $b['edited']) && !$b['deleted']) {
 		return;
 	}
 
 	if ($b['gravity'] != Item::GRAVITY_PARENT) {
+		Logger::debug('Got comment', ['item' => $b]);
+
+		$parent = tumblr_get_post_from_uri($b['thr-parent']);
+		if (empty($parent)) {
+			Logger::notice('No tumblr post', ['thr-parent' => $b['thr-parent']]);
+			return;
+		}
+
+		Logger::debug('Parent found', ['parent' => $parent]);
+
+		$connection = tumblr_connection($b['uid']);
+		if (empty($connection)) {
+			return;
+		}
+
+		$page = tumblr_get_page($b['uid']);
+
+		if ($b['gravity'] == Item::GRAVITY_COMMENT) {
+			Logger::notice('Commenting is not supported (yet)');
+		} else {
+			if (($b['verb'] == Activity::LIKE) && !$b['deleted']) {
+				$params = ['id' => $parent['id'], 'reblog_key' => $parent['reblog_key']];
+				$result = $connection->post('user/like', $params);
+			} elseif (($b['verb'] == Activity::LIKE) && $b['deleted']) {
+				$params = ['id' => $parent['id'], 'reblog_key' => $parent['reblog_key']];
+				$result = $connection->post('user/unlike', $params);
+			} elseif (($b['verb'] == Activity::ANNOUNCE) && !$b['deleted']) {
+				$params = ['id' => $parent['id'], 'reblog_key' => $parent['reblog_key']];
+				$result = $connection->post('blog/' . $page . '/post/reblog', $params);
+			} elseif (($b['verb'] == Activity::ANNOUNCE) && $b['deleted']) {
+				$announce = tumblr_get_post_from_uri($b['extid']);
+				if (empty($announce)) {
+					return;
+				}
+				$params = ['id' => $announce['id']];
+				$result = $connection->post('blog/' . $page . '/post/delete', $params);
+			} else {
+				// Unsupported activity
+				return;
+			}
+
+			if ($result->meta->status < 400) {
+				Logger::info('Successfully performed activity', ['verb' => $b['verb'], 'deleted' => $b['deleted'], 'meta' => $result->meta, 'response' => $result->response]);
+				if (!$b['deleted'] && !empty($result->response->id_string)) {
+					Item::update(['extid' => 'tumblr::' . $result->response->id_string], ['id' => $b['id']]);
+				}
+			} else {
+				Logger::notice('Error while performing activity', ['verb' => $b['verb'], 'deleted' => $b['deleted'], 'meta' => $result->meta, 'response' => $result->response, 'errors' => $result->errors, 'params' => $params]);
+			}
+		}
+		return;
+	} elseif ($b['private'] || !strstr($b['postopts'], 'tumblr')) {
 		return;
 	}
 
@@ -419,6 +477,20 @@ function tumblr_send(array &$b)
 		Logger::notice('Error posting blog (legacy)', ['blog' => $page, 'meta' => $result->meta, 'response' => $result->response, 'errors' => $result->errors, 'params' => $params]);
 		return false;
 	}
+}
+
+function tumblr_get_post_from_uri(string $uri): array
+{
+	$parts = explode(':', $uri);
+	if (($parts[0] != 'tumblr') || empty($parts[2])) {
+		return [];
+	}
+	
+	$post ['id']        = $parts[2];
+	$post['reblog_key'] = $parts[3] ?? '';
+
+	$post['reblog_key'] = str_replace('@t', '', $post['reblog_key']); // Temp
+	return $post;
 }
 
 function tumblr_send_npf(array $post): bool
@@ -537,6 +609,15 @@ function tumblr_add_npf_data(string $html, string $plink): string
 		tumblr_replace_with_npf($doc, $node, '[youtube]' . $attributes['data-url'] . '[/youtube]');
 	}
 
+	$list = $xpath->query('//figure[@data-npf]');
+	foreach ($list as $node) {
+		$data = tumblr_get_npf_data($node);
+		if (empty($data)) {
+			continue;
+		}
+		tumblr_replace_with_npf($doc, $node, tumblr_get_type_replacement($data, $plink));
+	}
+
 	return $doc->saveHTML();
 }
 
@@ -552,8 +633,15 @@ function tumblr_get_type_replacement(array $data, string $plink): string
 			break;
 
 		case 'link':
-			$body = PageInfo::getFooterFromUrl($data['url']);
+			$body = PageInfo::getFooterFromUrl(str_replace('https://href.li/?', '', $data['url']));
+			break;
 
+		case 'video':
+			if (!empty($data['url']) && ($data['provider'] == 'tumblr')) {
+				$body = '[video]' . $data['url'] . '[/video]';
+				break;
+			}
+	
 		default:
 			Logger::notice('Unknown type', ['type' => $data['type'], 'data' => $data, 'plink' => $plink]);
 			$body = '';
@@ -583,6 +671,9 @@ function tumblr_get_npf_data(DOMNode $node): array
 
 function tumblr_replace_with_npf(DOMDocument $doc, DOMNode $node, string $replacement)
 {
+	if (empty($replacement)) {
+		return;
+	}
 	$replace = $doc->createTextNode($replacement);
 	$node->parentNode->insertBefore($replace, $node);
 	$node->parentNode->removeChild($node);
@@ -611,11 +702,13 @@ function tumblr_fetch_dashboard(int $uid)
 	}
 
 	foreach (array_reverse($dashboard->response->posts) as $post) {
-		$uri = 'tumblr::' . $post->id_string;
+		$uri = 'tumblr::' . $post->id_string . ':' . $post->reblog_key;
 
 		if ($post->id > $last) {
 			$last = $post->id;
 		}
+
+		Logger::debug('Importing post', ['uid' => $uid, 'created' => date(DateTimeFormat::MYSQL, $post->timestamp), 'uri' => $uri]);
 
 		if (Post::exists(['uri' => $uri, 'uid' => $uid]) || ($post->blog->uuid == $page)) {
 			DI::pConfig()->set($uid, 'tumblr', 'last_id', $last);
@@ -625,7 +718,18 @@ function tumblr_fetch_dashboard(int $uid)
 		$item = tumblr_get_header($post, $uri, $uid);
 
 		$item = tumblr_get_content($item, $post);
-		item::insert($item);
+
+		$id = item::insert($item);
+
+		if ($id) {
+			$stored = Post::selectFirst(['uri-id'], ['id' => $id]);
+
+			if (!empty($post->tags)) {
+				foreach ($post->tags as $tag) {
+					Tag::store($stored['uri-id'], Tag::HASHTAG, $tag);
+				}
+			}
+		}
 
 		DI::pConfig()->set($uid, 'tumblr', 'last_id', $last);
 	}
@@ -652,8 +756,6 @@ function tumblr_get_header(stdClass $post, string $uri, int $uid): array
 	$item['owner-name']   = $item['author-name'];
 	$item['owner-link']   = $item['author-link'];
 	$item['owner-avatar'] = $item['author-avatar'];
-
-	// @todo process $post->tags;
 
 	return $item;
 }
@@ -782,7 +884,7 @@ function tumblr_insert_contact(stdClass $blog, int $uid)
 		'poll'     => 'tumblr::' . $blog->uuid,
 		'baseurl'  => $baseurl,
 		'priority' => 1,
-		'writable' => false, // @todo Allow interaction at a later point in time
+		'writable' => true,
 		'blocked'  => false,
 		'readonly' => false,
 		'pending'  => false,
@@ -825,15 +927,16 @@ function tumblr_update_contact(stdClass $blog, int $uid, int $cid, int $pcid)
 		$rel = Contact::NOTHING;
 	}
 
+	$uri_id = ItemURI::getIdByURI($url);
 	$fields = [
 		'url'     => $url,
 		'nurl'    => Strings::normaliseLink($url),
-		'uri-id'  => ItemURI::getIdByURI($url),
+		'uri-id'  => $uri_id,
 		'alias'   => $info->response->blog->url,
 		'name'    => $info->response->blog->title,
 		'nick'    => $info->response->blog->name,
 		'addr'    => $info->response->blog->name . '@tumblr.com',
-		'about'   => $info->response->blog->description,
+		'about'   => BBCode::convertForUriId($uri_id, $info->response->blog->description, BBCode::CONNECTORS),
 		'updated' => date(DateTimeFormat::MYSQL, $info->response->blog->updated),
 		'header'  => $info->response->blog->theme->header_image_focused,
 		'rel'     => $rel,
