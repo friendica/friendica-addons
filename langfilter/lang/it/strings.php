@@ -3,9 +3,8 @@
 if(! function_exists("string_plural_select_it")) {
 function string_plural_select_it($n){
 	$n = intval($n);
-	return intval($n != 1);
+	if ($n == 1) { return 0; } else if ($n != 0 && $n % 1000000 == 0) { return 1; } else  { return 2; }
 }}
-$a->strings['Language Filter'] = 'Filtro Lingua';
 $a->strings['This addon tries to identify the language posts are written in. If it does not match any language specified below, posts will be hidden by collapsing them.'] = 'Questo plug-in prova a identificare la lingua con cui sono stati scritti i posts. Se non corrisponde a nessuna delle lingue specificate qui sotto, i post verranno nascosti.';
 $a->strings['Use the language filter'] = 'Usa il filtro lingua';
 $a->strings['Able to read'] = 'In grado di leggere';
@@ -14,5 +13,6 @@ $a->strings['Minimum confidence in language detection'] = 'Fiducia minima nel ri
 $a->strings['Minimum confidence in language detection being correct, from 0 to 100. Posts will not be filtered when the confidence of language detection is below this percent value.'] = 'Fiducia minima che il rilevamento della lingua sia corretto, da 0 a 100. I messaggi non saranno filtrati quando la fiducia nel rilevamento della lingua è sotto questo valore percentuale.';
 $a->strings['Minimum length of message body'] = 'Lunghezza minima del corpo del messaggio';
 $a->strings['Minimum number of characters in message body for filter to be used. Posts shorter than this will not be filtered. Note: Language detection is unreliable for short content (<200 characters).'] = 'Numero di caratteri minimo perché il filtro venga usato. I messaggio più corti non saranno filtrati. Nota: la rilevazione della lingua non è affidabile con messaggi brevi (<200 caratteri)';
+$a->strings['Language Filter'] = 'Filtro Lingua';
 $a->strings['Save Settings'] = 'Salva Impostazioni';
 $a->strings['Filtered language: %s'] = 'Lingua filtrata: %s';

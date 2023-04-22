@@ -10,27 +10,23 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
-"PO-Revision-Date: 2021-02-16 12:51+0000\n"
-"Last-Translator: Sylke Vicious <silkevicious@gmail.com>\n"
-"Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
+"POT-Creation-Date: 2021-11-21 19:15-0500\n"
+"PO-Revision-Date: 2014-06-23 09:55+0000\n"
+"Last-Translator: Sylke Vicious <silkevicious@gmail.com>, 2021\n"
+"Language-Team: Italian (http://app.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: it\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
-#: mathjax.php:43
+#: mathjax.php:42
 msgid ""
 "The MathJax addon renders mathematical formulae written using the LaTeX "
 "syntax surrounded by the usual $$ or an eqnarray block in the postings of "
 "your wall,network tab and private mail."
 msgstr "Il plugin \"MatJax\" renderizza formule matematiche scritta usando la sintassi LaTeX circondate dalle usuali $$ o un blocco eqnarray nei messaggi della tua bacheca, pagina Rete e messaggi privati."
 
-#: mathjax.php:44
+#: mathjax.php:43
 msgid "Use the MathJax renderer"
 msgstr "Usa il render MathJax"
-
-#: mathjax.php:45
-msgid "Save Settings"
-msgstr "Salva Impostazioni"
