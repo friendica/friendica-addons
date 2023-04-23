@@ -10,5 +10,6 @@ $a->strings['Enable Content filter'] = 'Tartalomszűrő engedélyezése';
 $a->strings['Comma separated list of keywords to hide'] = 'Kulcsszavak vesszővel elválasztott listája az elrejtéshez';
 $a->strings['Use /expression/ to provide regular expressions, #tag to specfically match hashtags (case-insensitive), or regular words (case-sensitive)'] = 'Használjon /kifejezést/ reguláris kifejezések megadásához, #címkét a kettőskeresztescímkék kifejezett illesztéséhez (nem érzékeny a kis- és nagybetűkre) vagy szabályos szavakat (kis- és nagybetűérzékeny)';
 $a->strings['Content Filter (NSFW and more)'] = 'Tartalomszűrő (érzékeny tartalmak és egyebek)';
+$a->strings['Regular expression "%s" fails to compile'] = 'A(z) „%s” reguláris kifejezés nem fordítható le';
 $a->strings['Filtered tag: %s'] = 'Kiszűrt címke: %s';
 $a->strings['Filtered word: %s'] = 'Kiszűrt szó: %s';

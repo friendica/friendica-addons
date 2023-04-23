@@ -4,15 +4,15 @@
 # 
 # 
 # Translators:
-# Balázs Úr, 2020-2022
+# Balázs Úr, 2020-2023
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-18 11:57-0500\n"
+"POT-Creation-Date: 2022-12-10 14:42-0500\n"
 "PO-Revision-Date: 2014-06-23 10:34+0000\n"
-"Last-Translator: Balázs Úr, 2020-2022\n"
-"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"Last-Translator: Balázs Úr, 2020-2023\n"
+"Language-Team: Hungarian (http://app.transifex.com/Friendica/friendica/language/hu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -45,12 +45,17 @@ msgstr "Használjon /kifejezést/ reguláris kifejezések megadásához, #címk�
 msgid "Content Filter (NSFW and more)"
 msgstr "Tartalomszűrő (érzékeny tartalmak és egyebek)"
 
-#: nsfw.php:140
+#: nsfw.php:96
+#, php-format
+msgid "Regular expression \"%s\" fails to compile"
+msgstr "A(z) „%s” reguláris kifejezés nem fordítható le"
+
+#: nsfw.php:154
 #, php-format
 msgid "Filtered tag: %s"
 msgstr "Kiszűrt címke: %s"
 
-#: nsfw.php:142
+#: nsfw.php:156
 #, php-format
 msgid "Filtered word: %s"
 msgstr "Kiszűrt szó: %s"

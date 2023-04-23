@@ -5,33 +5,29 @@
 # 
 # Translators:
 # fabrixxm <fabrix.xm@gmail.com>, 2014-2015
-# Sylke Vicious <silkevicious@gmail.com>, 2021
+# Sylke Vicious <silkevicious@gmail.com>, 2021,2023
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
-"PO-Revision-Date: 2021-02-16 12:47+0000\n"
-"Last-Translator: Sylke Vicious <silkevicious@gmail.com>\n"
-"Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
+"POT-Creation-Date: 2021-11-21 19:16-0500\n"
+"PO-Revision-Date: 2014-06-23 12:51+0000\n"
+"Last-Translator: Sylke Vicious <silkevicious@gmail.com>, 2021,2023\n"
+"Language-Team: Italian (http://app.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: it\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
-#: startpage.php:74 startpage.php:78
-msgid "Startpage"
-msgstr "Pagina iniziale"
-
-#: startpage.php:81
+#: startpage.php:70
 msgid "Home page to load after login  - leave blank for profile wall"
 msgstr "Home page da caricare dopo il login - lasciare in bianco per la bacheca"
 
-#: startpage.php:84
-msgid "Examples: &quot;network&quot; or &quot;notifications/system&quot;"
-msgstr "Esempi: &quot;network&quot; or &quot;notifications/system&quot;"
+#: startpage.php:70
+msgid "Examples: \"network\" or \"notifications/system\""
+msgstr "Esempi: \"rete\" o \"notifiche/sistema\""
 
-#: startpage.php:88
-msgid "Save Settings"
-msgstr "Salva Impostazioni"
+#: startpage.php:75
+msgid "Startpage"
+msgstr "Pagina iniziale"

@@ -10,23 +10,23 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-19 10:42+0100\n"
-"PO-Revision-Date: 2020-09-17 11:39+0000\n"
-"Last-Translator: Sylke Vicious <silkevicious@gmail.com>\n"
-"Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2014-06-23 11:18+0000\n"
+"Last-Translator: Sylke Vicious <silkevicious@gmail.com>, 2020\n"
+"Language-Team: Italian (http://app.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: it\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
-#: piwik.php:94
+#: piwik.php:87
 msgid ""
 "This website is tracked using the <a href='http://www.matomo.org'>Matomo</a>"
 " analytics tool."
 msgstr "Questo sito è monitorato con lo strumento di analisi <a href='http://www.matomo.org'>Matomo</a>."
 
-#: piwik.php:97
+#: piwik.php:90
 #, php-format
 msgid ""
 "If you do not want that your visits are logged in this way you <a "
@@ -34,32 +34,28 @@ msgid ""
 "visits of the site</a> (opt-out)."
 msgstr "Se non vuoi che le tue visite vengano registrate in questo modo è  possibile <a href='%s'>impostare un cookie per evitare che Matomo / Piwik rintracci ulteriori visite del sito</a> (opt-out)."
 
-#: piwik.php:104
+#: piwik.php:97
 msgid "Save Settings"
 msgstr "Salva Impostazioni"
 
-#: piwik.php:105
+#: piwik.php:98
 msgid "Matomo (Piwik) Base URL"
 msgstr "Indirizzo di base di Matomo (Piwik)"
 
-#: piwik.php:105
+#: piwik.php:98
 msgid ""
 "Absolute path to your Matomo (Piwik) installation. (without protocol "
 "(http/s), with trailing slash)"
 msgstr "Percorso assoluto alla tua installazione di Matomo (Piwik) (senza il protocollo (http/https), con la barra alla fine)"
 
-#: piwik.php:106
+#: piwik.php:99
 msgid "Site ID"
 msgstr "ID del sito"
 
-#: piwik.php:107
+#: piwik.php:100
 msgid "Show opt-out cookie link?"
 msgstr "Mostra il collegamento per l'opt-out dei cookie?"
 
-#: piwik.php:108
+#: piwik.php:101
 msgid "Asynchronous tracking"
 msgstr "Tracciamento asincrono"
-
-#: piwik.php:120
-msgid "Settings updated."
-msgstr "Impostazioni aggiornate."
