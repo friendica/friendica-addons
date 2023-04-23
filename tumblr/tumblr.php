@@ -264,6 +264,50 @@ function tumblr_settings_post(array &$b)
 	}
 }
 
+function tumblr_cron()
+{
+	$last = DI::keyValue()->get('tumblr_last_poll');
+
+	$poll_interval = intval(DI::config()->get('tumblr', 'poll_interval'));
+	if (!$poll_interval) {
+		$poll_interval = TUMBLR_DEFAULT_POLL_INTERVAL;
+	}
+
+	if ($last) {
+		$next = $last + ($poll_interval * 60);
+		if ($next > time()) {
+			Logger::notice('poll intervall not reached');
+			return;
+		}
+	}
+	Logger::notice('cron_start');
+
+	$abandon_days = intval(DI::config()->get('system', 'account_abandon_days'));
+	if ($abandon_days < 1) {
+		$abandon_days = 0;
+	}
+
+	$abandon_limit = date(DateTimeFormat::MYSQL, time() - $abandon_days * 86400);
+
+	$pconfigs = DBA::selectToArray('pconfig', [], ['cat' => 'tumblr', 'k' => 'import', 'v' => true]);
+	foreach ($pconfigs as $pconfig) {
+		if ($abandon_days != 0) {
+			if (!DBA::exists('user', ["`uid` = ? AND `login_date` >= ?", $pconfig['uid'], $abandon_limit])) {
+				Logger::notice('abandoned account: timeline from user will not be imported', ['user' => $pconfig['uid']]);
+				continue;
+			}
+		}
+
+		Logger::notice('importing timeline - start', ['user' => $pconfig['uid']]);
+		tumblr_fetch_dashboard($pconfig['uid']);
+		Logger::notice('importing timeline - done', ['user' => $pconfig['uid']]);
+	}
+
+	Logger::notice('cron_end');
+
+	DI::keyValue()->set('tumblr_last_poll', time());
+}
+
 function tumblr_hook_fork(array &$b)
 {
 	if ($b['name'] != 'notifier_normal') {
@@ -388,10 +432,13 @@ function tumblr_send(array &$b)
 		return;
 	}
 
-	if (tumblr_send_npf($b)) {
-		return;
+	if (!tumblr_send_npf($b)) {
+		tumblr_send_legacy($b);
 	}
+}
 
+function tumblr_send_legacy(array $b)
+{
 	$connection = tumblr_connection($b['uid']);
 	if (empty($connection)) {
 		return;
@@ -472,25 +519,9 @@ function tumblr_send(array &$b)
 
 	if ($result->meta->status < 400) {
 		Logger::info('Success (legacy)', ['blog' => $page, 'meta' => $result->meta, 'response' => $result->response]);
-		return true;
 	} else {
 		Logger::notice('Error posting blog (legacy)', ['blog' => $page, 'meta' => $result->meta, 'response' => $result->response, 'errors' => $result->errors, 'params' => $params]);
-		return false;
 	}
-}
-
-function tumblr_get_post_from_uri(string $uri): array
-{
-	$parts = explode(':', $uri);
-	if (($parts[0] != 'tumblr') || empty($parts[2])) {
-		return [];
-	}
-	
-	$post ['id']        = $parts[2];
-	$post['reblog_key'] = $parts[3] ?? '';
-
-	$post['reblog_key'] = str_replace('@t', '', $post['reblog_key']); // Temp
-	return $post;
 }
 
 function tumblr_send_npf(array $post): bool
@@ -529,156 +560,26 @@ function tumblr_send_npf(array $post): bool
 	}
 }
 
-function tumblr_cron()
+function tumblr_get_post_from_uri(string $uri): array
 {
-	$last = DI::keyValue()->get('tumblr_last_poll');
-
-	$poll_interval = intval(DI::config()->get('tumblr', 'poll_interval'));
-	if (!$poll_interval) {
-		$poll_interval = TUMBLR_DEFAULT_POLL_INTERVAL;
-	}
-
-	if ($last) {
-		$next = $last + ($poll_interval * 60);
-		if ($next > time()) {
-			Logger::notice('poll intervall not reached');
-			return;
-		}
-	}
-	Logger::notice('cron_start');
-
-	$abandon_days = intval(DI::config()->get('system', 'account_abandon_days'));
-	if ($abandon_days < 1) {
-		$abandon_days = 0;
-	}
-
-	$abandon_limit = date(DateTimeFormat::MYSQL, time() - $abandon_days * 86400);
-
-	$pconfigs = DBA::selectToArray('pconfig', [], ['cat' => 'tumblr', 'k' => 'import', 'v' => true]);
-	foreach ($pconfigs as $pconfig) {
-		if ($abandon_days != 0) {
-			if (!DBA::exists('user', ["`uid` = ? AND `login_date` >= ?", $pconfig['uid'], $abandon_limit])) {
-				Logger::notice('abandoned account: timeline from user will not be imported', ['user' => $pconfig['uid']]);
-				continue;
-			}
-		}
-
-		Logger::notice('importing timeline - start', ['user' => $pconfig['uid']]);
-		tumblr_fetch_dashboard($pconfig['uid']);
-		Logger::notice('importing timeline - done', ['user' => $pconfig['uid']]);
-	}
-
-	Logger::notice('cron_end');
-
-	DI::keyValue()->set('tumblr_last_poll', time());
-}
-
-function tumblr_add_npf_data(string $html, string $plink): string
-{
-	$doc = new DOMDocument();
-
-	$doc->formatOutput = true;
-	@$doc->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
-	$xpath = new DomXPath($doc);
-	$list = $xpath->query('//p[@class="npf_link"]');
-	foreach ($list as $node) {
-		$data = tumblr_get_npf_data($node);
-		if (empty($data)) {
-			continue;
-		}
-
-		tumblr_replace_with_npf($doc, $node, tumblr_get_type_replacement($data, $plink));
-	}
-
-	$list = $xpath->query('//div[@data-npf]');
-	foreach ($list as $node) {
-		$data = tumblr_get_npf_data($node);
-		if (empty($data)) {
-			continue;
-		}
-
-		tumblr_replace_with_npf($doc, $node, tumblr_get_type_replacement($data, $plink));
-	}
-
-	$list = $xpath->query('//figure[@data-provider="youtube"]');
-	foreach ($list as $node) {
-		$attributes = tumblr_get_attributes($node);
-		if (empty($attributes['data-url'])) {
-			continue;
-		}
-		tumblr_replace_with_npf($doc, $node, '[youtube]' . $attributes['data-url'] . '[/youtube]');
-	}
-
-	$list = $xpath->query('//figure[@data-npf]');
-	foreach ($list as $node) {
-		$data = tumblr_get_npf_data($node);
-		if (empty($data)) {
-			continue;
-		}
-		tumblr_replace_with_npf($doc, $node, tumblr_get_type_replacement($data, $plink));
-	}
-
-	return $doc->saveHTML();
-}
-
-function tumblr_get_type_replacement(array $data, string $plink): string
-{
-	switch ($data['type']) {
-		case 'poll':
-			$body = '[p][url=' . $plink. ']'. $data['question'] . '[/url][/p][ul]';
-			foreach ($data['answers'] as $answer) {
-				$body .= '[li]' . $answer['answer_text'] . '[/li]';
-			}
-			$body .= '[/ul]';
-			break;
-
-		case 'link':
-			$body = PageInfo::getFooterFromUrl(str_replace('https://href.li/?', '', $data['url']));
-			break;
-
-		case 'video':
-			if (!empty($data['url']) && ($data['provider'] == 'tumblr')) {
-				$body = '[video]' . $data['url'] . '[/video]';
-				break;
-			}
-	
-		default:
-			Logger::notice('Unknown type', ['type' => $data['type'], 'data' => $data, 'plink' => $plink]);
-			$body = '';
-	}
-
-	return $body;
-}
-
-function tumblr_get_attributes($node): array
-{
-	$attributes = [];
-	foreach ($node->attributes as $key => $attribute) {
-		$attributes[$key] = trim($attribute->value);
-	}
-	return $attributes;
-}
-
-function tumblr_get_npf_data(DOMNode $node): array
-{
-	$attributes = tumblr_get_attributes($node);
-	if (empty($attributes['data-npf'])) {
+	$parts = explode(':', $uri);
+	if (($parts[0] != 'tumblr') || empty($parts[2])) {
 		return [];
 	}
+	
+	$post ['id']        = $parts[2];
+	$post['reblog_key'] = $parts[3] ?? '';
 
-	return json_decode($attributes['data-npf'], true);
+	$post['reblog_key'] = str_replace('@t', '', $post['reblog_key']); // Temp
+	return $post;
 }
 
-function tumblr_replace_with_npf(DOMDocument $doc, DOMNode $node, string $replacement)
-{
-	if (empty($replacement)) {
-		return;
-	}
-	$replace = $doc->createTextNode($replacement);
-	$node->parentNode->insertBefore($replace, $node);
-	$node->parentNode->removeChild($node);
-}
-
+/**
+ * Fetch the dashboard (timeline) for the given user
+ *
+ * @param integer $uid
+ * @return void
+ */
 function tumblr_fetch_dashboard(int $uid)
 {
 	$page = tumblr_get_page($uid);
@@ -735,6 +636,14 @@ function tumblr_fetch_dashboard(int $uid)
 	}
 }
 
+/**
+ * Sets the initial data for the item array
+ *
+ * @param stdClass $post
+ * @param string $uri
+ * @param integer $uid
+ * @return array
+ */
 function tumblr_get_header(stdClass $post, string $uri, int $uid): array
 {
 	$contact = tumblr_get_contact($post->blog, $uid);
@@ -760,6 +669,13 @@ function tumblr_get_header(stdClass $post, string $uri, int $uid): array
 	return $item;
 }
 
+/**
+ * Set the body according the given content type
+ *
+ * @param array $item
+ * @param stdClass $post
+ * @return array
+ */
 function tumblr_get_content(array $item, stdClass $post): array
 {
 	switch ($post->type) {
@@ -846,7 +762,120 @@ function tumblr_get_content(array $item, stdClass $post): array
 	return $item;
 }
 
-function tumblr_get_contact(stdClass $blog, int $uid)
+function tumblr_add_npf_data(string $html, string $plink): string
+{
+	$doc = new DOMDocument();
+
+	$doc->formatOutput = true;
+	@$doc->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
+	$xpath = new DomXPath($doc);
+	$list = $xpath->query('//p[@class="npf_link"]');
+	foreach ($list as $node) {
+		$data = tumblr_get_npf_data($node);
+		if (empty($data)) {
+			continue;
+		}
+
+		tumblr_replace_with_npf($doc, $node, tumblr_get_type_replacement($data, $plink));
+	}
+
+	$list = $xpath->query('//div[@data-npf]');
+	foreach ($list as $node) {
+		$data = tumblr_get_npf_data($node);
+		if (empty($data)) {
+			continue;
+		}
+
+		tumblr_replace_with_npf($doc, $node, tumblr_get_type_replacement($data, $plink));
+	}
+
+	$list = $xpath->query('//figure[@data-provider="youtube"]');
+	foreach ($list as $node) {
+		$attributes = tumblr_get_attributes($node);
+		if (empty($attributes['data-url'])) {
+			continue;
+		}
+		tumblr_replace_with_npf($doc, $node, '[youtube]' . $attributes['data-url'] . '[/youtube]');
+	}
+
+	$list = $xpath->query('//figure[@data-npf]');
+	foreach ($list as $node) {
+		$data = tumblr_get_npf_data($node);
+		if (empty($data)) {
+			continue;
+		}
+		tumblr_replace_with_npf($doc, $node, tumblr_get_type_replacement($data, $plink));
+	}
+
+	return $doc->saveHTML();
+}
+
+function tumblr_replace_with_npf(DOMDocument $doc, DOMNode $node, string $replacement)
+{
+	if (empty($replacement)) {
+		return;
+	}
+	$replace = $doc->createTextNode($replacement);
+	$node->parentNode->insertBefore($replace, $node);
+	$node->parentNode->removeChild($node);
+}
+
+function tumblr_get_npf_data(DOMNode $node): array
+{
+	$attributes = tumblr_get_attributes($node);
+	if (empty($attributes['data-npf'])) {
+		return [];
+	}
+
+	return json_decode($attributes['data-npf'], true);
+}
+
+function tumblr_get_attributes($node): array
+{
+	$attributes = [];
+	foreach ($node->attributes as $key => $attribute) {
+		$attributes[$key] = trim($attribute->value);
+	}
+	return $attributes;
+}
+
+function tumblr_get_type_replacement(array $data, string $plink): string
+{
+	switch ($data['type']) {
+		case 'poll':
+			$body = '[p][url=' . $plink. ']'. $data['question'] . '[/url][/p][ul]';
+			foreach ($data['answers'] as $answer) {
+				$body .= '[li]' . $answer['answer_text'] . '[/li]';
+			}
+			$body .= '[/ul]';
+			break;
+
+		case 'link':
+			$body = PageInfo::getFooterFromUrl(str_replace('https://href.li/?', '', $data['url']));
+			break;
+
+		case 'video':
+			if (!empty($data['url']) && ($data['provider'] == 'tumblr')) {
+				$body = '[video]' . $data['url'] . '[/video]';
+				break;
+			}
+	
+		default:
+			Logger::notice('Unknown type', ['type' => $data['type'], 'data' => $data, 'plink' => $plink]);
+			$body = '';
+	}
+
+	return $body;
+}
+
+/**
+ * Get a contact array for the given blog
+ *
+ * @param stdClass $blog
+ * @param integer $uid
+ * @return array
+ */
+function tumblr_get_contact(stdClass $blog, int $uid): array
 {
 	$condition = ['network' => Protocol::TUMBLR, 'uid' => $uid, 'poll' => 'tumblr::' . $blog->uuid];
 	$contact = Contact::selectFirst([], $condition);
@@ -873,6 +902,13 @@ function tumblr_get_contact(stdClass $blog, int $uid)
 	return Contact::getById($cid);
 }
 
+/**
+ * Create a new contact
+ *
+ * @param stdClass $blog
+ * @param integer $uid
+ * @return void
+ */
 function tumblr_insert_contact(stdClass $blog, int $uid)
 {
 	$baseurl = 'https://tumblr.com';
@@ -900,6 +936,15 @@ function tumblr_insert_contact(stdClass $blog, int $uid)
 	return Contact::insert($fields);
 }
 
+/**
+ * Updates the given contact for the given user and proviced contact ids
+ *
+ * @param stdClass $blog
+ * @param integer $uid
+ * @param integer $cid
+ * @param integer $pcid
+ * @return void
+ */
 function tumblr_update_contact(stdClass $blog, int $uid, int $cid, int $pcid)
 {
 	$connection = tumblr_connection($uid);
@@ -948,22 +993,13 @@ function tumblr_update_contact(stdClass $blog, int $uid, int $cid, int $pcid)
 	Contact::update($fields, ['id' => $pcid]);
 }
 
-function tumblr_connection(int $uid): ?TumblrOAuth
-{
-	$oauth_token        = DI::pConfig()->get($uid, 'tumblr', 'oauth_token');
-	$oauth_token_secret = DI::pConfig()->get($uid, 'tumblr', 'oauth_token_secret');
-
-	$consumer_key    = DI::config()->get('tumblr', 'consumer_key');
-	$consumer_secret = DI::config()->get('tumblr', 'consumer_secret');
-
-	if (!$consumer_key || !$consumer_secret || !$oauth_token || !$oauth_token_secret) {
-		Logger::notice('Missing data, connection is not established', ['uid' => $uid]);
-		return null;
-	}
-
-	return new TumblrOAuth($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
-}
-
+/**
+ * Get the default page for posting. Detects the value if not provided or has got a bad value.
+ *
+ * @param integer $uid
+ * @param array $blogs
+ * @return string
+ */
 function tumblr_get_page(int $uid, array $blogs = []): string
 {
 	$page = DI::pConfig()->get($uid, 'tumblr', 'page');
@@ -985,6 +1021,12 @@ function tumblr_get_page(int $uid, array $blogs = []): string
 	return '';
 }
 
+/**
+ * Get an array of blogs for the given user
+ *
+ * @param integer $uid
+ * @return array
+ */
 function tumblr_get_blogs(int $uid): array
 {
 	$connection = tumblr_connection($uid);
@@ -1003,4 +1045,26 @@ function tumblr_get_blogs(int $uid): array
 		$blogs[$blog->uuid] = $blog->name;
 	}
 	return $blogs;
+}
+
+/**
+ * Creates a OAuth connection for the given user
+ *
+ * @param integer $uid
+ * @return TumblrOAuth|null
+ */
+function tumblr_connection(int $uid): ?TumblrOAuth
+{
+	$oauth_token        = DI::pConfig()->get($uid, 'tumblr', 'oauth_token');
+	$oauth_token_secret = DI::pConfig()->get($uid, 'tumblr', 'oauth_token_secret');
+
+	$consumer_key    = DI::config()->get('tumblr', 'consumer_key');
+	$consumer_secret = DI::config()->get('tumblr', 'consumer_secret');
+
+	if (!$consumer_key || !$consumer_secret || !$oauth_token || !$oauth_token_secret) {
+		Logger::notice('Missing data, connection is not established', ['uid' => $uid]);
+		return null;
+	}
+
+	return new TumblrOAuth($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
 }

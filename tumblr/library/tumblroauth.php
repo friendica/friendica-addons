@@ -141,6 +141,13 @@ class TumblrOAuth
 		return '';
 	}
 
+	/**
+	 * OAuth get from a given url with given parameters
+	 *
+	 * @param string $url
+	 * @param array $parameters
+	 * @return stdClass
+	 */
 	public function get(string $url, array $parameters = []): stdClass
 	{
 		if (!empty($parameters)) {
@@ -157,6 +164,13 @@ class TumblrOAuth
 		return $this->formatResponse($response);
 	}
 
+	/**
+	 * OAuth Post to a given url with given parameters
+	 *
+	 * @param string $url
+	 * @param array $parameter
+	 * @return stdClass
+	 */
 	public function post(string $url, array $parameter): stdClass
 	{
 		try {
@@ -169,6 +183,12 @@ class TumblrOAuth
 		return $this->formatResponse($response);
 	}
 
+	/**
+	 * Convert the body in the given response to a class
+	 *
+	 * @param ResponseInterface|null $response
+	 * @return stdClass
+	 */
 	private function formatResponse(ResponseInterface $response = null): stdClass
 	{
 		if (!is_null($response)) {
