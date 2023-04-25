@@ -1050,7 +1050,7 @@ function tumblr_get_token(int $uid, string $code = ''): string
 
 	if (empty($refresh_token) && empty($code)) {
 		$result = tumblr_exchange_token($uid);
-		if (empty($result)) {
+		if (empty($result->refresh_token)) {
 			Logger::info('Invalid result while exchanging token', ['uid' => $uid]);
 			return '';
 		}
