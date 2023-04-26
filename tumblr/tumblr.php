@@ -12,6 +12,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\HTML;
 use Friendica\Content\Text\NPF;
 use Friendica\Core\Cache\Enum\Duration;
+use Friendica\Core\Config\Util\ConfigFileManager;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Protocol;
@@ -41,6 +42,7 @@ define('TUMBLR_DEFAULT_POLL_INTERVAL', 10); // given in minutes
 
 function tumblr_install()
 {
+	Hook::register('load_config',             __FILE__, 'tumblr_load_config');
 	Hook::register('hook_fork',               __FILE__, 'tumblr_hook_fork');
 	Hook::register('post_local',              __FILE__, 'tumblr_post_local');
 	Hook::register('notifier_normal',         __FILE__, 'tumblr_send');
@@ -48,6 +50,175 @@ function tumblr_install()
 	Hook::register('connector_settings',      __FILE__, 'tumblr_settings');
 	Hook::register('connector_settings_post', __FILE__, 'tumblr_settings_post');
 	Hook::register('cron',                    __FILE__, 'tumblr_cron');
+	Hook::register('support_follow',          __FILE__, 'tumblr_support_follow');
+	Hook::register('follow',                  __FILE__, 'tumblr_follow');
+	Hook::register('unfollow',                __FILE__, 'tumblr_unfollow');
+	Hook::register('block',                   __FILE__, 'tumblr_block');
+	Hook::register('unblock',                 __FILE__, 'tumblr_unblock');
+	Hook::register('check_item_notification', __FILE__, 'tumblr_check_item_notification');
+	Hook::register('probe_detect',            __FILE__, 'tumblr_probe_detect');
+	Hook::register('item_by_link',            __FILE__, 'tumblr_item_by_link');
+	Logger::info('installed tumblr');
+}
+
+function tumblr_load_config(ConfigFileManager $loader)
+{
+	DI::app()->getConfigCache()->load($loader->loadAddonConfig('tumblr'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+}
+
+function tumblr_check_item_notification(array &$notification_data)
+{
+	if (!tumblr_enabled_for_user($notification_data['uid'])) { 
+		return;
+	}
+
+	$page = tumblr_get_page($notification_data['uid']);
+	if (empty($page)) {
+		return;
+	}
+
+	$own_user = Contact::selectFirst(['url', 'alias'], ['uid' => $notification_data['uid'], 'poll' => 'tumblr::'.$page]);
+	if ($own_user) {
+		$notification_data['profiles'][] = $own_user['url'];
+		$notification_data['profiles'][] = $own_user['alias'];
+	}
+}
+
+function tumblr_probe_detect(array &$hookData)
+{
+	// Don't overwrite an existing result
+	if (isset($hookData['result'])) {
+		return;
+	}
+
+	// Avoid a lookup for the wrong network
+	if (!in_array($hookData['network'], ['', Protocol::TUMBLR])) {
+		return;
+	}
+
+	Logger::debug('Search for tumblr blog', ['url' => $hookData['uri']]);
+
+	$hookData['result'] = tumblr_get_contact_by_url($hookData['uri']);
+}
+
+function tumblr_item_by_link(array &$hookData)
+{
+	// Don't overwrite an existing result
+	if (isset($hookData['item_id'])) {
+		return;
+	}
+
+	if (!tumblr_enabled_for_user($hookData['uid'])) {
+		return;
+	}
+
+	if (!preg_match('#^https?://www\.tumblr.com/blog/view/(.+)/(\d+).*#', $hookData['uri'], $matches) && !preg_match('#^https?://www\.tumblr.com/(.+)/(\d+).*#', $hookData['uri'], $matches)) {
+		return;
+	}
+	
+	Logger::debug('Found tumblr post', ['url' => $hookData['uri'], 'blog' => $matches[1], 'id' => $matches[2]]);
+
+	$parameters = ['id' => $matches[2], 'reblog_info' => false, 'notes_info' => false, 'npf' => false];
+	$result = tumblr_get($hookData['uid'], 'blog/' . $matches[1] . '/posts', $parameters);
+	if ($result->meta->status > 399) {
+		Logger::notice('Error fetching status', ['meta' => $result->meta, 'response' => $result->response, 'errors' => $result->errors, 'blog' => $matches[1], 'id' => $matches[2]]);
+		return [];
+	}
+
+	Logger::debug('Got post', ['blog' => $matches[1], 'id' => $matches[2], 'result' => $result->response->posts]);
+	if (!empty($result->response->posts)) {
+		$hookData['item_id'] = tumblr_process_post($result->response->posts[0], $hookData['uid']);
+	}
+}
+
+function tumblr_support_follow(array &$data)
+{
+	if ($data['protocol'] == Protocol::TUMBLR) {
+		$data['result'] = true;
+	}
+}
+
+function tumblr_follow(array &$hook_data)
+{
+	$uid = DI::userSession()->getLocalUserId();
+
+	if (!tumblr_enabled_for_user($uid)) {
+		return;
+	}
+
+	Logger::debug('Check if contact is Tumblr', ['url' => $hook_data['url']]);
+
+	$fields = tumblr_get_contact_by_url($hook_data['url']);
+	if (empty($fields)) {
+		Logger::debug('Contact is not a Tumblr contact', ['url' => $hook_data['url']]);
+		return;
+	}
+
+	$result = tumblr_post($uid, 'user/follow', ['url' => $fields['url']]);
+	if ($result->meta->status <= 399) {
+		$hook_data['contact'] = $fields;
+		Logger::debug('Successfully start following', ['url' => $fields['url']]);
+	} else {
+		Logger::notice('Following failed', ['meta' => $result->meta, 'response' => $result->response, 'errors' => $result->errors, 'url' => $fields['url']]);
+	}
+}
+
+function tumblr_unfollow(array &$hook_data)
+{
+	if (!tumblr_enabled_for_user($hook_data['uid'])) {
+		return;
+	}
+
+	if (!tumblr_get_contact_uuid($hook_data['contact'])) {
+		return;
+	}
+	$result = tumblr_post($hook_data['uid'], 'user/unfollow', ['url' => $hook_data['contact']['url']]);
+	$hook_data['result'] = ($result->meta->status <= 399);
+}
+
+function tumblr_block(array &$hook_data)
+{
+	if (!tumblr_enabled_for_user($hook_data['uid'])) {
+		return;
+	}
+
+	$uuid = tumblr_get_contact_uuid($hook_data['contact']);
+	if (!$uuid) {
+		return;
+	}
+
+	$result = tumblr_post($hook_data['uid'], 'blog/' . tumblr_get_page($hook_data['uid']) . '/blocks', ['blocked_tumblelog' => $uuid]);
+	$hook_data['result'] = ($result->meta->status <= 399);
+
+	if ($hook_data['result']) {
+		$cdata = Contact::getPublicAndUserContactID($hook_data['contact']['id'], $hook_data['uid']);
+		if (!empty($cdata['user'])) {
+			Contact::remove($cdata['user']);
+		}
+	}
+}
+
+function tumblr_unblock(array &$hook_data)
+{
+	if (!tumblr_enabled_for_user($hook_data['uid'])) {
+		return;
+	}
+
+	$uuid = tumblr_get_contact_uuid($hook_data['contact']);
+	if (!$uuid) {
+		return;
+	}
+
+	$result = tumblr_delete($hook_data['uid'], 'blog/' . tumblr_get_page($hook_data['uid']) . '/blocks', ['blocked_tumblelog' => $uuid]);
+	$hook_data['result'] = ($result->meta->status <= 399);
+}
+
+function tumblr_get_contact_uuid(array $contact): string
+{
+	if (($contact['network'] != Protocol::TUMBLR) || (substr($contact['poll'], 0, 8) != 'tumblr::')) {
+		return '';
+	}
+	return substr($contact['poll'], 8);
 }
 
 /**
@@ -544,24 +715,35 @@ function tumblr_fetch_dashboard(int $uid)
 			continue;
 		}
 
-		$item = tumblr_get_header($post, $uri, $uid);
+		tumblr_process_post($post, $uid, $uri);
 
-		$item = tumblr_get_content($item, $post);
-
-		$id = item::insert($item);
-
-		if ($id) {
-			$stored = Post::selectFirst(['uri-id'], ['id' => $id]);
-
-			if (!empty($post->tags)) {
-				foreach ($post->tags as $tag) {
-					Tag::store($stored['uri-id'], Tag::HASHTAG, $tag);
-				}
-			}
-		}
 
 		DI::pConfig()->set($uid, 'tumblr', 'last_id', $last);
 	}
+}
+
+function tumblr_process_post(stdClass $post, int $uid, string $uri = ''): int
+{
+	if (empty($uri)) {
+		$uri = 'tumblr::' . $post->id_string . ':' . $post->reblog_key;
+	}
+
+	$item = tumblr_get_header($post, $uri, $uid);
+
+	$item = tumblr_get_content($item, $post);
+
+	$id = item::insert($item);
+
+	if ($id) {
+		$stored = Post::selectFirst(['uri-id'], ['id' => $id]);
+
+		if (!empty($post->tags)) {
+			foreach ($post->tags as $tag) {
+				Tag::store($stored['uri-id'], Tag::HASHTAG, $tag);
+			}
+		}
+	}
+	return $id;
 }
 
 /**
@@ -969,6 +1151,80 @@ function tumblr_get_blogs(int $uid): array
 	return $blogs;
 }
 
+function tumblr_enabled_for_user(int $uid) 
+{
+	return !empty($uid) && !empty(DI::pConfig()->get($uid, 'tumblr', 'access_token')) &&
+		!empty(DI::pConfig()->get($uid, 'tumblr', 'refresh_token')) &&
+		!empty(DI::config()->get('tumblr', 'consumer_key')) &&
+		!empty(DI::config()->get('tumblr', 'consumer_secret'));
+}
+
+/**
+ * Get a contact array from a Tumblr url
+ *
+ * @param string $url
+ * @return array
+ */
+function tumblr_get_contact_by_url(string $url): array
+{
+	$consumer_key = DI::config()->get('tumblr', 'consumer_key');
+	if (empty($consumer_key)) {
+		return [];
+	}
+
+	if (!preg_match('#^https?://tumblr.com/(.+)#', $url, $matches) && !preg_match('#^https?://www\.tumblr.com/(.+)#', $url, $matches) && !preg_match('#^https?://(.+)\.tumblr.com#', $url, $matches)) {
+		$curlResult = DI::httpClient()->get($url);
+		$html = $curlResult->getBody();
+		if (empty($html)) {
+			return [];
+		}
+		$doc = new DOMDocument();
+		@$doc->loadHTML($html);
+		$xpath = new DomXPath($doc);
+		$body = $xpath->query('body');
+		$attributes = tumblr_get_attributes($body->item(0));
+		$blog = $attributes['data-urlencoded-name'] ?? '';
+	} else {
+		$blogs = explode('/', $matches[1]);
+		$blog = $blogs[0] ?? '';
+	}
+
+	if (empty($blog)) {
+		return [];
+	}
+
+	$curlResult = DI::httpClient()->get('https://api.tumblr.com/v2/blog/' . $blog . '/info?api_key=' . $consumer_key);
+	$body = $curlResult->getBody();
+	$data = json_decode($body);
+	if (empty($data)) {
+		return [];
+	}
+
+	$baseurl = 'https://tumblr.com';
+	$url     = $baseurl . '/' . $data->response->blog->name;
+
+	return [
+		'url'      => $url,
+		'nurl'     => Strings::normaliseLink($url),
+		'addr'     => $data->response->blog->name . '@tumblr.com',
+		'alias'    => $data->response->blog->url,
+		'batch'    => '',
+		'notify'   => '',
+		'poll'     => 'tumblr::' . $data->response->blog->uuid,
+		'poco'     => '',
+		'name'     => $data->response->blog->title,
+		'nick'     => $data->response->blog->name,
+		'network'  => Protocol::TUMBLR,
+		'baseurl'  => $baseurl,
+		'pubkey'   => '',
+		'priority' => 0,
+		'guid'     => $data->response->blog->uuid,
+		'about'    => $data->response->blog->description,
+    	'photo'    => $data->response->blog->avatar[0]->url,
+    	'header'   => $data->response->blog->theme->header_image_focused,
+	];
+}
+
 /**
  * Perform an OAuth2 GET request
  *
@@ -1002,6 +1258,27 @@ function tumblr_post(int $uid, string $url, array $parameters): stdClass
 	$url = 'https://api.tumblr.com/v2/' . $url;
 
 	$curlResult = DI::httpClient()->post($url, $parameters, ['Authorization' => ['Bearer ' . tumblr_get_token($uid)]]);
+	return tumblr_format_result($curlResult);
+}
+
+/**
+ * Perform an OAuth2 DELETE request
+ *
+ * @param integer $uid
+ * @param string $url
+ * @param array $parameters
+ * @return stdClass
+ */
+function tumblr_delete(int $uid, string $url, array $parameters): stdClass
+{
+	$url = 'https://api.tumblr.com/v2/' . $url;
+
+	$opts = [
+		HttpClientOptions::HEADERS     => ['Authorization' => ['Bearer ' . tumblr_get_token($uid)]],
+		HttpClientOptions::FORM_PARAMS => $parameters
+	];
+
+	$curlResult = DI::httpClient()->request('delete', $url, $opts);
 	return tumblr_format_result($curlResult);
 }
 
