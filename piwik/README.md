@@ -31,7 +31,7 @@ Open the `config/node.config.php` file and add "piwik" to the list of activated 
 		],
 	]
 
-You can change 4 more configuration variables for the addon in the `config/piwik.config.php` file:
+You can change 5 more configuration variables for the addon in the `config/piwik.config.php` file:
 
 	return [
 		'piwik' => [
@@ -39,6 +39,7 @@ You can change 4 more configuration variables for the addon in the `config/piwik
 			'sideid' => 1,
 			'optout' => true,
 			'async' => false,
+			'shortendpoint' => false,
 		],
 	];
 
@@ -50,7 +51,7 @@ Configuration fields
 * The *optout* parameter (true|false) defines whether or not a short notice about the utilization of Piwik will be displayed on every page of your Friendica site (at the bottom of the page with some spacing to the
 other content). Part of the note is a link that allows the visitor to set an _opt-out_ cookie which will prevent visits from that user be tracked by piwik.
 * The *async* parameter (true|false) defines whether or not to use asynchronous tracking so pages load (or appear to load) faster.
-
+* The *shortendpoint* parameter (true|false) defines whether or not to use a short path to the tracking script: "/js/" instead of "/piwik.js".
 Currently the optional notice states the following:
 
 >    This website is tracked using the Piwik analytics tool. If you do not want that your visits are logged this way you can set a cookie to prevent Piwik from tracking further visits of the site (opt-out).
