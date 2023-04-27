@@ -51,6 +51,7 @@ function tumblr_install()
 	Hook::register('connector_settings_post', __FILE__, 'tumblr_settings_post');
 	Hook::register('cron',                    __FILE__, 'tumblr_cron');
 	Hook::register('support_follow',          __FILE__, 'tumblr_support_follow');
+	Hook::register('support_probe',           __FILE__, 'tumblr_support_probe');
 	Hook::register('follow',                  __FILE__, 'tumblr_follow');
 	Hook::register('unfollow',                __FILE__, 'tumblr_unfollow');
 	Hook::register('block',                   __FILE__, 'tumblr_block');
@@ -132,6 +133,13 @@ function tumblr_item_by_link(array &$hookData)
 }
 
 function tumblr_support_follow(array &$data)
+{
+	if ($data['protocol'] == Protocol::TUMBLR) {
+		$data['result'] = true;
+	}
+}
+
+function tumblr_support_probe(array &$data)
 {
 	if ($data['protocol'] == Protocol::TUMBLR) {
 		$data['result'] = true;
