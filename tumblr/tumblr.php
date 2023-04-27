@@ -942,6 +942,10 @@ function tumblr_get_npf_data(DOMNode $node): array
 
 function tumblr_get_attributes($node): array
 {
+	if (empty($node->attributes)) {
+		return [];
+	}
+
 	$attributes = [];
 	foreach ($node->attributes as $key => $attribute) {
 		$attributes[$key] = trim($attribute->value);
@@ -1040,7 +1044,7 @@ function tumblr_insert_contact(stdClass $blog, int $uid)
 		'name'     => $blog->title,
 		'nick'     => $blog->name,
 		'addr'     => $blog->name . '@tumblr.com',
-		'about'    => $blog->description,
+		'about'    => HTML::toBBCode($blog->description),
 		'updated'  => date(DateTimeFormat::MYSQL, $blog->updated)
 	];
 	return Contact::insert($fields);
@@ -1090,7 +1094,7 @@ function tumblr_update_contact(stdClass $blog, int $uid, int $cid, int $pcid)
 		'name'    => $info->response->blog->title,
 		'nick'    => $info->response->blog->name,
 		'addr'    => $info->response->blog->name . '@tumblr.com',
-		'about'   => BBCode::convertForUriId($uri_id, $info->response->blog->description, BBCode::CONNECTORS),
+		'about'   => HTML::toBBCode($info->response->blog->description),
 		'updated' => date(DateTimeFormat::MYSQL, $info->response->blog->updated),
 		'header'  => $info->response->blog->theme->header_image_focused,
 		'rel'     => $rel,
@@ -1173,7 +1177,11 @@ function tumblr_get_contact_by_url(string $url): array
 	}
 
 	if (!preg_match('#^https?://tumblr.com/(.+)#', $url, $matches) && !preg_match('#^https?://www\.tumblr.com/(.+)#', $url, $matches) && !preg_match('#^https?://(.+)\.tumblr.com#', $url, $matches)) {
-		$curlResult = DI::httpClient()->get($url);
+		try {
+			$curlResult = DI::httpClient()->get($url);
+		} catch (\Exception $e) {
+			return [];
+		}
 		$html = $curlResult->getBody();
 		if (empty($html)) {
 			return [];
@@ -1219,7 +1227,7 @@ function tumblr_get_contact_by_url(string $url): array
 		'pubkey'   => '',
 		'priority' => 0,
 		'guid'     => $data->response->blog->uuid,
-		'about'    => $data->response->blog->description,
+		'about'    => HTML::toBBCode($data->response->blog->description),
     	'photo'    => $data->response->blog->avatar[0]->url,
     	'header'   => $data->response->blog->theme->header_image_focused,
 	];
