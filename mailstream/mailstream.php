@@ -32,7 +32,6 @@ function mailstream_install()
 	Hook::register('addon_settings_post', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings_post');
 	Hook::register('post_local_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
 	Hook::register('post_remote_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
-	Hook::register('cron', 'addon/mailstream/mailstream.php', 'mailstream_cron');
 	Hook::register('mailstream_send_hook', 'addon/mailstream/mailstream.php', 'mailstream_send_hook');
 
 	Logger::info("mailstream: installed");
@@ -67,9 +66,10 @@ function mailstream_module() {}
 /**
  * Adds an item in "addon features" in the admin menu of the site
  *
+ * @param App $a App object (unused)
  * @param string        $o HTML form data
  */
-function mailstream_addon_admin(string &$o)
+function mailstream_addon_admin(App $a, string &$o)
 {
 	$frommail = DI::config()->get('mailstream', 'frommail');
 	$template = Renderer::getMarkupTemplate('admin.tpl', 'addon/mailstream/');
@@ -103,14 +103,14 @@ function mailstream_addon_admin_post()
  */
 function mailstream_generate_id(string $uri): string
 {
-	$host = DI::baseUrl()->getHost();
+	$host = DI::baseUrl()->getHostname();
 	$resource = hash('md5', $uri);
 	$message_id = "<" . $resource . "@" . $host . ">";
 	Logger::debug('mailstream: Generated message ID ' . $message_id . ' for URI ' . $uri);
 	return $message_id;
 }
 
-function mailstream_send_hook(array $data)
+function mailstream_send_hook(App $a, array $data)
 {
 	$criteria = array('uid' => $data['uid'], 'contact-id' => $data['contact-id'], 'uri' => $data['uri']);
 	$item = Post::selectFirst([], $criteria);
@@ -138,15 +138,16 @@ function mailstream_send_hook(array $data)
  * mailstream is enabled and the necessary data is available, forks a
  * workerqueue item to send the email.
  *
+ * @param App $a    App object (unused)
  * @param array     $item content of the item (may or may not already be stored in the item table)
  * @return void
  */
-function mailstream_post_hook(array &$item)
+function mailstream_post_hook(App $a, array &$item)
 {
 	mailstream_check_version();
 
 	if (!DI::pConfig()->get($item['uid'], 'mailstream', 'enabled')) {
-		Logger::debug('mailstream: not enabled for item ' . $item['id']);
+		Logger::debug('mailstream: not enabled.', ['item' => $item['id'], ' uid ' => $item['uid']]);
 		return;
 	}
 	if (!$item['uid']) {
@@ -161,8 +162,8 @@ function mailstream_post_hook(array &$item)
 		Logger::debug('mailstream: no uri for item ' . $item['id']);
 		return;
 	}
-	if (!$item['plink']) {
-		Logger::debug('mailstream: no plink for item ' . $item['id']);
+	if ($item['verb'] == Activity::ANNOUNCE) {
+		Logger::debug('mailstream: announce item ', ['item' => $item['id']]);
 		return;
 	}
 	if (DI::pConfig()->get($item['uid'], 'mailstream', 'nolikes')) {
@@ -395,7 +396,9 @@ function mailstream_send(string $message_id, array $item, array $user): bool
 			$mail->addCustomHeader('In-Reply-To: ' . mailstream_generate_id($item['thr-parent']));
 		}
 		$mail->addCustomHeader('X-Friendica-Mailstream-URI: ' . $item['uri']);
-		$mail->addCustomHeader('X-Friendica-Mailstream-Plink: ' . $item['plink']);
+		if ($item['plink']) {
+			$mail->addCustomHeader('X-Friendica-Mailstream-Plink: ' . $item['plink']);
+		}
 		$encoding = 'base64';
 		foreach ($attachments as $url => $image) {
 			$mail->AddStringEmbeddedImage(
@@ -411,12 +414,13 @@ function mailstream_send(string $message_id, array $item, array $user): bool
 		$template = Renderer::getMarkupTemplate('mail.tpl', 'addon/mailstream/');
 		$mail->AltBody = BBCode::toPlaintext($item['body']);
 		$item['body'] = BBCode::convertForUriId($item['uri-id'], $item['body'], BBCode::CONNECTORS);
-		$item['url'] = DI::baseUrl() . '/display/' . $item['guid'];
+		$item['url'] = DI::baseUrl()->get() . '/display/' . $item['guid'];
 		$mail->Body = Renderer::replaceMacros($template, [
 						 '$upstream' => DI::l10n()->t('Upstream'),
+						 '$uri' => DI::l10n()->t('URI'),
 						 '$local' => DI::l10n()->t('Local'),
 						 '$item' => $item]);
-		mailstream_html_wrap($mail->Body);
+		$mail->Body = mailstream_html_wrap($mail->Body);
 		if (!$mail->Send()) {
 			throw new Exception($mail->ErrorInfo);
 		}
@@ -437,7 +441,8 @@ function mailstream_send(string $message_id, array $item, array $user): bool
  * bbcode's output suitable for transmission, we try to break things
  * up so that lines are about 200 characters.
  *
- * @param string $text text to word wrap - modified in-place
+ * @param string $text text to word wrap
+ * @return string wrapped text
  */
 function mailstream_html_wrap(string &$text)
 {
@@ -446,6 +451,7 @@ function mailstream_html_wrap(string &$text)
 		$lines[$i] = preg_replace('/ /', "\n", $lines[$i], 1);
 	}
 	$text = implode($lines);
+	return $text;
 }
 
 /**
@@ -462,8 +468,7 @@ function mailstream_convert_table_entries()
 					'message_id' => $ms_item_id['message-id'],
 					'tries' => 0);
 		if (!$ms_item_id['message-id'] || !strlen($ms_item_id['message-id'])) {
-			Logger::info('mailstream_cron: Item ' .
-							$ms_item_id['id'] . ' URI ' . $ms_item_id['uri'] . ' has no message-id');
+			Logger::info('mailstream_convert_table_entries: item has no message-id.', 'item' => $ms_item_id['id'], 'uri' => $ms_item_id['uri']]);
 							continue;
 		}
 		Logger::info('mailstream_convert_table_entries: convert item to workerqueue', $send_hook_data);
@@ -475,10 +480,11 @@ function mailstream_convert_table_entries()
 /**
  * Form for configuring mailstream features for a user
  *
+ * @param App   $a    App object
  * @param array $data Hook data array
  * @throws \Friendica\Network\HTTPException\ServiceUnavailableException
  */
-function mailstream_addon_settings(array &$data)
+function mailstream_addon_settings(App &$a, array &$data)
 {
 	$enabled   = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'mailstream', 'enabled');
 	$address   = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'mailstream', 'address');
@@ -522,10 +528,11 @@ function mailstream_addon_settings(array &$data)
 
 /**
  * Process data submitted to user's mailstream features form
+ * @param App $a
  * @param array          $post POST data
  * @return void
  */
-function mailstream_addon_settings_post(array $post)
+function mailstream_addon_settings_post(App $a, array $post)
 {
 	if (!DI::userSession()->getLocalUserId() || empty($post['mailstream-submit'])) {
 		return;
