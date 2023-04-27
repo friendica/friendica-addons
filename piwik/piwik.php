@@ -84,7 +84,7 @@ function piwik_analytics(string &$b)
 	$b .= "<!-- Piwik --> <script type=\"text/javascript\"> var _paq = _paq || []; _paq.push(['trackPageView']); _paq.push(['enableLinkTracking']); (function() { var u=((\"https:\" == document.location.protocol) ? \"https\" : \"http\") + \"://$baseurl\"; _paq.push(['setTrackerUrl', u+'$scriptPhpEndpoint']); _paq.push(['setSiteId', $siteid]); var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript'; g.defer=true; g.async=$scriptAsyncValue; g.src=u+'$scriptJsEndpoint'; s.parentNode.insertBefore(g,s); })(); </script> <!-- End Piwik Code -->\r\n";
 
 	if ($async) {
-		$b .= "<div id='piwik-code-block'> <!-- Piwik -->\r\n<noscript><p><img src=\"//".$baseurl."$scriptPhpEndpoint?idsite=".$siteid."\" style=\"border:0\" alt=\"\" /></p></noscript>\r\n <!-- End Piwik Tracking Tag --> </div>";
+		$b .= "<div id='piwik-code-block'> <!-- Piwik -->\r\n<noscript><p><img src=\"//$baseurl$scriptPhpEndpoint?idsite=$siteid\" style=\"border:0\" alt=\"\" /></p></noscript>\r\n <!-- End Piwik Tracking Tag --> </div>";
 	}
 
 	/*
