@@ -468,7 +468,7 @@ function mailstream_convert_table_entries()
 					'message_id' => $ms_item_id['message-id'],
 					'tries' => 0);
 		if (!$ms_item_id['message-id'] || !strlen($ms_item_id['message-id'])) {
-			Logger::info('mailstream_convert_table_entries: item has no message-id.', 'item' => $ms_item_id['id'], 'uri' => $ms_item_id['uri']]);
+			Logger::info('mailstream_convert_table_entries: item has no message-id.', ['item' => $ms_item_id['id'], 'uri' => $ms_item_id['uri']]);
 							continue;
 		}
 		Logger::info('mailstream_convert_table_entries: convert item to workerqueue', $send_hook_data);
