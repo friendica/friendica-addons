@@ -296,7 +296,7 @@ function tumblr_addon_admin(string &$o)
 		'$submit' => DI::l10n()->t('Save Settings'),
 		'$consumer_key'    => ['consumer_key', DI::l10n()->t('Consumer Key'), DI::config()->get('tumblr', 'consumer_key'), ''],
 		'$consumer_secret' => ['consumer_secret', DI::l10n()->t('Consumer Secret'), DI::config()->get('tumblr', 'consumer_secret'), ''],
-		'$max_tags'        => ['max_tags', DI::l10n()->t('Maximum tags'), DI::config()->get('tumblr', 'max_tags', TUMBLR_DEFAULT_MAXIMUM_TAGS), DI::l10n()->t('Maximum number of tags that a user can follow. Enter 0 to deactivate the feature.')],
+		'$max_tags'        => ['max_tags', DI::l10n()->t('Maximum tags'), DI::config()->get('tumblr', 'max_tags') ?? TUMBLR_DEFAULT_MAXIMUM_TAGS, DI::l10n()->t('Maximum number of tags that a user can follow. Enter 0 to deactivate the feature.')],
 	]);
 }
 
@@ -313,14 +313,14 @@ function tumblr_settings(array &$data)
 		return;
 	}
 
-	$enabled     = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'tumblr', 'post', false);
-	$def_enabled = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'tumblr', 'post_by_default', false);
-	$import      = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'tumblr', 'import', false);
-	$tags        = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'tumblr', 'tags');
+	$enabled     = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'tumblr', 'post') ?? false;
+	$def_enabled = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'tumblr', 'post_by_default') ?? false;
+	$import      = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'tumblr', 'import') ?? false;
+	$tags        = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'tumblr', 'tags') ?? [];
 
-	$max_tags = DI::config()->get('tumblr', 'max_tags', TUMBLR_DEFAULT_MAXIMUM_TAGS);
+	$max_tags = DI::config()->get('tumblr', 'max_tags') ?? TUMBLR_DEFAULT_MAXIMUM_TAGS;
 
-	$tags_str = implode(', ', $tags ?? []);
+	$tags_str = implode(', ', $tags);
 	$cachekey = 'tumblr-blogs-' . DI::userSession()->getLocalUserId();
 	$blogs = DI::cache()->get($cachekey);
 	if (empty($blogs)) {
@@ -387,7 +387,7 @@ function tumblr_settings_post(array &$b)
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'tumblr', 'post_by_default', intval($_POST['tumblr_bydefault']));
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'tumblr', 'import',          intval($_POST['tumblr_import']));
 
-		$max_tags = DI::config()->get('tumblr', 'max_tags', TUMBLR_DEFAULT_MAXIMUM_TAGS);
+		$max_tags = DI::config()->get('tumblr', 'max_tags') ?? TUMBLR_DEFAULT_MAXIMUM_TAGS;
 		$tags     = [];
 		foreach (explode(',', $_POST['tags']) as $tag) {
 			if (count($tags) < $max_tags) {
@@ -707,11 +707,11 @@ function tumblr_get_post_from_uri(string $uri): array
  */
 function tumblr_fetch_tags(int $uid)
 {
-	if (!DI::config()->get('tumblr', 'max_tags', TUMBLR_DEFAULT_MAXIMUM_TAGS)) {
+	if (!DI::config()->get('tumblr', 'max_tags') ?? TUMBLR_DEFAULT_MAXIMUM_TAGS) {
 		return;
 	}
 
-	foreach (DI::pConfig()->get($uid, 'tumblr', 'tags', []) as $tag) {
+	foreach (DI::pConfig()->get($uid, 'tumblr', 'tags') ?? [] as $tag) {
 		$data = tumblr_get($uid, 'tagged', ['tag' => $tag]);
 		foreach (array_reverse($data->response) as $post) {
 			$id = tumblr_process_post($post, $uid, Item::PR_TAG);
