@@ -39,6 +39,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Subscriber\Oauth\Oauth1;
 
 define('TUMBLR_DEFAULT_POLL_INTERVAL', 10); // given in minutes
+define('TUMBLR_DEFAULT_MAXIMUM_TAGS', 10);
 
 function tumblr_install()
 {
@@ -97,8 +98,6 @@ function tumblr_probe_detect(array &$hookData)
 		return;
 	}
 
-	Logger::debug('Search for tumblr blog', ['url' => $hookData['uri']]);
-
 	$hookData['result'] = tumblr_get_contact_by_url($hookData['uri']);
 }
 
@@ -128,7 +127,7 @@ function tumblr_item_by_link(array &$hookData)
 
 	Logger::debug('Got post', ['blog' => $matches[1], 'id' => $matches[2], 'result' => $result->response->posts]);
 	if (!empty($result->response->posts)) {
-		$hookData['item_id'] = tumblr_process_post($result->response->posts[0], $hookData['uid']);
+		$hookData['item_id'] = tumblr_process_post($result->response->posts[0], $hookData['uid'], Item::PR_FETCHED);
 	}
 }
 
@@ -297,6 +296,7 @@ function tumblr_addon_admin(string &$o)
 		'$submit' => DI::l10n()->t('Save Settings'),
 		'$consumer_key'    => ['consumer_key', DI::l10n()->t('Consumer Key'), DI::config()->get('tumblr', 'consumer_key'), ''],
 		'$consumer_secret' => ['consumer_secret', DI::l10n()->t('Consumer Secret'), DI::config()->get('tumblr', 'consumer_secret'), ''],
+		'$max_tags'        => ['max_tags', DI::l10n()->t('Maximum tags'), DI::config()->get('tumblr', 'max_tags', TUMBLR_DEFAULT_MAXIMUM_TAGS), DI::l10n()->t('Maximum number of tags that a user can follow. Enter 0 to deactivate the feature.')],
 	]);
 }
 
@@ -304,6 +304,7 @@ function tumblr_addon_admin_post()
 {
 	DI::config()->set('tumblr', 'consumer_key', trim($_POST['consumer_key'] ?? ''));
 	DI::config()->set('tumblr', 'consumer_secret', trim($_POST['consumer_secret'] ?? ''));
+	DI::config()->set('tumblr', 'max_tags', max(0, intval($_POST['max_tags'] ?? '')));
 }
 
 function tumblr_settings(array &$data)
@@ -315,7 +316,11 @@ function tumblr_settings(array &$data)
 	$enabled     = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'tumblr', 'post', false);
 	$def_enabled = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'tumblr', 'post_by_default', false);
 	$import      = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'tumblr', 'import', false);
+	$tags        = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'tumblr', 'tags');
 
+	$max_tags = DI::config()->get('tumblr', 'max_tags', TUMBLR_DEFAULT_MAXIMUM_TAGS);
+
+	$tags_str = implode(', ', $tags ?? []);
 	$cachekey = 'tumblr-blogs-' . DI::userSession()->getLocalUserId();
 	$blogs = DI::cache()->get($cachekey);
 	if (empty($blogs)) {
@@ -343,6 +348,7 @@ function tumblr_settings(array &$data)
 		'$enable'      => ['tumblr', DI::l10n()->t('Enable Tumblr Post Addon'), $enabled],
 		'$bydefault'   => ['tumblr_bydefault', DI::l10n()->t('Post to Tumblr by default'), $def_enabled],
 		'$import'      => ['tumblr_import', DI::l10n()->t('Import the remote timeline'), $import],
+		'$tags'        => ['tags', DI::l10n()->t('Subscribed tags'), $tags_str, DI::l10n()->t('Comma separated list of up to %d tags that will be imported additionally to the timeline', $max_tags)],
 		'$page_select' => $page_select ?? '',
 	]);
 
@@ -380,6 +386,16 @@ function tumblr_settings_post(array &$b)
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'tumblr', 'page',            $_POST['tumblr_page']);
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'tumblr', 'post_by_default', intval($_POST['tumblr_bydefault']));
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'tumblr', 'import',          intval($_POST['tumblr_import']));
+
+		$max_tags = DI::config()->get('tumblr', 'max_tags', TUMBLR_DEFAULT_MAXIMUM_TAGS);
+		$tags     = [];
+		foreach (explode(',', $_POST['tags']) as $tag) {
+			if (count($tags) < $max_tags) {
+				$tags[] = trim($tag, ' #');
+			}
+		}
+
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'tumblr', 'tags', $tags);
 	}
 }
 
@@ -395,7 +411,7 @@ function tumblr_cron()
 	if ($last) {
 		$next = $last + ($poll_interval * 60);
 		if ($next > time()) {
-			Logger::notice('poll intervall not reached');
+			Logger::notice('poll interval not reached');
 			return;
 		}
 	}
@@ -419,6 +435,7 @@ function tumblr_cron()
 
 		Logger::notice('importing timeline - start', ['user' => $pconfig['uid']]);
 		tumblr_fetch_dashboard($pconfig['uid']);
+		tumblr_fetch_tags($pconfig['uid']);
 		Logger::notice('importing timeline - done', ['user' => $pconfig['uid']]);
 	}
 
@@ -683,6 +700,29 @@ function tumblr_get_post_from_uri(string $uri): array
 }
 
 /**
+ * Fetch posts for user defined hashtags for the given user
+ *
+ * @param integer $uid
+ * @return void
+ */
+function tumblr_fetch_tags(int $uid)
+{
+	if (!DI::config()->get('tumblr', 'max_tags', TUMBLR_DEFAULT_MAXIMUM_TAGS)) {
+		return;
+	}
+
+	foreach (DI::pConfig()->get($uid, 'tumblr', 'tags', []) as $tag) {
+		$data = tumblr_get($uid, 'tagged', ['tag' => $tag]);
+		foreach (array_reverse($data->response) as $post) {
+			$id = tumblr_process_post($post, $uid, Item::PR_TAG);
+			if (!empty($id)) {
+				Logger::debug('Tag post imported', ['tag' => $tag, 'id' => $id]);
+			}
+		}
+	}
+}
+
+/**
  * Fetch the dashboard (timeline) for the given user
  *
  * @param integer $uid
@@ -690,8 +730,6 @@ function tumblr_get_post_from_uri(string $uri): array
  */
 function tumblr_fetch_dashboard(int $uid)
 {
-	$page = tumblr_get_page($uid);
-
 	$parameters = ['reblog_info' => false, 'notes_info' => false, 'npf' => false];
 
 	$last = DI::pConfig()->get($uid, 'tumblr', 'last_id');
@@ -710,35 +748,35 @@ function tumblr_fetch_dashboard(int $uid)
 	}
 
 	foreach (array_reverse($dashboard->response->posts) as $post) {
-		$uri = 'tumblr::' . $post->id_string . ':' . $post->reblog_key;
-
 		if ($post->id > $last) {
 			$last = $post->id;
 		}
 
-		Logger::debug('Importing post', ['uid' => $uid, 'created' => date(DateTimeFormat::MYSQL, $post->timestamp), 'uri' => $uri]);
+		Logger::debug('Importing post', ['uid' => $uid, 'created' => date(DateTimeFormat::MYSQL, $post->timestamp), 'id' => $post->id_string]);
 
-		if (Post::exists(['uri' => $uri, 'uid' => $uid]) || ($post->blog->uuid == $page)) {
-			DI::pConfig()->set($uid, 'tumblr', 'last_id', $last);
-			continue;
-		}
-
-		tumblr_process_post($post, $uid, $uri);
-
+		tumblr_process_post($post, $uid, Item::PR_NONE);
 
 		DI::pConfig()->set($uid, 'tumblr', 'last_id', $last);
 	}
 }
 
-function tumblr_process_post(stdClass $post, int $uid, string $uri = ''): int
+function tumblr_process_post(stdClass $post, int $uid, int $post_reason): int
 {
-	if (empty($uri)) {
-		$uri = 'tumblr::' . $post->id_string . ':' . $post->reblog_key;
+	$uri = 'tumblr::' . $post->id_string . ':' . $post->reblog_key;
+
+	if (Post::exists(['uri' => $uri, 'uid' => $uid]) || ($post->blog->uuid == tumblr_get_page($uid))) {
+		return 0;
 	}
 
 	$item = tumblr_get_header($post, $uri, $uid);
 
 	$item = tumblr_get_content($item, $post);
+
+	$item['post-reason'] = $post_reason;
+
+	if (!empty($post->followed)) {
+		$item['post-reason'] = Item::PR_FOLLOWER;
+	}
 
 	$id = item::insert($item);
 
@@ -1049,7 +1087,7 @@ function tumblr_insert_contact(stdClass $blog, int $uid)
 		'url'      => $url,
 		'nurl'     => Strings::normaliseLink($url),
 		'alias'    => $blog->url,
-		'name'     => $blog->title,
+		'name'     => $blog->title ?: $blog->name,
 		'nick'     => $blog->name,
 		'addr'     => $blog->name . '@tumblr.com',
 		'about'    => HTML::toBBCode($blog->description),
@@ -1099,7 +1137,7 @@ function tumblr_update_contact(stdClass $blog, int $uid, int $cid, int $pcid)
 		'nurl'    => Strings::normaliseLink($url),
 		'uri-id'  => $uri_id,
 		'alias'   => $info->response->blog->url,
-		'name'    => $info->response->blog->title,
+		'name'    => $info->response->blog->title ?: $info->response->blog->name,
 		'nick'    => $info->response->blog->name,
 		'addr'    => $info->response->blog->name . '@tumblr.com',
 		'about'   => HTML::toBBCode($info->response->blog->description),
@@ -1209,6 +1247,8 @@ function tumblr_get_contact_by_url(string $url): array
 		return [];
 	}
 
+	Logger::debug('Update Tumblr blog data', ['url' => $url]);
+
 	$curlResult = DI::httpClient()->get('https://api.tumblr.com/v2/blog/' . $blog . '/info?api_key=' . $consumer_key);
 	$body = $curlResult->getBody();
 	$data = json_decode($body);
@@ -1228,7 +1268,7 @@ function tumblr_get_contact_by_url(string $url): array
 		'notify'   => '',
 		'poll'     => 'tumblr::' . $data->response->blog->uuid,
 		'poco'     => '',
-		'name'     => $data->response->blog->title,
+		'name'     => $data->response->blog->title ?: $data->response->blog->name,
 		'nick'     => $data->response->blog->name,
 		'network'  => Protocol::TUMBLR,
 		'baseurl'  => $baseurl,
