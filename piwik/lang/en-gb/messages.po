@@ -20,13 +20,13 @@ msgstr ""
 "Language: en_GB\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: piwik.php:94
+#: piwik.php:95
 msgid ""
 "This website is tracked using the <a href='http://www.matomo.org'>Matomo</a>"
 " analytics tool."
 msgstr "This website is tracking, using the <a href='http://www.matomo.org'>Matomo</a> analytics tool."
 
-#: piwik.php:97
+#: piwik.php:98
 #, php-format
 msgid ""
 "If you do not want that your visits are logged in this way you <a "
@@ -34,31 +34,35 @@ msgid ""
 "visits of the site</a> (opt-out)."
 msgstr "If you do not want that your visits logged in this way you <a href='%s'>can set a cookie to prevent Matomo / Piwik from tracking further visits of the site</a> (opt-out)."
 
-#: piwik.php:104
+#: piwik.php:107
 msgid "Save Settings"
 msgstr "Save settings"
 
-#: piwik.php:105
+#: piwik.php:108
 msgid "Matomo (Piwik) Base URL"
 msgstr "Matomo (Piwik) Base URL"
 
-#: piwik.php:105
+#: piwik.php:108
 msgid ""
 "Absolute path to your Matomo (Piwik) installation. (without protocol "
 "(http/s), with trailing slash)"
 msgstr "Absolute path to your Matomo (Piwik) installation. (without protocol (http/s), with trailing slash)"
 
-#: piwik.php:106
+#: piwik.php:109
 msgid "Site ID"
 msgstr "Site ID"
 
-#: piwik.php:107
+#: piwik.php:110
 msgid "Show opt-out cookie link?"
 msgstr "Show opt-out cookie link?"
 
-#: piwik.php:108
+#: piwik.php:111
 msgid "Asynchronous tracking"
 msgstr "Asynchronous tracking"
+
+#: piwik.php:112
+msgid "Shortcut path to the script ('/js/' instead of '/piwik.js')"
+msgstr "Shortcut path to the script ('/js/' instead of '/piwik.js')"
 
 #: piwik.php:120
 msgid "Settings updated."

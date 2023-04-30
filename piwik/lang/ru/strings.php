@@ -9,3 +9,4 @@ $a->strings["Site ID"] = "ID сайта";
 $a->strings["Show opt-out cookie link?"] = "Показать ссылку opt-out cookie?";
 $a->strings["Asynchronous tracking"] = "Асинхронное отслеживание";
 $a->strings["Settings updated."] = "Настройки обновлены.";
+$a->strings["Shortcut path to the script ('/js/' instead of '/piwik.js')"] = "Сокращенный путь к скрипту ('/js/' вместо '/piwik.js')";

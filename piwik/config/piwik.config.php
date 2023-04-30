@@ -25,5 +25,9 @@ return [
 		// async (Boolean)
 		// This defines whether or not to use asynchronous tracking so pages load (or appear to load) faster.
 		'async' => false,
+
+		// shortendpoint (Boolean)
+		// This defines whether or not to use a short path to the tracking script: "/js/" instead of "/piwik.js".
+		'shortendpoint' => false,
 	],
 ];
