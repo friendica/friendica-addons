@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"POT-Creation-Date: 2023-05-01 07:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,13 +17,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: piwik.php:87
+#: piwik.php:96
 msgid ""
 "This website is tracked using the <a href='http://www.matomo.org'>Matomo</a> "
 "analytics tool."
 msgstr ""
 
-#: piwik.php:90
+#: piwik.php:99
 #, php-format
 msgid ""
 "If you do not want that your visits are logged in this way you <a "
@@ -31,28 +31,32 @@ msgid ""
 "visits of the site</a> (opt-out)."
 msgstr ""
 
-#: piwik.php:97
+#: piwik.php:108
 msgid "Save Settings"
 msgstr ""
 
-#: piwik.php:98
+#: piwik.php:109
 msgid "Matomo (Piwik) Base URL"
 msgstr ""
 
-#: piwik.php:98
+#: piwik.php:109
 msgid ""
 "Absolute path to your Matomo (Piwik) installation. (without protocol (http/"
 "s), with trailing slash)"
 msgstr ""
 
-#: piwik.php:99
+#: piwik.php:110
 msgid "Site ID"
 msgstr ""
 
-#: piwik.php:100
+#: piwik.php:111
 msgid "Show opt-out cookie link?"
 msgstr ""
 
-#: piwik.php:101
+#: piwik.php:112
 msgid "Asynchronous tracking"
+msgstr ""
+
+#: piwik.php:113
+msgid "Shortcut path to the script ('/js/' instead of '/piwik.js')"
 msgstr ""
