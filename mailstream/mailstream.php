@@ -102,7 +102,7 @@ function mailstream_addon_admin_post()
  */
 function mailstream_generate_id(string $uri): string
 {
-	$host = DI::baseUrl()->getHostname();
+	$host = DI::baseUrl()->getHost();
 	$resource = hash('md5', $uri);
 	$message_id = "<" . $resource . "@" . $host . ">";
 	Logger::debug('mailstream: Generated message ID ' . $message_id . ' for URI ' . $uri);
@@ -412,7 +412,7 @@ function mailstream_send(string $message_id, array $item, array $user): bool
 		$template = Renderer::getMarkupTemplate('mail.tpl', 'addon/mailstream/');
 		$mail->AltBody = BBCode::toPlaintext($item['body']);
 		$item['body'] = BBCode::convertForUriId($item['uri-id'], $item['body'], BBCode::CONNECTORS);
-		$item['url'] = DI::baseUrl()->get() . '/display/' . $item['guid'];
+		$item['url'] = DI::baseUrl() . '/display/' . $item['guid'];
 		$mail->Body = Renderer::replaceMacros($template, [
 						 '$upstream' => DI::l10n()->t('Upstream'),
 						 '$uri' => DI::l10n()->t('URI'),
