@@ -66,10 +66,9 @@ function mailstream_module() {}
 /**
  * Adds an item in "addon features" in the admin menu of the site
  *
- * @param App $a App object (unused)
  * @param string        $o HTML form data
  */
-function mailstream_addon_admin(App $a, string &$o)
+function mailstream_addon_admin(string &$o)
 {
 	$frommail = DI::config()->get('mailstream', 'frommail');
 	$template = Renderer::getMarkupTemplate('admin.tpl', 'addon/mailstream/');
@@ -110,7 +109,7 @@ function mailstream_generate_id(string $uri): string
 	return $message_id;
 }
 
-function mailstream_send_hook(App $a, array $data)
+function mailstream_send_hook(array $data)
 {
 	$criteria = array('uid' => $data['uid'], 'contact-id' => $data['contact-id'], 'uri' => $data['uri']);
 	$item = Post::selectFirst([], $criteria);
@@ -138,11 +137,10 @@ function mailstream_send_hook(App $a, array $data)
  * mailstream is enabled and the necessary data is available, forks a
  * workerqueue item to send the email.
  *
- * @param App $a    App object (unused)
  * @param array     $item content of the item (may or may not already be stored in the item table)
  * @return void
  */
-function mailstream_post_hook(App $a, array &$item)
+function mailstream_post_hook(array &$item)
 {
 	mailstream_check_version();
 
@@ -480,11 +478,10 @@ function mailstream_convert_table_entries()
 /**
  * Form for configuring mailstream features for a user
  *
- * @param App   $a    App object
  * @param array $data Hook data array
  * @throws \Friendica\Network\HTTPException\ServiceUnavailableException
  */
-function mailstream_addon_settings(App &$a, array &$data)
+function mailstream_addon_settings(array &$data)
 {
 	$enabled   = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'mailstream', 'enabled');
 	$address   = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'mailstream', 'address');
@@ -528,11 +525,10 @@ function mailstream_addon_settings(App &$a, array &$data)
 
 /**
  * Process data submitted to user's mailstream features form
- * @param App $a
  * @param array          $post POST data
  * @return void
  */
-function mailstream_addon_settings_post(App $a, array $post)
+function mailstream_addon_settings_post(array $post)
 {
 	if (!DI::userSession()->getLocalUserId() || empty($post['mailstream-submit'])) {
 		return;
