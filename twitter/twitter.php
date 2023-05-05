@@ -526,7 +526,12 @@ function twitter_probe_detect(array &$hookData)
 	$user = twitter_fetchuser($nick);
 
 	if ($user) {
-		$hookData['result'] = twitter_user_to_contact($user);
+		$hookData['result'] = twitter_user_to_contact($user) ?: null;
+	}
+
+	// Authoritative probe should set the result even if the probe was unsuccessful
+	if ($hookData['network'] == Protocol::TWITTER && empty($hookData['result'])) {
+		$hookData['result'] = [];
 	}
 }
 
