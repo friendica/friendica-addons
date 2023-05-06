@@ -70,7 +70,7 @@ function tumblr_load_config(ConfigFileManager $loader)
 
 function tumblr_check_item_notification(array &$notification_data)
 {
-	if (!tumblr_enabled_for_user($notification_data['uid'])) { 
+	if (!tumblr_enabled_for_user($notification_data['uid'])) {
 		return;
 	}
 
@@ -99,6 +99,11 @@ function tumblr_probe_detect(array &$hookData)
 	}
 
 	$hookData['result'] = tumblr_get_contact_by_url($hookData['uri']);
+
+	// Authoritative probe should set the result even if the probe was unsuccessful
+	if ($hookData['network'] == Protocol::TUMBLR && empty($hookData['result'])) {
+		$hookData['result'] = [];
+	}
 }
 
 function tumblr_item_by_link(array &$hookData)
@@ -115,7 +120,7 @@ function tumblr_item_by_link(array &$hookData)
 	if (!preg_match('#^https?://www\.tumblr.com/blog/view/(.+)/(\d+).*#', $hookData['uri'], $matches) && !preg_match('#^https?://www\.tumblr.com/(.+)/(\d+).*#', $hookData['uri'], $matches)) {
 		return;
 	}
-	
+
 	Logger::debug('Found tumblr post', ['url' => $hookData['uri'], 'blog' => $matches[1], 'id' => $matches[2]]);
 
 	$parameters = ['id' => $matches[2], 'reblog_info' => false, 'notes_info' => false, 'npf' => false];
@@ -1201,7 +1206,7 @@ function tumblr_get_blogs(int $uid): array
 	return $blogs;
 }
 
-function tumblr_enabled_for_user(int $uid) 
+function tumblr_enabled_for_user(int $uid)
 {
 	return !empty($uid) && !empty(DI::pConfig()->get($uid, 'tumblr', 'access_token')) &&
 		!empty(DI::pConfig()->get($uid, 'tumblr', 'refresh_token')) &&
@@ -1213,24 +1218,25 @@ function tumblr_enabled_for_user(int $uid)
  * Get a contact array from a Tumblr url
  *
  * @param string $url
- * @return array
+ * @return array|null
+ * @throws \Friendica\Network\HTTPException\InternalServerErrorException
  */
-function tumblr_get_contact_by_url(string $url): array
+function tumblr_get_contact_by_url(string $url): ?array
 {
 	$consumer_key = DI::config()->get('tumblr', 'consumer_key');
 	if (empty($consumer_key)) {
-		return [];
+		return null;
 	}
 
 	if (!preg_match('#^https?://tumblr.com/(.+)#', $url, $matches) && !preg_match('#^https?://www\.tumblr.com/(.+)#', $url, $matches) && !preg_match('#^https?://(.+)\.tumblr.com#', $url, $matches)) {
 		try {
 			$curlResult = DI::httpClient()->get($url);
 		} catch (\Exception $e) {
-			return [];
+			return null;
 		}
 		$html = $curlResult->getBody();
 		if (empty($html)) {
-			return [];
+			return null;
 		}
 		$doc = new DOMDocument();
 		@$doc->loadHTML($html);
@@ -1244,7 +1250,7 @@ function tumblr_get_contact_by_url(string $url): array
 	}
 
 	if (empty($blog)) {
-		return [];
+		return null;
 	}
 
 	Logger::debug('Update Tumblr blog data', ['url' => $url]);
@@ -1253,7 +1259,7 @@ function tumblr_get_contact_by_url(string $url): array
 	$body = $curlResult->getBody();
 	$data = json_decode($body);
 	if (empty($data)) {
-		return [];
+		return null;
 	}
 
 	$baseurl = 'https://tumblr.com';
@@ -1403,13 +1409,13 @@ function tumblr_get_token(int $uid, string $code = ''): string
 			Logger::info('Error fetching token', ['uid' => $uid, 'code' => $code, 'result' => $curlResult->getBody(), 'parameters' => $parameters]);
 			return '';
 		}
-	
+
 		$result = json_decode($curlResult->getBody());
 		if (empty($result)) {
 			Logger::info('Invalid result when updating token', ['uid' => $uid]);
 			return '';
 		}
-	
+
 		$expires_at = time() + $result->expires_in;
 		Logger::debug('Renewed token', ['uid' => $uid, 'expires_at' => date('c', $expires_at)]);
 	}
