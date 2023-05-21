@@ -52,7 +52,7 @@ function bluesky_settings(array &$data)
 	$html = Renderer::replaceMacros($t, [
 		'$enable'    => ['bluesky', DI::l10n()->t('Enable Bluesky Post Addon'), $enabled],
 		'$bydefault' => ['bluesky_bydefault', DI::l10n()->t('Post to Bluesky by default'), $def_enabled],
-		'$host'      => ['bluesky_host', DI::l10n()->t('Bluesky host'), $host, '', '', '', 'url'],
+		'$host'      => ['bluesky_host', DI::l10n()->t('Bluesky host'), $host, '', '', 'readonly'],
 		'$handle'    => ['bluesky_handle', DI::l10n()->t('Bluesky handle'), $handle],
 		'$did'       => ['bluesky_did', DI::l10n()->t('Bluesky DID'), $did, DI::l10n()->t('This is the unique identifier. It will be fetched automatically, when the handle is entered.'), '', 'readonly'],
 		'$username'  => ['bluesky_username', DI::l10n()->t('Bluesky app username'), $username, DI::l10n()->t("Please don't add your real username here, but instead create a specific app username and app password in the Bluesky settings.")],
