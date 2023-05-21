@@ -240,7 +240,7 @@ function bluesky_add_embed(int $uid, array $msg, array $record): array
 			$photo = Photo::selectFirst(['resource-id'], ['id' => $image['id']]);
 			$photo = Photo::selectFirst([], ["`resource-id` = ? AND `scale` > ?", $photo['resource-id'], 0], ['order' => ['scale']]);
 			$blob = bluesky_upload_blob($uid, $photo);
-			if (!empty($blob)) {
+			if (!empty($blob) && count($images) < 4) {
 				$images[] = ['alt' => $image['description'], 'image' => $blob];
 			}
 		}
@@ -285,7 +285,15 @@ function bluesky_get_timeline(int $uid)
 	if (empty($data)) {
 		return;
 	}
-	// TODO Add Functionality to read the timeline
+
+	if (empty($data->feed)) {
+		return;
+	}
+
+	foreach ($data->feed as $entry) {
+		// TODO Add Functionality to read the timeline
+		print_r($entry);
+	}
 }
 
 function bluesky_get_did(int $uid): string
