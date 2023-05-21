@@ -46,7 +46,9 @@ function bluesky_settings(array &$data)
 	$host        = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'host') ?: 'https://bsky.social';
 	$handle      = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'handle');
 	$did         = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'did');
-	$username    = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'username');
+	$token       = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'access_token');
+
+	$status = $token ? DI::l10n()->t("You are authenticated to Bluesky. For security reasons the password isn't stored.") : DI::l10n()->t('You are not authenticated. Please enter the app password.');
 
 	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/bluesky/');
 	$html = Renderer::replaceMacros($t, [
@@ -55,8 +57,8 @@ function bluesky_settings(array &$data)
 		'$host'      => ['bluesky_host', DI::l10n()->t('Bluesky host'), $host, '', '', 'readonly'],
 		'$handle'    => ['bluesky_handle', DI::l10n()->t('Bluesky handle'), $handle],
 		'$did'       => ['bluesky_did', DI::l10n()->t('Bluesky DID'), $did, DI::l10n()->t('This is the unique identifier. It will be fetched automatically, when the handle is entered.'), '', 'readonly'],
-		'$username'  => ['bluesky_username', DI::l10n()->t('Bluesky app username'), $username, DI::l10n()->t("Please don't add your real username here, but instead create a specific app username and app password in the Bluesky settings.")],
-		'$password'  => ['bluesky_password', DI::l10n()->t('Bluesky app password'), ''],
+		'$password'  => ['bluesky_password', DI::l10n()->t('Bluesky app password'), '', DI::l10n()->t("Please don't add your real password here, but instead create a specific app password in the Bluesky settings.")],
+		'$status'    => $status
 	]);
 
 	$data = [
@@ -85,11 +87,6 @@ function bluesky_settings_post(array &$b)
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'post_by_default', intval($_POST['bluesky_bydefault']));
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'host',            $host);
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'handle',          $handle);
-	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'username',        $_POST['bluesky_username']);
-
-	if (!empty($_POST['bluesky_password'])) {
-		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'app_password', $_POST['bluesky_password']);
-	}
 
 	if (!empty($host) && !empty($handle)) {
 		if (empty($old_did) || $old_host != $host || $old_handle != $handle) {
@@ -98,6 +95,11 @@ function bluesky_settings_post(array &$b)
 	} else {
 		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'bluesky', 'did');
 	}
+
+	if (!empty($_POST['bluesky_password'])) {
+		bluesky_create_token(DI::userSession()->getLocalUserId(), $_POST['bluesky_password']);
+	}
+
 }
 
 function bluesky_jot_nets(array &$jotnets_fields)
@@ -301,7 +303,7 @@ function bluesky_get_token(int $uid): string
 	$token   = DI::pConfig()->get($uid, 'bluesky', 'access_token');
 	$created = DI::pConfig()->get($uid, 'bluesky', 'token_created');
 	if (empty($token)) {
-		return bluesky_create_token($uid);
+		return '';
 	}
 
 	if ($created + 300 < time()) {
@@ -326,10 +328,9 @@ function bluesky_refresh_token(int $uid): string
 	return $data->accessJwt;
 }
 
-function bluesky_create_token(int $uid): string
+function bluesky_create_token(int $uid, string $password): string
 {
-	$did      = DI::pConfig()->get($uid, 'bluesky', 'did');
-	$password = DI::pConfig()->get($uid, 'bluesky', 'app_password');
+	$did = DI::pConfig()->get($uid, 'bluesky', 'did');
 
 	$data = bluesky_post($uid, '/xrpc/com.atproto.server.createSession', json_encode(['identifier' => $did, 'password' => $password]), ['Content-type' => 'application/json']);
 	if (empty($data)) {
