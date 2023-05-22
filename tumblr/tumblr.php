@@ -79,7 +79,7 @@ function tumblr_check_item_notification(array &$notification_data)
 		return;
 	}
 
-	$own_user = Contact::selectFirst(['url', 'alias'], ['uid' => $notification_data['uid'], 'poll' => 'tumblr::'.$page]);
+	$own_user = Contact::selectFirst(['url', 'alias'], ['uid' => $notification_data['uid'], 'poll' => 'tumblr::' . $page]);
 	if ($own_user) {
 		$notification_data['profiles'][] = $own_user['url'];
 		$notification_data['profiles'][] = $own_user['alias'];
@@ -1262,6 +1262,11 @@ function tumblr_get_contact_by_url(string $url): ?array
 		return null;
 	}
 
+	if (is_array($data->response->blog)) {
+		Logger::warning('Unexpected blog format', ['blog' => $blog, 'data' => $data]);
+		return null;
+	}
+
 	$baseurl = 'https://tumblr.com';
 	$url     = $baseurl . '/' . $data->response->blog->name;
 
@@ -1282,8 +1287,8 @@ function tumblr_get_contact_by_url(string $url): ?array
 		'priority' => 0,
 		'guid'     => $data->response->blog->uuid,
 		'about'    => HTML::toBBCode($data->response->blog->description),
-    	'photo'    => $data->response->blog->avatar[0]->url,
-    	'header'   => $data->response->blog->theme->header_image_focused,
+		'photo'    => $data->response->blog->avatar[0]->url,
+		'header'   => $data->response->blog->theme->header_image_focused,
 	];
 }
 
