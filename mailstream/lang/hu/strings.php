@@ -15,6 +15,7 @@ $a->strings['Feed item'] = 'Hírforráselem';
 $a->strings['Email'] = 'E-mail';
 $a->strings['Friendica Item'] = 'Friendica-elem';
 $a->strings['Upstream'] = 'Távoli';
+$a->strings['URI'] = 'URI';
 $a->strings['Local'] = 'Helyi';
 $a->strings['Enabled'] = 'Engedélyezve';
 $a->strings['Email Address'] = 'E-mail-cím';
