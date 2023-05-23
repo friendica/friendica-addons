@@ -4,20 +4,44 @@
  * Description: Post to Bluesky
  * Version: 1.0
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
+ * 
+ * @todo
+ * - Process facets
+ * - detect incoming reshares
+ * - detect contact relations
+ * - alternate link for contacts
+ * - plink for posts
+ * - fetch missing posts
+ * - only fetch new posts
+ * - receive likes
+ *
+ * - create facets
+ * - transmit comments
+ * - transmits likes
+ * - transmit reshares
  */
 
 use Friendica\Content\Text\BBCode;
+use Friendica\Content\Text\HTML;
 use Friendica\Content\Text\Plaintext;
 use Friendica\Core\Config\Util\ConfigFileManager;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
+use Friendica\Core\Protocol;
 use Friendica\Core\Renderer;
+use Friendica\Database\DBA;
 use Friendica\DI;
+use Friendica\Model\Contact;
 use Friendica\Model\Item;
+use Friendica\Model\ItemURI;
 use Friendica\Model\Photo;
+use Friendica\Model\Post;
 use Friendica\Network\HTTPClient\Client\HttpClientAccept;
 use Friendica\Network\HTTPClient\Client\HttpClientOptions;
+use Friendica\Protocol\Activity;
 use Friendica\Util\DateTimeFormat;
+
+define('BLUESKY_DEFAULT_POLL_INTERVAL', 10); // given in minutes
 
 function bluesky_install()
 {
@@ -28,6 +52,7 @@ function bluesky_install()
 	Hook::register('jot_networks',            __FILE__, 'bluesky_jot_nets');
 	Hook::register('connector_settings',      __FILE__, 'bluesky_settings');
 	Hook::register('connector_settings_post', __FILE__, 'bluesky_settings_post');
+	Hook::register('cron',                    __FILE__, 'bluesky_cron');
 }
 
 function bluesky_load_config(ConfigFileManager $loader)
@@ -47,6 +72,7 @@ function bluesky_settings(array &$data)
 	$handle      = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'handle');
 	$did         = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'did');
 	$token       = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'access_token');
+	$import      = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'import') ?? false;
 
 	$status = $token ? DI::l10n()->t("You are authenticated to Bluesky. For security reasons the password isn't stored.") : DI::l10n()->t('You are not authenticated. Please enter the app password.');
 
@@ -54,6 +80,7 @@ function bluesky_settings(array &$data)
 	$html = Renderer::replaceMacros($t, [
 		'$enable'    => ['bluesky', DI::l10n()->t('Enable Bluesky Post Addon'), $enabled],
 		'$bydefault' => ['bluesky_bydefault', DI::l10n()->t('Post to Bluesky by default'), $def_enabled],
+		'$import'    => ['bluesky_import', DI::l10n()->t('Import the remote timeline'), $import],
 		'$host'      => ['bluesky_host', DI::l10n()->t('Bluesky host'), $host, '', '', 'readonly'],
 		'$handle'    => ['bluesky_handle', DI::l10n()->t('Bluesky handle'), $handle],
 		'$did'       => ['bluesky_did', DI::l10n()->t('Bluesky DID'), $did, DI::l10n()->t('This is the unique identifier. It will be fetched automatically, when the handle is entered.'), '', 'readonly'],
@@ -87,6 +114,7 @@ function bluesky_settings_post(array &$b)
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'post_by_default', intval($_POST['bluesky_bydefault']));
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'host',            $host);
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'handle',          $handle);
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'import',          intval($_POST['bluesky_import']));
 
 	if (!empty($host) && !empty($handle)) {
 		if (empty($old_did) || $old_host != $host || $old_handle != $handle) {
@@ -118,6 +146,50 @@ function bluesky_jot_nets(array &$jotnets_fields)
 			]
 		];
 	}
+}
+
+function bluesky_cron()
+{
+	$last = DI::keyValue()->get('bluesky_last_poll');
+
+	$poll_interval = intval(DI::config()->get('bluesky', 'poll_interval'));
+	if (!$poll_interval) {
+		$poll_interval = BLUESKY_DEFAULT_POLL_INTERVAL;
+	}
+
+	if ($last) {
+		$next = $last + ($poll_interval * 60);
+		if ($next > time()) {
+			Logger::notice('poll interval not reached');
+			return;
+		}
+	}
+	Logger::notice('cron_start');
+
+	$abandon_days = intval(DI::config()->get('system', 'account_abandon_days'));
+	if ($abandon_days < 1) {
+		$abandon_days = 0;
+	}
+
+	$abandon_limit = date(DateTimeFormat::MYSQL, time() - $abandon_days * 86400);
+
+	$pconfigs = DBA::selectToArray('pconfig', [], ['cat' => 'bluesky', 'k' => 'import', 'v' => true]);
+	foreach ($pconfigs as $pconfig) {
+		if ($abandon_days != 0) {
+			if (!DBA::exists('user', ["`uid` = ? AND `login_date` >= ?", $pconfig['uid'], $abandon_limit])) {
+				Logger::notice('abandoned account: timeline from user will not be imported', ['user' => $pconfig['uid']]);
+				continue;
+			}
+		}
+
+		Logger::notice('importing timeline - start', ['user' => $pconfig['uid']]);
+		bluesky_fetch_timeline($pconfig['uid']);
+		Logger::notice('importing timeline - done', ['user' => $pconfig['uid']]);
+	}
+
+	Logger::notice('cron_end');
+
+	DI::keyValue()->set('bluesky_last_poll', time());
 }
 
 function bluesky_hook_fork(array &$b)
@@ -279,7 +351,7 @@ function bluesky_upload_blob(int $uid, array $photo): ?stdClass
 	return $data->blob;
 }
 
-function bluesky_get_timeline(int $uid)
+function bluesky_fetch_timeline(int $uid)
 {
 	$data = bluesky_get($uid, '/xrpc/app.bsky.feed.getTimeline', HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
 	if (empty($data)) {
@@ -290,10 +362,213 @@ function bluesky_get_timeline(int $uid)
 		return;
 	}
 
-	foreach ($data->feed as $entry) {
-		// TODO Add Functionality to read the timeline
-		print_r($entry);
+	foreach (array_reverse($data->feed) as $entry) {
+		Logger::debug('Importing post', ['uid' => $uid, 'indexedAt' => $entry->post->indexedAt, 'uri' => $entry->post->uri, 'cid' => $entry->post->cid]);
+
+		bluesky_process_post($entry->post, $uid);
 	}
+
+	// @todo Support paging
+	// [cursor] => 1684670516000::bafyreidq3ilwslmlx72jf5vrk367xcc63s6lrhzlyup2bi3zwcvso6w2vi
+}
+
+function bluesky_process_post(stdClass $post, int $uid): int
+{
+	$uri = bluesky_get_uri($post);
+
+	if (Post::exists(['uri' => $uri, 'uid' => $uid])) {
+		return 0;
+	}
+
+	$item = bluesky_get_header($post, $uri, $uid);
+
+	$item = bluesky_get_content($item, $post->record);
+
+	if (!empty($post->embed)) {
+		$item = bluesky_add_media($post->embed, $item);
+	}
+	return item::insert($item);
+}
+
+function bluesky_get_header(stdClass $post, string $uri, int $uid): array
+{
+	$contact = bluesky_get_contact($post->author, $uid);
+	$item = [
+		'network'       => Protocol::BLUESKY,
+		'uid'           => $uid,
+		'wall'          => false,
+		'uri'           => $uri,
+		'guid'          => $post->cid,
+		'private'       => Item::UNLISTED,
+		'verb'          => Activity::POST,
+		'contact-id'    => $contact['id'],
+		'author-name'   => $contact['name'],
+		'author-link'   => $contact['url'],
+		'author-avatar' => $contact['avatar'],
+		// 'plink'         => '', @todo Path to a web representation
+	];
+
+	$item['uri-id']       = ItemURI::getIdByURI($uri);
+	$item['owner-name']   = $item['author-name'];
+	$item['owner-link']   = $item['author-link'];
+	$item['owner-avatar'] = $item['author-avatar'];
+
+	return $item;
+}
+
+function bluesky_get_content(array $item, stdClass $record): array
+{
+	if (!empty($record->reply)) {
+		$item['parent']     = bluesky_get_uri($record->reply->root);
+		$item['thr-parent'] = bluesky_get_uri($record->reply->parent);
+	}
+
+	$body = $record->text;
+
+	if (!empty($record->facets)) {
+		// @todo add Links
+	}
+
+	$item['body']    = $body;
+	$item['created'] = DateTimeFormat::utc($record->createdAt, DateTimeFormat::MYSQL);
+	return $item;
+}
+
+function bluesky_add_media(stdClass $embed, array $item): array
+{
+	if (!empty($embed->images)) {
+		foreach ($embed->images as $image) {
+			$media = [
+				'uri-id'      => $item['uri-id'],
+				'type'        => Post\Media::IMAGE,
+				'url'         => $image->fullsize,
+				'preview'     => $image->thumb,
+				'description' => $image->alt,
+			];
+			Post\Media::insert($media);
+		}
+	} elseif (!empty($embed->external)) {
+		$media = ['uri-id' => $item['uri-id'],
+			'type'        => Post\Media::HTML,
+			'url'         => $embed->external->uri,
+			'name'        => $embed->external->title,
+			'description' => $embed->external->description,
+		];
+		Post\Media::insert($media);
+	} elseif (!empty($embed->record)) {
+		$uri = bluesky_get_uri($embed->record);
+		$shared = Post::selectFirst(['uri-id'], ['uri' => $uri, 'uid' => $item['uid']]);
+		if (empty($shared)) {
+			$shared = bluesky_get_header($embed->record, $uri, 0);
+			$shared = bluesky_get_content($shared, $embed->record->value);
+		
+			if (!empty($embed->record->embeds)) {
+				foreach ($embed->record->embeds as $single) {
+					$shared = bluesky_add_media($single, $shared);
+				}
+			}
+			$id = Item::insert($shared);
+			$shared = Post::selectFirst(['uri-id'], ['id' => $id]);
+		}
+		if (!empty($shared)) {
+			$item['quote-uri-id'] = $shared['uri-id'];
+		}
+	} else {
+		Logger::debug('Unsupported embed', ['embed' => $embed, 'item' => $item]);
+	}
+	return $item;
+}
+
+function bluesky_get_uri(stdClass $post): string
+{
+	return $post->uri . ':' . $post->cid;
+
+}
+function bluesky_get_contact(stdClass $author, int $uid): array
+{
+	$condition = ['network' => Protocol::BLUESKY, 'uid' => $uid, 'url' => $author->did];
+
+	$fields = [
+		'name' => $author->displayName,
+		'nick' => $author->handle,
+		'addr' => $author->handle,
+	];
+
+	$contact = Contact::selectFirst([], $condition);
+
+	if (empty($contact)) {
+		$cid = bluesky_insert_contact($author, $uid);
+	} else {
+		$cid = $contact['id'];
+		if ($fields['name'] != $contact['name'] || $fields['nick'] != $contact['nick'] || $fields['addr'] != $contact['addr']) {
+			Contact::update($fields, ['id' => $cid]);
+		}
+	}
+
+	$condition['uid'] = 0;
+
+	$contact = Contact::selectFirst([], $condition);
+	if (empty($contact)) {
+		$pcid = bluesky_insert_contact($author, 0);
+	} else {
+		$pcid = $contact['id'];
+		if ($fields['name'] != $contact['name'] || $fields['nick'] != $contact['nick'] || $fields['addr'] != $contact['addr']) {
+			Contact::update($fields, ['id' => $pcid]);
+		}
+	}
+
+	if (!empty($author->avatar)) {
+		Contact::updateAvatar($cid, $author->avatar);
+	}
+
+	if (empty($contact) || $contact['updated'] < DateTimeFormat::utc('now -24 hours')) {
+		bluesky_update_contact($author, $uid, $cid, $pcid);
+	}
+
+	return Contact::getById($cid);
+}
+
+function bluesky_insert_contact(stdClass $author, int $uid)
+{
+	$fields = [
+		'uid'      => $uid,
+		'network'  => Protocol::BLUESKY,
+		'priority' => 1,
+		'writable' => true,
+		'blocked'  => false,
+		'readonly' => false,
+		'pending'  => false,
+		'url'      => $author->did,
+		'nurl'     => $author->did,
+		// 'alias'    => '', @todo Path to a web representation
+		'name'     => $author->displayName,
+		'nick'     => $author->handle,
+		'addr'     => $author->handle,
+	];
+	return Contact::insert($fields);
+}
+
+function bluesky_update_contact(stdClass $author, int $uid, int $cid, int $pcid)
+{
+	$data = bluesky_get($uid, '/xrpc/app.bsky.actor.getProfile?actor=' . $author->did, HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
+	if (empty($data)) {
+		return;
+	}
+
+	$fields = [
+		'name'    => $data->displayName,
+		'nick'    => $data->handle,
+		'addr'    => $data->handle,
+		'about'   => HTML::toBBCode($data->description),
+		'updated' => DateTimeFormat::utcNow(DateTimeFormat::MYSQL),
+	];
+
+	if (!empty($data->banner)) {
+		$fields['header'] = $data->banner;
+	}
+
+	Contact::update($fields, ['id' => $cid]);
+	Contact::update($fields, ['id' => $pcid]);
 }
 
 function bluesky_get_did(int $uid): string
