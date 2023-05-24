@@ -13,3 +13,4 @@ $a->strings['Absolute path to your Matomo (Piwik) installation. (without protoco
 $a->strings['Site ID'] = 'Oldalazonosító';
 $a->strings['Show opt-out cookie link?'] = 'Megjeleníti a lemondó süti hivatkozását?';
 $a->strings['Asynchronous tracking'] = 'Aszinkron követés';
+$a->strings['Shortcut path to the script (\'/js/\' instead of \'/piwik.js\')'] = 'A parancsfájl rövidített útvonala („/js/” a „/piwik.js” helyett)';
