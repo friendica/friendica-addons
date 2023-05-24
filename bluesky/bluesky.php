@@ -2,23 +2,26 @@
 /**
  * Name: Bluesky Connector
  * Description: Post to Bluesky
- * Version: 1.0
+ * Version: 1.1
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
- * 
+ *
  * @todo
+ * Piece of cake?
  * - Process facets
- * - detect incoming reshares
- * - detect contact relations
+ * - create facets
+ *
+ * Possible but less important:
+ * - Block, unblock, mute and unmute contacts
+ *
+ * Need inspiration:
  * - alternate link for contacts
  * - plink for posts
- * - fetch missing posts
- * - only fetch new posts
- * - receive likes
  *
- * - create facets
- * - transmit comments
- * - transmits likes
- * - transmit reshares
+ * Need more information:
+ * - only fetch new posts
+ * - detect incoming reshares
+ * - detect contact relations
+ * - receive likes
  */
 
 use Friendica\Content\Text\BBCode;
@@ -53,11 +56,31 @@ function bluesky_install()
 	Hook::register('connector_settings',      __FILE__, 'bluesky_settings');
 	Hook::register('connector_settings_post', __FILE__, 'bluesky_settings_post');
 	Hook::register('cron',                    __FILE__, 'bluesky_cron');
+	// Hook::register('support_follow',          __FILE__, 'bluesky_support_follow');
+	// Hook::register('support_probe',           __FILE__, 'bluesky_support_probe');
+	// Hook::register('follow',                  __FILE__, 'bluesky_follow');
+	// Hook::register('unfollow',                __FILE__, 'bluesky_unfollow');
+	// Hook::register('block',                   __FILE__, 'bluesky_block');
+	// Hook::register('unblock',                 __FILE__, 'bluesky_unblock');
+	Hook::register('check_item_notification', __FILE__, 'bluesky_check_item_notification');
+	// Hook::register('probe_detect',            __FILE__, 'bluesky_probe_detect');
+	// Hook::register('item_by_link',            __FILE__, 'bluesky_item_by_link');
 }
 
 function bluesky_load_config(ConfigFileManager $loader)
 {
 	DI::app()->getConfigCache()->load($loader->loadAddonConfig('bluesky'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+}
+
+function bluesky_check_item_notification(array &$notification_data)
+{
+	$handle = DI::pConfig()->get($notification_data['uid'], 'bluesky', 'handle');
+	$did    = DI::pConfig()->get($notification_data['uid'], 'bluesky', 'did');
+
+	if (!empty($handle) && !empty($did)) {
+		$notification_data['profiles'][] = $handle;
+		$notification_data['profiles'][] = $did;
+	}
 }
 
 function bluesky_settings(array &$data)
@@ -90,7 +113,7 @@ function bluesky_settings(array &$data)
 
 	$data = [
 		'connector' => 'bluesky',
-		'title'     => DI::l10n()->t('Bluesky Export'),
+		'title'     => DI::l10n()->t('Bluesky Import/Export'),
 		'image'     => 'images/bluesky.jpg',
 		'enabled'   => $enabled,
 		'html'      => $html,
@@ -206,7 +229,15 @@ function bluesky_hook_fork(array &$b)
 		return;
 	}
 
-	if (!strstr($post['postopts'] ?? '', 'bluesky') || ($post['parent'] != $post['id']) || $post['private']) {
+	if (DI::pConfig()->get($post['uid'], 'bluesky', 'import')) {
+		// Don't post if it isn't a reply to a bluesky post
+		if (($post['parent'] != $post['id']) && !Post::exists(['id' => $post['parent'], 'network' => Protocol::BLUESKY])) {
+			Logger::notice('No bluesky parent found', ['item' => $post['id']]);
+			$b['execute'] = false;
+			return;
+		}
+	} elseif (!strstr($post['postopts'] ?? '', 'bluesky') || ($post['parent'] != $post['id']) || $post['private']) {
+		DI::logger()->info('Activities are never exported when we don\'t import the bluesky timeline', ['uid' => $post['uid']]);
 		$b['execute'] = false;
 		return;
 	}
@@ -252,6 +283,33 @@ function bluesky_send(array &$b)
 	}
 
 	if ($b['gravity'] != Item::GRAVITY_PARENT) {
+		Logger::debug('Got comment', ['item' => $b]);
+
+		if ($b['deleted']) {
+			$uri = bluesky_get_uri_class($b['uri']);
+			if (empty($uri)) {
+				Logger::debug('Not a bluesky post', ['uri' => $b['uri']]);
+				return;
+			}
+			bluesky_delete_post($b['uri'], $b['uid']);
+			return;
+		}
+
+		$root   = bluesky_get_uri_class($b['parent-uri']);
+		$parent = bluesky_get_uri_class($b['thr-parent']);
+
+		if (empty($root) || empty($parent)) {
+			Logger::debug('No bluesky post', ['parent' => $b['parent'], 'thr-parent' => $b['thr-parent']]);
+			return;
+		}
+
+		if ($b['gravity'] == Item::GRAVITY_COMMENT) {
+			Logger::debug('Posting comment', ['root' => $root, 'parent' => $parent]);
+			bluesky_create_post($b, $root, $parent);
+			return;
+		} elseif (in_array($b['verb'], [Activity::LIKE, Activity::ANNOUNCE])) {
+			bluesky_create_activity($b, $parent);
+		}
 		return;
 	} elseif ($b['private'] || !strstr($b['postopts'], 'bluesky')) {
 		return;
@@ -260,7 +318,53 @@ function bluesky_send(array &$b)
 	bluesky_create_post($b);
 }
 
-function bluesky_create_post(array $item)
+function bluesky_create_activity(array $item, stdClass $parent = null)
+{
+	$uid = $item['uid'];
+	$token = bluesky_get_token($uid);
+	if (empty($token)) {
+		return;
+	}
+
+	$did  = DI::pConfig()->get($uid, 'bluesky', 'did');
+
+	if ($item['verb'] == Activity::LIKE) {
+		$record = [
+			'subject'   => $parent,
+			'createdAt' => DateTimeFormat::utcNow(DateTimeFormat::ATOM),
+			'$type'     => 'app.bsky.feed.like'
+		];
+		
+		$post = [
+			'collection' => 'app.bsky.feed.like',
+			'repo'       => $did,
+			'record'     => $record
+		];
+	} elseif ($item['verb'] == Activity::ANNOUNCE) {
+		$record = [
+			'subject'   => $parent,
+			'createdAt' => DateTimeFormat::utcNow(DateTimeFormat::ATOM),
+			'$type'     => 'app.bsky.feed.repost'
+		];
+
+		$post = [
+			'collection' => 'app.bsky.feed.repost',
+			'repo'       => $did,
+			'record'     => $record
+		];
+	}
+
+	$activity = bluesky_post($uid, '/xrpc/com.atproto.repo.createRecord', json_encode($post), ['Content-type' => 'application/json', 'Authorization' => ['Bearer ' . $token]]);
+	if (empty($activity)) {
+		return;
+	}
+	Logger::debug('Activity done', ['return' => $activity]);
+	$uri = bluesky_get_uri($activity);
+	Item::update(['extid' => $uri], ['id' => $item['id']]);
+	Logger::debug('Set extid', ['id' => $item['id'], 'extid' => $activity]);
+}
+
+function bluesky_create_post(array $item, stdClass $root = null, stdClass $parent = null)
 {
 	$uid = $item['uid'];
 	$token = bluesky_get_token($uid);
@@ -271,7 +375,6 @@ function bluesky_create_post(array $item)
 	$did  = DI::pConfig()->get($uid, 'bluesky', 'did');
 
 	$msg = Plaintext::getPost($item, 300, false, BBCode::CONNECTORS);
-	$parent = $root = [];
 	foreach ($msg['parts'] as $key => $part) {
 		$record = [
 			'text'      => $part,
@@ -300,6 +403,11 @@ function bluesky_create_post(array $item)
 		Logger::debug('Posting done', ['return' => $parent]);
 		if (empty($root)) {
 			$root = $parent;
+		}
+		if (($key == 0) && ($item['gravity'] != Item::GRAVITY_PARENT)) {
+			$uri = bluesky_get_uri($parent);
+			Item::update(['extid' => $uri], ['id' => $item['id']]);
+			Logger::debug('Set extid', ['id' => $item['id'], 'extid' => $uri]);
 		}
 	}
 }
@@ -351,6 +459,18 @@ function bluesky_upload_blob(int $uid, array $photo): ?stdClass
 	return $data->blob;
 }
 
+function bluesky_delete_post(string $uri, int $uid)
+{
+	$token = bluesky_get_token($uid);
+	$parts = bluesky_get_uri_parts($uri);
+	if (empty($parts)) {
+		Logger::debug('No uri delected', ['uri' => $uri]);
+		return;
+	}
+	bluesky_post($uid, '/xrpc/com.atproto.repo.deleteRecord', json_encode($parts), ['Content-type' => 'application/json', 'Authorization' => ['Bearer ' . $token]]);
+	Logger::debug('Deleted', ['parts' => $parts]);
+}
+
 function bluesky_fetch_timeline(int $uid)
 {
 	$data = bluesky_get($uid, '/xrpc/app.bsky.feed.getTimeline', HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
@@ -363,8 +483,6 @@ function bluesky_fetch_timeline(int $uid)
 	}
 
 	foreach (array_reverse($data->feed) as $entry) {
-		Logger::debug('Importing post', ['uid' => $uid, 'indexedAt' => $entry->post->indexedAt, 'uri' => $entry->post->uri, 'cid' => $entry->post->cid]);
-
 		bluesky_process_post($entry->post, $uid);
 	}
 
@@ -376,13 +494,15 @@ function bluesky_process_post(stdClass $post, int $uid): int
 {
 	$uri = bluesky_get_uri($post);
 
-	if (Post::exists(['uri' => $uri, 'uid' => $uid])) {
+	if (Post::exists(['uri' => $uri, 'uid' => $uid]) || Post::exists(['extid' => $uri, 'uid' => $uid])) {
 		return 0;
 	}
 
+	Logger::debug('Importing post', ['uid' => $uid, 'indexedAt' => $post->indexedAt, 'uri' => $post->uri, 'cid' => $post->cid]);
+
 	$item = bluesky_get_header($post, $uri, $uid);
 
-	$item = bluesky_get_content($item, $post->record);
+	$item = bluesky_get_content($item, $post->record, $uid);
 
 	if (!empty($post->embed)) {
 		$item = bluesky_add_media($post->embed, $item);
@@ -416,11 +536,13 @@ function bluesky_get_header(stdClass $post, string $uri, int $uid): array
 	return $item;
 }
 
-function bluesky_get_content(array $item, stdClass $record): array
+function bluesky_get_content(array $item, stdClass $record, int $uid): array
 {
 	if (!empty($record->reply)) {
-		$item['parent']     = bluesky_get_uri($record->reply->root);
+		$item['parent-uri'] = bluesky_get_uri($record->reply->root);
+		bluesky_fetch_missing_post($item['parent-uri'], $uid);
 		$item['thr-parent'] = bluesky_get_uri($record->reply->parent);
+		bluesky_fetch_missing_post($item['thr-parent'], $uid);
 	}
 
 	$body = $record->text;
@@ -460,8 +582,8 @@ function bluesky_add_media(stdClass $embed, array $item): array
 		$shared = Post::selectFirst(['uri-id'], ['uri' => $uri, 'uid' => $item['uid']]);
 		if (empty($shared)) {
 			$shared = bluesky_get_header($embed->record, $uri, 0);
-			$shared = bluesky_get_content($shared, $embed->record->value);
-		
+			$shared = bluesky_get_content($shared, $embed->record->value, $item['uid']);
+
 			if (!empty($embed->record->embeds)) {
 				foreach ($embed->record->embeds as $single) {
 					$shared = bluesky_add_media($single, $shared);
@@ -482,8 +604,72 @@ function bluesky_add_media(stdClass $embed, array $item): array
 function bluesky_get_uri(stdClass $post): string
 {
 	return $post->uri . ':' . $post->cid;
-
 }
+
+function bluesky_get_uri_class(string $uri): ?stdClass
+{
+	if (empty($uri)) {
+		return null;
+	}
+
+	$elements = explode(':', $uri);
+	if (empty($elements) || ($elements[0] != 'at')) {
+		$post = Post::selectFirstPost(['extid'], ['uri' => $uri]);
+		return bluesky_get_uri_class($post['extid'] ?? '');
+	}
+
+	$class = new stdClass;
+
+	$class->cid = array_pop($elements);
+	$class->uri = implode(':', $elements);
+
+	return $class;
+}
+
+function bluesky_get_uri_parts(string $uri): ?stdClass
+{
+	$class = bluesky_get_uri_class($uri);
+	if (empty($class)) {
+		return null;
+	}
+
+	$parts = explode('/', substr($class->uri, 5));
+
+	$class = new stdClass;
+
+	$class->repo       = $parts[0];
+	$class->collection = $parts[1];
+	$class->rkey       = $parts[2];
+
+	return $class;
+}
+
+function bluesky_fetch_missing_post(string $uri, int $uid)
+{
+	if (Post::exists(['uri' => $uri, 'uid' => [$uid, 0]])) {
+		Logger::debug('Post exists', ['uri' => $uri]);
+		return;
+	}
+
+	Logger::debug('Fetch missing post', ['uri' => $uri]);
+	$class = bluesky_get_uri_class($uri);
+	
+	$data = bluesky_get($uid, '/xrpc/app.bsky.feed.getPosts?uris=' . $class->uri, HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
+	if (empty($data)) {
+		return;
+	}
+
+	foreach ($data->posts as $post) {
+		$item = bluesky_get_header($post, $uri, $uid);
+		$item = bluesky_get_content($item, $post->record, $uid);
+		if (!empty($post->embed)) {
+			$item = bluesky_add_media($post->embed, $item);
+		}
+		$id = Item::insert($item);
+		Logger::debug('Stored item', ['id' => $id, 'uri' => $uri]);
+	}
+}
+
 function bluesky_get_contact(stdClass $author, int $uid): array
 {
 	$condition = ['network' => Protocol::BLUESKY, 'uid' => $uid, 'url' => $author->did];
