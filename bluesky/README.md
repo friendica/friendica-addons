@@ -1,8 +1,7 @@
 Bluesky Addon
 ==============
 
-This addon currently supports posting to Bluesky.
-The import is under development and will hopefully come soon.
+This addon supports posting to and receiving posts from Bluesky.
 
 No setup is needed for the admins to make it work for their users.
 
