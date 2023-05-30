@@ -88,7 +88,7 @@ function nsfw_addon_settings_post(array &$b)
 		$word_list = explode(',', $words);
 		foreach ($word_list as $word) {
 			$word = trim($word);
-			if (!$words || $word[0] != '/') {
+			if (!$words || strpos($word, '/') !== 0) {
 				continue;
 			}
 
