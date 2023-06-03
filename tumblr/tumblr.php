@@ -18,11 +18,11 @@ use Friendica\Core\Logger;
 use Friendica\Core\Protocol;
 use Friendica\Core\Renderer;
 use Friendica\Core\System;
+use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Contact;
 use Friendica\Model\Item;
-use Friendica\Model\ItemURI;
 use Friendica\Model\Photo;
 use Friendica\Model\Post;
 use Friendica\Model\Tag;
@@ -79,7 +79,7 @@ function tumblr_check_item_notification(array &$notification_data)
 		return;
 	}
 
-	$own_user = Contact::selectFirst(['url', 'alias'], ['uid' => $notification_data['uid'], 'poll' => 'tumblr::' . $page]);
+	$own_user = Contact::selectFirst(['url', 'alias'], ['network' => Protocol::TUMBLR, 'uid' => [0, $notification_data['uid']], 'poll' => 'tumblr::' . $page]);
 	if ($own_user) {
 		$notification_data['profiles'][] = $own_user['url'];
 		$notification_data['profiles'][] = $own_user['alias'];
@@ -442,6 +442,18 @@ function tumblr_cron()
 		tumblr_fetch_dashboard($pconfig['uid']);
 		tumblr_fetch_tags($pconfig['uid']);
 		Logger::notice('importing timeline - done', ['user' => $pconfig['uid']]);
+	}
+
+	$last_clean = DI::keyValue()->get('tumblr_last_clean');
+	if (empty($last_clean) || ($last_clean + 86400 < time())) {
+		Logger::notice('Start contact cleanup');
+		$contacts = DBA::select('account-user-view', ['id', 'pid'], ["`network` = ? AND `uid` != ? AND `rel` = ?", Protocol::TUMBLR, 0, Contact::NOTHING]);
+		while ($contact = DBA::fetch($contacts)) {
+			Worker::add(Worker::PRIORITY_LOW, 'MergeContact', $contact['pid'], $contact['id'], 0);
+		}
+		DBA::close($contacts);
+		DI::keyValue()->set('tumblr_last_clean', time());
+		Logger::notice('Contact cleanup done');
 	}
 
 	Logger::notice('cron_end');
@@ -1042,39 +1054,58 @@ function tumblr_get_type_replacement(array $data, string $plink): string
  */
 function tumblr_get_contact(stdClass $blog, int $uid): array
 {
-	$condition = ['network' => Protocol::TUMBLR, 'uid' => $uid, 'poll' => 'tumblr::' . $blog->uuid];
-	$contact = Contact::selectFirst([], $condition);
-	if (!empty($contact) && (strtotime($contact['updated']) >= $blog->updated)) {
-		return $contact;
-	}
+	$condition = ['network' => Protocol::TUMBLR, 'uid' => 0, 'poll' => 'tumblr::' . $blog->uuid];
+	$contact = Contact::selectFirst(['id', 'updated'], $condition);
+
+	$update = empty($contact) || $contact['updated'] < DateTimeFormat::utc('now -24 hours');
+
+	$public_fields = $fields = tumblr_get_contact_fields($blog, $uid, $update);
+
+	$avatar = $fields['avatar'] ?? '';
+	unset($fields['avatar']);
+	unset($public_fields['avatar']);
+
+	$public_fields['uid'] = 0;
+	$public_fields['rel'] = Contact::NOTHING;
+
 	if (empty($contact)) {
-		$cid = tumblr_insert_contact($blog, $uid);
+		$cid = Contact::insert($public_fields);
 	} else {
 		$cid = $contact['id'];
+		Contact::update($public_fields, ['id' => $cid], true);
 	}
 
-	$condition['uid'] = 0;
+	if ($uid != 0) {
+		$condition = ['network' => Protocol::TUMBLR, 'uid' => $uid, 'poll' => 'tumblr::' . $blog->uuid];
 
-	$contact = Contact::selectFirst([], $condition);
-	if (empty($contact)) {
-		$pcid = tumblr_insert_contact($blog, 0);
+		$contact = Contact::selectFirst(['id', 'rel', 'uid'], $condition);
+		if (!isset($fields['rel']) && isset($contact['rel'])) {
+			$fields['rel'] = $contact['rel'];
+		} elseif (!isset($fields['rel'])) {
+			$fields['rel'] = Contact::NOTHING;
+		}
+	}
+
+	if (($uid != 0) && ($fields['rel'] != Contact::NOTHING)) {
+		if (empty($contact)) {
+			$cid = Contact::insert($fields);
+		} else {
+			$cid = $contact['id'];
+			Contact::update($fields, ['id' => $cid], true);
+		}
+		Logger::debug('Get user contact', ['id' => $cid, 'uid' => $uid, 'update' => $update]);
 	} else {
-		$pcid = $contact['id'];
+		Logger::debug('Get public contact', ['id' => $cid, 'uid' => $uid, 'update' => $update]);
 	}
 
-	tumblr_update_contact($blog, $uid, $cid, $pcid);
+	if (!empty($avatar)) {
+		Contact::updateAvatar($cid, $avatar);
+	}
 
 	return Contact::getById($cid);
 }
 
-/**
- * Create a new contact
- *
- * @param stdClass $blog
- * @param integer $uid
- * @return void
- */
-function tumblr_insert_contact(stdClass $blog, int $uid)
+function tumblr_get_contact_fields(stdClass $blog, int $uid, bool $update): array
 {
 	$baseurl = 'https://tumblr.com';
 	$url     = $baseurl . '/' . $blog->name;
@@ -1098,63 +1129,37 @@ function tumblr_insert_contact(stdClass $blog, int $uid)
 		'about'    => HTML::toBBCode($blog->description),
 		'updated'  => date(DateTimeFormat::MYSQL, $blog->updated)
 	];
-	return Contact::insert($fields);
-}
 
-/**
- * Updates the given contact for the given user and proviced contact ids
- *
- * @param stdClass $blog
- * @param integer $uid
- * @param integer $cid
- * @param integer $pcid
- * @return void
- */
-function tumblr_update_contact(stdClass $blog, int $uid, int $cid, int $pcid)
-{
+	if (!$update) {
+		Logger::debug('Got contact fields', ['uid' => $uid, 'url' => $fields['url']]);
+		return $fields;
+	}
+
 	$info = tumblr_get($uid, 'blog/' . $blog->uuid . '/info');
 	if ($info->meta->status > 399) {
-		Logger::notice('Error fetching dashboard', ['meta' => $info->meta, 'response' => $info->response, 'errors' => $info->errors]);
-		return;
+		Logger::notice('Error fetching blog info', ['meta' => $info->meta, 'response' => $info->response, 'errors' => $info->errors]);
+		return $fields;
 	}
 
 	$avatar = $info->response->blog->avatar;
 	if (!empty($avatar)) {
-		Contact::updateAvatar($cid, $avatar[0]->url);
+		$fields['avatar'] = $avatar[0]->url;
 	}
-
-	$baseurl = 'https://tumblr.com';
-	$url     = $baseurl . '/' . $info->response->blog->name;
 
 	if ($info->response->blog->followed && $info->response->blog->subscribed) {
-		$rel = Contact::FRIEND;
+		$fields['rel'] = Contact::FRIEND;
 	} elseif ($info->response->blog->followed && !$info->response->blog->subscribed) {
-		$rel = Contact::SHARING;
+		$fields['rel'] = Contact::SHARING;
 	} elseif (!$info->response->blog->followed && $info->response->blog->subscribed) {
-		$rel = Contact::FOLLOWER;
+		$fields['rel'] = Contact::FOLLOWER;
 	} else {
-		$rel = Contact::NOTHING;
+		$fields['rel'] = Contact::NOTHING;
 	}
 
-	$uri_id = ItemURI::getIdByURI($url);
-	$fields = [
-		'url'     => $url,
-		'nurl'    => Strings::normaliseLink($url),
-		'uri-id'  => $uri_id,
-		'alias'   => $info->response->blog->url,
-		'name'    => $info->response->blog->title ?: $info->response->blog->name,
-		'nick'    => $info->response->blog->name,
-		'addr'    => $info->response->blog->name . '@tumblr.com',
-		'about'   => HTML::toBBCode($info->response->blog->description),
-		'updated' => date(DateTimeFormat::MYSQL, $info->response->blog->updated),
-		'header'  => $info->response->blog->theme->header_image_focused,
-		'rel'     => $rel,
-	];
+	$fields['header'] = $info->response->blog->theme->header_image_focused;
 
-	Contact::update($fields, ['id' => $cid]);
-
-	$fields['rel'] = Contact::NOTHING;
-	Contact::update($fields, ['id' => $pcid]);
+	Logger::debug('Got updated contact fields', ['uid' => $uid, 'url' => $fields['url']]);
+	return $fields;
 }
 
 /**
