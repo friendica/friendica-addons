@@ -1,14 +1,11 @@
 <?php
 /**
- * Name: Forum Directory
- * Description: Add a directory of forums hosted on your server, with verbose descriptions.
+ * Name: Group Directory
+ * Description: Add a directory of groups hosted on your server, with verbose descriptions.
  * Version: 1.1
  * Author: Thomas Willingham <https://beardyunixer.com/profile/beardyunixer>
- * Status: Unsupported
- * Note: Please use Group Directory instead
  */
 
-use Friendica\App;
 use Friendica\Content\Nav;
 use Friendica\Content\Pager;
 use Friendica\Content\Widget;
@@ -19,11 +16,11 @@ use Friendica\DI;
 use Friendica\Model\Profile;
 use Friendica\Model\User;
 
-global $forumdirectory_search;
+global $groupdirectory_search;
 
-function forumdirectory_install()
+function groupdirectory_install()
 {
-	Hook::register('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
+	Hook::register('app_menu', __FILE__, 'groupdirectory_app_menu');
 }
 
 /**
@@ -36,51 +33,51 @@ function forumdirectory_install()
  * existence of this method is checked to figure out if the addon offers a
  * module.
  */
-function forumdirectory_module() {}
+function groupdirectory_module() {}
 
-function forumdirectory_app_menu(array &$b)
+function groupdirectory_app_menu(array &$b)
 {
-	$b['app_menu'][] = '<div class="app-title"><a href="forumdirectory">' . DI::l10n()->t('Forum Directory') . '</a></div>';
+	$b['app_menu'][] = '<div class="app-title"><a href="groupdirectory">' . DI::l10n()->t('Group Directory') . '</a></div>';
 }
 
-function forumdirectory_init()
+function groupdirectory_init()
 {
 	if (DI::userSession()->getLocalUserId()) {
 		DI::page()['aside'] .= Widget::findPeople();
 	}
 }
 
-function forumdirectory_post()
+function groupdirectory_post()
 {
-	global $forumdirectory_search;
+	global $groupdirectory_search;
 
 	if (!empty($_POST['search'])) {
-		$forumdirectory_search = $_POST['search'];
+		$groupdirectory_search = $_POST['search'];
 	}
 }
 
-function forumdirectory_content()
+function groupdirectory_content()
 {
-	global $forumdirectory_search;
+	global $groupdirectory_search;
 
 	if (DI::config()->get('system', 'block_public') && !DI::userSession()->getLocalUserId() && !DI::userSession()->getRemoteUserId()) {
 		DI::sysmsg()->addNotice(DI::l10n()->t('Public access denied.'));
-		return;
+		return '';
 	}
 
-	$o = '';
+	$o       = '';
 	$entries = [];
 
 	Nav::setSelected('directory');
 
-	if (!empty($forumdirectory_search)) {
-		$search = trim($forumdirectory_search);
+	if (!empty($groupdirectory_search)) {
+		$search = trim($groupdirectory_search);
 	} else {
 		$search = (!empty($_GET['search']) ? trim(rawurldecode($_GET['search'])) : '');
 	}
 
 	$gdirpath = '';
-	$dirurl = DI::config()->get('system', 'directory');
+	$dirurl   = DI::config()->get('system', 'directory');
 	if (strlen($dirurl)) {
 		$gdirpath = Profile::zrl($dirurl, true);
 	}
@@ -102,10 +99,10 @@ function forumdirectory_content()
 	$publish = DI::config()->get('system', 'publish_all') ? '' : "`publish` = 1";
 
 	$total = 0;
-	$cnt = DBA::fetchFirst("SELECT COUNT(*) AS `total` FROM `profile`
+	$cnt   = DBA::fetchFirst("SELECT COUNT(*) AS `total` FROM `profile`
 				INNER JOIN `user` ON `user`.`uid` = `profile`.`uid`
 				WHERE $publish AND NOT `user`.`blocked` AND NOT `user`.`account_removed` AND `user`.`page-flags` = ? $sql_extra",
-				User::PAGE_FLAGS_COMMUNITY);
+		User::PAGE_FLAGS_COMMUNITY);
 	if (DBA::isResult($cnt)) {
 		$total = $cnt['total'];
 	}
@@ -114,7 +111,7 @@ function forumdirectory_content()
 
 	$order = " ORDER BY `name` ASC ";
 
-	$limit = $pager->getStart()."," . $pager->getItemsPerPage();
+	$limit = $pager->getStart() . "," . $pager->getItemsPerPage();
 
 	$r = DBA::p("SELECT `profile`.*, `user`.`nickname`, `user`.`timezone` , `user`.`page-flags`,
 			`contact`.`addr`, `contact`.`url` FROM `profile`
@@ -136,11 +133,11 @@ function forumdirectory_content()
 		}
 		DBA::close($r);
 	} else {
-		DI::sysmsg()->addNotice(DI::l10n()->t("No entries \x28some entries may be hidden\x29."));
+		DI::sysmsg()->addNotice(DI::l10n()->t('No entries (some entries may be hidden).'));
 	}
 
 	$tpl = Renderer::getMarkupTemplate('directory_header.tpl');
-	$o .= Renderer::replaceMacros($tpl, [
+	$o   .= Renderer::replaceMacros($tpl, [
 		'$search'     => $search,
 		'$globaldir'  => DI::l10n()->t('Global Directory'),
 		'$gdirpath'   => $gdirpath,
@@ -148,8 +145,8 @@ function forumdirectory_content()
 		'$contacts'   => $entries,
 		'$finding'    => DI::l10n()->t('Results for:'),
 		'$findterm'   => (strlen($search) ? $search : ""),
-		'$title'      => DI::l10n()->t('Forum Directory'),
-		'$search_mod' => 'forumdirectory',
+		'$title'      => DI::l10n()->t('Group Directory'),
+		'$search_mod' => 'groupdirectory',
 		'$submit'     => DI::l10n()->t('Find'),
 		'$paginate'   => $pager->renderFull($total),
 	]);

@@ -417,7 +417,7 @@ function pumpio_send(array &$b)
 		}
 
 		// Dont't post if the post doesn't belong to us.
-		// This is a check for forum postings
+		// This is a check for group postings
 		$self = User::getOwnerDataById($b['uid']);
 		if ($b['contact-id'] != $self['id']) {
 			return;

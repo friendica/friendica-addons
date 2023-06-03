@@ -30,11 +30,11 @@ function newmemberwidget_network_mod_init ($b)
 	$t .= '<a href="newmember" id="newmemberwidget-tips">' . DI::l10n()->t('Tips for New Members') . '</a><br />';
 
 	if (DI::config()->get('newmemberwidget','linkglobalsupport', false)) {
-		$t .= '<a href="https://forum.friendi.ca/profile/helpers" target="_new">'.DI::l10n()->t('Global Support Forum').'</a><br />';
+		$t .= '<a href="https://forum.friendi.ca/profile/helpers" target="_new">' . DI::l10n()->t('Global Support Group') . '</a><br />';
 	}
 
 	if (DI::config()->get('newmemberwidget','linklocalsupport', false)) {
-		$t .= '<a href="'.DI::baseUrl().'/profile/'.DI::config()->get('newmemberwidget','localsupport').'" target="_new">'.DI::l10n()->t('Local Support Forum').'</a><br />';
+		$t .= '<a href="' . DI::baseUrl() . '/profile/' . DI::config()->get('newmemberwidget', 'localsupport') . '" target="_new">' . DI::l10n()->t('Local Support Group') . '</a><br />';
 	}
 
 	$ft = DI::config()->get('newmemberwidget','freetext', '');
@@ -61,8 +61,8 @@ function newmemberwidget_addon_admin(string &$o)
 	$o = Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
 		'$freetext' => ["freetext", DI::l10n()->t("Message"), DI::config()->get("newmemberwidget", "freetext"), DI::l10n()->t("Your message for new members. You can use bbcode here.")],
-		'$linkglobalsupport' => ["linkglobalsupport", DI::l10n()->t('Add a link to global support forum'), DI::config()->get('newmemberwidget', 'linkglobalsupport'), DI::l10n()->t('Should a link to the global support forum be displayed?')." (<a href='https://forum.friendi.ca/profile/helpers'>@helpers</a>)"],
-		'$linklocalsupport' => ["linklocalsupport", DI::l10n()->t('Add a link to the local support forum'), DI::config()->get('newmemberwidget', 'linklocalsupport'), DI::l10n()->t('If you have a local support forum and want to have a link displayed in the widget, check this box.')],
+		'$linkglobalsupport' => ["linkglobalsupport", DI::l10n()->t('Add a link to global support group'), DI::config()->get('newmemberwidget', 'linkglobalsupport'), DI::l10n()->t('Should a link to the global support group be displayed?')." (<a href='https://forum.friendi.ca/profile/helpers'>@helpers</a>)"],
+		'$linklocalsupport' => ["linklocalsupport", DI::l10n()->t('Add a link to the local support group'), DI::config()->get('newmemberwidget', 'linklocalsupport'), DI::l10n()->t('If you have a local support group and want to have a link displayed in the widget, check this box.')],
 		'$localsupportname' => ["localsupportname", DI::l10n()->t('Name of the local support group'), DI::config()->get('newmemberwidget', 'localsupport'), DI::l10n()->t('If you checked the above, specify the <em>nickname</em> of the local support group here (i.e. helpers)')],
 	]);
 }

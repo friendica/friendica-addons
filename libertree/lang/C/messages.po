@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-21 19:17-0500\n"
+"POT-Creation-Date: 2023-06-03 15:49-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,22 +21,22 @@ msgstr ""
 msgid "Post to libertree"
 msgstr ""
 
-#: libertree.php:60
+#: libertree.php:59
 msgid "Enable Libertree Post Addon"
 msgstr ""
 
-#: libertree.php:61
+#: libertree.php:60
 msgid "Libertree site URL"
 msgstr ""
 
-#: libertree.php:62
+#: libertree.php:61
 msgid "Libertree API token"
 msgstr ""
 
-#: libertree.php:63
+#: libertree.php:62
 msgid "Post to Libertree by default"
 msgstr ""
 
-#: libertree.php:68
+#: libertree.php:67
 msgid "Libertree Export"
 msgstr ""
