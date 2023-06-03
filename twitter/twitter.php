@@ -80,7 +80,7 @@ use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Contact;
 use Friendica\Model\Conversation;
-use Friendica\Model\Group;
+use Friendica\Model\Circle;
 use Friendica\Model\Item;
 use Friendica\Model\ItemURI;
 use Friendica\Model\Post;
@@ -1529,7 +1529,7 @@ function twitter_fetch_contact($uid, $data, $create_user)
 
 		$contact_id = DBA::lastInsertId();
 
-		Group::addMember(User::getDefaultGroup($uid), $contact_id);
+		Circle::addMember(User::getDefaultCircle($uid), $contact_id);
 	} else {
 		if ($contact['readonly'] || $contact['blocked']) {
 			Logger::notice('Contact is blocked or readonly.', ['nickname' => $contact['nick']]);
