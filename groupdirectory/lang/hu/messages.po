@@ -1,0 +1,48 @@
+# ADDON forumdirectory
+# Copyright (C)
+# This file is distributed under the same license as the Friendica forumdirectory addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020-2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2014-06-22 12:31+0000\n"
+"Last-Translator: Balázs Úr, 2020-2021\n"
+"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: forumdirectory.php:33 forumdirectory.php:137
+msgid "Forum Directory"
+msgstr "Fórumkönyvtár"
+
+#: forumdirectory.php:53
+msgid "Public access denied."
+msgstr "Nyilvános hozzáférés megtagadva."
+
+#: forumdirectory.php:125
+msgid "No entries (some entries may be hidden)."
+msgstr "Nincsenek bejegyzések (néhány bejegyzés rejtve lehet)."
+
+#: forumdirectory.php:131
+msgid "Global Directory"
+msgstr "Globális könyvtár"
+
+#: forumdirectory.php:133
+msgid "Find on this site"
+msgstr "Keresés ezen az oldalon"
+
+#: forumdirectory.php:135
+msgid "Results for:"
+msgstr "Találatok ehhez:"
+
+#: forumdirectory.php:139
+msgid "Find"
+msgstr "Keresés"

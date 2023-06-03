@@ -1,0 +1,80 @@
+# ADDON forumdirectory
+# Copyright (C)
+# This file is distributed under the same license as the Friendica forumdirectory addon package.
+# 
+# 
+# Translators:
+# Joan Bar <friendica@tutanota.com>, 2019
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2019-10-18 18:57+0000\n"
+"Last-Translator: Joan Bar <friendica@tutanota.com>\n"
+"Language-Team: Catalan (http://www.transifex.com/Friendica/friendica/language/ca/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ca\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: forumdirectory.php:22
+msgid "Forum Directory"
+msgstr "Directori de fòrums"
+
+#: forumdirectory.php:53
+msgid "Public access denied."
+msgstr "L'accés al públic s'ha denegat."
+
+#: forumdirectory.php:71
+msgid "Global Directory"
+msgstr "Directori global"
+
+#: forumdirectory.php:79
+msgid "Find on this site"
+msgstr "Cerqueu en aquest lloc"
+
+#: forumdirectory.php:81
+msgid "Finding: "
+msgstr "Trobament:"
+
+#: forumdirectory.php:82
+msgid "Site Directory"
+msgstr "Directori de llocs"
+
+#: forumdirectory.php:83
+msgid "Find"
+msgstr "trobar"
+
+#: forumdirectory.php:133
+msgid "Age: "
+msgstr "Edat:"
+
+#: forumdirectory.php:136
+msgid "Gender: "
+msgstr "Gènere:"
+
+#: forumdirectory.php:156
+msgid "Location:"
+msgstr "Ubicació:"
+
+#: forumdirectory.php:158
+msgid "Gender:"
+msgstr "Gènere:"
+
+#: forumdirectory.php:160
+msgid "Status:"
+msgstr "Estat:"
+
+#: forumdirectory.php:162
+msgid "Homepage:"
+msgstr "Pàgina inicial:"
+
+#: forumdirectory.php:164
+msgid "About:"
+msgstr "Sobre:"
+
+#: forumdirectory.php:201
+msgid "No entries (some entries may be hidden)."
+msgstr "No hi ha entrades (algunes entrades poden estar ocultes)."

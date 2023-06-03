@@ -1,0 +1,49 @@
+# ADDON forumdirectory
+# Copyright (C)
+# This file is distributed under the same license as the Friendica forumdirectory addon package.
+# 
+# 
+# Translators:
+# Albert, 2016
+# Senex Petrovic <javierruizo@hotmail.com>, 2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-04-01 09:54+0000\n"
+"Last-Translator: Senex Petrovic <javierruizo@hotmail.com>\n"
+"Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: forumdirectory.php:33 forumdirectory.php:137
+msgid "Forum Directory"
+msgstr "Directorio de foro"
+
+#: forumdirectory.php:53
+msgid "Public access denied."
+msgstr "Acceso público denegado."
+
+#: forumdirectory.php:125
+msgid "No entries (some entries may be hidden)."
+msgstr "Sin entradas (algunas entradas pueden estar ocultas)."
+
+#: forumdirectory.php:131
+msgid "Global Directory"
+msgstr "Directorio global"
+
+#: forumdirectory.php:133
+msgid "Find on this site"
+msgstr "Encontrar en esta página"
+
+#: forumdirectory.php:135
+msgid "Results for:"
+msgstr "Resultados para:"
+
+#: forumdirectory.php:139
+msgid "Find"
+msgstr "Encontrar"

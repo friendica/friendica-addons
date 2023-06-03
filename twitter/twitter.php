@@ -80,7 +80,7 @@ use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Contact;
 use Friendica\Model\Conversation;
-use Friendica\Model\Group;
+use Friendica\Model\Circle;
 use Friendica\Model\Item;
 use Friendica\Model\ItemURI;
 use Friendica\Model\Post;
@@ -695,7 +695,7 @@ function twitter_post_hook(array &$b)
 		}
 
 		// Dont't post if the post doesn't belong to us.
-		// This is a check for forum postings
+		// This is a check for group postings
 		$self = DBA::selectFirst('contact', ['id'], ['uid' => $b['uid'], 'self' => true]);
 		if ($b['contact-id'] != $self['id']) {
 			return;
@@ -952,7 +952,7 @@ function twitter_delete_item(array $item)
 		}
 
 		// Don't delete if the post doesn't belong to us.
-		// This is a check for forum postings
+		// This is a check for group postings
 		$self = DBA::selectFirst('contact', ['id'], ['uid' => $item['uid'], 'self' => true]);
 		if ($item['contact-id'] != $self['id']) {
 			DI::logger()->info('Don\'t delete if the post doesn\'t belong to the user', ['contact-id' => $item['contact-id'], 'self' => $self['id']]);
@@ -1529,7 +1529,7 @@ function twitter_fetch_contact($uid, $data, $create_user)
 
 		$contact_id = DBA::lastInsertId();
 
-		Group::addMember(User::getDefaultGroup($uid), $contact_id);
+		Circle::addMember(User::getDefaultCircle($uid), $contact_id);
 	} else {
 		if ($contact['readonly'] || $contact['blocked']) {
 			Logger::notice('Contact is blocked or readonly.', ['nickname' => $contact['nick']]);

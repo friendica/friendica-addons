@@ -18,7 +18,7 @@ use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Contact;
-use Friendica\Model\Group;
+use Friendica\Model\Circle;
 use Friendica\Model\Item;
 use Friendica\Model\Post;
 use Friendica\Model\User;
@@ -417,7 +417,7 @@ function pumpio_send(array &$b)
 		}
 
 		// Dont't post if the post doesn't belong to us.
-		// This is a check for forum postings
+		// This is a check for group postings
 		$self = User::getOwnerDataById($b['uid']);
 		if ($b['contact-id'] != $self['id']) {
 			return;
@@ -976,7 +976,7 @@ function pumpio_get_contact($uid, $contact, $no_insert = false)
 
 		$contact_id = $r['id'];
 
-		Group::addMember(User::getDefaultGroup($uid), $contact_id);
+		Circle::addMember(User::getDefaultCircle($uid), $contact_id);
 	} else {
 		$contact_id = $r['id'];
 	}
@@ -1353,8 +1353,8 @@ function pumpio_getreceiver(array $b)
 			$gid = trim($gid, ' <>');
 
 			$contacts = DBA::p("SELECT `contact`.`name`, `contact`.`nick`, `contact`.`url`, `contact`.`network`
-				FROM `group_member`, `contact` WHERE `group_member`.`gid` = ?
-				AND `contact`.`id` = `group_member`.`contact-id` AND `contact`.`network` = ?",
+				FROM `group_member` AS `circle_member`, `contact` WHERE `circle_member`.`gid` = ?
+				AND `contact`.`id` = `circle_member`.`contact-id` AND `contact`.`network` = ?",
 				$gid, Protocol::PUMPIO);
 
 			while ($row = DBA::fetch($contacts)) {

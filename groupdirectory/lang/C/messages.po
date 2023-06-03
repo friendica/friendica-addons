@@ -1,0 +1,46 @@
+# ADDON groupdirectory
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica groupdirectory addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-03 15:49-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: groupdirectory.php:40 groupdirectory.php:148
+msgid "Group Directory"
+msgstr ""
+
+#: groupdirectory.php:64
+msgid "Public access denied."
+msgstr ""
+
+#: groupdirectory.php:136
+msgid "No entries (some entries may be hidden)."
+msgstr ""
+
+#: groupdirectory.php:142
+msgid "Global Directory"
+msgstr ""
+
+#: groupdirectory.php:144
+msgid "Find on this site"
+msgstr ""
+
+#: groupdirectory.php:146
+msgid "Results for:"
+msgstr ""
+
+#: groupdirectory.php:150
+msgid "Find"
+msgstr ""

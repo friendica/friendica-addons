@@ -4,6 +4,8 @@
  * Description: Disable images in group edit menu
  * Version: 1.0
  * Author: Thomas Willingham <https://kakste.com/profile/beardyunixer>
+ * Status: Unsupported
+ * Note: Please use Circle Text instead
  */
 
 use Friendica\App;

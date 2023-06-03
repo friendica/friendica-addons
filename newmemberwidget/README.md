@@ -5,8 +5,8 @@ With this addon you can enable a widget for the sidebar of the network tab,
 which will be displayed for new members. It contains a linkt to friendicas
 introduction pages at /newmember and optionally
 
- * a link to the global support forum
- * a link to an eventually existing local support forum
+ * a link to the global support group
+ * a link to an eventually existing local support group
  * a welcome message you might want to send to your new members.
 
 There is no extra styling added for this added, so it should work with any

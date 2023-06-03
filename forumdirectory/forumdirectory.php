@@ -4,6 +4,8 @@
  * Description: Add a directory of forums hosted on your server, with verbose descriptions.
  * Version: 1.1
  * Author: Thomas Willingham <https://beardyunixer.com/profile/beardyunixer>
+ * Status: Unsupported
+ * Note: Please use Group Directory instead
  */
 
 use Friendica\App;

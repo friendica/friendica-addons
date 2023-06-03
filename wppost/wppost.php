@@ -169,7 +169,7 @@ function wppost_send(array &$b)
 	}
 
 	// Dont't post if the post doesn't belong to us.
-	// This is a check for forum postings
+	// This is a check for group postings
 	$self = DBA::selectFirst('contact', ['id'], ['uid' => $b['uid'], 'self' => true]);
 	if ($b['contact-id'] != $self['id']) {
 		return;
