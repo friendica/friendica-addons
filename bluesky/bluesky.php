@@ -6,21 +6,15 @@
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  *
  * @todo
- * Nice to have:
- * - Probing for contacts
+ * - Links in outgoing comments
+ * - Outgoing mentions
  *
- * Need more information:
+ * Possibly not possible:
  * - only fetch new posts
- * - detect contact relations
- * - receive likes
- * - follow contacts
- * - unfollow contacts
  *
- * Possible but less important:
- * - Block contacts
- * - unblock contacts
- * - mute contacts
- * - unmute contacts
+ * Currently not possible, due to limitations in Friendica
+ * - mute contacts https://atproto.com/lexicons/app-bsky-graph#appbskygraphmuteactor
+ * - unmute contacts https://atproto.com/lexicons/app-bsky-graph#appbskygraphunmuteactor
  */
 
 use Friendica\Content\Text\BBCode;
@@ -31,6 +25,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Protocol;
 use Friendica\Core\Renderer;
+use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Contact;
@@ -57,14 +52,14 @@ function bluesky_install()
 	Hook::register('connector_settings',      __FILE__, 'bluesky_settings');
 	Hook::register('connector_settings_post', __FILE__, 'bluesky_settings_post');
 	Hook::register('cron',                    __FILE__, 'bluesky_cron');
-	// Hook::register('support_follow',          __FILE__, 'bluesky_support_follow');
-	// Hook::register('support_probe',           __FILE__, 'bluesky_support_probe');
-	// Hook::register('follow',                  __FILE__, 'bluesky_follow');
-	// Hook::register('unfollow',                __FILE__, 'bluesky_unfollow');
-	// Hook::register('block',                   __FILE__, 'bluesky_block');
-	// Hook::register('unblock',                 __FILE__, 'bluesky_unblock');
+	Hook::register('support_follow',          __FILE__, 'bluesky_support_follow');
+	Hook::register('support_probe',           __FILE__, 'bluesky_support_probe');
+	Hook::register('follow',                  __FILE__, 'bluesky_follow');
+	Hook::register('unfollow',                __FILE__, 'bluesky_unfollow');
+	Hook::register('block',                   __FILE__, 'bluesky_block');
+	Hook::register('unblock',                 __FILE__, 'bluesky_unblock');
 	Hook::register('check_item_notification', __FILE__, 'bluesky_check_item_notification');
-	// Hook::register('probe_detect',            __FILE__, 'bluesky_probe_detect');
+	Hook::register('probe_detect',            __FILE__, 'bluesky_probe_detect');
 	Hook::register('item_by_link',            __FILE__, 'bluesky_item_by_link');
 }
 
@@ -75,12 +70,56 @@ function bluesky_load_config(ConfigFileManager $loader)
 
 function bluesky_check_item_notification(array &$notification_data)
 {
-	$handle = DI::pConfig()->get($notification_data['uid'], 'bluesky', 'handle');
-	$did    = DI::pConfig()->get($notification_data['uid'], 'bluesky', 'did');
+	$did = DI::pConfig()->get($notification_data['uid'], 'bluesky', 'did');
 
-	if (!empty($handle) && !empty($did)) {
-		$notification_data['profiles'][] = $handle;
+	if (!empty($did)) {
 		$notification_data['profiles'][] = $did;
+	}
+}
+
+function bluesky_probe_detect(array &$hookData)
+{
+	// Don't overwrite an existing result
+	if (isset($hookData['result'])) {
+		return;
+	}
+
+	// Avoid a lookup for the wrong network
+	if (!in_array($hookData['network'], ['', Protocol::BLUESKY])) {
+		return;
+	}
+
+	$pconfig = DBA::selectFirst('pconfig', ['uid'], ["`cat` = ? AND `k` = ? AND `v` != ?", 'bluesky', 'access_token', '']);
+	if (empty($pconfig['uid'])) {
+		return;
+	}
+
+	if (parse_url($hookData['uri'], PHP_URL_SCHEME) == 'did') {
+		$did = $hookData['uri'];
+	} elseif (preg_match('#^' . BLUESKY_HOST . '/profile/(.+)#', $hookData['uri'], $matches)) {
+		$did = bluesky_get_did($pconfig['uid'], $matches[1]);
+		if (empty($did)) {
+			return;
+		}
+	} else {
+		return;
+	}
+
+	$token = bluesky_get_token($pconfig['uid']);
+	if (empty($token)) {
+		return;
+	}
+
+	$data = bluesky_get($pconfig['uid'], '/xrpc/app.bsky.actor.getProfile?actor=' . $did, HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . $token]]]);
+	if (empty($data)) {
+		return;
+	}
+
+	$hookData['result'] = bluesky_get_contact($data, 0, $pconfig['uid']);
+
+	// Authoritative probe should set the result even if the probe was unsuccessful
+	if ($hookData['network'] == Protocol::BLUESKY && empty($hookData['result'])) {
+		$hookData['result'] = [];
 	}
 }
 
@@ -109,7 +148,7 @@ function bluesky_item_by_link(array &$hookData)
 
 	$uri = 'at://' . $did . '/app.bsky.feed.post/' . $matches[2];
 
-	$uri = bluesky_fetch_missing_post($uri, $hookData['uid'], 0, true);
+	$uri = bluesky_fetch_missing_post($uri, $hookData['uid'], 0);
 	Logger::debug('Got post', ['profile' => $matches[1], 'cid' => $matches[2], 'result' => $uri]);
 	if (!empty($uri)) {
 		$item = Post::selectFirst(['id'], ['uri' => $uri, 'uid' => $hookData['uid']]);
@@ -117,6 +156,129 @@ function bluesky_item_by_link(array &$hookData)
 			$hookData['item_id'] = $item['id'];
 		}
 	}
+}
+
+function bluesky_support_follow(array &$data)
+{
+	if ($data['protocol'] == Protocol::BLUESKY) {
+		$data['result'] = true;
+	}
+}
+
+function bluesky_support_probe(array &$data)
+{
+	if ($data['protocol'] == Protocol::BLUESKY) {
+		$data['result'] = true;
+	}
+}
+
+function bluesky_follow(array &$hook_data)
+{
+	$token = bluesky_get_token($hook_data['uid']);
+	if (empty($token)) {
+		return;
+	}
+
+	Logger::debug('Check if contact is bluesky', ['data' => $hook_data]);
+	$contact = DBA::selectFirst('contact', [], ['network' => Protocol::BLUESKY, 'url' => $hook_data['url'], 'uid' => [0, $hook_data['uid']]]);
+	if (empty($contact)) {
+		return;
+	}
+
+	$record = [
+		'subject'   => $contact['url'],
+		'createdAt' => DateTimeFormat::utcNow(DateTimeFormat::ATOM),
+		'$type'     => 'app.bsky.graph.follow'
+	];
+	
+	$post = [
+		'collection' => 'app.bsky.graph.follow',
+		'repo'       => DI::pConfig()->get($hook_data['uid'], 'bluesky', 'did'),
+		'record'     => $record
+	];
+	
+	$activity = bluesky_post($hook_data['uid'], '/xrpc/com.atproto.repo.createRecord', json_encode($post), ['Content-type' => 'application/json', 'Authorization' => ['Bearer ' . $token]]);
+	if (!empty($activity->uri)) {
+		$hook_data['contact'] = $contact;
+		Logger::debug('Successfully start following', ['url' => $contact['url'], 'uri' => $activity->uri]);
+	}
+}
+
+function bluesky_unfollow(array &$hook_data)
+{
+	$token = bluesky_get_token($hook_data['uid']);
+	if (empty($token)) {
+		return;
+	}
+
+	if ($hook_data['contact']['network'] != Protocol::BLUESKY) {
+		return;
+	}
+
+	$data = bluesky_get($hook_data['uid'], '/xrpc/app.bsky.actor.getProfile?actor=' . $hook_data['contact']['url'], HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . $token]]]);
+	if (empty($data->viewer) || empty($data->viewer->following)) {
+		return;
+	}
+
+	bluesky_delete_post($data->viewer->following, $hook_data['uid']);
+
+	$hook_data['result'] = true;
+}
+
+function bluesky_block(array &$hook_data)
+{
+	$token = bluesky_get_token($hook_data['uid']);
+	if (empty($token)) {
+		return;
+	}
+
+	Logger::debug('Check if contact is bluesky', ['data' => $hook_data]);
+	$contact = DBA::selectFirst('contact', [], ['network' => Protocol::BLUESKY, 'url' => $hook_data['url'], 'uid' => [0, $hook_data['uid']]]);
+	if (empty($contact)) {
+		return;
+	}
+
+	$record = [
+		'subject'   => $contact['url'],
+		'createdAt' => DateTimeFormat::utcNow(DateTimeFormat::ATOM),
+		'$type'     => 'app.bsky.graph.block'
+	];
+	
+	$post = [
+		'collection' => 'app.bsky.graph.block',
+		'repo'       => DI::pConfig()->get($hook_data['uid'], 'bluesky', 'did'),
+		'record'     => $record
+	];
+	
+	$activity = bluesky_post($hook_data['uid'], '/xrpc/com.atproto.repo.createRecord', json_encode($post), ['Content-type' => 'application/json', 'Authorization' => ['Bearer ' . $token]]);
+	if (!empty($activity->uri)) {
+		$cdata = Contact::getPublicAndUserContactID($hook_data['contact']['id'], $hook_data['uid']);
+		if (!empty($cdata['user'])) {
+			Contact::remove($cdata['user']);
+		}
+		Logger::debug('Successfully blocked contact', ['url' => $hook_data['contact']['url'], 'uri' => $activity->uri]);
+	}
+}
+
+function bluesky_unblock(array &$hook_data)
+{
+	$token = bluesky_get_token($hook_data['uid']);
+	if (empty($token)) {
+		return;
+	}
+
+	if ($hook_data['contact']['network'] != Protocol::BLUESKY) {
+		return;
+	}
+
+	$data = bluesky_get($hook_data['uid'], '/xrpc/app.bsky.actor.getProfile?actor=' . $hook_data['contact']['url'], HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . $token]]]);
+	if (empty($data->viewer) || empty($data->viewer->blocking)) {
+		return;
+	}
+
+	bluesky_delete_post($data->viewer->blocking, $hook_data['uid']);
+
+	$hook_data['result'] = true;
 }
 
 function bluesky_settings(array &$data)
@@ -243,6 +405,21 @@ function bluesky_cron()
 		Logger::notice('importing timeline - start', ['user' => $pconfig['uid']]);
 		bluesky_fetch_timeline($pconfig['uid']);
 		Logger::notice('importing timeline - done', ['user' => $pconfig['uid']]);
+		Logger::notice('importing notifications - start', ['user' => $pconfig['uid']]);
+		bluesky_fetch_notifications($pconfig['uid']);
+		Logger::notice('importing notifications - done', ['user' => $pconfig['uid']]);
+	}
+
+	$last_clean = DI::keyValue()->get('bluesky_last_clean');
+	if (empty($last_clean) || ($last_clean + 86400 < time())) {
+		Logger::notice('Start contact cleanup');
+		$contacts = DBA::select('account-user-view', ['id', 'pid'], ["`network` = ? AND `uid` != ? AND `rel` = ?", Protocol::BLUESKY, 0, Contact::NOTHING]);
+		while ($contact = DBA::fetch($contacts)) {
+			Worker::add(Worker::PRIORITY_LOW, 'MergeContact', $contact['pid'], $contact['id'], 0);
+		}
+		DBA::close($contacts);
+		DI::keyValue()->set('bluesky_last_clean', time());
+		Logger::notice('Contact cleanup done');
 	}
 
 	Logger::notice('cron_end');
@@ -521,7 +698,7 @@ function bluesky_add_embed(int $uid, array $msg, array $record): array
 			$photo = Photo::selectFirst([], ["`resource-id` = ? AND `scale` > ?", $photo['resource-id'], 0], ['order' => ['scale']]);
 			$blob = bluesky_upload_blob($uid, $photo);
 			if (!empty($blob) && count($images) < 4) {
-				$images[] = ['alt' => $image['description'], 'image' => $blob];
+				$images[] = ['alt' => $image['description'] ?? '', 'image' => $blob];
 			}
 		}
 		if (!empty($images)) {
@@ -600,7 +777,7 @@ function bluesky_process_reason(stdClass $reason, string $uri, int $uid)
 		return;
 	}
 
-	$contact = bluesky_get_contact($reason->by, $uid);
+	$contact = bluesky_get_contact($reason->by, $uid, $uid);
 
 	$item = [
 		'network'       => Protocol::BLUESKY,
@@ -633,6 +810,65 @@ function bluesky_process_reason(stdClass $reason, string $uri, int $uid)
 	}
 }
 
+function bluesky_fetch_notifications(int $uid)
+{
+	$result = bluesky_get($uid, '/xrpc/app.bsky.notification.listNotifications', HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
+	if (empty($result->notifications)) {
+		return;
+	}
+	foreach ($result->notifications as $notification) {
+		$uri = bluesky_get_uri($notification);
+		if (Post::exists(['uri' => $uri, 'uid' => $uid]) || Post::exists(['extid' => $uri, 'uid' => $uid])) {
+			Logger::debug('Notification already processed', ['uid' => $uid, 'reason' => $notification->reason, 'uri' => $uri, 'indexedAt' => $notification->indexedAt]);
+			continue;
+		}
+		Logger::debug('Process notification', ['uid' => $uid, 'reason' => $notification->reason, 'uri' => $uri, 'indexedAt' => $notification->indexedAt]);
+		switch ($notification->reason) {
+			case 'like':
+				$item = bluesky_get_header($notification, $uri, $uid, $uid);
+				$item['gravity'] = Item::GRAVITY_ACTIVITY;
+				$item['body'] = $item['verb'] = Activity::LIKE;
+				$item['thr-parent'] = bluesky_get_uri($notification->record->subject);
+				$result = Item::insert($item);
+				Logger::debug('Got like', ['uid' => $uid, 'result' => $result]);
+				break;
+
+			case 'repost':
+				$item = bluesky_get_header($notification, $uri, $uid, $uid);
+				$item['gravity'] = Item::GRAVITY_ACTIVITY;
+				$item['body'] = $item['verb'] = Activity::ANNOUNCE;
+				$item['thr-parent'] = bluesky_get_uri($notification->record->subject);
+				$result = Item::insert($item);
+				Logger::debug('Got repost', ['uid' => $uid, 'result' => $result]);
+				break;
+
+			case 'follow':
+				$contact = bluesky_get_contact($notification->author, $uid, $uid);
+				Logger::debug('New follower', ['uid' => $uid, 'nick' => $contact['nick']]);
+				break;
+
+			case 'mention':
+				$result = bluesky_process_post($notification, $uid);
+				Logger::debug('Got mention', ['uid' => $uid, 'result' => $result]);
+				break;
+
+			case 'reply':
+				$result = bluesky_process_post($notification, $uid);
+				Logger::debug('Got reply', ['uid' => $uid, 'result' => $result]);
+				break;
+
+			case 'quote':
+				$result = bluesky_process_post($notification, $uid);
+				Logger::debug('Got quote', ['uid' => $uid, 'result' => $result]);
+				break;
+
+			default:
+				Logger::notice('Unhandled reason', ['reason' => $notification->reason]);
+				break;
+		}
+	}
+}
+
 function bluesky_process_post(stdClass $post, int $uid): int
 {
 	$uri = bluesky_get_uri($post);
@@ -643,23 +879,23 @@ function bluesky_process_post(stdClass $post, int $uid): int
 
 	Logger::debug('Importing post', ['uid' => $uid, 'indexedAt' => $post->indexedAt, 'uri' => $post->uri, 'cid' => $post->cid]);
 
-	$item = bluesky_get_header($post, $uri, $uid);
+	$item = bluesky_get_header($post, $uri, $uid, $uid);
 
 	$item = bluesky_get_content($item, $post->record, $uid);
 
 	if (!empty($post->embed)) {
-		$item = bluesky_add_media($post->embed, $item);
+		$item = bluesky_add_media($post->embed, $item, $uid);
 	}
 	return item::insert($item);
 }
 
-function bluesky_get_header(stdClass $post, string $uri, int $uid): array
+function bluesky_get_header(stdClass $post, string $uri, int $uid, int $fetch_uid): array
 {
 	$parts = bluesky_get_uri_parts($uri);
 	if (empty($post->author)) {
 		return [];
 	}
-	$contact = bluesky_get_contact($post->author, $uid);
+	$contact = bluesky_get_contact($post->author, $uid, $fetch_uid);
 	$item = [
 		'network'       => Protocol::BLUESKY,
 		'uid'           => $uid,
@@ -716,21 +952,29 @@ function bluesky_get_text(stdClass $record, int $uid): string
 		$linktext = substr($text, $facet->index->byteStart, $facet->index->byteEnd - $facet->index->byteStart);
 		$suffix   = substr($text, $facet->index->byteEnd);
 
-		$url = '';
-
+		$url  = '';
+		$type = '$type';
 		foreach ($facet->features as $feature) {
-			if (!empty($feature->uri)) {
-				$url = $feature->uri;
-			}
-			if (!empty($feature->did)) {
-				$contact = Contact::selectFirst(['id'], ['nurl' => $feature->did, 'uid' => [0, $uid]]);
-				if (!empty($contact['id'])) {
-					$url = DI::baseUrl() . '/contact/' . $contact['id'];
-					if (substr($linktext, 0, 1) == '@') {
-						$prefix .= '@';
-						$linktext = substr($linktext, 1);
-					}					
-				}
+
+			switch ($feature->$type) {
+				case 'app.bsky.richtext.facet#link':
+					$url = $feature->uri;
+					break;
+
+				case 'app.bsky.richtext.facet#mention':
+					$contact = Contact::selectFirst(['id'], ['nurl' => $feature->did, 'uid' => [0, $uid]]);
+					if (!empty($contact['id'])) {
+						$url = DI::baseUrl() . '/contact/' . $contact['id'];
+						if (substr($linktext, 0, 1) == '@') {
+							$prefix .= '@';
+							$linktext = substr($linktext, 1);
+						}
+					}
+					break;
+
+				default:
+					Logger::notice('Unhandled feature type', ['type' => $feature->$type, 'record' => $record]);
+					break;
 			}
 		}
 		if (!empty($url)) {
@@ -740,50 +984,86 @@ function bluesky_get_text(stdClass $record, int $uid): string
 	return $text;
 }
 
-function bluesky_add_media(stdClass $embed, array $item): array
+function bluesky_add_media(stdClass $embed, array $item, int $fetch_uid): array
 {
-	if (!empty($embed->images)) {
-		foreach ($embed->images as $image) {
+	$type = '$type';
+	switch ($embed->$type) {
+		case 'app.bsky.embed.images#view':
+			foreach ($embed->images as $image) {
+				$media = [
+					'uri-id'      => $item['uri-id'],
+					'type'        => Post\Media::IMAGE,
+					'url'         => $image->fullsize,
+					'preview'     => $image->thumb,
+					'description' => $image->alt,
+				];
+				Post\Media::insert($media);
+			}
+			break;
+
+		case 'app.bsky.embed.external#view':
 			$media = [
-				'uri-id'      => $item['uri-id'],
-				'type'        => Post\Media::IMAGE,
-				'url'         => $image->fullsize,
-				'preview'     => $image->thumb,
-				'description' => $image->alt,
+				'uri-id' => $item['uri-id'],
+				'type'        => Post\Media::HTML,
+				'url'         => $embed->external->uri,
+				'name'        => $embed->external->title,
+				'description' => $embed->external->description,
 			];
 			Post\Media::insert($media);
-		}
-	} elseif (!empty($embed->external)) {
-		$media = [
-			'uri-id' => $item['uri-id'],
-			'type'        => Post\Media::HTML,
-			'url'         => $embed->external->uri,
-			'name'        => $embed->external->title,
-			'description' => $embed->external->description,
-		];
-		Post\Media::insert($media);
-	} elseif (!empty($embed->record)) {
-		$uri = bluesky_get_uri($embed->record);
-		$shared = Post::selectFirst(['uri-id'], ['uri' => $uri, 'uid' => $item['uid']]);
-		if (empty($shared)) {
-			$shared = bluesky_get_header($embed->record, $uri, 0);
-			if (!empty($shared)) {
-				$shared = bluesky_get_content($shared, $embed->record->value, $item['uid']);
+			break;
 
-				if (!empty($embed->record->embeds)) {
-					foreach ($embed->record->embeds as $single) {
-						$shared = bluesky_add_media($single, $shared);
+		case 'app.bsky.embed.record#view':
+			$uri = bluesky_get_uri($embed->record);
+			$shared = Post::selectFirst(['uri-id'], ['uri' => $uri, 'uid' => $item['uid']]);
+			if (empty($shared)) {
+				$shared = bluesky_get_header($embed->record, $uri, 0, $fetch_uid);
+				if (!empty($shared)) {
+					$shared = bluesky_get_content($shared, $embed->record->value, $item['uid']);
+
+					if (!empty($embed->record->embeds)) {
+						foreach ($embed->record->embeds as $single) {
+							$shared = bluesky_add_media($single, $shared, $fetch_uid);
+						}
 					}
+					$id = Item::insert($shared);
+					$shared = Post::selectFirst(['uri-id'], ['id' => $id]);
 				}
-				$id = Item::insert($shared);
-				$shared = Post::selectFirst(['uri-id'], ['id' => $id]);
 			}
-		}
-		if (!empty($shared)) {
-			$item['quote-uri-id'] = $shared['uri-id'];
-		}
-	} else {
-		Logger::debug('Unsupported embed', ['embed' => $embed, 'item' => $item]);
+			if (!empty($shared)) {
+				$item['quote-uri-id'] = $shared['uri-id'];
+			}
+			break;
+
+		case 'app.bsky.embed.recordWithMedia#view':
+			$uri = bluesky_get_uri($embed->record->record);
+			$shared = Post::selectFirst(['uri-id'], ['uri' => $uri, 'uid' => $item['uid']]);
+			if (empty($shared)) {
+				$shared = bluesky_get_header($embed->record->record, $uri, 0, $fetch_uid);
+				if (!empty($shared)) {
+					$shared = bluesky_get_content($shared, $embed->record->record->value, $item['uid']);
+
+					if (!empty($embed->record->embeds)) {
+						foreach ($embed->record->record->embeds as $single) {
+							$shared = bluesky_add_media($single, $shared, $fetch_uid);
+						}
+					}
+
+					if (!empty($embed->media)) {
+						bluesky_add_media($embed->media, $item, $fetch_uid);
+					}
+
+					$id = Item::insert($shared);
+					$shared = Post::selectFirst(['uri-id'], ['id' => $id]);
+				}
+			}
+			if (!empty($shared)) {
+				$item['quote-uri-id'] = $shared['uri-id'];
+			}
+			break;
+
+		default:
+			Logger::notice('Unhandled embed type', ['type' => $embed->$type, 'embed' => $embed]);
+			break;
 	}
 	return $item;
 }
@@ -810,6 +1090,11 @@ function bluesky_get_uri_class(string $uri): ?stdClass
 	$class->cid = array_pop($elements);
 	$class->uri = implode(':', $elements);
 
+	if ((substr_count($class->uri, '/') == 2) && (substr_count($class->cid, '/') == 2)) {
+		$class->uri .= ':' . $class->cid;
+		$class->cid = '';
+	}
+
 	return $class;
 }
 
@@ -831,7 +1116,7 @@ function bluesky_get_uri_parts(string $uri): ?stdClass
 	return $class;
 }
 
-function bluesky_fetch_missing_post(string $uri, int $uid, int $causer, bool $original = false): string
+function bluesky_fetch_missing_post(string $uri, int $uid, int $causer): string
 {
 	if (Post::exists(['uri' => $uri, 'uid' => [$uid, 0]])) {
 		Logger::debug('Post exists', ['uri' => $uri]);
@@ -844,12 +1129,8 @@ function bluesky_fetch_missing_post(string $uri, int $uid, int $causer, bool $or
 	}
 
 	Logger::debug('Fetch missing post', ['uri' => $uri]);
-	if (!$original) {
-		$class = bluesky_get_uri_class($uri);
-		$fetch_uri = $class->uri;
-	} else {
-		$fetch_uri = $uri;
-	}
+	$class = bluesky_get_uri_class($uri);
+	$fetch_uri = $class->uri;
 
 	$data = bluesky_get($uid, '/xrpc/app.bsky.feed.getPosts?uris=' . urlencode($fetch_uri), HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
 	if (empty($data)) {
@@ -862,7 +1143,7 @@ function bluesky_fetch_missing_post(string $uri, int $uid, int $causer, bool $or
 
 	foreach ($data->posts as $post) {
 		$uri = bluesky_get_uri($post);
-		$item = bluesky_get_header($post, $uri, $uid);
+		$item = bluesky_get_header($post, $uri, $uid, $uid);
 		$item = bluesky_get_content($item, $post->record, $uid);
 
 		$item['post-reason'] = Item::PR_FETCHED;
@@ -872,7 +1153,7 @@ function bluesky_fetch_missing_post(string $uri, int $uid, int $causer, bool $or
 		}
 
 		if (!empty($post->embed)) {
-			$item = bluesky_add_media($post->embed, $item);
+			$item = bluesky_add_media($post->embed, $item, $uid);
 		}
 		$id = Item::insert($item);
 		Logger::debug('Stored item', ['id' => $id, 'uri' => $uri]);
@@ -881,52 +1162,55 @@ function bluesky_fetch_missing_post(string $uri, int $uid, int $causer, bool $or
 	return $uri;
 }
 
-function bluesky_get_contact(stdClass $author, int $uid): array
+function bluesky_get_contact(stdClass $author, int $uid, int $fetch_uid): array
 {
-	$condition = ['network' => Protocol::BLUESKY, 'uid' => $uid, 'url' => $author->did];
+	$condition = ['network' => Protocol::BLUESKY, 'uid' => 0, 'url' => $author->did];
+	$contact = Contact::selectFirst(['id', 'updated'], $condition);
 
-	$fields = [
-		'alias' => BLUESKY_HOST . '/profile/' . $author->handle,
-		'name'  => $author->displayName,
-		'nick'  => $author->handle,
-		'addr'  => $author->handle,
-	];
+	$update = empty($contact) || $contact['updated'] < DateTimeFormat::utc('now -24 hours');
 
-	$contact = Contact::selectFirst([], $condition);
+	$public_fields = $fields = bluesky_get_contact_fields($author, $fetch_uid, $update);
+
+	$public_fields['uid'] = 0;
+	$public_fields['rel'] = Contact::NOTHING;
 
 	if (empty($contact)) {
-		$cid = bluesky_insert_contact($author, $uid);
+		$cid = Contact::insert($public_fields);
 	} else {
 		$cid = $contact['id'];
-		if ($fields['alias'] != $contact['alias'] || $fields['name'] != $contact['name'] || $fields['nick'] != $contact['nick'] || $fields['addr'] != $contact['addr']) {
-			Contact::update($fields, ['id' => $cid]);
+		Contact::update($public_fields, ['id' => $cid], true);
+	}
+
+	if ($uid != 0) {
+		$condition = ['network' => Protocol::BLUESKY, 'uid' => $uid, 'url' => $author->did];
+
+		$contact = Contact::selectFirst(['id', 'rel', 'uid'], $condition);
+		if (!isset($fields['rel']) && isset($contact['rel'])) {
+			$fields['rel'] = $contact['rel'];
+		} elseif (!isset($fields['rel'])) {
+			$fields['rel'] = Contact::NOTHING;
 		}
 	}
 
-	$condition['uid'] = 0;
-
-	$contact = Contact::selectFirst([], $condition);
-	if (empty($contact)) {
-		$pcid = bluesky_insert_contact($author, 0);
+	if (($uid != 0) && ($fields['rel'] != Contact::NOTHING)) {
+		if (empty($contact)) {
+			$cid = Contact::insert($fields);
+		} else {
+			$cid = $contact['id'];
+			Contact::update($fields, ['id' => $cid], true);
+		}
+		Logger::debug('Get user contact', ['id' => $cid, 'uid' => $uid, 'update' => $update]);
 	} else {
-		$pcid = $contact['id'];
-		if ($fields['alias'] != $contact['alias'] || $fields['name'] != $contact['name'] || $fields['nick'] != $contact['nick'] || $fields['addr'] != $contact['addr']) {
-			Contact::update($fields, ['id' => $pcid]);
-		}
+		Logger::debug('Get public contact', ['id' => $cid, 'uid' => $uid, 'update' => $update]);
 	}
-
 	if (!empty($author->avatar)) {
 		Contact::updateAvatar($cid, $author->avatar);
-	}
-
-	if (empty($contact) || $contact['updated'] < DateTimeFormat::utc('now -24 hours')) {
-		bluesky_update_contact($author, $uid, $cid, $pcid);
 	}
 
 	return Contact::getById($cid);
 }
 
-function bluesky_insert_contact(stdClass $author, int $uid)
+function bluesky_get_contact_fields(stdClass $author, int $uid, bool $update): array
 {
 	$fields = [
 		'uid'      => $uid,
@@ -943,23 +1227,19 @@ function bluesky_insert_contact(stdClass $author, int $uid)
 		'nick'     => $author->handle,
 		'addr'     => $author->handle,
 	];
-	return Contact::insert($fields);
-}
 
-function bluesky_update_contact(stdClass $author, int $uid, int $cid, int $pcid)
-{
-	$data = bluesky_get($uid, '/xrpc/app.bsky.actor.getProfile?actor=' . $author->did, HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
-	if (empty($data)) {
-		return;
+	if (!$update) {
+		Logger::debug('Got contact fields', ['uid' => $uid, 'url' => $fields['url']]);
+		return $fields;
 	}
 
-	$fields = [
-		'alias'   => BLUESKY_HOST . '/profile/' . $data->handle,
-		'name'    => $data->displayName,
-		'nick'    => $data->handle,
-		'addr'    => $data->handle,
-		'updated' => DateTimeFormat::utcNow(DateTimeFormat::MYSQL),
-	];
+	$data = bluesky_get($uid, '/xrpc/app.bsky.actor.getProfile?actor=' . $author->did, HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
+	if (empty($data)) {
+		Logger::debug('Error fetching contact fields', ['uid' => $uid, 'url' => $fields['url']]);
+		return $fields;
+	}
+
+	$fields['updated'] = DateTimeFormat::utcNow(DateTimeFormat::MYSQL);
 
 	if (!empty($data->description)) {
 		$fields['about'] = HTML::toBBCode($data->description);
@@ -969,8 +1249,20 @@ function bluesky_update_contact(stdClass $author, int $uid, int $cid, int $pcid)
 		$fields['header'] = $data->banner;
 	}
 
-	Contact::update($fields, ['id' => $cid]);
-	Contact::update($fields, ['id' => $pcid]);
+	if (!empty($data->viewer)) {
+		if (!empty($data->viewer->following) && !empty($data->viewer->followedBy)) {
+			$fields['rel'] = Contact::FRIEND;
+		} elseif (!empty($data->viewer->following) && empty($data->viewer->followedBy)) {
+			$fields['rel'] = Contact::SHARING;
+		} elseif (empty($data->viewer->following) && !empty($data->viewer->followedBy)) {
+			$fields['rel'] = Contact::FOLLOWER;
+		} else {
+			$fields['rel'] = Contact::NOTHING;
+		}
+	}
+
+	Logger::debug('Got updated contact fields', ['uid' => $uid, 'url' => $fields['url']]);
+	return $fields;
 }
 
 function bluesky_get_did(int $uid, string $handle): string
