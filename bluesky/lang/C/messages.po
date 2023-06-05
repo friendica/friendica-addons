@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-24 05:52+0000\n"
+"POT-Creation-Date: 2023-06-05 04:34+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,60 +17,70 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bluesky.php:100
+#: bluesky.php:314
 msgid ""
 "You are authenticated to Bluesky. For security reasons the password isn't "
 "stored."
 msgstr ""
 
-#: bluesky.php:100
+#: bluesky.php:314
 msgid "You are not authenticated. Please enter the app password."
 msgstr ""
 
-#: bluesky.php:104
+#: bluesky.php:318
 msgid "Enable Bluesky Post Addon"
 msgstr ""
 
-#: bluesky.php:105
+#: bluesky.php:319
 msgid "Post to Bluesky by default"
 msgstr ""
 
-#: bluesky.php:106
+#: bluesky.php:320
 msgid "Import the remote timeline"
 msgstr ""
 
-#: bluesky.php:107
+#: bluesky.php:321
+msgid "Import the pinned feeds"
+msgstr ""
+
+#: bluesky.php:321
+msgid ""
+"When activated, Posts will be imported from all the feeds that you pinned in "
+"Bluesky."
+msgstr ""
+
+#: bluesky.php:322
 msgid "Bluesky host"
 msgstr ""
 
-#: bluesky.php:108
+#: bluesky.php:323
 msgid "Bluesky handle"
 msgstr ""
 
-#: bluesky.php:109
+#: bluesky.php:324
 msgid "Bluesky DID"
 msgstr ""
 
-#: bluesky.php:109
+#: bluesky.php:324
 msgid ""
 "This is the unique identifier. It will be fetched automatically, when the "
 "handle is entered."
 msgstr ""
 
-#: bluesky.php:110
+#: bluesky.php:325
 msgid "Bluesky app password"
 msgstr ""
 
-#: bluesky.php:110
+#: bluesky.php:325
 msgid ""
 "Please don't add your real password here, but instead create a specific app "
 "password in the Bluesky settings."
 msgstr ""
 
-#: bluesky.php:116
+#: bluesky.php:331
 msgid "Bluesky Import/Export"
 msgstr ""
 
-#: bluesky.php:167
+#: bluesky.php:382
 msgid "Post to Bluesky"
 msgstr ""
