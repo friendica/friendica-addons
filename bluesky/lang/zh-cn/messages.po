@@ -1,0 +1,80 @@
+# ADDON bluesky
+# Copyright (C)
+# This file is distributed under the same license as the Friendica bluesky addon package.
+# 
+# 
+# Translators:
+# tslmuun, 2023
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-05-24 05:52+0000\n"
+"PO-Revision-Date: 2023-05-24 06:02+0000\n"
+"Last-Translator: tslmuun, 2023\n"
+"Language-Team: Chinese (China) (https://app.transifex.com/Friendica/teams/12172/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: bluesky.php:100
+msgid ""
+"You are authenticated to Bluesky. For security reasons the password isn't "
+"stored."
+msgstr "您已通过 Bluesky 的身份验证。 出于安全原因，不存储密码。"
+
+#: bluesky.php:100
+msgid "You are not authenticated. Please enter the app password."
+msgstr "您未通过身份验证。 请输入应用密码。"
+
+#: bluesky.php:104
+msgid "Enable Bluesky Post Addon"
+msgstr "启用Bluesky插件"
+
+#: bluesky.php:105
+msgid "Post to Bluesky by default"
+msgstr "默认发布到Bluesky"
+
+#: bluesky.php:106
+msgid "Import the remote timeline"
+msgstr "导入远程时间线"
+
+#: bluesky.php:107
+msgid "Bluesky host"
+msgstr "Bluesky地址"
+
+#: bluesky.php:108
+msgid "Bluesky handle"
+msgstr "Bluesky handle"
+
+#: bluesky.php:109
+msgid "Bluesky DID"
+msgstr "Bluesky DID"
+
+#: bluesky.php:109
+msgid ""
+"This is the unique identifier. It will be fetched automatically, when the "
+"handle is entered."
+msgstr "这是唯一标识符。 输入句柄时，它将自动获取。"
+
+#: bluesky.php:110
+msgid "Bluesky app password"
+msgstr "Bluesky 应用密码"
+
+#: bluesky.php:110
+msgid ""
+"Please don't add your real password here, but instead create a specific app "
+"password in the Bluesky settings."
+msgstr "请不要在此处填写您的真实密码，而是在 Bluesky 设置中创建一个特定的应用程序密码。"
+
+#: bluesky.php:116
+msgid "Bluesky Import/Export"
+msgstr "Bluesky 导入/导出"
+
+#: bluesky.php:167
+msgid "Post to Bluesky"
+msgstr "发布到Bluesky"
