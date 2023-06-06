@@ -6,6 +6,7 @@
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  *
  * @todo
+ * Currently technical issues in the core:
  * - Outgoing mentions
  *
  * Possibly not possible:
@@ -17,10 +18,8 @@
  *
  * Possibly interesting:
  * - https://atproto.com/lexicons/com-atproto-label#comatprotolabelsubscribelabels
- * - https://atproto.com/lexicons/com-atproto-moderation#comatprotomoderationcreatereport
  * - https://atproto.com/lexicons/com-atproto-repo#comatprotorepoputrecord
  * - https://atproto.com/lexicons/app-bsky-embed#appbskyembedrecordwithmedia
- * - https://atproto.com/lexicons/app-bsky-feed#appbskyfeedgetpostthread
  */
 
 use Friendica\Content\Text\BBCode;
@@ -614,12 +613,13 @@ function bluesky_create_post(array $item, stdClass $root = null, stdClass $paren
 	}
 
 	$did  = DI::pConfig()->get($uid, 'bluesky', 'did');
-	$urls = bluesky_get_urls($item['body']);
+	$urls = bluesky_get_urls(Post\Media::removeFromBody($item['body']));
+	$item['body'] = $urls['body'];
 
 	$msg = Plaintext::getPost($item, 300, false, BBCode::BLUESKY);
 	foreach ($msg['parts'] as $key => $part) {
 
-		$facets = bluesky_get_facets($part, $urls);
+		$facets = bluesky_get_facets($part, $urls['urls']);
 
 		$record = [
 			'text'      => $facets['body'],
@@ -669,19 +669,45 @@ function bluesky_get_urls(string $body): array
 	$urls = [];
 
 	// Search for pure links
-	if (preg_match_all("/\[url\](https?:.*?)\[\/url\]/ism", $body, $matches)) {
-		foreach ($matches[1] as $url) {
-			$urls[] = $url;
+	if (preg_match_all("/\[url\](https?:.*?)\[\/url\]/ism", $body, $matches, PREG_SET_ORDER)) {
+		foreach ($matches as $match) {
+			$text = Strings::getStyledURL($match[1]);
+			$hash = bluesky_get_hash_for_url($match[0], mb_strlen($text));
+			$urls[] = ['url' => $match[1], 'text' => $text, 'hash' => $hash];
+			$body = str_replace($match[0], $hash, $body);
 		}
 	}
 
 	// Search for links with descriptions
-	if (preg_match_all("/\[url\=(https?:.*?)\].*?\[\/url\]/ism", $body, $matches)) {
-		foreach ($matches[1] as $url) {
-			$urls[] = $url;
+	if (preg_match_all("/\[url\=(https?:.*?)\](.*?)\[\/url\]/ism", $body, $matches, PREG_SET_ORDER)) {
+		foreach ($matches as $match) {
+			if ($match[1] == $match[2]) {
+				$text = Strings::getStyledURL($match[1]);
+			} else {
+				$text = $match[2];
+			}
+			if (mb_strlen($text) < 100) {
+				$hash = bluesky_get_hash_for_url($match[0], mb_strlen($text));
+				$urls[] = ['url' => $match[1], 'text' => $text, 'hash' => $hash];
+				$body = str_replace($match[0], $hash, $body);
+			} else {
+				$text = Strings::getStyledURL($match[1]);
+				$hash = bluesky_get_hash_for_url($match[0], mb_strlen($text));
+				$urls[] = ['url' => $match[1], 'text' => $text, 'hash' => $hash];
+				$body = str_replace($match[0], $text . ' ' . $hash, $body);
+			}
 		}
 	}
-	return $urls;
+
+	return ['body' => $body, 'urls' => $urls];
+}
+
+function bluesky_get_hash_for_url(string $text, int $linklength): string
+{
+	if ($linklength <= 10) {
+		return '|' . hash('crc32', $text) . '|';
+	}
+	return substr('|' . hash('crc32', $text) . base64_encode($text), 0, $linklength - 2) . '|';
 }
 
 function bluesky_get_facets(string $body, array $urls): array
@@ -689,7 +715,7 @@ function bluesky_get_facets(string $body, array $urls): array
 	$facets = [];
 
 	foreach ($urls as $url) {
-		$pos = strpos($body, $url);
+		$pos = strpos($body, $url['hash']);
 		if ($pos === false) {
 			continue;
 		}
@@ -698,16 +724,16 @@ function bluesky_get_facets(string $body, array $urls): array
 		} else {
 			$prefix = '';
 		}
-		$linktext = Strings::getStyledURL($url);
-		$body = $prefix . $linktext . substr($body, $pos + strlen($url));
+
+		$body = $prefix . $url['text'] . substr($body, $pos + strlen($url['hash']));
 
 		$facet = new stdClass;
 		$facet->index = new stdClass;
-		$facet->index->byteEnd   = $pos + strlen($linktext);
+		$facet->index->byteEnd   = $pos + strlen($url['text']);
 		$facet->index->byteStart = $pos;
 
 		$feature = new stdClass;
-		$feature->uri = $url;
+		$feature->uri = $url['url'];
 		$type = '$type';
 		$feature->$type = 'app.bsky.richtext.facet#link';
 
@@ -858,8 +884,9 @@ function bluesky_fetch_notifications(int $uid)
 				$item['gravity'] = Item::GRAVITY_ACTIVITY;
 				$item['body'] = $item['verb'] = Activity::LIKE;
 				$item['thr-parent'] = bluesky_get_uri($notification->record->subject);
+				$item['thr-parent'] = bluesky_fetch_missing_post($item['thr-parent'], $uid, $item['contact-id']);
 				$result = Item::insert($item);
-				Logger::debug('Got like', ['uid' => $uid, 'result' => $result]);
+				Logger::debug('Got like', ['uid' => $uid, 'result' => $result, 'uri' => $uri]);
 				break;
 
 			case 'repost':
@@ -867,32 +894,33 @@ function bluesky_fetch_notifications(int $uid)
 				$item['gravity'] = Item::GRAVITY_ACTIVITY;
 				$item['body'] = $item['verb'] = Activity::ANNOUNCE;
 				$item['thr-parent'] = bluesky_get_uri($notification->record->subject);
+				$item['thr-parent'] = bluesky_fetch_missing_post($item['thr-parent'], $uid, $item['contact-id']);
 				$result = Item::insert($item);
-				Logger::debug('Got repost', ['uid' => $uid, 'result' => $result]);
+				Logger::debug('Got repost', ['uid' => $uid, 'result' => $result, 'uri' => $uri]);
 				break;
 
 			case 'follow':
 				$contact = bluesky_get_contact($notification->author, $uid, $uid);
-				Logger::debug('New follower', ['uid' => $uid, 'nick' => $contact['nick']]);
+				Logger::debug('New follower', ['uid' => $uid, 'nick' => $contact['nick'], 'uri' => $uri]);
 				break;
 
 			case 'mention':
 				$result = bluesky_process_post($notification, $uid, Item::PR_PUSHED);
-				Logger::debug('Got mention', ['uid' => $uid, 'result' => $result]);
+				Logger::debug('Got mention', ['uid' => $uid, 'result' => $result, 'uri' => $uri]);
 				break;
 
 			case 'reply':
 				$result = bluesky_process_post($notification, $uid, Item::PR_PUSHED);
-				Logger::debug('Got reply', ['uid' => $uid, 'result' => $result]);
+				Logger::debug('Got reply', ['uid' => $uid, 'result' => $result, 'uri' => $uri]);
 				break;
 
 			case 'quote':
 				$result = bluesky_process_post($notification, $uid, Item::PR_PUSHED);
-				Logger::debug('Got quote', ['uid' => $uid, 'result' => $result]);
+				Logger::debug('Got quote', ['uid' => $uid, 'result' => $result, 'uri' => $uri]);
 				break;
 
 			default:
-				Logger::notice('Unhandled reason', ['reason' => $notification->reason]);
+				Logger::notice('Unhandled reason', ['reason' => $notification->reason, 'uri' => $uri]);
 				break;
 		}
 	}
@@ -1023,7 +1051,7 @@ function bluesky_get_text(stdClass $record, int $uid): string
 					break;
 
 				case 'app.bsky.richtext.facet#mention':
-					$contact = Contact::selectFirst(['id'], ['nurl' => $feature->did, 'uid' => [0, $uid]]);
+					$contact = Contact::getByURL($feature->did, null, ['id']);
 					if (!empty($contact['id'])) {
 						$url = DI::baseUrl() . '/contact/' . $contact['id'];
 						if (substr($linktext, 0, 1) == '@') {
@@ -1179,21 +1207,16 @@ function bluesky_get_uri_parts(string $uri): ?stdClass
 
 function bluesky_fetch_missing_post(string $uri, int $uid, int $causer): string
 {
-	if (Post::exists(['uri' => $uri, 'uid' => [$uid, 0]])) {
-		Logger::debug('Post exists', ['uri' => $uri]);
-		return $uri;
-	}
-
-	$reply = Post::selectFirst(['uri'], ['extid' => $uri, 'uid' => [$uid, 0]]);
-	if (!empty($reply['uri'])) {
-		return $reply['uri'];
+	$fetched_uri = bluesky_fetch_post($uri, $uid);
+	if (!empty($fetched_uri)) {
+		return $fetched_uri;
 	}
 
 	Logger::debug('Fetch missing post', ['uri' => $uri]);
 	$class = bluesky_get_uri_class($uri);
 	$fetch_uri = $class->uri;
 
-	$data = bluesky_get($uid, '/xrpc/app.bsky.feed.getPosts?uris=' . urlencode($fetch_uri), HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
+	$data = bluesky_get($uid, '/xrpc/app.bsky.feed.getPostThread?uri=' . urlencode($fetch_uri), HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
 	if (empty($data)) {
 		return '';
 	}
@@ -1202,10 +1225,32 @@ function bluesky_fetch_missing_post(string $uri, int $uid, int $causer): string
 		$cdata = Contact::getPublicAndUserContactID($causer, $uid);
 	}
 
-	foreach ($data->posts as $post) {
-		$uri = bluesky_get_uri($post);
-		$item = bluesky_get_header($post, $uri, $uid, $uid);
-		$item = bluesky_get_content($item, $post->record, $uid);
+	return bluesky_process_thread($data->thread, $uid, $cdata);
+}
+
+function bluesky_fetch_post(string $uri, int $uid): string
+{
+	if (Post::exists(['uri' => $uri, 'uid' => [$uid, 0]])) {
+		Logger::debug('Post exists', ['uri' => $uri]);
+		return $uri;
+	}
+
+	$reply = Post::selectFirst(['uri'], ['extid' => $uri, 'uid' => [$uid, 0]]);
+	if (!empty($reply['uri'])) {
+		Logger::debug('Post with extid exists', ['uri' => $uri]);
+		return $reply['uri'];
+	}
+	return '';
+}
+
+function bluesky_process_thread(stdClass $thread, int $uid, array $cdata): string
+{
+	$uri = bluesky_get_uri($thread->post);
+	$fetched_uri = bluesky_fetch_post($uri, $uid);
+	if (empty($fetched_uri)) {
+		Logger::debug('Process missing post', ['uri' => $uri]);
+		$item = bluesky_get_header($thread->post, $uri, $uid, $uid);
+		$item = bluesky_get_content($item, $thread->post->record, $uid);
 
 		$item['post-reason'] = Item::PR_FETCHED;
 
@@ -1213,11 +1258,18 @@ function bluesky_fetch_missing_post(string $uri, int $uid, int $causer): string
 			$item['causer-id']   = $cdata['public'];
 		}
 
-		if (!empty($post->embed)) {
-			$item = bluesky_add_media($post->embed, $item, $uid);
+		if (!empty($thread->post->embed)) {
+			$item = bluesky_add_media($thread->post->embed, $item, $uid);
 		}
 		$id = Item::insert($item);
 		Logger::debug('Stored item', ['id' => $id, 'uri' => $uri]);
+	} else {
+		Logger::debug('Post exists', ['uri' => $uri]);
+		$uri = $fetched_uri;
+	}
+
+	foreach ($thread->replies as $reply) {
+		bluesky_process_thread($reply, $uid, $cdata);
 	}
 
 	return $uri;
