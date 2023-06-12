@@ -11,7 +11,7 @@
  *
  * At some point in time:
  * - Sending Quote shares https://atproto.com/lexicons/app-bsky-embed#appbskyembedrecord and https://atproto.com/lexicons/app-bsky-embed#appbskyembedrecordwithmedia
-´*
+ *
  * Possibly not possible:
  * - only fetch new posts
  *
