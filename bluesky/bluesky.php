@@ -118,7 +118,7 @@ function bluesky_probe_detect(array &$hookData)
 		return;
 	}
 
-	$data = bluesky_get($pconfig['uid'], '/xrpc/app.bsky.actor.getProfile?actor=' . urlencode($did), HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . $token]]]);
+	$data = bluesky_xrpc_get($pconfig['uid'], 'app.bsky.actor.getProfile', ['actor' => $did]);
 	if (empty($data)) {
 		return;
 	}
@@ -212,7 +212,7 @@ function bluesky_follow(array &$hook_data)
 		'record'     => $record
 	];
 
-	$activity = bluesky_post($hook_data['uid'], '/xrpc/com.atproto.repo.createRecord', json_encode($post), ['Content-type' => 'application/json', 'Authorization' => ['Bearer ' . $token]]);
+	$activity = bluesky_xrpc_post($hook_data['uid'], 'com.atproto.repo.createRecord', $post);
 	if (!empty($activity->uri)) {
 		$hook_data['contact'] = $contact;
 		Logger::debug('Successfully start following', ['url' => $contact['url'], 'uri' => $activity->uri]);
@@ -230,7 +230,7 @@ function bluesky_unfollow(array &$hook_data)
 		return;
 	}
 
-	$data = bluesky_get($hook_data['uid'], '/xrpc/app.bsky.actor.getProfile?actor=' . urlencode($hook_data['contact']['url']), HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . $token]]]);
+	$data = bluesky_xrpc_get($hook_data['uid'], 'app.bsky.actor.getProfile', ['actor' => $hook_data['contact']['url']]);
 	if (empty($data->viewer) || empty($data->viewer->following)) {
 		return;
 	}
@@ -265,7 +265,7 @@ function bluesky_block(array &$hook_data)
 		'record'     => $record
 	];
 
-	$activity = bluesky_post($hook_data['uid'], '/xrpc/com.atproto.repo.createRecord', json_encode($post), ['Content-type' => 'application/json', 'Authorization' => ['Bearer ' . $token]]);
+	$activity = bluesky_xrpc_post($hook_data['uid'], 'com.atproto.repo.createRecord', $post);
 	if (!empty($activity->uri)) {
 		$cdata = Contact::getPublicAndUserContactID($hook_data['contact']['id'], $hook_data['uid']);
 		if (!empty($cdata['user'])) {
@@ -286,7 +286,7 @@ function bluesky_unblock(array &$hook_data)
 		return;
 	}
 
-	$data = bluesky_get($hook_data['uid'], '/xrpc/app.bsky.actor.getProfile?actor=' . urlencode($hook_data['contact']['url']), HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . $token]]]);
+	$data = bluesky_xrpc_get($hook_data['uid'], 'app.bsky.actor.getProfile', ['actor' => $hook_data['contact']['url']]);
 	if (empty($data->viewer) || empty($data->viewer->blocking)) {
 		return;
 	}
@@ -590,7 +590,7 @@ function bluesky_create_activity(array $item, stdClass $parent = null)
 		];
 	}
 
-	$activity = bluesky_post($uid, '/xrpc/com.atproto.repo.createRecord', json_encode($post), ['Content-type' => 'application/json', 'Authorization' => ['Bearer ' . $token]]);
+	$activity = bluesky_xrpc_post($uid, 'com.atproto.repo.createRecord', $post);
 	if (empty($activity)) {
 		return;
 	}
@@ -641,7 +641,7 @@ function bluesky_create_post(array $item, stdClass $root = null, stdClass $paren
 			'record'     => $record
 		];
 
-		$parent = bluesky_post($uid, '/xrpc/com.atproto.repo.createRecord', json_encode($post), ['Content-type' => 'application/json', 'Authorization' => ['Bearer ' . $token]]);
+		$parent = bluesky_xrpc_post($uid, 'com.atproto.repo.createRecord', $post);
 		if (empty($parent)) {
 			return;
 		}
@@ -789,19 +789,18 @@ function bluesky_upload_blob(int $uid, array $photo): ?stdClass
 
 function bluesky_delete_post(string $uri, int $uid)
 {
-	$token = bluesky_get_token($uid);
 	$parts = bluesky_get_uri_parts($uri);
 	if (empty($parts)) {
 		Logger::debug('No uri delected', ['uri' => $uri]);
 		return;
 	}
-	bluesky_post($uid, '/xrpc/com.atproto.repo.deleteRecord', json_encode($parts), ['Content-type' => 'application/json', 'Authorization' => ['Bearer ' . $token]]);
+	bluesky_xrpc_post($uid, 'com.atproto.repo.deleteRecord', $parts);
 	Logger::debug('Deleted', ['parts' => $parts]);
 }
 
 function bluesky_fetch_timeline(int $uid)
 {
-	$data = bluesky_get($uid, '/xrpc/app.bsky.feed.getTimeline', HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
+	$data = bluesky_xrpc_get($uid, 'app.bsky.feed.getTimeline');
 	if (empty($data)) {
 		return;
 	}
@@ -864,11 +863,11 @@ function bluesky_process_reason(stdClass $reason, string $uri, int $uid)
 
 function bluesky_fetch_notifications(int $uid)
 {
-	$result = bluesky_get($uid, '/xrpc/app.bsky.notification.listNotifications', HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
-	if (empty($result->notifications)) {
+	$data = bluesky_xrpc_get($uid, 'app.bsky.notification.listNotifications');
+	if (empty($data->notifications)) {
 		return;
 	}
-	foreach ($result->notifications as $notification) {
+	foreach ($data->notifications as $notification) {
 		$uri = bluesky_get_uri($notification);
 		if (Post::exists(['uri' => $uri, 'uid' => $uid]) || Post::exists(['extid' => $uri, 'uid' => $uid])) {
 			Logger::debug('Notification already processed', ['uid' => $uid, 'reason' => $notification->reason, 'uri' => $uri, 'indexedAt' => $notification->indexedAt]);
@@ -883,8 +882,8 @@ function bluesky_fetch_notifications(int $uid)
 				$item['thr-parent'] = bluesky_get_uri($notification->record->subject);
 				$item['thr-parent'] = bluesky_fetch_missing_post($item['thr-parent'], $uid, $item['contact-id'], 0);
 				if (!empty($item['thr-parent'])) {
-					$result = Item::insert($item);
-					Logger::debug('Got like', ['uid' => $uid, 'result' => $result, 'uri' => $uri]);
+					$data = Item::insert($item);
+					Logger::debug('Got like', ['uid' => $uid, 'result' => $data, 'uri' => $uri]);
 				} else {
 					Logger::info('Thread parent not found', ['uid' => $uid, 'parent' => $$item['thr-parent'], 'uri' => $uri]);
 				}
@@ -897,8 +896,8 @@ function bluesky_fetch_notifications(int $uid)
 				$item['thr-parent'] = bluesky_get_uri($notification->record->subject);
 				$item['thr-parent'] = bluesky_fetch_missing_post($item['thr-parent'], $uid, $item['contact-id'], 0);
 				if (!empty($item['thr-parent'])) {
-					$result = Item::insert($item);
-					Logger::debug('Got repost', ['uid' => $uid, 'result' => $result, 'uri' => $uri]);
+					$data = Item::insert($item);
+					Logger::debug('Got repost', ['uid' => $uid, 'result' => $data, 'uri' => $uri]);
 				} else {
 					Logger::info('Thread parent not found', ['uid' => $uid, 'parent' => $$item['thr-parent'], 'uri' => $uri]);
 				}
@@ -910,18 +909,18 @@ function bluesky_fetch_notifications(int $uid)
 				break;
 
 			case 'mention':
-				$result = bluesky_process_post($notification, $uid, Item::PR_PUSHED, 0);
-				Logger::debug('Got mention', ['uid' => $uid, 'result' => $result, 'uri' => $uri]);
+				$data = bluesky_process_post($notification, $uid, Item::PR_PUSHED, 0);
+				Logger::debug('Got mention', ['uid' => $uid, 'result' => $data, 'uri' => $uri]);
 				break;
 
 			case 'reply':
-				$result = bluesky_process_post($notification, $uid, Item::PR_PUSHED, 0);
-				Logger::debug('Got reply', ['uid' => $uid, 'result' => $result, 'uri' => $uri]);
+				$data = bluesky_process_post($notification, $uid, Item::PR_PUSHED, 0);
+				Logger::debug('Got reply', ['uid' => $uid, 'result' => $data, 'uri' => $uri]);
 				break;
 
 			case 'quote':
-				$result = bluesky_process_post($notification, $uid, Item::PR_PUSHED, 0);
-				Logger::debug('Got quote', ['uid' => $uid, 'result' => $result, 'uri' => $uri]);
+				$data = bluesky_process_post($notification, $uid, Item::PR_PUSHED, 0);
+				Logger::debug('Got quote', ['uid' => $uid, 'result' => $data, 'uri' => $uri]);
 				break;
 
 			default:
@@ -933,7 +932,7 @@ function bluesky_fetch_notifications(int $uid)
 
 function bluesky_fetch_feed(int $uid, string $feed)
 {
-	$data = bluesky_get($uid, '/xrpc/app.bsky.feed.getFeed?feed=' . urlencode($feed), HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
+	$data = bluesky_xrpc_get($uid, 'app.bsky.feed.getFeed', ['feed' => $feed]);
 	if (empty($data)) {
 		return;
 	}
@@ -1243,7 +1242,7 @@ function bluesky_fetch_missing_post(string $uri, int $uid, int $causer, int $lev
 	$fetch_uri = $class->uri;
 
 	Logger::debug('Fetch missing post', ['level' => $level, 'uid' => $uid, 'uri' => $uri]);
-	$data = bluesky_get($uid, '/xrpc/app.bsky.feed.getPostThread?uri=' . urlencode($fetch_uri), HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
+	$data = bluesky_xrpc_get($uid, 'app.bsky.feed.getPostThread', ['uri' => $fetch_uri]);
 	if (empty($data)) {
 		Logger::info('Thread was not fetched', ['level' => $level, 'uid' => $uid, 'uri' => $uri, 'fallback' => $fallback]);
 		return $fallback;
@@ -1253,6 +1252,8 @@ function bluesky_fetch_missing_post(string $uri, int $uid, int $causer, int $lev
 
 	if ($causer != 0) {
 		$cdata = Contact::getPublicAndUserContactID($causer, $uid);
+	} else {
+		$cdata = [];
 	}
 
 	return bluesky_process_thread($data->thread, $uid, $cdata, $level);
@@ -1386,7 +1387,7 @@ function bluesky_get_contact_fields(stdClass $author, int $uid, bool $update): a
 		return $fields;
 	}
 
-	$data = bluesky_get($uid, '/xrpc/app.bsky.actor.getProfile?actor=' . urlencode($author->did), HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
+	$data = bluesky_xrpc_get($uid, 'app.bsky.actor.getProfile', ['actor' => $author->did]);
 	if (empty($data)) {
 		Logger::debug('Error fetching contact fields', ['uid' => $uid, 'url' => $fields['url']]);
 		return $fields;
@@ -1438,7 +1439,7 @@ function bluesky_get_preferences(int $uid): stdClass
 		return $data;
 	}
 
-	$data = bluesky_get($uid, '/xrpc/app.bsky.actor.getPreferences', HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
+	$data = bluesky_xrpc_get($uid, 'app.bsky.actor.getPreferences');
 
 	DI::cache()->set($cachekey, $data, Duration::HOUR);
 	return $data;
@@ -1500,6 +1501,11 @@ function bluesky_create_token(int $uid, string $password): string
 	return $data->accessJwt;
 }
 
+function bluesky_xrpc_post(int $uid, string $url, $parameters): ?stdClass
+{
+	return bluesky_post($uid, '/xrpc/' . $url, json_encode($parameters),  ['Content-type' => 'application/json', 'Authorization' => ['Bearer ' . bluesky_get_token($uid)]]);
+}
+
 function bluesky_post(int $uid, string $url, string $params, array $headers): ?stdClass
 {
 	try {
@@ -1515,6 +1521,15 @@ function bluesky_post(int $uid, string $url, string $params, array $headers): ?s
 	}
 
 	return json_decode($curlResult->getBody());
+}
+
+function bluesky_xrpc_get(int $uid, string $url, array $parameters = []): ?stdClass
+{
+	if (!empty($parameters)) {
+		$url .= '?' . http_build_query($parameters);
+	}
+
+	return bluesky_get($uid, '/xrpc/' . $url, HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
 }
 
 function bluesky_get(int $uid, string $url, string $accept_content = HttpClientAccept::DEFAULT, array $opts = []): ?stdClass
