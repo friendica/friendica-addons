@@ -1,0 +1,56 @@
+# ADDON webrtc
+# Copyright (C)
+# This file is distributed under the same license as the Friendica webrtc addon package.
+# 
+# 
+# Translators:
+# Aditoo, 2018
+# michal_s <msupler@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-29 15:56+0200\n"
+"PO-Revision-Date: 2014-06-23 13:05+0000\n"
+"Last-Translator: Aditoo, 2018\n"
+"Language-Team: Czech (http://app.transifex.com/Friendica/friendica/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
+
+#: webrtc.php:18
+msgid "WebRTC Videochat"
+msgstr "WebRTC Videochat"
+
+#: webrtc.php:24
+msgid "Save Settings"
+msgstr "Uložit Nastavení"
+
+#: webrtc.php:25
+msgid "WebRTC Base URL"
+msgstr "Základní adresa URL WebRTC"
+
+#: webrtc.php:25
+msgid ""
+"Page your users will create a WebRTC chat room on. For example you could use"
+" https://live.mayfirst.org ."
+msgstr "Stránka, na které budou vaši uživatelé vytvářet chatovací místnosti WebRTC. Například můžete zadat https://live.mayfirst.org."
+
+#: webrtc.php:44
+msgid "Video Chat"
+msgstr "Video Chat"
+
+#: webrtc.php:45
+msgid ""
+"WebRTC is a video and audio conferencing tool that works in all modern "
+"browsers. Just create a new chat room and send the link to someone you want "
+"to chat with."
+msgstr ""
+
+#: webrtc.php:47
+msgid ""
+"Please contact your friendica admin and send a reminder to configure the "
+"WebRTC addon."
+msgstr "Prosím kontaktujte administrátora Vašeho serveru Friendica a požádejte ho o konfiguraci doplňku WebRTC."

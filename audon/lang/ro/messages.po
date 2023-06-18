@@ -1,0 +1,58 @@
+# ADDON webrtc
+# Copyright (C)
+# This file is distributed under the same license as the Friendica webrtc addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2014-07-08 12:11+0000\n"
+"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: webrtc.php:20
+msgid "WebRTC Videochat"
+msgstr "Videochat WebRTC "
+
+#: webrtc.php:26
+msgid "Save Settings"
+msgstr "Salvare Configurări"
+
+#: webrtc.php:27
+msgid "WebRTC Base URL"
+msgstr "Adresa URL de Bază WebRTC "
+
+#: webrtc.php:27
+msgid ""
+"Page your users will create a WebRTC chat room on. For example you could use"
+" https://live.mayfirst.org ."
+msgstr "Pagina pe care utilizatorii dvs vor crea o camera de chat WebRTC . De exemplu, a-ți putea utiliza https://live.mayfirst.org ."
+
+#: webrtc.php:33
+msgid "Settings updated."
+msgstr "Configurări actualizate."
+
+#: webrtc.php:47
+msgid "Video Chat"
+msgstr "Video Chat"
+
+#: webrtc.php:48
+msgid ""
+"WebRTC is a video and audio conferencing tool that works with Firefox "
+"(version 21 and above) and Chrome/Chromium (version 25 and above). Just "
+"create a new chat room and send the link to someone you want to chat with."
+msgstr "WebRTC este un instrument de conferințe audio-video care funcționează cu Firefox (versiunea 21 şi superioară) şi Chrome/Chromium (versiunea 25 şi superioară). Trebuie doar să creați o nouă cameră de chat şi să trimiteți legătura cuiva cu care doriţi să conversați."
+
+#: webrtc.php:50
+msgid ""
+"Please contact your friendica admin and send a reminder to configure the "
+"WebRTC addon."
+msgstr "Vă rugăm să vă contactați administratorul friendica şi să-i trimiteți un memento pentru a configura suplimentul WebRTC."
