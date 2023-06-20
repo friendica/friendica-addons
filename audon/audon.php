@@ -12,8 +12,9 @@ use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
-function audon_install() {
-	Hook::register('app_menu', 'addon/audon/audon.php', 'audon_app_menu');
+function audon_install()
+{
+	Hook::register('app_menu', __FILE__, 'audon_app_menu');
 }
 
 function audon_app_menu(array &$b)
