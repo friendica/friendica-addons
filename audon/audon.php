@@ -36,7 +36,7 @@ function audon_addon_admin(string &$o)
 	]);
 }
 
-function audon_addon_admin_post ()
+function audon_addon_admin_post()
 {
 	DI::config()->set('audon', 'audonurl', trim($_POST['audonurl'] ?? ''));
 }
