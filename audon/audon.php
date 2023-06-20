@@ -22,15 +22,15 @@ function audon_app_menu(array &$b)
 	$b['app_menu'][] = '<div class="app-title"><a href="audon">' . DI::l10n()->t('audon Audiochat') . '</a></div>';
 }
 
-function audon_addon_admin (string &$o)
+function audon_addon_admin(string &$o)
 {
-	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/audon/' );
+	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/audon/');
 	$o = Renderer::replaceMacros($t, [
-		'$submit' => DI::l10n()->t('Save Settings'),
+		'$submit'   => DI::l10n()->t('Save Settings'),
 		'$audonurl' => [
 			'audonurl',
 			DI::l10n()->t('audon Base URL'),
-			DI::config()->get('audon','audonurl' ),
+			DI::config()->get('audon','audonurl'),
 			DI::l10n()->t('Page your users will create a audon Audio chat room on. For example you could use https://audon.space.'),
 		],
 	]);
