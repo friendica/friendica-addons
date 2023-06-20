@@ -56,12 +56,12 @@ function audon_content(): string
 	$audonurl = DI::config()->get('audon','audonurl');
 
 	/* embedd the landing page in an iframe */
-	$o .= '<h2>'.DI::l10n()->t('Audio Chat').'</h2>';
-	$o .= '<p>'.DI::l10n()->t('audon is a Audio conferencing tool. Connect your account to Audon and create a room. Share the generated link to talk to other participants.').'</p>';
+	$o .= '<h2>' . DI::l10n()->t('Audio Chat') . '</h2>';
+	$o .= '<p>' . DI::l10n()->t('Audon is an audio conferencing tool. Connect your account to Audon and create a room. Share the generated link to talk to other participants.') . '</p>';
 	if ($audonurl == '') {
-		$o .= '<p>'.DI::l10n()->t('Please contact your friendica admin and send a reminder to configure the audon addon.').'</p>';
+		$o .= '<p>' . DI::l10n()->t('Please contact your friendica administrator to remind them to configure the Audon addon.') . '</p>';
 	} else {
-		$o .= '<iframe src="'.$audonurl.'" width="740px" height="600px"></iframe>';
+		$o .= '<iframe src="' . $audonurl . '" width="740px" height="600px"></iframe>';
 	}
 
 	return $o;
