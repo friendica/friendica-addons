@@ -1,4 +1,4 @@
-<<?php
+<?php
 /*
  * Name: audon Application
  * Description: add a audon instance for audio. Based on webRTC Addon
