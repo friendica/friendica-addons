@@ -659,8 +659,8 @@ function bluesky_create_post(array $item, stdClass $root = null, stdClass $paren
 
 function bluesky_get_urls(string $body): array
 {
-	// Remove all hashtags and mentions
-	$body = preg_replace("/([#@!])\[url\=(.*?)\](.*?)\[\/url\]/ism", '', $body);
+	// Remove all hashtag and mention links
+	$body = preg_replace("/([#@!])\[url\=(.*?)\](.*?)\[\/url\]/ism", '$1$3', $body);
 
 	$urls = [];
 
