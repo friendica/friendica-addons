@@ -1150,14 +1150,10 @@ function bluesky_add_media(stdClass $embed, array $item, int $fetch_uid, int $le
 				$shared = bluesky_get_header($embed->record->record, $uri, 0, $fetch_uid);
 				$shared = bluesky_get_content($shared, $embed->record->record->value, $uri, $item['uid'], $level);
 				if (!empty($shared)) {
-					if (!empty($embed->record->embeds)) {
+					if (!empty($embed->record->record->embeds)) {
 						foreach ($embed->record->record->embeds as $single) {
 							$shared = bluesky_add_media($single, $shared, $fetch_uid, $level);
 						}
-					}
-
-					if (!empty($embed->media)) {
-						bluesky_add_media($embed->media, $item, $fetch_uid, $level);
 					}
 
 					$id = Item::insert($shared);
@@ -1166,6 +1162,10 @@ function bluesky_add_media(stdClass $embed, array $item, int $fetch_uid, int $le
 			}
 			if (!empty($shared)) {
 				$item['quote-uri-id'] = $shared['uri-id'];
+			}
+
+			if (!empty($embed->media)) {
+				bluesky_add_media($embed->media, $item, $fetch_uid, $level);
 			}
 			break;
 
