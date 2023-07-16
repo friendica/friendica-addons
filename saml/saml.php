@@ -6,7 +6,6 @@
  * Author: Ryan <https://friendica.verya.pe/profile/ryan>
  */
 
-use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
@@ -14,7 +13,6 @@ use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\User;
-use Friendica\Util\Strings;
 use OneLogin\Saml2\Utils;
 
 require_once(__DIR__ . '/vendor/autoload.php');
@@ -84,7 +82,7 @@ function saml_head(string &$body)
 
 function saml_footer(string &$body)
 {
-	$fragment = addslashes(BBCode::convert(DI::config()->get('saml', 'settings_statement')));
+	$fragment = addslashes(BBCode::convertForUriId(User::getSystemUriId(), DI::config()->get('saml', 'settings_statement')));
 	$body .= <<<EOL
 <script>
 var target=$("#settings-nickname-desc");
@@ -163,7 +161,7 @@ function saml_sso_reply()
 	}
 
 	if (!empty($user['uid'])) {
-		DI::auth()->setForUser($user);
+		DI::auth()->setForUser(DI::app(), $user);
 	}
 
 	if (isset($_POST['RelayState']) && Utils::getSelfURL() != $_POST['RelayState']) {

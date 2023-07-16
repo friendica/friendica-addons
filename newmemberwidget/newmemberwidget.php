@@ -12,6 +12,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
+use Friendica\Model\User;
 
 function newmemberwidget_install()
 {
@@ -39,7 +40,7 @@ function newmemberwidget_network_mod_init ($b)
 
 	$ft = DI::config()->get('newmemberwidget','freetext', '');
 	if (!empty($ft)) {
-		$t .= '<p>'.BBCode::convert(trim($ft)).'</p>';
+		$t .= '<p>'.BBCode::convertForUriId(User::getSystemUriId(), trim($ft)).'</p>';
 	}
 
 	$t .= '</div><div class="clear"></div>';

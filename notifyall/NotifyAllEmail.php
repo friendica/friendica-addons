@@ -25,6 +25,7 @@ use Friendica\App\BaseURL;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Config\Capability\IManageConfigValues;
 use Friendica\Core\L10n;
+use Friendica\Model\User;
 use Friendica\Object\Email;
 
 /**
@@ -50,9 +51,9 @@ class NotifyAllEmail extends Email
 
 		$subject = $_REQUEST['subject'];
 
-		$textversion = strip_tags(html_entity_decode(BBCode::convert(stripslashes(str_replace(["\\r", "\\n"], ["", "\n"], $text))), ENT_QUOTES, 'UTF-8'));
+		$textversion = strip_tags(html_entity_decode(BBCode::convertForUriId(User::getSystemUriId(), stripslashes(str_replace(["\\r", "\\n"], ["", "\n"], $text))), ENT_QUOTES, 'UTF-8'));
 
-		$htmlversion = BBCode::convert(stripslashes(str_replace(["\\r", "\\n"], ["", "<br />\n"], $text)));
+		$htmlversion = BBCode::convertForUriId(User::getSystemUriId(), stripslashes(str_replace(["\\r", "\\n"], ["", "<br />\n"], $text)));
 
 		parent::__construct($sender_name, $sender_email, $sender_email, '', $subject, $htmlversion, $textversion);
 	}

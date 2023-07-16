@@ -1267,7 +1267,7 @@ function tumblr_get_contact_by_url(string $url): ?array
 		return null;
 	}
 
-	if (is_array($data->response->blog)) {
+	if (is_array($data->response->blog) || empty($data->response->blog)) {
 		Logger::warning('Unexpected blog format', ['blog' => $blog, 'data' => $data]);
 		return null;
 	}
