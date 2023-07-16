@@ -19,7 +19,7 @@
  *
  */
 
-use Friendica\Core\Hooks\Capabilities\HookType as H;
+use Friendica\Core\Hooks\Capabilities\BehavioralHookType as H;
 
 return [
 	H::STRATEGY => [
