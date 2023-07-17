@@ -258,12 +258,13 @@ function mailstream_sender(array $item): string
  * Converts a bbcode-encoded subject line into a plaintext version suitable for the subject line of an email
  *
  * @param string $subject bbcode-encoded subject line
+ * @param int    $uri_id
  *
  * @return string plaintext subject line
  */
-function mailstream_decode_subject(string $subject): string
+function mailstream_decode_subject(string $subject, int $uri_id): string
 {
-	$html = BBCode::convert($subject);
+	$html = BBCode::convertForUriId($uri_id, $subject);
 	if (!$html) {
 		return $subject;
 	}
@@ -298,7 +299,7 @@ function mailstream_decode_subject(string $subject): string
 function mailstream_subject(array $item): string
 {
 	if ($item['title']) {
-		return mailstream_decode_subject($item['title']);
+		return mailstream_decode_subject($item['title'], $item['uri-id']);
 	}
 	$parent = $item['thr-parent'];
 	// Don't look more than 100 levels deep for a subject, in case of loops
@@ -311,7 +312,7 @@ function mailstream_subject(array $item): string
 			break;
 		}
 		if ($parent_item['title']) {
-			return DI::l10n()->t('Re:') . ' ' . mailstream_decode_subject($parent_item['title']);
+			return DI::l10n()->t('Re:') . ' ' . mailstream_decode_subject($parent_item['title'], $item['uri-id']);
 		}
 		$parent = $parent_item['thr-parent'];
 	}
@@ -333,7 +334,7 @@ function mailstream_subject(array $item): string
 		return DI::l10n()->t("Diaspora post");
 	}
 	if ($contact['network'] === 'face') {
-		$text = mailstream_decode_subject($item['body']);
+		$text = mailstream_decode_subject($item['body'], $item['uri-id']);
 		// For some reason these do show up in Facebook
 		$text = preg_replace('/\xA0$/', '', $text);
 		$subject = (strlen($text) > 150) ? (substr($text, 0, 140) . '...') : $text;

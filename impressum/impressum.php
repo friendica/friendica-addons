@@ -14,7 +14,7 @@ use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Core\Config\Util\ConfigFileManager;
-use Friendica\Util\Proxy as ProxyUtils;
+use Friendica\Model\User;
 
 function impressum_install()
 {
@@ -45,7 +45,7 @@ function obfuscate_email (string $s): string
 
 function impressum_footer(string &$body)
 {
-	$text = ProxyUtils::proxifyHtml(BBCode::convert(DI::config()->get('impressum', 'footer_text')));
+	$text = BBCode::convertForUriId(User::getSystemUriId(), DI::config()->get('impressum', 'footer_text'));
 
 	if ($text != '') {
 		DI::page()['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="' . DI::baseUrl() . '/addon/impressum/impressum.css" media="all" />';
@@ -64,8 +64,8 @@ function impressum_show(string &$body)
 	$body          .= '<h3>' . DI::l10n()->t('Impressum') . '</h3>';
 	$owner         = DI::config()->get('impressum', 'owner');
 	$owner_profile = DI::config()->get('impressum', 'ownerprofile');
-	$postal        = ProxyUtils::proxifyHtml(BBCode::convert(DI::config()->get('impressum', 'postal')));
-	$notes         = ProxyUtils::proxifyHtml(BBCode::convert(DI::config()->get('impressum', 'notes')));
+	$postal        = BBCode::convertForUriId(User::getSystemUriId(), DI::config()->get('impressum', 'postal'));
+	$notes         = BBCode::convertForUriId(User::getSystemUriId(), DI::config()->get('impressum', 'notes'));
 
 	if ($owner) {
 		if ($owner_profile) {

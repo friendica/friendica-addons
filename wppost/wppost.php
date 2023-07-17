@@ -15,6 +15,7 @@ use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Item;
 use Friendica\Model\Post;
+use Friendica\Model\User;
 use Friendica\Util\XML;
 
 function wppost_install()
@@ -92,7 +93,7 @@ function wppost_settings_post(array &$b)
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'wp_blog',   trim($_POST['wp_blog']));
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'backlink', intval($_POST['wp_backlink']));
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'shortcheck', intval($_POST['wp_shortcheck']));
-		$wp_backlink_text = BBCode::convert(trim($_POST['wp_backlink_text']), false, BBCode::BACKLINK);
+		$wp_backlink_text = BBCode::convertForUriId(User::getSystemUriId(), trim($_POST['wp_backlink_text']), BBCode::BACKLINK);
 		$wp_backlink_text = HTML::toPlaintext($wp_backlink_text, 0, true);
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'wp_backlink_text', $wp_backlink_text);
 	}
