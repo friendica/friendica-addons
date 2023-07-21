@@ -19,12 +19,8 @@
  *
  */
 
-use Friendica\Core\Hooks\Capabilities\BehavioralHookType as H;
-
 return [
-	H::STRATEGY => [
-		\Psr\Log\LoggerInterface::class => [
-			\Monolog\Logger::class => ['monolog'],
-		],
+	\Psr\Log\LoggerInterface::class => [
+		\Monolog\Logger::class => ['monolog'],
 	],
 ];
