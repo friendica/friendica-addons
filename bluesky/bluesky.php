@@ -32,6 +32,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Protocol;
 use Friendica\Core\Renderer;
+use Friendica\Core\System;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\DI;
@@ -760,8 +761,8 @@ function bluesky_add_embed(int $uid, array $msg, array $record): array
 			'$type'    => 'app.bsky.embed.external',
 			'external' => [
 				'uri'         => $msg['url'],
-				'title'       => $msg['title'],
-				'description' => $msg['description'],
+				'title'       => $msg['title'] ?? '',
+				'description' => $msg['description'] ?? '',
 			]
 		];
 		if (!empty($msg['image'])) {
@@ -1126,6 +1127,10 @@ function bluesky_add_media(stdClass $embed, array $item, int $fetch_uid, int $le
 			$uri = bluesky_get_uri($embed->record);
 			$shared = Post::selectFirst(['uri-id'], ['uri' => $uri, 'uid' => $item['uid']]);
 			if (empty($shared)) {
+				if (empty($embed->record->value)) {
+					Logger::info('Record has got no value', ['record' => $embed->record]);
+					break;
+				}
 				$shared = bluesky_get_header($embed->record, $uri, 0, $fetch_uid);
 				$shared = bluesky_get_content($shared, $embed->record->value, $uri, $item['uid'], $level);
 				if (!empty($shared)) {
@@ -1178,6 +1183,10 @@ function bluesky_add_media(stdClass $embed, array $item, int $fetch_uid, int $le
 
 function bluesky_get_uri(stdClass $post): string
 {
+	if (empty($post->cid)) {
+		Logger::info('Invalid URI', ['post' => $post, 'callstack' => System::callstack(10, 0, true)]);
+		return '';
+	}
 	return $post->uri . ':' . $post->cid;
 }
 
