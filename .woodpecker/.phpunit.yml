@@ -1,0 +1,115 @@
+matrix:
+  include:
+    - PHP_MAJOR_VERSION: 7.3
+      PHP_VERSION: 7.3.33
+    - PHP_MAJOR_VERSION: 7.4
+      PHP_VERSION: 7.4.33
+    - PHP_MAJOR_VERSION: 8.0
+      PHP_VERSION: 8.0.29
+    - PHP_MAJOR_VERSION: 8.1
+      PHP_VERSION: 8.1.21
+    - PHP_MAJOR_VERSION: 8.2
+      PHP_VERSION: 8.2.8
+
+# This forces PHP Unit executions at the "opensocial" labeled location (because of much more power...)
+labels:
+  location: opensocial
+
+skip_clone: true
+
+pipeline:
+  clone_friendica_base:
+    image: alpine/git
+    commands:
+      - git clone https://github.com/friendica/friendica.git .
+      - git checkout $CI_COMMIT_BRANCH
+  clone_friendica_addon:
+    image: alpine/git
+    commands:
+      - git config --global user.email "no-reply@friendi.ca"
+      - git config --global user.name "Friendica"
+      - git clone $CI_REPO_LINK addon
+      - cd addon/
+      - git checkout $CI_COMMIT_BRANCH
+      - git fetch origin $CI_COMMIT_REF
+      - git merge $CI_COMMIT_SHA
+  restore_cache:
+    image: meltwater/drone-cache:dev
+    settings:
+      backend: "filesystem"
+      restore: true
+      cache_key: "{{ .Repo.Name }}_php${PHP_MAJOR_VERSION}_{{ arch }}_{{ os }}"
+      archive_format: "gzip"
+      mount:
+        - '.composer'
+    volumes:
+      - /tmp/drone-cache:/tmp/cache
+  composer_install:
+    image: friendicaci/php${PHP_MAJOR_VERSION}:php${PHP_VERSION}
+    commands:
+      - export COMPOSER_HOME=.composer
+      - ./bin/composer.phar validate
+      - ./bin/composer.phar install --prefer-dist
+    volumes:
+      - /etc/hosts:/etc/hosts
+  rebuild_cache:
+    image: meltwater/drone-cache:dev
+    settings:
+      backend: "filesystem"
+      rebuild: true
+      cache_key: "{{ .Repo.Name }}_php${PHP_MAJOR_VERSION}_{{ arch }}_{{ os }}"
+      archive_format: "gzip"
+      mount:
+        - '.composer'
+    volumes:
+      - /tmp/drone-cache:/tmp/cache
+  test:
+    image: friendicaci/php${PHP_MAJOR_VERSION}:php${PHP_VERSION}
+    environment:
+      MYSQL_HOST: "mariadb"
+      MYSQL_PORT: "3306"
+      MYSQL_DATABASE: "test"
+      MYSQL_PASSWORD: "test"
+      MYSQL_USER: "test"
+      REDIS_HOST: "redis"
+      MEMCACHED_HOST: "memcached"
+      MEMCACHE_HOST: "memcached"
+    commands:
+      - cp config/local-sample.config.php config/local.config.php
+      - if ! bin/wait-for-connection $MYSQL_HOST $MYSQL_PORT 300; then echo "[ERROR] Waited 300 seconds, no response" >&2; exit 1; fi
+      - mysql -h$MYSQL_HOST -P$MYSQL_PORT -p$MYSQL_PASSWORD -u$MYSQL_USER $MYSQL_DATABASE < database.sql
+      - if [ "${PHP_MAJOR_VERSION}" = "7.4" -a "${CI_REPO}" = "friendica/friendica-addons" ]; then
+          phpenmod xdebug;
+          export XDEBUG_MODE=coverage;
+          phpunit --configuration tests/phpunit-addons.xml --coverage-clover clover.xml;
+        else
+          phpunit --configuration tests/phpunit-addons.xml;
+        fi
+  codecov:
+    image: friendicaci/codecov
+    when:
+      matrix:
+        PHP_MAJOR_VERSION: 7.4
+        PHP_VERSION: 7.4.33
+      repo:
+        - friendica/friendica-addons
+    commands:
+      - codecov -R '.' -Z -f 'clover.xml'
+    secrets:
+      - source: codecov-token
+        target: codecov_token
+
+services:
+  mariadb:
+    image: mariadb:latest
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+      MYSQL_DATABASE: "test"
+      MYSQL_PASSWORD: "test"
+      MYSQL_USER: "test"
+
+  memcached:
+    image: memcached
+
+  redis:
+    image: redis
