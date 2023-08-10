@@ -219,7 +219,8 @@ function twitter_post_hook(array &$b)
 				$media_ids[] = twitter_upload_image($b['uid'], $image, $b);
 			} catch (\Throwable $th) {
 				Logger::warning('Error while uploading image', ['image' => $image, 'code' => $th->getCode(), 'message' => $th->getMessage()]);
-                Worker::defer();
+				// Currently don't defer to avoid a loop.
+                //Worker::defer();
                 return;
             }
 		}
@@ -261,22 +262,16 @@ function twitter_post_status(int $uid, string $status, array $media_ids = [], st
 function twitter_upload_image(int $uid, array $image)
 {
 	if (!empty($image['id'])) {
-		$photo = Photo::selectFirst([], ['id' => $image['id']]);
+		$photo = Photo::selectFirst(['resource-id'], ['id' => $image['id']]);
+		$photo = Photo::selectFirst([], ["`resource-id` = ? AND `scale` > ?", $photo['resource-id'], 0], ['order' => ['scale']]);
 	} else {
 		$photo = Photo::createPhotoForExternalResource($image['url']);
 	}
 
 	$picturedata = Photo::getImageForPhoto($photo);
 
-	$mimetype = $photo['type'] ?: Images::getMimeTypeByData($picturedata);
-
-	$parameters = [
-		'name' => 'media_data',
-		'contents' => base64_encode($picturedata)
-	];
-
-    Logger::info('Uploading', ['uid' => $uid, 'size' => strlen($parameters['contents']), 'image' => $image]);
-	$media = twitter_post($uid, 'https://upload.twitter.com/1.1/media/upload.json?' . http_build_query(['media_type' => $mimetype]), 'multipart', [$parameters]);
+	Logger::info('Uploading', ['uid' => $uid, 'size' => strlen($picturedata), 'image' => $image]);
+	$media = twitter_post($uid, 'https://upload.twitter.com/1.1/media/upload.json', 'form_params', ['media' => base64_encode($picturedata)]);
 
 	if (isset($media->media_id_string)) {
 		$media_id = $media->media_id_string;
@@ -292,7 +287,7 @@ function twitter_upload_image(int $uid, array $image)
 			Logger::info('Metadata create', ['uid' => $uid, 'data' => $data, 'return' => $ret]);
 		}
 	} else {
-		Logger::error('Failed upload', ['uid' => $uid, 'size' => strlen($parameters['contents']), 'image' => $image['url'], 'return' => $media]);
+		Logger::error('Failed upload', ['uid' => $uid, 'size' => strlen($picturedata), 'image' => $image['url'], 'return' => $media]);
 		throw new Exception('Failed upload of ' . $image['url']);
 	}
 
