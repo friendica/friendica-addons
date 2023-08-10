@@ -56,13 +56,13 @@ const TWITTER_MAX_IMAGE_SIZE = 500000;
 
 function twitter_install()
 {
-	Hook::register('load_config'            , __FILE__, 'twitter_load_config');
-	Hook::register('connector_settings'     , __FILE__, 'twitter_settings');
+	Hook::register('load_config', __FILE__, 'twitter_load_config');
+	Hook::register('connector_settings', __FILE__, 'twitter_settings');
 	Hook::register('connector_settings_post', __FILE__, 'twitter_settings_post');
-	Hook::register('hook_fork'              , __FILE__, 'twitter_hook_fork');
-	Hook::register('post_local'             , __FILE__, 'twitter_post_local');
-	Hook::register('notifier_normal'        , __FILE__, 'twitter_post_hook');
-	Hook::register('jot_networks'           , __FILE__, 'twitter_jot_nets');
+	Hook::register('hook_fork', __FILE__, 'twitter_hook_fork');
+	Hook::register('post_local', __FILE__, 'twitter_post_local');
+	Hook::register('notifier_normal', __FILE__, 'twitter_post_hook');
+	Hook::register('jot_networks', __FILE__, 'twitter_jot_nets');
 }
 
 function twitter_load_config(ConfigFileManager $loader)
@@ -124,7 +124,7 @@ function twitter_settings(array &$data)
 		'$api_secret'    => ['twitter-api-secret', DI::l10n()->t('API Secret'), $api_secret],
 		'$access_token'  => ['twitter-access-token', DI::l10n()->t('Access Token'), $access_token],
 		'$access_secret' => ['twitter-access-secret', DI::l10n()->t('Access Secret'), $access_secret],
-        '$help'          => DI::l10n()->t('Each user needs to register their own app to be able to post to Twitter. Please visit https://developer.twitter.com/en/portal/projects-and-apps to register a project. Inside the project you then have to register an app. You will find the needed data for the connector on the page "Keys and token" in the app settings.'),
+		'$help'          => DI::l10n()->t('Each user needs to register their own app to be able to post to Twitter. Please visit https://developer.twitter.com/en/portal/projects-and-apps to register a project. Inside the project you then have to register an app. You will find the needed data for the connector on the page "Keys and token" in the app settings.'),
 	]);
 
 	$data = [
@@ -146,8 +146,10 @@ function twitter_hook_fork(array &$b)
 
 	$post = $b['data'];
 
-	if ($post['deleted'] || $post['private'] || ($post['created'] !== $post['edited']) ||
-		!strstr($post['postopts'], 'twitter') || ($post['gravity'] != Item::GRAVITY_PARENT)) {
+	if (
+		$post['deleted'] || $post['private'] || ($post['created'] !== $post['edited']) ||
+		!strstr($post['postopts'], 'twitter') || ($post['gravity'] != Item::GRAVITY_PARENT)
+	) {
 		$b['execute'] = false;
 		return;
 	}
@@ -223,9 +225,9 @@ function twitter_post_hook(array &$b)
 			} catch (\Throwable $th) {
 				Logger::warning('Error while uploading image', ['image' => $image, 'code' => $th->getCode(), 'message' => $th->getMessage()]);
 				// Currently don't defer to avoid a loop.
-                //Worker::defer();
-                return;
-            }
+				//Worker::defer();
+				return;
+			}
 		}
 	}
 
@@ -305,7 +307,7 @@ function twitter_upload_image(int $uid, array $image)
 function twitter_post(int $uid, string $url, string $type, array $data): stdClass
 {
 	$stack = HandlerStack::create();
-	
+
 	$middleware = new Oauth1([
 		'consumer_key'    => DI::pConfig()->get($uid, 'twitter', 'api_key'),
 		'consumer_secret' => DI::pConfig()->get($uid, 'twitter', 'api_secret'),
@@ -314,7 +316,7 @@ function twitter_post(int $uid, string $url, string $type, array $data): stdClas
 	]);
 
 	$stack->push($middleware);
-	
+
 	$client = new Client([
 		'handler' => $stack
 	]);
