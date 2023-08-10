@@ -46,10 +46,13 @@ use Friendica\Model\Item;
 use Friendica\Model\Post;
 use Friendica\Core\Config\Util\ConfigFileManager;
 use Friendica\Model\Photo;
+use Friendica\Object\Image;
 use Friendica\Util\Images;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Subscriber\Oauth\Oauth1;
+
+const TWITTER_MAX_IMAGE_SIZE = 500000;
 
 function twitter_install()
 {
@@ -262,15 +265,20 @@ function twitter_post_status(int $uid, string $status, array $media_ids = [], st
 function twitter_upload_image(int $uid, array $image)
 {
 	if (!empty($image['id'])) {
-		$photo = Photo::selectFirst(['resource-id'], ['id' => $image['id']]);
-		$photo = Photo::selectFirst([], ["`resource-id` = ? AND `scale` > ?", $photo['resource-id'], 0], ['order' => ['scale']]);
+		$photo = Photo::selectFirst([], ['id' => $image['id']]);
 	} else {
 		$photo = Photo::createPhotoForExternalResource($image['url']);
 	}
 
 	$picturedata = Photo::getImageForPhoto($photo);
 
-	Logger::info('Uploading', ['uid' => $uid, 'size' => strlen($picturedata), 'image' => $image]);
+	$type = Images::getMimeTypeByData($picturedata, $photo['filename'], $photo['type']);
+
+	$picture = Photo::resizeToFileSize(new Image($picturedata, $type), TWITTER_MAX_IMAGE_SIZE);
+
+	$picturedata = $picture->asString();
+
+	Logger::info('Uploading', ['uid' => $uid, 'size' => strlen($picturedata), 'type' => @getimagesizefromstring($picturedata), 'photo' => $photo]);
 	$media = twitter_post($uid, 'https://upload.twitter.com/1.1/media/upload.json', 'form_params', ['media' => base64_encode($picturedata)]);
 
 	if (isset($media->media_id_string)) {
