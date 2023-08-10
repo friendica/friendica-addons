@@ -3,44 +3,14 @@ Twitter Addon
 
 Main authors Tobias Diekershoff, Michael Vogel and Hypolite Petovan.
 
-This bi-directional connector addon allows each user to crosspost their Friendica public posts to Twitter, import their Twitter timeline, interact with tweets from Friendica, and crosspost to Friendica their public tweets.
+This is a uni-directional posting connector addon that allows each user to crosspost their Friendica public posts to Twitter.
 
 ## Installation
 
-To use this addon you have to register an [application](https://apps.twitter.com/) for your Friendica instance on Twitter.
-Register your Friendica site as "Client" application with "Read & Write" access we do not need "Twitter as login".
-Please leave the field "Callback URL" empty.
-When you've registered the app you get the OAuth Consumer key and secret pair for your application/site.
-
-After the registration please enter the values for "Consumer Key" and "Consumer Secret" in the [administration](admin/addons/twitter).
-
-## Alternative configuration
-
-Open the `config/local.config.php` file and add "twitter" to the list of activated addons:
-
-	'addons' => [
-		...
-		'twitter' => [
-			admin => true,			
-		],
-	]
-
-Add your key pair to your `config/twitter.config.php` file.
-
-	return [
-		'twitter' => [
-			'consumerkey' => 'your consumer_key here',
-			'consumersecret' => 'your consumer_secret here',
-		],
-	];
-
-After this, users can configure their Twitter account settings from "Settings -> Addon Settings".
+To use this addon each single user has to register their own [application](https://developer.twitter.com/en/portal/projects-and-apps), no setup is needed by the administration.
 
 ## License
 
-The _Twitter Connector_ is licensed under the [3-clause BSD license][2] see the LICENSE file in the addons directory.
-
-The _Twitter Connector_ uses the [Twitter OAuth library][2] by Abraham Williams, MIT licensed
+The _Twitter Connector_ is licensed under the [3-clause BSD license][1] see the LICENSE file in the addons directory.
 
 [1]: http://opensource.org/licenses/BSD-3-Clause
-[2]: https://github.com/abraham/twitteroauth
