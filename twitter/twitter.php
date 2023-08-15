@@ -117,12 +117,10 @@ function twitter_settings(array &$data)
 	$access_secret = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'access_secret');
 	
 	$last_status = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'last_status');
-	if (empty($last_status)) {
-		$status = DI::l10n()->t('No status.');
-	} elseif (!empty($last_status['code'])) {
+	if (!empty($last_status['code'])) {
 		$status = print_r($last_status, true);
 	} else {
-		$status = print_r($last_status, true);
+		$status = DI::l10n()->t('No status.');
 	}
 
 	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/twitter/');
