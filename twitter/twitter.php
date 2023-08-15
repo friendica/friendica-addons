@@ -47,12 +47,12 @@ use Friendica\Model\Post;
 use Friendica\Core\Config\Util\ConfigFileManager;
 use Friendica\Model\Photo;
 use Friendica\Object\Image;
-use Friendica\Util\Images;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Subscriber\Oauth\Oauth1;
 
-const TWITTER_MAX_IMAGE_SIZE = 500000;
+const TWITTER_IMAGE_SIZE = [2000000, 1000000, 500000, 100000, 50000];
 
 function twitter_install()
 {
@@ -115,6 +115,15 @@ function twitter_settings(array &$data)
 	$api_secret    = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'api_secret');
 	$access_token  = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'access_token');
 	$access_secret = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'access_secret');
+	
+	$last_status = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'last_status');
+	if (empty($last_status)) {
+		$status = DI::l10n()->t('No status.');
+	} elseif (!empty($last_status['code'])) {
+		$status = print_r($last_status, true);
+	} else {
+		$status = print_r($last_status, true);
+	}
 
 	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/twitter/');
 	$html = Renderer::replaceMacros($t, [
@@ -125,6 +134,7 @@ function twitter_settings(array &$data)
 		'$access_token'  => ['twitter-access-token', DI::l10n()->t('Access Token'), $access_token],
 		'$access_secret' => ['twitter-access-secret', DI::l10n()->t('Access Secret'), $access_secret],
 		'$help'          => DI::l10n()->t('Each user needs to register their own app to be able to post to Twitter. Please visit https://developer.twitter.com/en/portal/projects-and-apps to register a project. Inside the project you then have to register an app. You will find the needed data for the connector on the page "Keys and token" in the app settings.'),
+		'$status'        => ['twitter-status', DI::l10n()->t('Last Status'), $status, '', '', 'readonly'],
 	]);
 
 	$data = [
@@ -216,16 +226,19 @@ function twitter_post_hook(array &$b)
 	if (!empty($msgarr['images']) || !empty($msgarr['remote_images'])) {
 		Logger::info('Got images', ['id' => $b['id'], 'images' => $msgarr['images'] ?? []]);
 
+		$retrial = Worker::getRetrial();
+		if ($retrial > 4) {
+			return;
+		}
 		foreach ($msgarr['images'] ?? [] as $image) {
 			if (count($media_ids) == 4) {
 				continue;
 			}
 			try {
-				$media_ids[] = twitter_upload_image($b['uid'], $image, $b);
-			} catch (\Throwable $th) {
-				Logger::warning('Error while uploading image', ['image' => $image, 'code' => $th->getCode(), 'message' => $th->getMessage()]);
-				// Currently don't defer to avoid a loop.
-				//Worker::defer();
+				$media_ids[] = twitter_upload_image($b['uid'], $image, $retrial);
+			} catch (RequestException $exception) {
+				Logger::warning('Error while uploading image', ['image' => $image, 'code' => $exception->getCode(), 'message' => $exception->getMessage()]);
+				Worker::defer();
 				return;
 			}
 		}
@@ -238,9 +251,17 @@ function twitter_post_hook(array &$b)
 		try {
 			$id = twitter_post_status($b['uid'], $part, $media_ids, $in_reply_to_tweet_id);
 			Logger::info('twitter_post send', ['part' => $key, 'id' => $b['id'], 'result' => $id]);
-		} catch (\Throwable $th) {
-			Logger::warning('Error while posting message', ['part' => $key, 'id' => $b['id'], 'code' => $th->getCode(), 'message' => $th->getMessage()]);
-			Worker::defer();
+		} catch (RequestException $exception) {
+			Logger::warning('Error while posting message', ['part' => $key, 'id' => $b['id'], 'code' => $exception->getCode(), 'message' => $exception->getMessage()]);
+			$status = [
+				'code'    => $exception->getCode(),
+				'reason'  => $exception->getResponse()->getReasonPhrase(),
+				'content' => $exception->getMessage()
+			];
+			DI::pConfig()->set($b['uid'], 'twitter', 'last_status', $status);
+			if ($key == 0) {
+				Worker::defer();
+			}
 			break;
 		}
 
@@ -264,7 +285,7 @@ function twitter_post_status(int $uid, string $status, array $media_ids = [], st
 	return $response->data->id;
 }
 
-function twitter_upload_image(int $uid, array $image)
+function twitter_upload_image(int $uid, array $image, int $retrial)
 {
 	if (!empty($image['id'])) {
 		$photo = Photo::selectFirst([], ['id' => $image['id']]);
@@ -274,14 +295,20 @@ function twitter_upload_image(int $uid, array $image)
 
 	$picturedata = Photo::getImageForPhoto($photo);
 
-	$type = Images::getMimeTypeByData($picturedata, $photo['filename'], $photo['type']);
+	$picture = new Image($picturedata, $photo['type']);
+	$height  = $picture->getHeight();
+	$width   = $picture->getWidth(); 
+	$size    = strlen($picturedata);
 
-	$picture = Photo::resizeToFileSize(new Image($picturedata, $type), TWITTER_MAX_IMAGE_SIZE);
-
+	$picture     = Photo::resizeToFileSize($picture, TWITTER_IMAGE_SIZE[$retrial]);
+	$new_height  = $picture->getHeight();
+	$new_width   = $picture->getWidth(); 
 	$picturedata = $picture->asString();
+	$new_size    = strlen($picturedata);
 
-	Logger::info('Uploading', ['uid' => $uid, 'size' => strlen($picturedata), 'type' => @getimagesizefromstring($picturedata), 'photo' => $photo]);
+	Logger::info('Uploading', ['uid' => $uid, 'retrial' => $retrial, 'height' => $new_height, 'width' => $new_width, 'size' => $new_size, 'orig-height' => $height, 'orig-width' => $width, 'orig-size' => $size, 'image' => $image]);
 	$media = twitter_post($uid, 'https://upload.twitter.com/1.1/media/upload.json', 'form_params', ['media' => base64_encode($picturedata)]);
+	Logger::info('Uploading done', ['uid' => $uid, 'retrial' => $retrial, 'height' => $new_height, 'width' => $new_width, 'size' => $new_size, 'orig-height' => $height, 'orig-width' => $width, 'orig-size' => $size, 'image' => $image]);
 
 	if (isset($media->media_id_string)) {
 		$media_id = $media->media_id_string;
@@ -322,6 +349,14 @@ function twitter_post(int $uid, string $url, string $type, array $data): stdClas
 	]);
 
 	$response = $client->post($url, ['auth' => 'oauth', $type => $data]);
+
+	$status = [
+		'code'    => $response->getStatusCode(), 
+		'reason'  => $response->getReasonPhrase(), 
+		'content' => $response->getBody()->getContents()
+	];
+
+	DI::pConfig()->set($uid, 'twitter', 'last_status', $status);
 
 	$content = json_decode($response->getBody()->getContents()) ?? new stdClass;
 	Logger::debug('Success', ['content' => $content]);
