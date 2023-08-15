@@ -43,6 +43,7 @@ use Friendica\Model\Photo;
 use Friendica\Model\Post;
 use Friendica\Network\HTTPClient\Client\HttpClientAccept;
 use Friendica\Network\HTTPClient\Client\HttpClientOptions;
+use Friendica\Object\Image;
 use Friendica\Protocol\Activity;
 use Friendica\Protocol\Relay;
 use Friendica\Util\DateTimeFormat;
@@ -50,6 +51,7 @@ use Friendica\Util\Strings;
 
 const BLUESKY_DEFAULT_POLL_INTERVAL = 10; // given in minutes
 const BLUESKY_HOST = 'https://bsky.app'; // Hard wired until Bluesky will run on multiple systems
+const BLUESKY_IMAGE_SIZE = [1000000, 500000, 100000, 50000];
 
 function bluesky_install()
 {
@@ -634,6 +636,12 @@ function bluesky_create_post(array $item, stdClass $root = null, stdClass $paren
 
 		if ($key == count($msg['parts']) - 1) {
 			$record = bluesky_add_embed($uid, $msg, $record);
+			if (empty($record)) {
+				if (Worker::getRetrial() < 3) {
+					Worker::defer();
+				}
+				return;
+			}
 		}
 
 		$post = [
@@ -644,6 +652,9 @@ function bluesky_create_post(array $item, stdClass $root = null, stdClass $paren
 
 		$parent = bluesky_xrpc_post($uid, 'com.atproto.repo.createRecord', $post);
 		if (empty($parent)) {
+			if ($part == 0) {
+				Worker::defer();
+			}
 			return;
 		}
 		Logger::debug('Posting done', ['return' => $parent]);
@@ -663,6 +674,7 @@ function bluesky_get_urls(string $body): array
 	// Remove all hashtag and mention links
 	$body = preg_replace("/([#@!])\[url\=(.*?)\](.*?)\[\/url\]/ism", '$1$3', $body);
 
+	$body = BBCode::expandVideoLinks($body);
 	$urls = [];
 
 	// Search for pure links
@@ -746,12 +758,15 @@ function bluesky_add_embed(int $uid, array $msg, array $record): array
 	if (($msg['type'] != 'link') && !empty($msg['images'])) {
 		$images = [];
 		foreach ($msg['images'] as $image) {
-			$photo = Photo::selectFirst(['resource-id'], ['id' => $image['id']]);
-			$photo = Photo::selectFirst([], ["`resource-id` = ? AND `scale` > ?", $photo['resource-id'], 0], ['order' => ['scale']]);
-			$blob = bluesky_upload_blob($uid, $photo);
-			if (!empty($blob) && count($images) < 4) {
-				$images[] = ['alt' => $image['description'] ?? '', 'image' => $blob];
+			if (count($images) == 4) {
+				continue;
 			}
+			$photo = Photo::selectFirst([], ['id' => $image['id']]);
+			$blob = bluesky_upload_blob($uid, $photo);
+			if (empty($blob)) {
+				return [];
+			}
+			$images[] = ['alt' => $image['description'] ?? '', 'image' => $blob];
 		}
 		if (!empty($images)) {
 			$record['embed'] = ['$type' => 'app.bsky.embed.images', 'images' => $images];
@@ -778,13 +793,29 @@ function bluesky_add_embed(int $uid, array $msg, array $record): array
 
 function bluesky_upload_blob(int $uid, array $photo): ?stdClass
 {
+	$retrial = Worker::getRetrial();
 	$content = Photo::getImageForPhoto($photo);
+
+	$picture = new Image($content, $photo['type']);
+	$height  = $picture->getHeight();
+	$width   = $picture->getWidth(); 
+	$size    = strlen($content);
+
+	$picture    = Photo::resizeToFileSize($picture, BLUESKY_IMAGE_SIZE[$retrial]);
+	$new_height = $picture->getHeight();
+	$new_width  = $picture->getWidth(); 
+	$content    = $picture->asString();
+	$new_size   = strlen($content);
+
+	Logger::info('Uploading', ['uid' => $uid, 'retrial' => $retrial, 'height' => $new_height, 'width' => $new_width, 'size' => $new_size, 'orig-height' => $height, 'orig-width' => $width, 'orig-size' => $size]);
+
 	$data = bluesky_post($uid, '/xrpc/com.atproto.repo.uploadBlob', $content, ['Content-type' => $photo['type'], 'Authorization' => ['Bearer ' . bluesky_get_token($uid)]]);
 	if (empty($data)) {
+		Logger::info('Uploading failed', ['uid' => $uid, 'retrial' => $retrial, 'height' => $new_height, 'width' => $new_width, 'size' => $new_size, 'orig-height' => $height, 'orig-width' => $width, 'orig-size' => $size]);
 		return null;
 	}
 
-	Logger::debug('Uploaded blob', ['return' => $data]);
+	Logger::debug('Uploaded blob', ['return' => $data, 'uid' => $uid, 'retrial' => $retrial, 'height' => $new_height, 'width' => $new_width, 'size' => $new_size, 'orig-height' => $height, 'orig-width' => $width, 'orig-size' => $size]);
 	return $data->blob;
 }
 
