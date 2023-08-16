@@ -106,9 +106,11 @@ function twitter_settings_post()
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'access_token',    $_POST['twitter-access-token']);
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'access_secret',   $_POST['twitter-access-secret']);
 
-	if (empty(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'last_status')) || 
+	if (
+		empty(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'last_status')) ||
 		($api_key != $_POST['twitter-api-key']) || ($api_secret != $_POST['twitter-api-secret']) ||
-		($access_token != $_POST['twitter-access-token']) || ($access_secret != $_POST['twitter-access-secret'])) {
+		($access_token != $_POST['twitter-access-token']) || ($access_secret != $_POST['twitter-access-secret'])
+	) {
 		twitter_test_connection(DI::userSession()->getLocalUserId());
 	}
 }
@@ -126,7 +128,7 @@ function twitter_settings(array &$data)
 	$api_secret    = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'api_secret');
 	$access_token  = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'access_token');
 	$access_secret = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'access_secret');
-	
+
 	$last_status = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'last_status');
 	if (!empty($last_status['code']) && !empty($last_status['reason'])) {
 		$status_title = sprintf('%d - %s', $last_status['code'], $last_status['reason']);
@@ -308,12 +310,12 @@ function twitter_upload_image(int $uid, array $image, int $retrial)
 
 	$picture = new Image($picturedata, $photo['type']);
 	$height  = $picture->getHeight();
-	$width   = $picture->getWidth(); 
+	$width   = $picture->getWidth();
 	$size    = strlen($picturedata);
 
 	$picture     = Photo::resizeToFileSize($picture, TWITTER_IMAGE_SIZE[$retrial]);
 	$new_height  = $picture->getHeight();
-	$new_width   = $picture->getWidth(); 
+	$new_width   = $picture->getWidth();
 	$picturedata = $picture->asString();
 	$new_size    = strlen($picturedata);
 
@@ -360,16 +362,17 @@ function twitter_post(int $uid, string $url, string $type, array $data): stdClas
 	]);
 
 	$response = $client->post($url, ['auth' => 'oauth', $type => $data]);
+	$body     = $response->getBody()->getContents();
 
 	$status = [
-		'code'    => $response->getStatusCode(), 
-		'reason'  => $response->getReasonPhrase(), 
-		'content' => $response->getBody()->getContents()
+		'code'    => $response->getStatusCode(),
+		'reason'  => $response->getReasonPhrase(),
+		'content' => $body
 	];
 
 	DI::pConfig()->set($uid, 'twitter', 'last_status', $status);
 
-	$content = json_decode($response->getBody()->getContents()) ?? new stdClass;
+	$content = json_decode($body) ?? new stdClass;
 	Logger::debug('Success', ['content' => $content]);
 	return $content;
 }
@@ -390,7 +393,7 @@ function twitter_test_connection(int $uid)
 	$client = new Client([
 		'handler' => $stack
 	]);
-	
+
 	try {
 		$response = $client->get('https://api.twitter.com/2/users/me', ['auth' => 'oauth']);
 		$status = [
@@ -402,8 +405,8 @@ function twitter_test_connection(int $uid)
 		Logger::info('Test successful', ['uid' => $uid]);
 	} catch (RequestException $exception) {
 		$status = [
-			'code'    => $exception->getCode(), 
-			'reason'  => $exception->getResponse()->getReasonPhrase(), 
+			'code'    => $exception->getCode(),
+			'reason'  => $exception->getResponse()->getReasonPhrase(),
 			'content' => $exception->getMessage()
 		];
 		DI::pConfig()->set(1, 'twitter', 'last_status',  $status);
