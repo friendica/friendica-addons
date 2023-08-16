@@ -94,12 +94,23 @@ function twitter_settings_post()
 		return;
 	}
 
+	$api_key       = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'api_key');
+	$api_secret    = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'api_secret');
+	$access_token  = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'access_token');
+	$access_secret = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'access_secret');
+
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'post',            (bool)$_POST['twitter-enable']);
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'post_by_default', (bool)$_POST['twitter-default']);
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'api_key',         $_POST['twitter-api-key']);
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'api_secret',      $_POST['twitter-api-secret']);
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'access_token',    $_POST['twitter-access-token']);
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'access_secret',   $_POST['twitter-access-secret']);
+
+	if (empty(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'last_status')) || 
+		($api_key != $_POST['twitter-api-key']) || ($api_secret != $_POST['twitter-api-secret']) ||
+		($access_token != $_POST['twitter-access-token']) || ($access_secret != $_POST['twitter-access-secret'])) {
+		twitter_test_connection(DI::userSession()->getLocalUserId());
+	}
 }
 
 function twitter_settings(array &$data)
@@ -361,4 +372,41 @@ function twitter_post(int $uid, string $url, string $type, array $data): stdClas
 	$content = json_decode($response->getBody()->getContents()) ?? new stdClass;
 	Logger::debug('Success', ['content' => $content]);
 	return $content;
+}
+
+function twitter_test_connection(int $uid)
+{
+	$stack = HandlerStack::create();
+
+	$middleware = new Oauth1([
+		'consumer_key'    => DI::pConfig()->get($uid, 'twitter', 'api_key'),
+		'consumer_secret' => DI::pConfig()->get($uid, 'twitter', 'api_secret'),
+		'token'           => DI::pConfig()->get($uid, 'twitter', 'access_token'),
+		'token_secret'    => DI::pConfig()->get($uid, 'twitter', 'access_secret'),
+	]);
+
+	$stack->push($middleware);
+
+	$client = new Client([
+		'handler' => $stack
+	]);
+	
+	try {
+		$response = $client->get('https://api.twitter.com/2/users/me', ['auth' => 'oauth']);
+		$status = [
+			'code'   => $response->getStatusCode(),
+			'reason'  => $response->getReasonPhrase(),
+			'content' => $response->getBody()->getContents()
+		];
+		DI::pConfig()->set(1, 'twitter', 'last_status',  $status);
+		Logger::info('Test successful', ['uid' => $uid]);
+	} catch (RequestException $exception) {
+		$status = [
+			'code'    => $exception->getCode(), 
+			'reason'  => $exception->getResponse()->getReasonPhrase(), 
+			'content' => $exception->getMessage()
+		];
+		DI::pConfig()->set(1, 'twitter', 'last_status',  $status);
+		Logger::info('Test failed', ['uid' => $uid]);
+	}
 }
