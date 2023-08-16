@@ -117,11 +117,12 @@ function twitter_settings(array &$data)
 	$access_secret = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'access_secret');
 	
 	$last_status = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'last_status');
-	if (!empty($last_status['code'])) {
-		$status = print_r($last_status, true);
+	if (!empty($last_status['code']) && !empty($last_status['reason'])) {
+		$status_title = sprintf('%d - %s', $last_status['code'], $last_status['reason']);
 	} else {
-		$status = DI::l10n()->t('No status.');
+		$status_title = DI::l10n()->t('No status.');
 	}
+	$status_content = $last_status['content'] ?? '';
 
 	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/twitter/');
 	$html = Renderer::replaceMacros($t, [
@@ -132,7 +133,8 @@ function twitter_settings(array &$data)
 		'$access_token'  => ['twitter-access-token', DI::l10n()->t('Access Token'), $access_token],
 		'$access_secret' => ['twitter-access-secret', DI::l10n()->t('Access Secret'), $access_secret],
 		'$help'          => DI::l10n()->t('Each user needs to register their own app to be able to post to Twitter. Please visit https://developer.twitter.com/en/portal/projects-and-apps to register a project. Inside the project you then have to register an app. You will find the needed data for the connector on the page "Keys and token" in the app settings.'),
-		'$status'        => ['twitter-status', DI::l10n()->t('Last Status'), $status, '', '', 'readonly'],
+		'$status_title'  => ['twitter-status-title', DI::l10n()->t('Last Status Summary'), $status_title, '', '', 'readonly'],
+		'$status'        => ['twitter-status', DI::l10n()->t('Last Status Content'), $status_content, '', '', 'readonly'],
 	]);
 
 	$data = [
