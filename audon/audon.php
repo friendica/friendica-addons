@@ -31,7 +31,7 @@ function audon_addon_admin(string &$o)
 			'audonurl', 
 			DI::l10n()->t('audon Base URL'), 
 			DI::config()->get('audon','audonurl'), 
-			DI::l10n()->t('Page your users will create a audon Audio chat room on. For example you could use https://audon.space.'),
+			DI::l10n()->t('Page your users will create a audon Audio chat room on. For example you could use https://audon.space.'), 
 		], 
 	]);
 }
