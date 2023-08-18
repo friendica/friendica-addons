@@ -1,6 +1,6 @@
-# ADDON Audon
+# ADDON audon
 # Copyright (C) 
-# This file is distributed under the same license as the Friendica Audon addon package.
+# This file is distributed under the same license as the Friendica audon addon package.
 # 
 #
 #, fuzzy
@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-29 15:56+0200\n"
+"POT-Creation-Date: 2023-08-18 18:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,37 +17,36 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: audon.php:19
-msgid "Audon audio conferencing"
+#: audon.php:22
+msgid "Audon Audiochat"
 msgstr ""
 
-#: audon.php:25
+#: audon.php:29
 msgid "Save Settings"
 msgstr ""
 
-#: audon.php:26
+#: audon.php:32
 msgid "Audon Base URL"
 msgstr ""
 
-#: audon.php:26
+#: audon.php:34
 msgid ""
-"Page your users will create a Audon audio conferencing on. For example you could use "
-"https://audon.space ."
+"Page your users will create an Audon audio chat room on. For example you "
+"could use https://audon.space."
 msgstr ""
 
-#: audon.php:44
+#: audon.php:60
 msgid "Audio Chat"
 msgstr ""
 
-#: audon.php:45
+#: audon.php:61
 msgid ""
-"Audon is a audio conferencing tool that works in all modern "
-"browsers. Just create a new Audio room and send the link to someone you want "
-"to talk with."
+"Audon is an audio conferencing tool. Connect your account to Audon and "
+"create a room. Share the generated link to talk to other participants."
 msgstr ""
 
-#: audon.php:47
+#: audon.php:63
 msgid ""
-"Please contact your friendica admin and send a reminder to configure the "
+"Please contact your Friendica administrator to remind them to configure the "
 "Audon addon."
 msgstr ""
