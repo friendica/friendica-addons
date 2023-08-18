@@ -1,6 +1,6 @@
-# ADDON webrtc
+# ADDON Audon
 # Copyright (C) 
-# This file is distributed under the same license as the Friendica webrtc addon package.
+# This file is distributed under the same license as the Friendica Audon addon package.
 # 
 #
 #, fuzzy
@@ -17,37 +17,37 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: webrtc.php:18
-msgid "WebRTC Videochat"
+#: audon.php:19
+msgid "Audon audio conferencing"
 msgstr ""
 
-#: webrtc.php:24
+#: audon.php:25
 msgid "Save Settings"
 msgstr ""
 
-#: webrtc.php:25
-msgid "WebRTC Base URL"
+#: audon.php:26
+msgid "Audon Base URL"
 msgstr ""
 
-#: webrtc.php:25
+#: audon.php:26
 msgid ""
-"Page your users will create a WebRTC chat room on. For example you could use "
-"https://live.mayfirst.org ."
+"Page your users will create a Audon audio conferencing on. For example you could use "
+"https://audon.space ."
 msgstr ""
 
-#: webrtc.php:44
-msgid "Video Chat"
+#: audon.php:44
+msgid "Audio Chat"
 msgstr ""
 
-#: webrtc.php:45
+#: audon.php:45
 msgid ""
-"WebRTC is a video and audio conferencing tool that works in all modern "
-"browsers. Just create a new chat room and send the link to someone you want "
-"to chat with."
+"Audon is a audio conferencing tool that works in all modern "
+"browsers. Just create a new Audio room and send the link to someone you want "
+"to talk with."
 msgstr ""
 
-#: webrtc.php:47
+#: audon.php:47
 msgid ""
 "Please contact your friendica admin and send a reminder to configure the "
-"WebRTC addon."
+"Audon addon."
 msgstr ""
