@@ -1,7 +1,7 @@
 <?php
 /*
  * Name: Audon Application
- * Description: add a audon instance. Based on webRTC Addon
+ * Description: add a Audon instance. Based on webRTC Addon
  * Version: 0.1
  * Author: Stephen Mahood <https://friends.mayfirst.org/profile/marxistvegan>
  * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
