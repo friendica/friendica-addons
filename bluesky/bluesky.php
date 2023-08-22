@@ -798,12 +798,12 @@ function bluesky_upload_blob(int $uid, array $photo): ?stdClass
 
 	$picture = new Image($content, $photo['type']);
 	$height  = $picture->getHeight();
-	$width   = $picture->getWidth(); 
+	$width   = $picture->getWidth();
 	$size    = strlen($content);
 
 	$picture    = Photo::resizeToFileSize($picture, BLUESKY_IMAGE_SIZE[$retrial]);
 	$new_height = $picture->getHeight();
-	$new_width  = $picture->getWidth(); 
+	$new_width  = $picture->getWidth();
 	$content    = $picture->asString();
 	$new_size   = strlen($content);
 
@@ -917,7 +917,7 @@ function bluesky_fetch_notifications(int $uid)
 					$data = Item::insert($item);
 					Logger::debug('Got like', ['uid' => $uid, 'result' => $data, 'uri' => $uri]);
 				} else {
-					Logger::info('Thread parent not found', ['uid' => $uid, 'parent' => $$item['thr-parent'], 'uri' => $uri]);
+					Logger::info('Thread parent not found', ['uid' => $uid, 'parent' => $item['thr-parent'], 'uri' => $uri]);
 				}
 			break;
 
@@ -1274,7 +1274,7 @@ function bluesky_fetch_missing_post(string $uri, int $uid, int $causer, int $lev
 	if (++$level > 100) {
 		Logger::info('Recursion level too deep', ['level' => $level, 'uid' => $uid, 'uri' => $uri, 'fallback' => $fallback]);
 		// When the level is too deep we will fallback to the parent uri.
-		// Allthough the threading won't be correct, we at least had stored all posts and won't try again 
+		// Allthough the threading won't be correct, we at least had stored all posts and won't try again
 		return $fallback;
 	}
 
@@ -1287,8 +1287,8 @@ function bluesky_fetch_missing_post(string $uri, int $uid, int $causer, int $lev
 		Logger::info('Thread was not fetched', ['level' => $level, 'uid' => $uid, 'uri' => $uri, 'fallback' => $fallback]);
 		return $fallback;
 	}
-	
-	Logger::debug('Reply count', ['replies' => $data->thread->post->replyCount, 'level' => $level, 'uid' => $uid, 'uri' => $uri]); 
+
+	Logger::debug('Reply count', ['replies' => $data->thread->post->replyCount, 'level' => $level, 'uid' => $uid, 'uri' => $uri]);
 
 	if ($causer != 0) {
 		$cdata = Contact::getPublicAndUserContactID($causer, $uid);
