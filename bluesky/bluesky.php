@@ -931,7 +931,7 @@ function bluesky_fetch_notifications(int $uid)
 					$data = Item::insert($item);
 					Logger::debug('Got repost', ['uid' => $uid, 'result' => $data, 'uri' => $uri]);
 				} else {
-					Logger::info('Thread parent not found', ['uid' => $uid, 'parent' => $$item['thr-parent'], 'uri' => $uri]);
+					Logger::info('Thread parent not found', ['uid' => $uid, 'parent' => $item['thr-parent'], 'uri' => $uri]);
 				}
 			break;
 
@@ -973,12 +973,26 @@ function bluesky_fetch_feed(int $uid, string $feed)
 		return;
 	}
 
+	$feeddata = bluesky_xrpc_get($uid, 'app.bsky.feed.getFeedGenerator', ['feed' => $feed]);
+	if (!empty($feeddata)) {
+		$feedurl  = $feeddata->view->uri;
+		$feedname = $feeddata->view->displayName;
+	} else {
+		$feedurl  = $feed;
+		$feedname = $feed;
+	}
+
 	foreach (array_reverse($data->feed) as $entry) {
 		if (!Relay::isWantedLanguage($entry->post->record->text)) {
 			Logger::debug('Unwanted language detected', ['text' => $entry->post->record->text]);
 			continue;
 		}
-		bluesky_process_post($entry->post, $uid, Item::PR_TAG, 0);
+		$id = bluesky_process_post($entry->post, $uid, Item::PR_TAG, 0);
+		if (!empty($id)) {
+			$post = Post::selectFirst(['uri-id'], ['id' => $id]);
+			$stored = Post\Category::storeFileByURIId($post['uri-id'], $uid, Post\Category::SUBCRIPTION, $feedname, $feedurl);
+			Logger::debug('Stored tag subscription for user', ['uri-id' => $post['uri-id'], 'uid' => $uid, 'name' => $feedname, 'url' => $feedurl, 'stored' => $stored]);
+		}
 		if (!empty($entry->reason)) {
 			bluesky_process_reason($entry->reason, bluesky_get_uri($entry->post), $uid);
 		}
@@ -989,8 +1003,8 @@ function bluesky_process_post(stdClass $post, int $uid, int $post_reason, $level
 {
 	$uri = bluesky_get_uri($post);
 
-	if (Post::exists(['uri' => $uri, 'uid' => $uid]) || Post::exists(['extid' => $uri, 'uid' => $uid])) {
-		return 0;
+	if ($id = Post::selectFirst(['id'], ['uri' => $uri, 'uid' => $uid]) || $id = Post::selectFirst(['id'], ['extid' => $uri, 'uid' => $uid])) {
+		return $id;
 	}
 
 	Logger::debug('Importing post', ['uid' => $uid, 'indexedAt' => $post->indexedAt, 'uri' => $post->uri, 'cid' => $post->cid, 'root' => $post->record->reply->root ?? '']);
@@ -1032,6 +1046,7 @@ function bluesky_get_header(stdClass $post, string $uri, int $uid, int $fetch_ui
 		'author-link'   => $contact['url'],
 		'author-avatar' => $contact['avatar'],
 		'plink'         => $contact['alias'] . '/post/' . $parts->rkey,
+		'source'        => json_encode($post),
 	];
 
 	$item['uri-id']       = ItemURI::getIdByURI($uri);
@@ -1201,7 +1216,7 @@ function bluesky_add_media(stdClass $embed, array $item, int $fetch_uid, int $le
 			}
 
 			if (!empty($embed->media)) {
-				bluesky_add_media($embed->media, $item, $fetch_uid, $level);
+				$item = bluesky_add_media($embed->media, $item, $fetch_uid, $level);
 			}
 			break;
 
