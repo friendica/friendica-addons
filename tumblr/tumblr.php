@@ -734,6 +734,9 @@ function tumblr_fetch_tags(int $uid)
 			$id = tumblr_process_post($post, $uid, Item::PR_TAG);
 			if (!empty($id)) {
 				Logger::debug('Tag post imported', ['tag' => $tag, 'id' => $id]);
+				$post = Post::selectFirst(['uri-id'], ['id' => $id]);
+				$stored = Post\Category::storeFileByURIId($post['uri-id'], $uid, Post\Category::SUBCRIPTION, $tag);
+				Logger::debug('Stored tag subscription for user', ['uri-id' => $post['uri-id'], 'uid' => $uid, 'tag' => $tag, 'stored' => $stored]);
 			}
 		}
 	}
