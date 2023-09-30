@@ -53,11 +53,6 @@ function cld_get_language(array &$data)
 	}
 
 	if ($original == $detected) {
-//		return;
-	}
-
-	// Nur aus Testgründen
-	if (in_array($detected, ['xx-Qaai', 'ht', 'ga'])) {
 		return;
 	}
 
@@ -68,8 +63,6 @@ function cld_get_language(array &$data)
 		return;
 	}
 
-	Logger::debug('Detected', ['original' => $original, 'detected' => $detected, 'name' => $result['language_name'], 'probability' => $result['language_probability'], 'text' => $data['text']]);
-
-//	Logger::debug('Detected different language', ['original' => $original, 'detected' => $detected, 'name' => $result['language_name'], 'probability' => $result['language_probability'], 'text' => $data['text']]);
+	Logger::debug('Detected different language', ['original' => $original, 'detected' => $detected, 'name' => $result['language_name'], 'probability' => $result['language_probability'], 'text' => $data['text']]);
 	$data['detected'] = [$detected => $result['language_probability'] / 100];
 }
