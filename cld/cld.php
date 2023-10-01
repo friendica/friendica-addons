@@ -12,10 +12,10 @@ use Friendica\DI;
 
 function cld_install()
 {
-	Hook::register('get_language', 'addon/cld/cld.php', 'cld_get_language');
+	Hook::register('detect_languages', 'addon/cld/cld.php', 'cld_detect_languages');
 }
 
-function cld_get_language(array &$data)
+function cld_detect_languages(array &$data)
 {
 	if (!in_array('cld2', get_loaded_extensions())) {
 		Logger::warning('CLD2 is not installed.');
