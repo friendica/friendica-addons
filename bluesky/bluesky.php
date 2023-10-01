@@ -990,8 +990,12 @@ function bluesky_fetch_feed(int $uid, string $feed)
 		$id = bluesky_process_post($entry->post, $uid, Item::PR_TAG, 0);
 		if (!empty($id)) {
 			$post = Post::selectFirst(['uri-id'], ['id' => $id]);
-			$stored = Post\Category::storeFileByURIId($post['uri-id'], $uid, Post\Category::SUBCRIPTION, $feedname, $feedurl);
-			Logger::debug('Stored tag subscription for user', ['uri-id' => $post['uri-id'], 'uid' => $uid, 'name' => $feedname, 'url' => $feedurl, 'stored' => $stored]);
+			if (!empty($post['uri-id'])) {
+				$stored = Post\Category::storeFileByURIId($post['uri-id'], $uid, Post\Category::SUBCRIPTION, $feedname, $feedurl);
+				Logger::debug('Stored tag subscription for user', ['uri-id' => $post['uri-id'], 'uid' => $uid, 'name' => $feedname, 'url' => $feedurl, 'stored' => $stored]);
+			} else {
+				Logger::notice('Post not found', ['id' => $id, 'entry' => $entry]);
+			}
 		}
 		if (!empty($entry->reason)) {
 			bluesky_process_reason($entry->reason, bluesky_get_uri($entry->post), $uid);
@@ -1003,8 +1007,12 @@ function bluesky_process_post(stdClass $post, int $uid, int $post_reason, $level
 {
 	$uri = bluesky_get_uri($post);
 
-	if ($id = Post::selectFirst(['id'], ['uri' => $uri, 'uid' => $uid]) || $id = Post::selectFirst(['id'], ['extid' => $uri, 'uid' => $uid])) {
-		return $id;
+	if ($id = Post::selectFirst(['id'], ['uri' => $uri, 'uid' => $uid])) {
+		return $id['id'];	
+	}
+
+	if ($id = Post::selectFirst(['id'], ['extid' => $uri, 'uid' => $uid])) {
+		return $id['id'];	
 	}
 
 	Logger::debug('Importing post', ['uid' => $uid, 'indexedAt' => $post->indexedAt, 'uri' => $post->uri, 'cid' => $post->cid, 'root' => $post->record->reply->root ?? '']);
@@ -1092,7 +1100,7 @@ function bluesky_get_content(array $item, stdClass $record, string $uri, int $ui
 
 function bluesky_get_text(stdClass $record): string
 {
-	$text = $record->text;
+	$text = $record->text ?? '';
 
 	if (empty($record->facets)) {
 		return $text;
@@ -1185,11 +1193,10 @@ function bluesky_add_media(stdClass $embed, array $item, int $fetch_uid, int $le
 							$shared = bluesky_add_media($single, $shared, $fetch_uid, $level);
 						}
 					}
-					$id = Item::insert($shared);
-					$shared = Post::selectFirst(['uri-id'], ['id' => $id]);
+					Item::insert($shared);
 				}
 			}
-			if (!empty($shared)) {
+			if (!empty($shared['uri-id'])) {
 				$item['quote-uri-id'] = $shared['uri-id'];
 			}
 			break;
@@ -1206,12 +1213,10 @@ function bluesky_add_media(stdClass $embed, array $item, int $fetch_uid, int $le
 							$shared = bluesky_add_media($single, $shared, $fetch_uid, $level);
 						}
 					}
-
-					$id = Item::insert($shared);
-					$shared = Post::selectFirst(['uri-id'], ['id' => $id]);
+					Item::insert($shared);
 				}
 			}
-			if (!empty($shared)) {
+			if (!empty($shared['uri-id'])) {
 				$item['quote-uri-id'] = $shared['uri-id'];
 			}
 
@@ -1331,7 +1336,12 @@ function bluesky_fetch_post(string $uri, int $uid): string
 
 function bluesky_process_thread(stdClass $thread, int $uid, array $cdata, int $level): string
 {
+	if (empty($thread->post)) {
+		Logger::info('Invalid post', ['post' => $thread, 'callstack' => System::callstack(10, 0, true)]);
+		return '';
+	}
 	$uri = bluesky_get_uri($thread->post);
+
 	$fetched_uri = bluesky_fetch_post($uri, $uid);
 	if (empty($fetched_uri)) {
 		Logger::debug('Process missing post', ['uri' => $uri]);
