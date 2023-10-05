@@ -113,4 +113,3 @@ services:
 
   redis:
     image: redis
-
