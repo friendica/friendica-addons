@@ -57,27 +57,21 @@ Install it:
 sudo make install
 ```
 
-Change to the folder with the available modules. When you use PHP 8.0 on Debian it is:
+Change to the folder with the available modules. When you use PHP 8.2 on Debian it is:
 ```
-cd /etc/php/8.0/mods-available
+cd /etc/php/8.2/mods-available
 ```
 
-Create the file `cld.ini` with this content:
+Create the file `cld2.ini` with this content:
 ```
 ; configuration for php cld2 module
 ; priority=20
 extension=cld2.so
 ```
 
-Change to the folder `conf.d` in the folder of your `php.ini`.
+Enable the module for all versions and all sapi:
 ```
-cd /etc/php/8.0/cgi/conf.d
-```
-This depends on the way you installed the PHP support for your webserver. Instead of `cgi` it could also be `apache2` or `fpm`.
-
-Create a symbolic link to install the module:
-```
-ln -s /etc/php/8.0/mods-available/cld.ini
+phpenmod -v ALL -s ALL cld2
 ```
 
 Then restart the apache or fpm (or whatever you use) to load the changed configuration.
