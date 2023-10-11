@@ -28,7 +28,7 @@ function cld_detect_languages(array &$data)
 	$cld2->setPlainText(true);
 
 	$result = $cld2->detect($data['text']);
-	
+
 	if ($data['detected']) {
 		$original = array_key_first($data['detected']);
 	} else {
@@ -69,10 +69,9 @@ function cld_detect_languages(array &$data)
 
 	if (!$result['is_reliable']) {
 		Logger::debug('Unreliable detection', ['uri-id' => $data['uri-id'], 'original' => $original, 'detected' => $detected, 'name' => $result['language_name'], 'probability' => $result['language_probability'], 'text' => $data['text']]);
-		return;
-	}
-
-	if ($original == $detected) {
+		if (($original == $detected) && ($data['detected'][$original] < $result['language_probability'] / 100)) {
+			$data['detected'][$original] = $result['language_probability'] / 100;
+		}
 		return;
 	}
 
@@ -83,6 +82,15 @@ function cld_detect_languages(array &$data)
 		return;
 	}
 
-	Logger::debug('Detected different language', ['uri-id' => $data['uri-id'], 'original' => $original, 'detected' => $detected, 'name' => $result['language_name'], 'probability' => $result['language_probability'], 'text' => $data['text']]);
-	$data['detected'] = [$detected => $result['language_probability'] / 100];
+	if ($original != $detected) {
+		Logger::debug('Detected different language', ['uri-id' => $data['uri-id'], 'original' => $original, 'detected' => $detected, 'name' => $result['language_name'], 'probability' => $result['language_probability'], 'text' => $data['text']]);
+	}
+
+	$length = count($data['detected']);
+	if ($length > 0) {
+		unset($data['detected'][$detected]);
+		$data['detected'] = array_merge([$detected => $result['language_probability'] / 100], array_slice($data['detected'], 0, $length - 1));
+	} else {
+		$data['detected'] = [$detected => $result['language_probability'] / 100];
+	}
 }
