@@ -163,7 +163,7 @@ function langfilter_prepare_body_content_filter(&$hook_data)
 			return;
 		}
 
-		$lang = $iso639->languageByCode1($iso2);
+		$lang = $iso639->languageByCode1(substr($iso2, 0, 2));
 	} else {
 		$opts = $hook_data['item']['postopts'];
 		if (!$opts) {
