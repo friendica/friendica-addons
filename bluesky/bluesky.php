@@ -32,7 +32,6 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Protocol;
 use Friendica\Core\Renderer;
-use Friendica\Core\System;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\DI;
@@ -1235,7 +1234,7 @@ function bluesky_add_media(stdClass $embed, array $item, int $fetch_uid, int $le
 function bluesky_get_uri(stdClass $post): string
 {
 	if (empty($post->cid)) {
-		Logger::info('Invalid URI', ['post' => $post, 'callstack' => System::callstack(10, 0, true)]);
+		Logger::info('Invalid URI', ['post' => $post]);
 		return '';
 	}
 	return $post->uri . ':' . $post->cid;
@@ -1337,7 +1336,7 @@ function bluesky_fetch_post(string $uri, int $uid): string
 function bluesky_process_thread(stdClass $thread, int $uid, array $cdata, int $level): string
 {
 	if (empty($thread->post)) {
-		Logger::info('Invalid post', ['post' => $thread, 'callstack' => System::callstack(10, 0, true)]);
+		Logger::info('Invalid post', ['post' => $thread]);
 		return '';
 	}
 	$uri = bluesky_get_uri($thread->post);
