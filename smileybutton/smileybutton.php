@@ -90,7 +90,7 @@ function smileybutton_jot_tool(string &$body)
 	for ($x = 0; $x < count($params['texts']); $x++) {
 		$icon = $params['icons'][$x];
 		$s .= '<td onclick="smileybutton_addsmiley(\'' . $params['texts'][$x] . '\')">' . $icon . '</td>';
-		if (($x + 1) % (sqrt(count($params['texts'])) + 1) == 0) {
+		if (($x + 1) % (floor(sqrt(count($params['texts']))) + 1) == 0) {
 			$s .= '</tr><tr>';
 		}
 	}
