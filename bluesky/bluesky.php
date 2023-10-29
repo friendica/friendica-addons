@@ -1307,7 +1307,7 @@ function bluesky_fetch_missing_post(string $uri, int $uid, int $causer, int $lev
 		return $fallback;
 	}
 
-	Logger::debug('Reply count', ['replies' => $data->thread->post->replyCount, 'level' => $level, 'uid' => $uid, 'uri' => $uri]);
+	Logger::debug('Reply count', ['level' => $level, 'uid' => $uid, 'uri' => $uri]);
 
 	if ($causer != 0) {
 		$cdata = Contact::getPublicAndUserContactID($causer, $uid);
