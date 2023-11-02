@@ -35,35 +35,10 @@ function cld_detect_languages(array &$data)
 		$original = '';
 	}
 
-	$detected = $result['language_code'];
-	if ($detected == 'pt') {
-		$detected = 'pt-PT';
-	} elseif ($detected == 'az') {
-		$detected = 'az-Latn';
-	} elseif ($detected == 'bs') {
-		$detected = 'bs-Latn';
-	} elseif ($detected == 'el') {
-		$detected = 'el-monoton';
-	} elseif ($detected == 'ht') {
-		$detected = 'fr';
-	} elseif ($detected == 'iw') {
-		$detected = 'he';
-	} elseif ($detected == 'jw') {
-		$detected = 'jv';
-	} elseif ($detected == 'ms') {
-		$detected = 'ms-Latn';
-	} elseif ($detected == 'no') {
-		$detected = 'nb';
-	} elseif ($detected == 'sr') {
-		$detected = 'sr-Cyrl';
-	} elseif ($detected == 'zh') {
-		$detected = 'zh-Hans';
-	} elseif ($detected == 'zh-Hant') {
-		$detected = 'zh-hant';
-	}
+	$detected = DI::l10n()->toISO6391($result['language_code']);
 
-	// languages that aren't supported via the base language detection
-	if (in_array($detected, ['ceb', 'hmn', 'ht', 'kk', 'ky', 'mg', 'mk', 'ml', 'ny', 'or', 'pa', 'rw', 'su', 'st', 'tg', 'ts', 'xx-Qaai'])) {
+	// languages that aren't supported via the base language detection or tend to false detections
+	if ((strlen($detected) == 3) || in_array($detected, ['ht', 'kk', 'ku', 'ky', 'lg', 'mg', 'mk', 'mt', 'ny', 'rw', 'st', 'su', 'tg', 'ts', 'xx'])) {
 		return;
 	}
 
@@ -75,8 +50,8 @@ function cld_detect_languages(array &$data)
 		return;
 	}
 
-	$available = array_keys(DI::l10n()->convertForLanguageDetection(DI::l10n()->getAvailableLanguages(true)));
-	
+	$available = array_keys(DI::l10n()->getLanguageCodes());
+
 	if (!in_array($detected, $available)) {
 		Logger::debug('Unsupported language', ['uri-id' => $data['uri-id'], 'original' => $original, 'detected' => $detected, 'name' => $result['language_name'], 'probability' => $result['language_probability'], 'text' => $data['text']]);
 		return;
