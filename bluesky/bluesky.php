@@ -610,6 +610,13 @@ function bluesky_create_post(array $item, stdClass $root = null, stdClass $paren
 		return;
 	}
 
+	// Try to fetch the language from the post itself
+	if (!empty($item['language'])) {
+		$language = array_key_first(json_decode($item['language'], true));
+	} else {
+		$language = '';
+	}
+
 	$did  = DI::pConfig()->get($uid, 'bluesky', 'did');
 	$urls = bluesky_get_urls(Post\Media::removeFromBody($item['body']));
 	$item['body'] = $urls['body'];
@@ -621,9 +628,13 @@ function bluesky_create_post(array $item, stdClass $root = null, stdClass $paren
 
 		$record = [
 			'text'      => $facets['body'],
+			'$type'     => 'app.bsky.feed.post',
 			'createdAt' => DateTimeFormat::utcNow(DateTimeFormat::ATOM),
-			'$type'     => 'app.bsky.feed.post'
 		];
+
+		if (!empty($language)) {
+			$record['langs'] = [$language];
+		}
 
 		if (!empty($facets['facets'])) {
 			$record['facets'] = $facets['facets'];
@@ -982,7 +993,10 @@ function bluesky_fetch_feed(int $uid, string $feed)
 	}
 
 	foreach (array_reverse($data->feed) as $entry) {
-		if (!Relay::isWantedLanguage($entry->post->record->text)) {
+		$contact   = bluesky_get_contact($entry->post->author, 0, $uid);
+		$languages = $entry->post->record->langs ?? [];
+
+		if (!Relay::isWantedLanguage($entry->post->record->text, 0, $contact['id'] ?? 0, $languages)) {
 			Logger::debug('Unwanted language detected', ['text' => $entry->post->record->text]);
 			continue;
 		}
@@ -1094,6 +1108,7 @@ function bluesky_get_content(array $item, stdClass $record, string $uri, int $ui
 
 	$item['body']    = bluesky_get_text($record);
 	$item['created'] = DateTimeFormat::utc($record->createdAt, DateTimeFormat::MYSQL);
+	$item['transmitted-languages'] = $record->langs ?? [];
 	return $item;
 }
 
