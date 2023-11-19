@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-05 04:34+0000\n"
+"POT-Creation-Date: 2023-11-19 18:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,70 +17,74 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bluesky.php:314
+#: bluesky.php:325
 msgid ""
 "You are authenticated to Bluesky. For security reasons the password isn't "
 "stored."
 msgstr ""
 
-#: bluesky.php:314
+#: bluesky.php:325
 msgid "You are not authenticated. Please enter the app password."
 msgstr ""
 
-#: bluesky.php:318
+#: bluesky.php:329
 msgid "Enable Bluesky Post Addon"
 msgstr ""
 
-#: bluesky.php:319
+#: bluesky.php:330
 msgid "Post to Bluesky by default"
 msgstr ""
 
-#: bluesky.php:320
+#: bluesky.php:331
 msgid "Import the remote timeline"
 msgstr ""
 
-#: bluesky.php:321
+#: bluesky.php:332
 msgid "Import the pinned feeds"
 msgstr ""
 
-#: bluesky.php:321
+#: bluesky.php:332
 msgid ""
 "When activated, Posts will be imported from all the feeds that you pinned in "
 "Bluesky."
 msgstr ""
 
-#: bluesky.php:322
-msgid "Bluesky host"
+#: bluesky.php:333
+msgid "Personal Data Server"
 msgstr ""
 
-#: bluesky.php:323
+#: bluesky.php:333
+msgid "The personal data server (PDS) is the system that hosts your profile."
+msgstr ""
+
+#: bluesky.php:334
 msgid "Bluesky handle"
 msgstr ""
 
-#: bluesky.php:324
+#: bluesky.php:335
 msgid "Bluesky DID"
 msgstr ""
 
-#: bluesky.php:324
+#: bluesky.php:335
 msgid ""
 "This is the unique identifier. It will be fetched automatically, when the "
 "handle is entered."
 msgstr ""
 
-#: bluesky.php:325
+#: bluesky.php:336
 msgid "Bluesky app password"
 msgstr ""
 
-#: bluesky.php:325
+#: bluesky.php:336
 msgid ""
 "Please don't add your real password here, but instead create a specific app "
 "password in the Bluesky settings."
 msgstr ""
 
-#: bluesky.php:331
+#: bluesky.php:342
 msgid "Bluesky Import/Export"
 msgstr ""
 
-#: bluesky.php:382
+#: bluesky.php:395
 msgid "Post to Bluesky"
 msgstr ""
