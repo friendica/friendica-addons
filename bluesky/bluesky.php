@@ -36,6 +36,7 @@ use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Contact;
+use Friendica\Model\GServer;
 use Friendica\Model\Item;
 use Friendica\Model\ItemURI;
 use Friendica\Model\Photo;
@@ -49,8 +50,14 @@ use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Strings;
 
 const BLUESKY_DEFAULT_POLL_INTERVAL = 10; // given in minutes
-const BLUESKY_HOST = 'https://bsky.app'; // Hard wired until Bluesky will run on multiple systems
 const BLUESKY_IMAGE_SIZE = [1000000, 500000, 100000, 50000];
+
+/*
+ * (Currently) hard wired paths for Bluesky services
+ */
+const BLUESKY_DIRECTORY = 'https://plc.directory'; // Path to the directory server service to fetch the PDS of a given DID
+const BLUESKY_PDS       = 'https://bsky.social';   // Path to the personal data server service (PDS) to fetch the DID for a given handle
+const BLUESKY_WEB       = 'https://bsky.app';      // Path to the web interface with the user profile and posts
 
 function bluesky_install()
 {
@@ -106,8 +113,8 @@ function bluesky_probe_detect(array &$hookData)
 
 	if (parse_url($hookData['uri'], PHP_URL_SCHEME) == 'did') {
 		$did = $hookData['uri'];
-	} elseif (preg_match('#^' . BLUESKY_HOST . '/profile/(.+)#', $hookData['uri'], $matches)) {
-		$did = bluesky_get_did($pconfig['uid'], $matches[1]);
+	} elseif (preg_match('#^' . BLUESKY_WEB . '/profile/(.+)#', $hookData['uri'], $matches)) {
+		$did = bluesky_get_did($matches[1]);
 		if (empty($did)) {
 			return;
 		}
@@ -126,6 +133,8 @@ function bluesky_probe_detect(array &$hookData)
 	}
 
 	$hookData['result'] = bluesky_get_contact_fields($data, 0, false);
+
+	$hookData['result']['baseurl'] = bluesky_get_pds($did);
 
 	// Preparing probe data. This differs slightly from the contact array
 	$hookData['result']['about']    = HTML::toBBCode($data->description ?? '');
@@ -152,11 +161,11 @@ function bluesky_item_by_link(array &$hookData)
 		return;
 	}
 
-	if (!preg_match('#^' . BLUESKY_HOST . '/profile/(.+)/post/(.+)#', $hookData['uri'], $matches)) {
+	if (!preg_match('#^' . BLUESKY_WEB . '/profile/(.+)/post/(.+)#', $hookData['uri'], $matches)) {
 		return;
 	}
 
-	$did = bluesky_get_did($hookData['uid'], $matches[1]);
+	$did = bluesky_get_did($matches[1]);
 	if (empty($did)) {
 		return;
 	}
@@ -306,7 +315,7 @@ function bluesky_settings(array &$data)
 
 	$enabled      = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'post') ?? false;
 	$def_enabled  = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'post_by_default') ?? false;
-	$host         = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'host') ?: 'https://bsky.social';
+	$pds          = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'pds');
 	$handle       = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'handle');
 	$did          = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'did');
 	$token        = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'access_token');
@@ -321,7 +330,7 @@ function bluesky_settings(array &$data)
 		'$bydefault'    => ['bluesky_bydefault', DI::l10n()->t('Post to Bluesky by default'), $def_enabled],
 		'$import'       => ['bluesky_import', DI::l10n()->t('Import the remote timeline'), $import],
 		'$import_feeds' => ['bluesky_import_feeds', DI::l10n()->t('Import the pinned feeds'), $import_feeds, DI::l10n()->t('When activated, Posts will be imported from all the feeds that you pinned in Bluesky.')],
-		'$host'         => ['bluesky_host', DI::l10n()->t('Bluesky host'), $host, '', '', 'readonly'],
+		'$pds'          => ['bluesky_pds', DI::l10n()->t('Personal Data Server'), $pds, DI::l10n()->t('The personal data server (PDS) is the system that hosts your profile.'), '', 'readonly'],
 		'$handle'       => ['bluesky_handle', DI::l10n()->t('Bluesky handle'), $handle],
 		'$did'          => ['bluesky_did', DI::l10n()->t('Bluesky DID'), $did, DI::l10n()->t('This is the unique identifier. It will be fetched automatically, when the handle is entered.'), '', 'readonly'],
 		'$password'     => ['bluesky_password', DI::l10n()->t('Bluesky app password'), '', DI::l10n()->t("Please don't add your real password here, but instead create a specific app password in the Bluesky settings.")],
@@ -342,27 +351,29 @@ function bluesky_settings_post(array &$b)
 	if (empty($_POST['bluesky-submit'])) {
 		return;
 	}
-
-	$old_host   = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'host');
+	
+	$old_pds    = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'pds');
 	$old_handle = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'handle');
 	$old_did    = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'did');
 
-	$host   = $_POST['bluesky_host'];
 	$handle = $_POST['bluesky_handle'];
 
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'post',            intval($_POST['bluesky']));
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'post_by_default', intval($_POST['bluesky_bydefault']));
-	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'host',            $host);
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'handle',          $handle);
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'import',          intval($_POST['bluesky_import']));
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'import_feeds',    intval($_POST['bluesky_import_feeds']));
 
 	if (!empty($host) && !empty($handle)) {
-		if (empty($old_did) || $old_host != $host || $old_handle != $handle) {
-			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'did', bluesky_get_did(DI::userSession()->getLocalUserId(), DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'handle')));
+		if (empty($old_did) || $old_handle != $handle) {
+			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'did', bluesky_get_did(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'handle')));
+		}
+		if (empty($old_pds) || $old_handle != $handle) {
+			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'pds', bluesky_get_pds(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'did')));
 		}
 	} else {
 		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'bluesky', 'did');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'bluesky', 'pds');
 	}
 
 	if (!empty($_POST['bluesky_password'])) {
@@ -1452,10 +1463,9 @@ function bluesky_get_contact_fields(stdClass $author, int $uid, bool $update): a
 		'blocked'  => false,
 		'readonly' => false,
 		'pending'  => false,
-		'baseurl'  => BLUESKY_HOST,
 		'url'      => $author->did,
 		'nurl'     => $author->did,
-		'alias'    => BLUESKY_HOST . '/profile/' . $author->handle,
+		'alias'    => BLUESKY_WEB . '/profile/' . $author->handle,
 		'name'     => $author->displayName ?? $author->handle,
 		'nick'     => $author->handle,
 		'addr'     => $author->handle,
@@ -1464,6 +1474,12 @@ function bluesky_get_contact_fields(stdClass $author, int $uid, bool $update): a
 	if (!$update) {
 		Logger::debug('Got contact fields', ['uid' => $uid, 'url' => $fields['url']]);
 		return $fields;
+	}
+
+	$fields['baseurl'] = bluesky_get_pds($author->did);
+	if (!empty($fields['baseurl'])) {
+		GServer::check($fields['baseurl'], Protocol::BLUESKY);
+		$fields['gsid'] = GServer::getID($fields['baseurl'], true);
 	}
 
 	$data = bluesky_xrpc_get($uid, 'app.bsky.actor.getProfile', ['actor' => $author->did]);
@@ -1524,14 +1540,41 @@ function bluesky_get_preferences(int $uid): stdClass
 	return $data;
 }
 
-function bluesky_get_did(int $uid, string $handle): string
+function bluesky_get_did(string $handle): string
 {
-	$data = bluesky_get($uid, '/xrpc/com.atproto.identity.resolveHandle?handle=' . urlencode($handle));
+	$data = bluesky_get(BLUESKY_PDS . '/xrpc/com.atproto.identity.resolveHandle?handle=' . urlencode($handle));
 	if (empty($data)) {
 		return '';
 	}
 	Logger::debug('Got DID', ['return' => $data]);
 	return $data->did;
+}
+
+function bluesky_get_user_pds(int $uid): string
+{
+	$pds = DI::pConfig()->get($uid, 'bluesky', 'pds');
+	if (!empty($pds)) {
+		return $pds;
+	}
+	$pds = bluesky_get_pds(DI::pConfig()->get($uid, 'bluesky', 'did'));
+	DI::pConfig()->set($uid, 'bluesky', 'pds', $pds);
+	return $pds;
+}
+
+function bluesky_get_pds(string $did): ?string
+{
+	$data = bluesky_get(BLUESKY_DIRECTORY . '/' . $did);
+	if (empty($data) || empty($data->service)) {
+		return null;
+	}
+
+	foreach ($data->service as $service) {
+		if (($service->id == '#atproto_pds') && ($service->type == 'AtprotoPersonalDataServer') && !empty($service->serviceEndpoint)) {
+			return $service->serviceEndpoint;
+		}
+	}
+
+	return null;
 }
 
 function bluesky_get_token(int $uid): string
@@ -1588,7 +1631,7 @@ function bluesky_xrpc_post(int $uid, string $url, $parameters): ?stdClass
 function bluesky_post(int $uid, string $url, string $params, array $headers): ?stdClass
 {
 	try {
-		$curlResult = DI::httpClient()->post(DI::pConfig()->get($uid, 'bluesky', 'host') . $url, $params, $headers);
+		$curlResult = DI::httpClient()->post(bluesky_get_user_pds($uid) . $url, $params, $headers);
 	} catch (\Exception $e) {
 		Logger::notice('Exception on post', ['exception' => $e]);
 		return null;
@@ -1608,13 +1651,13 @@ function bluesky_xrpc_get(int $uid, string $url, array $parameters = []): ?stdCl
 		$url .= '?' . http_build_query($parameters);
 	}
 
-	return bluesky_get($uid, '/xrpc/' . $url, HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
+	return bluesky_get(bluesky_get_user_pds($uid) . '/xrpc/' . $url, HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
 }
 
-function bluesky_get(int $uid, string $url, string $accept_content = HttpClientAccept::DEFAULT, array $opts = []): ?stdClass
+function bluesky_get(string $url, string $accept_content = HttpClientAccept::DEFAULT, array $opts = []): ?stdClass
 {
 	try {
-		$curlResult = DI::httpClient()->get(DI::pConfig()->get($uid, 'bluesky', 'host') . $url, $accept_content, $opts);
+		$curlResult = DI::httpClient()->get($url, $accept_content, $opts);
 	} catch (\Exception $e) {
 		Logger::notice('Exception on get', ['exception' => $e]);
 		return null;
