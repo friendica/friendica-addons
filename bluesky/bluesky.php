@@ -693,10 +693,19 @@ function bluesky_create_post(array $item, stdClass $root = null, stdClass $paren
 function bluesky_get_urls(string $body): array
 {
 	// Remove all hashtag and mention links
-	$body = preg_replace("/([#@!])\[url\=(.*?)\](.*?)\[\/url\]/ism", '$1$3', $body);
+	$body = preg_replace("/([@!])\[url\=(.*?)\](.*?)\[\/url\]/ism", '$1$3', $body);
 
 	$body = BBCode::expandVideoLinks($body);
 	$urls = [];
+
+	// Search for hash tags
+	if (preg_match_all("/#\[url\=(https?:.*?)\](.*?)\[\/url\]/ism", $body, $matches, PREG_SET_ORDER)) {
+		foreach ($matches as $match) {
+			$text = '#' . $match[2];
+			$urls[] = ['tag' => $match[2], 'text' => $text, 'hash' => $text];
+			$body = str_replace($match[0], $text, $body);
+		}
+	}
 
 	// Search for pure links
 	if (preg_match_all("/\[url\](https?:.*?)\[\/url\]/ism", $body, $matches, PREG_SET_ORDER)) {
@@ -763,9 +772,17 @@ function bluesky_get_facets(string $body, array $urls): array
 		$facet->index->byteStart = $pos;
 
 		$feature = new stdClass;
-		$feature->uri = $url['url'];
+
 		$type = '$type';
-		$feature->$type = 'app.bsky.richtext.facet#link';
+		if (!empty($url['tag'])) {
+			$feature->tag = $url['tag'];
+			$feature->$type = 'app.bsky.richtext.facet#tag';
+		} elseif (!empty($url['url'])) {
+			$feature->uri = $url['url'];
+			$feature->$type = 'app.bsky.richtext.facet#link';
+		} else {
+			continue;
+		}
 
 		$facet->features = [$feature];
 		$facets[] = $facet;
@@ -1162,8 +1179,13 @@ function bluesky_get_text(stdClass $record): string
 					}
 					break;
 
+				case 'app.bsky.richtext.facet#tag';
+					$url      = DI::baseUrl() . '/search?tag=' . urlencode($feature->tag);
+					$linktext = '#' . $feature->tag;
+					break;
+	
 				default:
-					Logger::notice('Unhandled feature type', ['type' => $feature->$type, 'record' => $record]);
+					Logger::notice('Unhandled feature type', ['type' => $feature->$type, 'feature' => $feature, 'record' => $record]);
 					break;
 			}
 		}
