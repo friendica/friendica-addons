@@ -41,6 +41,7 @@ use Friendica\Model\Item;
 use Friendica\Model\ItemURI;
 use Friendica\Model\Photo;
 use Friendica\Model\Post;
+use Friendica\Model\Tag;
 use Friendica\Network\HTTPClient\Client\HttpClientAccept;
 use Friendica\Network\HTTPClient\Client\HttpClientOptions;
 use Friendica\Object\Image;
@@ -1134,13 +1135,13 @@ function bluesky_get_content(array $item, stdClass $record, string $uri, int $ui
 		}
 	}
 
-	$item['body']    = bluesky_get_text($record);
+	$item['body']    = bluesky_get_text($record, $item['uri-id']);
 	$item['created'] = DateTimeFormat::utc($record->createdAt, DateTimeFormat::MYSQL);
 	$item['transmitted-languages'] = $record->langs ?? [];
 	return $item;
 }
 
-function bluesky_get_text(stdClass $record): string
+function bluesky_get_text(stdClass $record, int $uri_id): string
 {
 	$text = $record->text ?? '';
 
@@ -1180,6 +1181,7 @@ function bluesky_get_text(stdClass $record): string
 					break;
 
 				case 'app.bsky.richtext.facet#tag';
+					Tag::store($uri_id, Tag::HASHTAG, $feature->tag);
 					$url      = DI::baseUrl() . '/search?tag=' . urlencode($feature->tag);
 					$linktext = '#' . $feature->tag;
 					break;
