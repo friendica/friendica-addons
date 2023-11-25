@@ -1580,7 +1580,7 @@ function bluesky_get_user_pds(int $uid): string
 	}
 	$did = DI::pConfig()->get($uid, 'bluesky', 'did');
 	if (empty($did)) {
-		Logger::debug('Blubb-1', ['uid' => $uid]);
+		Logger::notice('Empty did for user', ['uid' => $uid]);
 		return '';
 	}
 	$pds = bluesky_get_pds($did);
