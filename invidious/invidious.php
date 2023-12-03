@@ -54,10 +54,6 @@ function invidious_render(array &$b)
         $b['html'] = str_replace('https://youtube.com', $invidious, $b['html']);
         $replaced = true;
     }
-        if (strstr($b['html'], 'https://youtu.be')) {
-        $b['html'] = str_replace('https://youtu.be', $invidious, $b['html']);
-        $replaced = true;
-    }
     if ($replaced) {
         $b['html'] .= '<hr><p><small>' . DI::l10n()->t('(Invidious addon enabled: YouTube links via %s)', $invidious) . '</small></p>';
     }
