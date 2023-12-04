@@ -50,7 +50,7 @@ function invidious_render(array &$b)
         $b['html'] = str_replace('https://www.youtube.com', $invidious, $b['html']);
         $replaced = true;
     }
-        if (strstr($b['html'], 'https://youtube.com')) {
+    if (strstr($b['html'], 'https://youtube.com')) {
         $b['html'] = str_replace('https://youtube.com', $invidious, $b['html']);
         $replaced = true;
     }
