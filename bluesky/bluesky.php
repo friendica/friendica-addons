@@ -352,7 +352,7 @@ function bluesky_settings_post(array &$b)
 	if (empty($_POST['bluesky-submit'])) {
 		return;
 	}
-	
+
 	$old_pds    = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'pds');
 	$old_handle = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'handle');
 	$old_did    = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'did');
@@ -365,7 +365,7 @@ function bluesky_settings_post(array &$b)
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'import',          intval($_POST['bluesky_import']));
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'import_feeds',    intval($_POST['bluesky_import_feeds']));
 
-	if (!empty($host) && !empty($handle)) {
+	if (!empty($handle)) {
 		if (empty($old_did) || $old_handle != $handle) {
 			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'did', bluesky_get_did(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'handle')));
 		}
