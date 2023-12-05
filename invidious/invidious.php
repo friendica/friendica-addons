@@ -2,7 +2,7 @@
 /*
  * Name: invidious
  * Description: Replaces links to youtube.com to an invidious instance in all displays of postings on a node.
- * Version: 0.1
+ * Version: 0.2
  * Author: Matthias Ebers <@feb@loma.ml>
  *
  */
@@ -46,14 +46,19 @@ function invidious_render(array &$b)
     // this needs to be a system setting
     $replaced = false;
     $invidious = DI::config()->get('invidious', 'server', 'https://invidio.us');
-    if (strstr($b['html'], 'https://www.youtube.com')) {
-        $b['html'] = str_replace('https://www.youtube.com', $invidious, $b['html']);
-        $replaced = true;
+
+    $youtubeUrls = [
+        'https://www.youtube.com',
+        'https://youtube.com',
+    ];
+
+    foreach ($youtubeUrls as $youtubeUrl) {
+        if (strstr($b['html'], $youtubeUrl)) {
+            $b['html'] = str_replace($youtubeUrl, $invidious, $b['html']);
+            $replaced = true;
+        }
     }
-    if (strstr($b['html'], 'https://youtube.com')) {
-        $b['html'] = str_replace('https://youtube.com', $invidious, $b['html']);
-        $replaced = true;
-    }
+
     if ($replaced) {
         $b['html'] .= '<hr><p><small>' . DI::l10n()->t('(Invidious addon enabled: YouTube links via %s)', $invidious) . '</small></p>';
     }
