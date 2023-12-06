@@ -53,6 +53,14 @@ use Friendica\Util\Strings;
 const BLUESKY_DEFAULT_POLL_INTERVAL = 10; // given in minutes
 const BLUESKY_IMAGE_SIZE = [1000000, 500000, 100000, 50000];
 
+const BLUEKSY_STATUS_UNKNOWN    = 0;
+const BLUEKSY_STATUS_TOKEN_OK   = 1;
+const BLUEKSY_STATUS_SUCCESS    = 2;
+const BLUEKSY_STATUS_API_FAIL   = 10;
+const BLUEKSY_STATUS_DID_FAIL   = 11;
+const BLUEKSY_STATUS_PDS_FAIL   = 12;
+const BLUEKSY_STATUS_TOKEN_FAIL = 13;
+
 /*
  * (Currently) hard wired paths for Bluesky services
  */
@@ -323,8 +331,6 @@ function bluesky_settings(array &$data)
 	$import       = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'import') ?? false;
 	$import_feeds = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'import_feeds') ?? false;
 
-	$status = $token ? DI::l10n()->t("You are authenticated to Bluesky. For security reasons the password isn't stored.") : DI::l10n()->t('You are not authenticated. Please enter the app password.');
-
 	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/bluesky/');
 	$html = Renderer::replaceMacros($t, [
 		'$enable'       => ['bluesky', DI::l10n()->t('Enable Bluesky Post Addon'), $enabled],
@@ -335,7 +341,7 @@ function bluesky_settings(array &$data)
 		'$handle'       => ['bluesky_handle', DI::l10n()->t('Bluesky handle'), $handle],
 		'$did'          => ['bluesky_did', DI::l10n()->t('Bluesky DID'), $did, DI::l10n()->t('This is the unique identifier. It will be fetched automatically, when the handle is entered.'), '', 'readonly'],
 		'$password'     => ['bluesky_password', DI::l10n()->t('Bluesky app password'), '', DI::l10n()->t("Please don't add your real password here, but instead create a specific app password in the Bluesky settings.")],
-		'$status'       => $status
+		'$status'       => bluesky_get_status($handle, $did, $pds, $token),
 	]);
 
 	$data = [
@@ -345,6 +351,45 @@ function bluesky_settings(array &$data)
 		'enabled'   => $enabled,
 		'html'      => $html,
 	];
+}
+
+function bluesky_get_status(string $handle = null, string $did = null, string $pds = null, string $token = null): string
+{
+	if (empty($handle)) {
+		return DI::l10n()->t('You are not authenticated. Please enter your handle and the app password.');
+	}
+
+	$status = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'status') ?? BLUEKSY_STATUS_UNKNOWN;
+
+	// Fallback mechanism for connection that had been established before the introduction of the status
+	if ($status == BLUEKSY_STATUS_UNKNOWN) {
+		if (empty($did)) {
+			$status = BLUEKSY_STATUS_DID_FAIL;
+		} elseif (empty($pds)) {
+			$status = BLUEKSY_STATUS_PDS_FAIL;
+		} elseif (!empty($token)) {
+			$status = BLUEKSY_STATUS_TOKEN_OK;
+		} else {
+			$status = BLUEKSY_STATUS_TOKEN_FAIL;
+		}
+	}
+
+	switch ($status) {
+		case BLUEKSY_STATUS_TOKEN_OK:
+			return DI::l10n()->t("You are authenticated to Bluesky. For security reasons the password isn't stored.");
+		case BLUEKSY_STATUS_SUCCESS:
+			return DI::l10n()->t('The communication with the personal data server service (PDS) is established.');
+		case BLUEKSY_STATUS_API_FAIL;
+			return DI::l10n()->t('Communication issues with the personal data server service (PDS).');
+		case BLUEKSY_STATUS_DID_FAIL:
+			return DI::l10n()->t('The DID for the provided handle could not be detected. Please check if you entered the correct handle.');
+		case BLUEKSY_STATUS_PDS_FAIL:
+			return DI::l10n()->t('The personal data server service (PDS) could not be detected.');
+		case BLUEKSY_STATUS_TOKEN_FAIL:
+			return DI::l10n()->t('The authentication with the provided handle and password failed. Please check if you entered the correct password.');
+		default:
+			return '';
+	}
 }
 
 function bluesky_settings_post(array &$b)
@@ -367,17 +412,33 @@ function bluesky_settings_post(array &$b)
 
 	if (!empty($handle)) {
 		if (empty($old_did) || $old_handle != $handle) {
-			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'did', bluesky_get_did(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'handle')));
+			$did = bluesky_get_did(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'handle'));
+			if (empty($did)) {
+				DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'status', BLUEKSY_STATUS_DID_FAIL);
+			}
+			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'did', $did);
+		} else {
+			$did = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'did');
 		}
-		if (empty($old_pds) || $old_handle != $handle) {
-			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'pds', bluesky_get_pds(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'did')));
+		if (!empty($did) && (empty($old_pds) || $old_handle != $handle)) {
+			$pds = bluesky_get_pds($did);
+			if (empty($pds)) {
+				DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'status', BLUEKSY_STATUS_PDS_FAIL);
+			}
+			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'pds', $pds);
+		} else {
+			$pds = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'pds');
 		}
 	} else {
 		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'bluesky', 'did');
 		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'bluesky', 'pds');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'bluesky', 'access_token');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'bluesky', 'refresh_token');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'bluesky', 'token_created');
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'bluesky', 'status');
 	}
 
-	if (!empty($_POST['bluesky_password'])) {
+	if (!empty($did) && !empty($pds) && !empty($_POST['bluesky_password'])) {
 		bluesky_create_token(DI::userSession()->getLocalUserId(), $_POST['bluesky_password']);
 	}
 }
@@ -1642,6 +1703,7 @@ function bluesky_create_token(int $uid, string $password): string
 
 	$data = bluesky_post($uid, '/xrpc/com.atproto.server.createSession', json_encode(['identifier' => $did, 'password' => $password]), ['Content-type' => 'application/json']);
 	if (empty($data)) {
+		DI::pConfig()->set($uid, 'bluesky', 'status', BLUEKSY_STATUS_TOKEN_FAIL);
 		return '';
 	}
 
@@ -1649,6 +1711,7 @@ function bluesky_create_token(int $uid, string $password): string
 	DI::pConfig()->set($uid, 'bluesky', 'access_token', $data->accessJwt);
 	DI::pConfig()->set($uid, 'bluesky', 'refresh_token', $data->refreshJwt);
 	DI::pConfig()->set($uid, 'bluesky', 'token_created', time());
+	DI::pConfig()->set($uid, 'bluesky', 'status', BLUEKSY_STATUS_TOKEN_OK);
 	return $data->accessJwt;
 }
 
@@ -1663,14 +1726,17 @@ function bluesky_post(int $uid, string $url, string $params, array $headers): ?s
 		$curlResult = DI::httpClient()->post(bluesky_get_user_pds($uid) . $url, $params, $headers);
 	} catch (\Exception $e) {
 		Logger::notice('Exception on post', ['exception' => $e]);
+		DI::pConfig()->set($uid, 'bluesky', 'status', BLUEKSY_STATUS_API_FAIL);
 		return null;
 	}
 
 	if (!$curlResult->isSuccess()) {
 		Logger::notice('API Error', ['error' => json_decode($curlResult->getBody()) ?: $curlResult->getBody()]);
+		DI::pConfig()->set($uid, 'bluesky', 'status', BLUEKSY_STATUS_API_FAIL);
 		return null;
 	}
 
+	DI::pConfig()->set($uid, 'bluesky', 'status', BLUEKSY_STATUS_SUCCESS);
 	return json_decode($curlResult->getBody());
 }
 
@@ -1680,7 +1746,10 @@ function bluesky_xrpc_get(int $uid, string $url, array $parameters = []): ?stdCl
 		$url .= '?' . http_build_query($parameters);
 	}
 
-	return bluesky_get(bluesky_get_user_pds($uid) . '/xrpc/' . $url, HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
+	$data = bluesky_get(bluesky_get_user_pds($uid) . '/xrpc/' . $url, HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
+	DI::pConfig()->set($uid, 'bluesky', 'status', is_null($data) ? BLUEKSY_STATUS_API_FAIL : BLUEKSY_STATUS_SUCCESS);
+	return $data;
+
 }
 
 function bluesky_get(string $url, string $accept_content = HttpClientAccept::DEFAULT, array $opts = []): ?stdClass
