@@ -46,9 +46,9 @@ function invidious_render(array &$b)
     // this needs to be a system setting
     $replaced = false;
     $invidious = DI::config()->get('invidious', 'server', 'https://invidio.us');
-    if (strstr($b['html'], 'https://www.youtube.com')) {
-        $b['html'] = str_replace(['https://www.youtube.com', 'https://youtube.com'], $invidious, $b['html']);
-        $replaced = true;
+    if (strpos($b['html'], 'https://www.youtube.com/') !== false || strpos($b['html'], 'https://youtube.com/') !== false || strpos($b['html'], 'https://youtu.be/') !== false) {
+    $b['html'] = str_replace('https://youtu.be/', $invidious . '/watch?v=', $b['html']);
+    $b['html'] = str_replace(['https://www.youtube.com/', 'https://youtube.com/'], $invidious . '/', $b['html']);
     }
     if ($replaced) {
         $b['html'] .= '<hr><p><small>' . DI::l10n()->t('(Invidious addon enabled: YouTube links via %s)', $invidious) . '</small></p>';
