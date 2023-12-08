@@ -1,0 +1,40 @@
+ # ADDON invidious
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica invidious addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-12-03 20:21+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: invidious.php:35
+#, php-format
+msgid ""
+"Which Invidious server shall be used for the replacements in the post "
+"bodies? Use the URL with servername and protocol. See %s for a list of "
+"available public Invidious servers."
+msgstr ""
+
+#: invidious.php:36
+msgid "Invidious server"
+msgstr ""
+
+#: invidious.php:37
+msgid "Save Settings"
+msgstr ""
+
+#: invidious.php:64
+#, php-format
+msgid "(Invidious addon enabled: YouTube links via %s)"
+msgstr ""
+
