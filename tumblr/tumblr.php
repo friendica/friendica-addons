@@ -98,7 +98,7 @@ function tumblr_probe_detect(array &$hookData)
 		return;
 	}
 
-	$hookData['result'] = tumblr_get_contact_by_url($hookData['uri']);
+	$hookData['result'] = tumblr_get_contact_by_url($hookData['uri'], $hookData['uid']);
 
 	// Authoritative probe should set the result even if the probe was unsuccessful
 	if ($hookData['network'] == Protocol::TUMBLR && empty($hookData['result'])) {
@@ -160,7 +160,7 @@ function tumblr_follow(array &$hook_data)
 
 	Logger::debug('Check if contact is Tumblr', ['url' => $hook_data['url']]);
 
-	$fields = tumblr_get_contact_by_url($hook_data['url']);
+	$fields = tumblr_get_contact_by_url($hook_data['url'], $uid);
 	if (empty($fields)) {
 		Logger::debug('Contact is not a Tumblr contact', ['url' => $hook_data['url']]);
 		return;
@@ -1202,7 +1202,7 @@ function tumblr_get_page(int $uid, array $blogs = []): string
 function tumblr_get_blogs(int $uid): array
 {
 	$userinfo = tumblr_get($uid, 'user/info');
-	if ($userinfo->meta->status > 299) {
+	if ($userinfo->meta->status > 399) {
 		Logger::notice('Error fetching blogs', ['meta' => $userinfo->meta, 'response' => $userinfo->response, 'errors' => $userinfo->errors]);
 		return [];
 	}
@@ -1226,16 +1226,12 @@ function tumblr_enabled_for_user(int $uid)
  * Get a contact array from a Tumblr url
  *
  * @param string $url
+ * @param int    $uid
  * @return array|null
  * @throws \Friendica\Network\HTTPException\InternalServerErrorException
  */
-function tumblr_get_contact_by_url(string $url): ?array
+function tumblr_get_contact_by_url(string $url, int $uid): ?array
 {
-	$consumer_key = DI::config()->get('tumblr', 'consumer_key');
-	if (empty($consumer_key)) {
-		return null;
-	}
-
 	if (!preg_match('#^https?://tumblr.com/(.+)#', $url, $matches) && !preg_match('#^https?://www\.tumblr.com/(.+)#', $url, $matches) && !preg_match('#^https?://(.+)\.tumblr.com#', $url, $matches)) {
 		try {
 			$curlResult = DI::httpClient()->get($url);
@@ -1261,42 +1257,38 @@ function tumblr_get_contact_by_url(string $url): ?array
 		return null;
 	}
 
-	Logger::debug('Update Tumblr blog data', ['url' => $url]);
+	Logger::debug('Update Tumblr blog data', ['url' => $url, 'blog' => $blog, 'uid' => $uid]);
 
-	$curlResult = DI::httpClient()->get('https://api.tumblr.com/v2/blog/' . $blog . '/info?api_key=' . $consumer_key);
-	$body = $curlResult->getBody();
-	$data = json_decode($body);
-	if (empty($data)) {
+	$info = tumblr_get($uid, 'blog/' . $blog . '/info');
+	if ($info->meta->status > 399) {
+		Logger::notice('Error fetching blog info', ['meta' => $info->meta, 'response' => $info->response, 'errors' => $info->errors, 'blog' => $blog, 'uid' => $uid]);
 		return null;
-	}
-
-	if (is_array($data->response->blog) || empty($data->response->blog)) {
-		Logger::warning('Unexpected blog format', ['blog' => $blog, 'data' => $data]);
-		return null;
+	} else {
+		Logger::debug('Got data', ['blog' => $blog, 'meta' => $info->meta]);
 	}
 
 	$baseurl = 'https://tumblr.com';
-	$url     = $baseurl . '/' . $data->response->blog->name;
+	$url     = $baseurl . '/' . $info->response->blog->name;
 
 	return [
 		'url'      => $url,
 		'nurl'     => Strings::normaliseLink($url),
-		'addr'     => $data->response->blog->name . '@tumblr.com',
-		'alias'    => $data->response->blog->url,
+		'addr'     => $info->response->blog->name . '@tumblr.com',
+		'alias'    => $info->response->blog->url,
 		'batch'    => '',
 		'notify'   => '',
-		'poll'     => 'tumblr::' . $data->response->blog->uuid,
+		'poll'     => 'tumblr::' . $info->response->blog->uuid,
 		'poco'     => '',
-		'name'     => $data->response->blog->title ?: $data->response->blog->name,
-		'nick'     => $data->response->blog->name,
+		'name'     => $info->response->blog->title ?: $info->response->blog->name,
+		'nick'     => $info->response->blog->name,
 		'network'  => Protocol::TUMBLR,
 		'baseurl'  => $baseurl,
 		'pubkey'   => '',
 		'priority' => 0,
-		'guid'     => $data->response->blog->uuid,
-		'about'    => HTML::toBBCode($data->response->blog->description),
-		'photo'    => $data->response->blog->avatar[0]->url,
-		'header'   => $data->response->blog->theme->header_image_focused,
+		'guid'     => $info->response->blog->uuid,
+		'about'    => HTML::toBBCode($info->response->blog->description),
+		'photo'    => $info->response->blog->avatar[0]->url,
+		'header'   => $info->response->blog->theme->header_image_focused,
 	];
 }
 
@@ -1312,11 +1304,20 @@ function tumblr_get(int $uid, string $url, array $parameters = []): stdClass
 {
 	$url = 'https://api.tumblr.com/v2/' . $url;
 
+	if ($uid == 0) {
+		$consumer_key = DI::config()->get('tumblr', 'consumer_key');
+		$parameters['api_key'] = $consumer_key;
+	}
+
 	if (!empty($parameters)) {
 		$url .= '?' . http_build_query($parameters);
 	}
 
-	$curlResult = DI::httpClient()->get($url, HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . tumblr_get_token($uid)]]]);
+	if ($uid > 0) {
+		$curlResult = DI::httpClient()->get($url, HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . tumblr_get_token($uid)]]]);
+	} else {
+		$curlResult = DI::httpClient()->get($url, HttpClientAccept::JSON);
+	}
 	return tumblr_format_result($curlResult);
 }
 
