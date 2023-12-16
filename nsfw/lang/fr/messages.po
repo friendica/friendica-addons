@@ -4,6 +4,7 @@
 # 
 # 
 # Translators:
+# Florent C., 2023
 # Nicolas Derive, 2022-2023
 # StefOfficiel <pichard.stephane@free.fr>, 2015
 # Vincent Vindarel <vindarel@mailz.org>, 2018
@@ -13,7 +14,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-10 14:42-0500\n"
 "PO-Revision-Date: 2014-06-23 10:34+0000\n"
-"Last-Translator: Nicolas Derive, 2022-2023\n"
+"Last-Translator: Florent C., 2023\n"
 "Language-Team: French (http://app.transifex.com/Friendica/friendica/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -41,7 +42,7 @@ msgstr "Liste de mots-clés - séparés par des virgules - à cacher"
 msgid ""
 "Use /expression/ to provide regular expressions, #tag to specfically match "
 "hashtags (case-insensitive), or regular words (case-sensitive)"
-msgstr "Utiliser /expression/ pour fournir des expressions régulières, #tag pour correspondre à un mot-dièse (hashtag, insensible à la casse), ou des mots classiques (sensible à la casse)"
+msgstr "Utiliser /expression/ pour fournir des expressions régulières, #tag pour correspondre à un tag (insensible à la casse), ou des mots classiques (sensible à la casse)"
 
 #: nsfw.php:72
 msgid "Content Filter (NSFW and more)"
@@ -55,7 +56,7 @@ msgstr "La compilation de l'expression régulière \"%s\" a échoué"
 #: nsfw.php:154
 #, php-format
 msgid "Filtered tag: %s"
-msgstr "Tag filtré: %s"
+msgstr "Tag filtré : %s"
 
 #: nsfw.php:156
 #, php-format

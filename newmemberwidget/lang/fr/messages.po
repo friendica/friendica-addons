@@ -4,6 +4,7 @@
 # 
 # 
 # Translators:
+# Florent C., 2023
 # Hypolite Petovan <hypolite@mrpetovan.com>, 2022
 # Nicolas Derive, 2022
 # StefOfficiel <pichard.stephane@free.fr>, 2015
@@ -11,10 +12,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"POT-Creation-Date: 2023-06-03 15:50-0400\n"
 "PO-Revision-Date: 2014-06-23 10:26+0000\n"
-"Last-Translator: Nicolas Derive, 2022\n"
-"Language-Team: French (http://www.transifex.com/Friendica/friendica/language/fr/)\n"
+"Last-Translator: Florent C., 2023\n"
+"Language-Team: French (http://app.transifex.com/Friendica/friendica/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -30,48 +31,48 @@ msgid "Tips for New Members"
 msgstr "Conseils aux nouveaux venus"
 
 #: newmemberwidget.php:33
-msgid "Global Support Forum"
-msgstr "Forum de support global"
+msgid "Global Support Group"
+msgstr "Groupe de support global"
 
 #: newmemberwidget.php:37
-msgid "Local Support Forum"
-msgstr "Forum de support local"
+msgid "Local Support Group"
+msgstr "Groupe de support local"
 
-#: newmemberwidget.php:65
+#: newmemberwidget.php:62
 msgid "Save Settings"
 msgstr "Enregistrer les paramètres"
 
-#: newmemberwidget.php:66
+#: newmemberwidget.php:63
 msgid "Message"
 msgstr "Message"
 
-#: newmemberwidget.php:66
+#: newmemberwidget.php:63
 msgid "Your message for new members. You can use bbcode here."
 msgstr "Votre messages aux nouveaux venus. Vous pouvez utiliser des BBCodes."
 
-#: newmemberwidget.php:67
-msgid "Add a link to global support forum"
-msgstr "Ajouter un lien vers le forum de support global"
+#: newmemberwidget.php:64
+msgid "Add a link to global support group"
+msgstr "Ajouter un lien vers le groupe de support global"
 
-#: newmemberwidget.php:67
-msgid "Should a link to the global support forum be displayed?"
-msgstr "Montrer un lien vers le forum de support global?"
+#: newmemberwidget.php:64
+msgid "Should a link to the global support group be displayed?"
+msgstr "Montrer un lien vers le groupe de support global ?"
 
-#: newmemberwidget.php:68
-msgid "Add a link to the local support forum"
-msgstr "Ajouter un lien vers le forum de support local"
+#: newmemberwidget.php:65
+msgid "Add a link to the local support group"
+msgstr "Ajouter un lien vers le groupe de support local"
 
-#: newmemberwidget.php:68
+#: newmemberwidget.php:65
 msgid ""
-"If you have a local support forum and want to have a link displayed in the "
+"If you have a local support group and want to have a link displayed in the "
 "widget, check this box."
-msgstr "Si vous avez un forum d'assistance local et désirez avoir un lien affiché dans l'appliquette/widget, cochez cette case."
+msgstr "Si vous avez un groupe de support local et désirez avoir un lien affiché dans l'appliquette/widget, cochez cette case."
 
-#: newmemberwidget.php:69
+#: newmemberwidget.php:66
 msgid "Name of the local support group"
 msgstr "Nom du groupe de support local"
 
-#: newmemberwidget.php:69
+#: newmemberwidget.php:66
 msgid ""
 "If you checked the above, specify the <em>nickname</em> of the local support"
 " group here (i.e. helpers)"

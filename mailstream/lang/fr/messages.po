@@ -4,6 +4,7 @@
 # 
 # 
 # Translators:
+# Florent C., 2023
 # Nicolas Derive, 2022
 # ea1cd8241cb389ffb6f92bc6891eff5d_dc12308 <70dced5587d47e18d88f9298024d96f8_93383>, 2015
 # StefOfficiel <pichard.stephane@free.fr>, 2015
@@ -13,8 +14,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-11-21 19:15-0500\n"
 "PO-Revision-Date: 2014-06-23 09:54+0000\n"
-"Last-Translator: Nicolas Derive, 2022\n"
-"Language-Team: French (http://www.transifex.com/Friendica/friendica/language/fr/)\n"
+"Last-Translator: Florent C., 2023\n"
+"Language-Team: French (http://app.transifex.com/Friendica/friendica/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -33,68 +34,72 @@ msgstr "Adresse de courriel de laquelle les éléments du flux sembleront proven
 msgid "Save Settings"
 msgstr "Sauvegarder les paramètres"
 
-#: mailstream.php:301
+#: mailstream.php:311
 msgid "Re:"
 msgstr "Re :"
 
-#: mailstream.php:314 mailstream.php:317
+#: mailstream.php:324 mailstream.php:327
 msgid "Friendica post"
 msgstr "Message Friendica"
 
-#: mailstream.php:320
+#: mailstream.php:330
 msgid "Diaspora post"
 msgstr "Message Diaspora"
 
-#: mailstream.php:330
+#: mailstream.php:340
 msgid "Feed item"
 msgstr "Élément du flux"
 
-#: mailstream.php:333
+#: mailstream.php:343
 msgid "Email"
 msgstr "Courriel"
 
-#: mailstream.php:335
+#: mailstream.php:345
 msgid "Friendica Item"
 msgstr "Élément de Friendica"
 
-#: mailstream.php:404
+#: mailstream.php:419
 msgid "Upstream"
 msgstr "En amont"
 
-#: mailstream.php:405
+#: mailstream.php:420
+msgid "URI"
+msgstr "URI"
+
+#: mailstream.php:421
 msgid "Local"
 msgstr "Local"
 
-#: mailstream.php:481
+#: mailstream.php:499
 msgid "Enabled"
 msgstr "Activer"
 
-#: mailstream.php:486
+#: mailstream.php:504
 msgid "Email Address"
 msgstr "Adresse de courriel"
 
-#: mailstream.php:488
+#: mailstream.php:506
 msgid "Leave blank to use your account email address"
 msgstr "Laissez vide pour utiliser l'adresse de courriel de votre compte"
 
-#: mailstream.php:492
+#: mailstream.php:510
 msgid "Exclude Likes"
 msgstr "Exclure les \"j'aime\""
 
-#: mailstream.php:494
+#: mailstream.php:512
 msgid "Check this to omit mailing \"Like\" notifications"
 msgstr "Cochez ceci pour éviter d'envoyer les notifications des \"J'aime\""
 
-#: mailstream.php:498
+#: mailstream.php:516
 msgid "Attach Images"
 msgstr "Attacher les images"
 
-#: mailstream.php:500
+#: mailstream.php:518
 msgid ""
 "Download images in posts and attach them to the email.  Useful for reading "
 "email while offline."
 msgstr "Télécharger les images des messages et les attacher au courriel. Utile pour les les courriels hors-ligne."
 
-#: mailstream.php:507
+#: mailstream.php:525
 msgid "Mail Stream Settings"
 msgstr "Paramètres de Mail Stream"

@@ -11,5 +11,5 @@ $a->strings['Your public PGP key, ascii armored format'] = 'Votre clé publique 
 $a->strings['"Secure Mail" Settings'] = 'Paramètres des emails sécurisés';
 $a->strings['Save Settings'] = 'Enregistrer les paramètres';
 $a->strings['Save and send test'] = 'Enregistrer et envoyer un message de test';
-$a->strings['Test email sent'] = 'Message de test envoyé avec succès';
-$a->strings['There was an error sending the test email'] = 'Une erreur est survenue pendant l\'envoi du message de test';
+$a->strings['Test email sent'] = 'Courriel de test envoyé avec succès';
+$a->strings['There was an error sending the test email'] = 'Une erreur est survenue pendant l\'envoi du courriel de test';

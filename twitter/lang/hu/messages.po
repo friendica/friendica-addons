@@ -4,158 +4,77 @@
 # 
 # 
 # Translators:
-# Balázs Úr, 2020-2022
+# Balázs Úr, 2020-2023
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-13 10:15+0000\n"
+"POT-Creation-Date: 2023-08-16 03:27+0000\n"
 "PO-Revision-Date: 2014-06-23 12:58+0000\n"
-"Last-Translator: Balázs Úr, 2020-2022\n"
-"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"Last-Translator: Balázs Úr, 2020-2023\n"
+"Language-Team: Hungarian (http://app.transifex.com/Friendica/friendica/language/hu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: twitter.php:216
+#: twitter.php:84
 msgid "Post to Twitter"
 msgstr "Beküldés a Twitterre"
 
-#: twitter.php:263
-msgid ""
-"You submitted an empty PIN, please Sign In with Twitter again to get a new "
-"one."
-msgstr "Üres PIN-kódot küldött be. Jelentkezzen be a Twitter használatával újra, hogy egy újat kapjon."
+#: twitter.php:123
+msgid "No status."
+msgstr "Nincs állapot."
 
-#: twitter.php:330
-msgid ""
-"No consumer key pair for Twitter found. Please contact your site "
-"administrator."
-msgstr "Nem találhatók felhasználói kulcspárok a Twitterhez. Vegye fel a kapcsolatot az oldal adminisztrátorával."
-
-#: twitter.php:343
-msgid ""
-"At this Friendica instance the Twitter addon was enabled but you have not "
-"yet connected your account to your Twitter account. To do so click the "
-"button below to get a PIN from Twitter which you have to copy into the input"
-" box below and submit the form. Only your <strong>public</strong> posts will"
-" be posted to Twitter."
-msgstr "Ennél a Friendica példánynál a Twitter bővítmény engedélyezve lett, de még nem kapcsolta hozzá a fiókját a Twitter-fiókjához. Ehhez kattintson a lenti gombra, hogy kapjon egy PIN-kódot a Twittertől, amelyet a lenti beviteli mezőbe kell bemásolnia, majd el kell küldenie az űrlapot. Csak a <strong>nyilvános</strong> bejegyzései lesznek beküldve a Twitterre."
-
-#: twitter.php:344
-msgid "Log in with Twitter"
-msgstr "Bejelentkezés Twitter használatával"
-
-#: twitter.php:346
-msgid "Copy the PIN from Twitter here"
-msgstr "Másolja be ide a Twittertől kapott PIN-kódot"
-
-#: twitter.php:354 twitter.php:399
-msgid "An error occured: "
-msgstr "Hiba történt: "
-
-#: twitter.php:368
-#, php-format
-msgid ""
-"Currently connected to: <a href=\"https://twitter.com/%1$s\" "
-"target=\"_twitter\">%1$s</a>"
-msgstr "Jelenleg ehhez kapcsolódott: <a href=\"https://twitter.com/%1$s\" target=\"_twitter\">%1$s</a>"
-
-#: twitter.php:374
-msgid ""
-"<strong>Note</strong>: Due to your privacy settings (<em>Hide your profile "
-"details from unknown viewers?</em>) the link potentially included in public "
-"postings relayed to Twitter will lead the visitor to a blank page informing "
-"the visitor that the access to your profile has been restricted."
-msgstr "<strong>Megjegyzés</strong>: az adatvédelmi beállításai miatt (<em>Elrejti a profilja részleteit az ismeretlen megtekintők elől?</em>) a Twitterre továbbított nyilvános beküldésekben vélhetően tartalmazott hivatkozás a látogatót egy üres oldalra fogja vezetni, amely arról tájékoztatja a látogatót, hogy a profiljához való hozzáférés korlátozva lett."
-
-#: twitter.php:381
-msgid "Invalid Twitter info"
-msgstr "Érvénytelen Twitter-információk"
-
-#: twitter.php:382
-msgid "Disconnect"
-msgstr "Leválasztás"
-
-#: twitter.php:387
+#: twitter.php:129
 msgid "Allow posting to Twitter"
 msgstr "Beküldés engedélyezése a Twitterre"
 
-#: twitter.php:387
+#: twitter.php:129
 msgid ""
 "If enabled all your <strong>public</strong> postings can be posted to the "
 "associated Twitter account. You can choose to do so by default (here) or for"
 " every posting separately in the posting options when writing the entry."
 msgstr "Ha engedélyezve van, akkor az összes <strong>nyilvános</strong> beküldés beküldhető a hozzárendelt Twitter-fiókba. Kiválaszthatja, hogy ezt alapértelmezetten szeretné-e (itt), vagy minden egyes beküldésnél különállóan a beküldési beállításokban, amikor megírja a bejegyzést."
 
-#: twitter.php:388
+#: twitter.php:130
 msgid "Send public postings to Twitter by default"
 msgstr "Nyilvános beküldések küldése a Twitterre alapértelmezetten"
 
-#: twitter.php:389
-msgid "Use threads instead of truncating the content"
-msgstr "Szálak használata a tartalom csonkítása helyett"
+#: twitter.php:131
+msgid "API Key"
+msgstr "API-kulcs"
 
-#: twitter.php:390
-msgid "Mirror all posts from twitter that are no replies"
-msgstr "A Twittertől származó összes bejegyzés tükrözése, amelyek nem válaszok"
+#: twitter.php:132
+msgid "API Secret"
+msgstr "API-titok"
 
-#: twitter.php:391
-msgid "Import the remote timeline"
-msgstr "A távoli idővonal importálása"
+#: twitter.php:133
+msgid "Access Token"
+msgstr "Hozzáférési token"
 
-#: twitter.php:392
-msgid "Automatically create contacts"
-msgstr "Partnerek automatikus létrehozása"
+#: twitter.php:134
+msgid "Access Secret"
+msgstr "Hozzáférési titok"
 
-#: twitter.php:392
+#: twitter.php:135
 msgid ""
-"This will automatically create a contact in Friendica as soon as you receive"
-" a message from an existing contact via the Twitter network. If you do not "
-"enable this, you need to manually add those Twitter contacts in Friendica "
-"from whom you would like to see posts here."
-msgstr "Ez automatikusan létre fog hozni egy partnert a Friendicán, amint üzenetet fogad egy meglévő partnertől a Twitter hálózaton keresztül. Ha ezt nem engedélyezi, akkor kézzel kell hozzáadnia azokat a Twitter-partnereket a Friendicában, akiktől bejegyzéseket szeretne látni itt."
+"Each user needs to register their own app to be able to post to Twitter. "
+"Please visit https://developer.twitter.com/en/portal/projects-and-apps to "
+"register a project. Inside the project you then have to register an app. You"
+" will find the needed data for the connector on the page \"Keys and token\" "
+"in the app settings."
+msgstr "Minden felhasználónak regisztrálnia kell a saját alkalmazását, hogy bejegyzést küldhessen a Twitterre. Látogassa meg a https://developer.twitter.com/en/portal/projects-and-apps oldalt egy projekt regisztrálásához. A projekten belül ezután regisztrálnia kell egy alkalmazást. A csatlakozóhoz szükséges adatokat a „Kulcsok és token” oldalon találja az alkalmazás beállításaiban."
 
-#: twitter.php:393
-msgid "Follow in fediverse"
-msgstr "Követés a födiverzumban"
+#: twitter.php:136
+msgid "Last Status Summary"
+msgstr "Utolsó állapot összegzése"
 
-#: twitter.php:393
-msgid ""
-"Automatically subscribe to the contact in the fediverse, when a fediverse "
-"account is mentioned in name or description and we are following the Twitter"
-" contact."
-msgstr "Automatikus feliratkozás a födiverzumban lévő partnerre, ha egy födiverzumfiókot említenek a névben vagy a leírásban, és követjük a Twitter-partnert."
+#: twitter.php:137
+msgid "Last Status Content"
+msgstr "Utolsó állapot tartalma"
 
-#: twitter.php:406
-msgid "Twitter Import/Export/Mirror"
-msgstr "Twitter importálás, exportálás vagy tükrözés"
-
-#: twitter.php:558
-msgid ""
-"Please connect a Twitter account in your Social Network settings to import "
-"Twitter posts."
-msgstr "Kapcsoljon hozzá egy Twitter-fiókot a közösségi hálózatok beállításában a Twitter-bejegyzések importálásához."
-
-#: twitter.php:565
-msgid "Twitter post not found."
-msgstr "A Twitter-bejegyzés nem található."
-
-#: twitter.php:965
-msgid "Save Settings"
-msgstr "Beállítások mentése"
-
-#: twitter.php:967
-msgid "Consumer key"
-msgstr "Felhasználói kulcs"
-
-#: twitter.php:968
-msgid "Consumer secret"
-msgstr "Felhasználói titok"
-
-#: twitter.php:1167
-#, php-format
-msgid "%s on Twitter"
-msgstr "%s a Twitteren"
+#: twitter.php:142
+msgid "Twitter Export"
+msgstr "Twitter exportálás"
