@@ -4,63 +4,59 @@
 # 
 # 
 # Translators:
-# Alexander An <ravnina@gmail.com>, 2020
+# Alexander An <ravnina@gmail.com>, 2020,2023
 # Stanislav N. <pztrn@pztrn.name>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-03 22:02-0400\n"
-"PO-Revision-Date: 2020-10-09 17:48+0000\n"
-"Last-Translator: Alexander An <ravnina@gmail.com>\n"
-"Language-Team: Russian (http://www.transifex.com/Friendica/friendica/language/ru/)\n"
+"POT-Creation-Date: 2021-11-21 19:15-0500\n"
+"PO-Revision-Date: 2015-07-25 08:05+0000\n"
+"Last-Translator: Alexander An <ravnina@gmail.com>, 2020,2023\n"
+"Language-Team: Russian (http://app.transifex.com/Friendica/friendica/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: langfilter.php:52
-msgid "Language Filter"
-msgstr "Языковой фильтр"
-
-#: langfilter.php:53
+#: langfilter.php:49
 msgid ""
 "This addon tries to identify the language posts are written in. If it does "
 "not match any language specified below, posts will be hidden by collapsing "
 "them."
-msgstr "Это дополнение пытается идентифицировать язык, на котором написаны посты. Если язык не соответствует ни одному, указанному ниже, то такие посты будут скрыты."
+msgstr "Это дополнение пытается идентифицировать язык, на котором сделаны записи. Если язык не соответствует ни одному, указанному ниже, то такие посты будут свёрнуты."
 
-#: langfilter.php:54
+#: langfilter.php:50
 msgid "Use the language filter"
 msgstr "Использовать языковой фильтр"
 
-#: langfilter.php:55
+#: langfilter.php:51
 msgid "Able to read"
 msgstr "Возможность читать"
 
-#: langfilter.php:55
+#: langfilter.php:51
 msgid ""
 "List of abbreviations (ISO 639-1 codes) for languages you speak, comma "
 "separated. For example \"de,it\"."
 msgstr "Список аббревиатур (кодов по ISO 639-1 ) для языков, на которых вы говорите. Например, \"ru,en\"."
 
-#: langfilter.php:56
+#: langfilter.php:52
 msgid "Minimum confidence in language detection"
 msgstr "Минимальная уверенность в определении языка"
 
-#: langfilter.php:56
+#: langfilter.php:52
 msgid ""
 "Minimum confidence in language detection being correct, from 0 to 100. Posts"
 " will not be filtered when the confidence of language detection is below "
 "this percent value."
 msgstr "Минимальная уверенность в правильном определении языка, от 0 до 100. Посты не будут скрыты, если уверенность в правильном определении языка в процентах ниже этого значения."
 
-#: langfilter.php:57
+#: langfilter.php:53
 msgid "Minimum length of message body"
 msgstr "Минимальная длина тела сообщения"
 
-#: langfilter.php:57
+#: langfilter.php:53
 msgid ""
 "Minimum number of characters in message body for filter to be used. Posts "
 "shorter than this will not be filtered. Note: Language detection is "
@@ -68,10 +64,14 @@ msgid ""
 msgstr "Минимальное количество знаков в теле сообщения для применения фильтрации. Посты, длина которых меньше указанного значения, не будут отфильтрованы. Обратите внимание, что определение языка работает ненадежно для небольших постов (<200 символов)."
 
 #: langfilter.php:58
+msgid "Language Filter"
+msgstr "Языковой фильтр"
+
+#: langfilter.php:60
 msgid "Save Settings"
 msgstr "Сохранить настройки"
 
-#: langfilter.php:189
+#: langfilter.php:193
 #, php-format
 msgid "Filtered language: %s"
 msgstr "Отфильтрованный язык: %s"

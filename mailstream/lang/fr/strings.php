@@ -15,6 +15,7 @@ $a->strings['Feed item'] = 'Élément du flux';
 $a->strings['Email'] = 'Courriel';
 $a->strings['Friendica Item'] = 'Élément de Friendica';
 $a->strings['Upstream'] = 'En amont';
+$a->strings['URI'] = 'URI';
 $a->strings['Local'] = 'Local';
 $a->strings['Enabled'] = 'Activer';
 $a->strings['Email Address'] = 'Adresse de courriel';

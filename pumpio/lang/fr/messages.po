@@ -4,6 +4,7 @@
 # 
 # 
 # Translators:
+# Florent C., 2023
 # Hypolite Petovan <hypolite@mrpetovan.com>, 2022
 # ea1cd8241cb389ffb6f92bc6891eff5d_dc12308 <70dced5587d47e18d88f9298024d96f8_93383>, 2015
 # StefOfficiel <pichard.stephane@free.fr>, 2015
@@ -11,86 +12,86 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-21 19:17-0500\n"
+"POT-Creation-Date: 2023-06-03 15:50-0400\n"
 "PO-Revision-Date: 2014-06-23 11:30+0000\n"
-"Last-Translator: Hypolite Petovan <hypolite@mrpetovan.com>, 2022\n"
-"Language-Team: French (http://www.transifex.com/Friendica/friendica/language/fr/)\n"
+"Last-Translator: Florent C., 2023\n"
+"Language-Team: French (http://app.transifex.com/Friendica/friendica/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
-#: pumpio.php:57
+#: pumpio.php:62
 msgid "Permission denied."
 msgstr "Permission refusée."
 
-#: pumpio.php:152
+#: pumpio.php:156
 #, php-format
 msgid "Unable to register the client at the pump.io server '%s'."
 msgstr "Impossible d'enregistrer le client sur le serveur pump.io \"%s\"."
 
-#: pumpio.php:192
+#: pumpio.php:196
 msgid "You are now authenticated to pumpio."
 msgstr "Vous êtes maintenant authentifié sur pump.io."
 
-#: pumpio.php:193
+#: pumpio.php:197
 msgid "return to the connector page"
 msgstr "Retourner à la page du connecteur"
 
-#: pumpio.php:213
+#: pumpio.php:217
 msgid "Post to pumpio"
 msgstr "Publier sur pump.io"
 
-#: pumpio.php:237
+#: pumpio.php:241
 msgid "Save Settings"
 msgstr "Sauvegarder les paramètres"
 
-#: pumpio.php:239
+#: pumpio.php:243
 msgid "Delete this preset"
 msgstr "Supprimer ce préréglage"
 
-#: pumpio.php:245
+#: pumpio.php:249
 msgid "Authenticate your pump.io connection"
 msgstr "Identifiez votre connexion à pump.io"
 
-#: pumpio.php:252
+#: pumpio.php:256
 msgid "Pump.io servername (without \"http://\" or \"https://\" )"
 msgstr "Domaine du serveur Pump.io (sans \"http://\" ou \"https://\")"
 
-#: pumpio.php:253
+#: pumpio.php:257
 msgid "Pump.io username (without the servername)"
 msgstr "Nom d'utilisateur Pump.io (sans le domaine de serveur)"
 
-#: pumpio.php:254
+#: pumpio.php:258
 msgid "Import the remote timeline"
-msgstr "Importer la timeline distante"
+msgstr "Importer le flux distant"
 
-#: pumpio.php:255
+#: pumpio.php:259
 msgid "Enable Pump.io Post Addon"
 msgstr "Activer l'extension Pump.io"
 
-#: pumpio.php:256
+#: pumpio.php:260
 msgid "Post to Pump.io by default"
 msgstr "Publier sur Pump.io par défaut"
 
-#: pumpio.php:257
+#: pumpio.php:261
 msgid "Should posts be public?"
 msgstr "Les messages devraient être publiques ?"
 
-#: pumpio.php:258
+#: pumpio.php:262
 msgid "Mirror all public posts"
 msgstr "Refléter toutes les publications publiques"
 
-#: pumpio.php:263
+#: pumpio.php:267
 msgid "Pump.io Import/Export/Mirror"
 msgstr "Import/Export/Miroir Pump.io"
 
-#: pumpio.php:920
+#: pumpio.php:924
 msgid "status"
 msgstr "statut"
 
-#: pumpio.php:924
+#: pumpio.php:928
 #, php-format
 msgid "%1$s likes %2$s's %3$s"
 msgstr "%1$s aime lea %3$s de %2$s"

@@ -7,14 +7,8 @@ function string_plural_select_pl($n){
 }}
 $a->strings['New Member'] = 'Nowy użytkownik';
 $a->strings['Tips for New Members'] = 'Wskazówki dla nowych użytkowników';
-$a->strings['Global Support Forum'] = 'Globalne forum pomocy technicznej';
-$a->strings['Local Support Forum'] = 'Lokalne Forum Wsparcia';
 $a->strings['Save Settings'] = 'Zapisz ustawienia';
 $a->strings['Message'] = 'Wiadomość';
 $a->strings['Your message for new members. You can use bbcode here.'] = 'Twoja wiadomość dla nowych członków. Możesz tutaj użyć bbcode.';
-$a->strings['Add a link to global support forum'] = 'Dodaj odnośnik do globalnego forum pomocy technicznej';
-$a->strings['Should a link to the global support forum be displayed?'] = 'Czy powinien być wyświetlany odnośnik do globalnego forum pomocy technicznej?';
-$a->strings['Add a link to the local support forum'] = 'Dodaj odnośnik do lokalnego forum pomocy technicznej';
-$a->strings['If you have a local support forum and want to have a link displayed in the widget, check this box.'] = 'Jeżeli masz lokalne wsparcie forum i chcesz mieć łącze wyświetlane w widżecie, zaznacz to pole wyboru.';
 $a->strings['Name of the local support group'] = 'Nazwa grupy lokalnej pomocy technicznej';
 $a->strings['If you checked the above, specify the <em>nickname</em> of the local support group here (i.e. helpers)'] = 'Jeśli zaznaczyłeś powyższe, określ tutaj pseudonim lokalnej grupy wsparcia (np. Pomocnicy)';
