@@ -1,4 +1,4 @@
- # ADDON invidious
+# ADDON invidious
 # Copyright (C) 
 # This file is distributed under the same license as the Friendica invidious addon package.
 # 
@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-03 20:21+0100\n"
+"POT-Creation-Date: 2023-12-18 17:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: invidious.php:35
+#: invidious.php:39
 #, php-format
 msgid ""
 "Which Invidious server shall be used for the replacements in the post "
@@ -25,16 +25,34 @@ msgid ""
 "available public Invidious servers."
 msgstr ""
 
-#: invidious.php:36
+#: invidious.php:40 invidious.php:57
 msgid "Invidious server"
 msgstr ""
 
-#: invidious.php:37
+#: invidious.php:40 invidious.php:57
+#, php-format
+msgid "See %s for a list of available Invidious servers."
+msgstr ""
+
+#: invidious.php:41
 msgid "Save Settings"
 msgstr ""
 
-#: invidious.php:64
+#: invidious.php:56
+msgid "Replace Youtube links with links to an Invidious server"
+msgstr ""
+
+#: invidious.php:56
+msgid ""
+"If enabled, Youtube links are replaced with the links to the specified "
+"Invidious server."
+msgstr ""
+
+#: invidious.php:62
+msgid "Invidious Settings"
+msgstr ""
+
+#: invidious.php:101
 #, php-format
 msgid "(Invidious addon enabled: YouTube links via %s)"
 msgstr ""
-
