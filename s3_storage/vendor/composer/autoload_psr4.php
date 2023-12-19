@@ -6,5 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\' => array($vendorDir . '/akeeba/s3/src'),
+    'Akeeba\\S3\\' => array($vendorDir . '/akeeba/s3/src'),
 );

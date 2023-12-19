@@ -3,11 +3,11 @@
  * Akeeba Engine
  *
  * @package   akeebaengine
- * @copyright Copyright (c)2006-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2006-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
-namespace Akeeba\Engine\Postproc\Connector\S3v4;
+namespace Akeeba\S3;
 
 /**
  * Amazon S3 Storage Classes
@@ -28,39 +28,39 @@ class StorageClass
 	/**
 	 * Amazon S3 Standard (S3 Standard)
 	 */
-	const STANDARD = 'STANDARD';
+	public const STANDARD = 'STANDARD';
 
 	/**
 	 * Reduced redundancy storage
 	 *
 	 * Not recommended anymore. Use INTELLIGENT_TIERING instead.
 	 */
-	const REDUCED_REDUNDANCY = 'REDUCED_REDUNDANCY';
+	public const REDUCED_REDUNDANCY = 'REDUCED_REDUNDANCY';
 
 	/**
 	 * Amazon S3 Intelligent-Tiering (S3 Intelligent-Tiering)
 	 */
-	const INTELLIGENT_TIERING = 'INTELLIGENT_TIERING';
+	public const INTELLIGENT_TIERING = 'INTELLIGENT_TIERING';
 
 	/**
 	 * Amazon S3 Standard-Infrequent Access (S3 Standard-IA)
 	 */
-	const STANDARD_IA = 'STANDARD_IA';
+	public const STANDARD_IA = 'STANDARD_IA';
 
 	/**
 	 * Amazon S3 One Zone-Infrequent Access (S3 One Zone-IA)
 	 */
-	const ONEZONE_IA = 'ONEZONE_IA';
+	public const ONEZONE_IA = 'ONEZONE_IA';
 
 	/**
 	 * Amazon S3 Glacier (S3 Glacier)
 	 */
-	const GLACIER = 'GLACIER';
+	public const GLACIER = 'GLACIER';
 
 	/**
 	 * Amazon S3 Glacier Deep Archive (S3 Glacier Deep Archive)
 	 */
-	const DEEP_ARCHIVE = 'DEEP_ARCHIVE';
+	public const DEEP_ARCHIVE = 'DEEP_ARCHIVE';
 
 	/**
 	 * Manipulate the $headers array, setting the X-Amz-Storage-Class header for the requested storage class.
