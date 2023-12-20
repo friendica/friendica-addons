@@ -3,13 +3,13 @@
  * Akeeba Engine
  *
  * @package   akeebaengine
- * @copyright Copyright (c)2006-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2006-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
-use Akeeba\Engine\Postproc\Connector\S3v4\Configuration;
-use Akeeba\Engine\Postproc\Connector\S3v4\Connector;
-use Akeeba\Engine\Postproc\Connector\S3v4\Input;
+use Akeeba\S3\Configuration;
+use Akeeba\S3\Connector;
+use Akeeba\S3\Input;
 
 // Necessary for including the library
 define('AKEEBAENGINE', 1);
@@ -167,7 +167,7 @@ foreach ($testConfigurations as $description => $setup)
 		'dualstack'   => DEFAULT_DUALSTACK,
 		'path_access' => DEFAULT_PATH_ACCESS,
 		'ssl'         => DEFAULT_SSL,
-		'endpoint'    => null,
+		'endpoint'    => defined('DEFAULT_ENDPOINT') ? constant('DEFAULT_ENDPOINT') : null,
 	], $setup['configuration']);
 
 	// Extract the test classes/methods to run
@@ -185,14 +185,20 @@ foreach ($testConfigurations as $description => $setup)
 
 	// Create the S3 configuration object
 	$s3Configuration = new Configuration($configOptions['access'], $configOptions['secret'], $configOptions['signature'], $configOptions['region']);
-	$s3Configuration->setUseDualstackUrl($configOptions['dualstack']);
-	$s3Configuration->setUseLegacyPathStyle($configOptions['path_access']);
-	$s3Configuration->setSSL($configOptions['ssl']);
+	$s3Configuration->setRegion($configOptions['region']);
+	$s3Configuration->setSignatureMethod($configOptions['signature']);
 
 	if (!is_null($configOptions['endpoint']))
 	{
 		$s3Configuration->setEndpoint($configOptions['endpoint']);
+		// We need to redo this because setting the endpoint may reset these options
+		$s3Configuration->setRegion($configOptions['region']);
+		$s3Configuration->setSignatureMethod($configOptions['signature']);
 	}
+
+	$s3Configuration->setUseDualstackUrl($configOptions['dualstack']);
+	$s3Configuration->setUseLegacyPathStyle($configOptions['path_access']);
+	$s3Configuration->setSSL($configOptions['ssl']);
 
 	// Create the connector object
 	$s3Connector = new Connector($s3Configuration);

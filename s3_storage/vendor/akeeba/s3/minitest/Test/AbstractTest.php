@@ -3,13 +3,13 @@
  * Akeeba Engine
  *
  * @package   akeebaengine
- * @copyright Copyright (c)2006-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2006-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
 namespace Akeeba\MiniTest\Test;
 
-use Akeeba\Engine\Postproc\Connector\S3v4\Connector;
+use Akeeba\S3\Connector;
 use RuntimeException;
 
 abstract class AbstractTest
@@ -58,24 +58,24 @@ abstract class AbstractTest
 	 */
 	protected static function createFile(int $size = AbstractTest::SIX_HUNDRED_KB, int $blockSize = self::BLOCK_SIZE, bool $reuseBlock = true)
 	{
-		$tempFilePath = tempnam(self::getTempFolder(), 'as3');
+		$tempFilePath = tempnam(static::getTempFolder(), 'as3');
 
 		if ($tempFilePath === false)
 		{
 			throw new RuntimeException("Cannot create a temporary file.");
 		}
 
-		$fp = @fopen($tempFilePath, 'wb', false);
+		$fp = @fopen($tempFilePath, 'w', false);
 
 		if ($fp === false)
 		{
 			throw new RuntimeException("Cannot write to the temporary file.");
 		}
 
-		$blockSize     = self::BLOCK_SIZE;
+		$blockSize     = static::BLOCK_SIZE;
 		$lastBlockSize = $size % $blockSize;
 		$wholeBlocks   = (int) (($size - $lastBlockSize) / $blockSize);
-		$blockData     = self::getRandomData();
+		$blockData     = static::getRandomData();
 
 		for ($i = 0; $i < $wholeBlocks; $i++)
 		{
@@ -83,7 +83,7 @@ abstract class AbstractTest
 
 			if (!$reuseBlock)
 			{
-				$blockData = self::getRandomData($blockSize);
+				$blockData = static::getRandomData($blockSize);
 			}
 		}
 
@@ -155,7 +155,7 @@ abstract class AbstractTest
 			return false;
 		}
 
-		return hash_file(self::FILE_HASHING_ALGORITHM, $referenceFilePath) === hash_file(self::FILE_HASHING_ALGORITHM, $unknownFilePath);
+		return hash_file(static::FILE_HASHING_ALGORITHM, $referenceFilePath) === hash_file(static::FILE_HASHING_ALGORITHM, $unknownFilePath);
 	}
 
 	/**

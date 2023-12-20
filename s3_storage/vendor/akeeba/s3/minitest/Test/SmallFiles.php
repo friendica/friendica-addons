@@ -3,15 +3,15 @@
  * Akeeba Engine
  *
  * @package   akeebaengine
- * @copyright Copyright (c)2006-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2006-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
 namespace Akeeba\MiniTest\Test;
 
 
-use Akeeba\Engine\Postproc\Connector\S3v4\Connector;
-use Akeeba\Engine\Postproc\Connector\S3v4\Input;
+use Akeeba\S3\Connector;
+use Akeeba\S3\Input;
 
 /**
  * Upload, download and delete small files (under 1MB) using a file source
@@ -36,32 +36,32 @@ class SmallFiles extends AbstractTest
 
 	public static function upload10KbRoot(Connector $s3, array $options): bool
 	{
-		return self::upload($s3, $options, AbstractTest::TEN_KB, 'root_10kb.dat');
+		return static::upload($s3, $options, AbstractTest::TEN_KB, 'root_10kb.dat');
 	}
 
 	public static function upload10KbRootGreek(Connector $s3, array $options): bool
 	{
-		return self::upload($s3, $options, AbstractTest::TEN_KB, 'δοκιμή_10kb.dat');
+		return static::upload($s3, $options, AbstractTest::TEN_KB, 'δοκιμή_10kb.dat');
 	}
 
 	public static function upload10KbFolderGreek(Connector $s3, array $options): bool
 	{
-		return self::upload($s3, $options, AbstractTest::TEN_KB, 'ο_φάκελός_μου/δοκιμή_10kb.dat');
+		return static::upload($s3, $options, AbstractTest::TEN_KB, 'ο_φάκελός_μου/δοκιμή_10kb.dat');
 	}
 
 	public static function upload600KbRoot(Connector $s3, array $options): bool
 	{
-		return self::upload($s3, $options, AbstractTest::SIX_HUNDRED_KB, 'root_600kb.dat');
+		return static::upload($s3, $options, AbstractTest::SIX_HUNDRED_KB, 'root_600kb.dat');
 	}
 
 	public static function upload10KbFolder(Connector $s3, array $options): bool
 	{
-		return self::upload($s3, $options, AbstractTest::TEN_KB, 'my_folder/10kb.dat');
+		return static::upload($s3, $options, AbstractTest::TEN_KB, 'my_folder/10kb.dat');
 	}
 
 	public static function upload600KbFolder(Connector $s3, array $options): bool
 	{
-		return self::upload($s3, $options, AbstractTest::SIX_HUNDRED_KB, 'my_folder/600kb.dat');
+		return static::upload($s3, $options, AbstractTest::SIX_HUNDRED_KB, 'my_folder/600kb.dat');
 	}
 
 	protected static function upload(Connector $s3, array $options, int $size, string $uri): bool
@@ -71,7 +71,7 @@ class SmallFiles extends AbstractTest
 		$uri    = substr($uri, 0, $dotPos) . '.' . md5(microtime(false)) . substr($uri, $dotPos);
 
 		// Create a file with random data
-		$sourceFile = self::createFile($size);
+		$sourceFile = static::createFile($size);
 
 		// Upload the file. Throws exception if it fails.
 		$bucket = $options['bucket'];
@@ -83,14 +83,14 @@ class SmallFiles extends AbstractTest
 		$result = true;
 
 		// Should I download the file and compare its contents?
-		if (self::$downloadAfter)
+		if (static::$downloadAfter)
 		{
 			// Donwload the data. Throws exception if it fails.
-			$downloadedFile = tempnam(self::getTempFolder(), 'as3');
+			$downloadedFile = tempnam(static::getTempFolder(), 'as3');
 			$s3->getObject($bucket, $uri, $downloadedFile);
 
 			// Compare the file contents.
-			$result = self::areFilesEqual($sourceFile, $downloadedFile);
+			$result = static::areFilesEqual($sourceFile, $downloadedFile);
 		}
 
 		// Remove the local files
@@ -98,7 +98,7 @@ class SmallFiles extends AbstractTest
 		@unlink($downloadedFile);
 
 		// Should I delete the remotely stored file?
-		if (self::$deleteRemote)
+		if (static::$deleteRemote)
 		{
 			// Delete the remote file. Throws exception if it fails.
 			$s3->deleteObject($bucket, $uri);

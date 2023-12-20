@@ -3,15 +3,15 @@
  * Akeeba Engine
  *
  * @package   akeebaengine
- * @copyright Copyright (c)2006-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2006-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
 namespace Akeeba\MiniTest\Test;
 
 
-use Akeeba\Engine\Postproc\Connector\S3v4\Connector;
-use Akeeba\Engine\Postproc\Connector\S3v4\Input;
+use Akeeba\S3\Connector;
+use Akeeba\S3\Input;
 
 /**
  * Upload, download and delete big files (over 1MB), without multipart uploads. Uses string or file sources.
@@ -51,7 +51,7 @@ class BigFiles extends AbstractTest
 	/**
 	 * Number of uploaded chunks.
 	 *
-	 * This is set by self::upload(). Zero for single part uploads, non-zero for multipart uploads.
+	 * This is set by static::upload(). Zero for single part uploads, non-zero for multipart uploads.
 	 *
 	 * @var int
 	 */
@@ -59,42 +59,42 @@ class BigFiles extends AbstractTest
 
 	public static function upload5MBString(Connector $s3, array $options): bool
 	{
-		return self::upload($s3, $options, self::FIVE_MB, 'bigtest_5mb.dat');
+		return static::upload($s3, $options, static::FIVE_MB, 'bigtest_5mb.dat');
 	}
 
 	public static function upload6MBString(Connector $s3, array $options): bool
 	{
-		return self::upload($s3, $options, self::SIX_MB, 'bigtest_6mb.dat');
+		return static::upload($s3, $options, static::SIX_MB, 'bigtest_6mb.dat');
 	}
 
 	public static function upload10MBString(Connector $s3, array $options): bool
 	{
-		return self::upload($s3, $options, self::TEN_MB, 'bigtest_10mb.dat');
+		return static::upload($s3, $options, static::TEN_MB, 'bigtest_10mb.dat');
 	}
 
 	public static function upload11MBString(Connector $s3, array $options): bool
 	{
-		return self::upload($s3, $options, self::ELEVEN_MB, 'bigtest_11mb.dat');
+		return static::upload($s3, $options, static::ELEVEN_MB, 'bigtest_11mb.dat');
 	}
 
 	public static function upload5MBFile(Connector $s3, array $options): bool
 	{
-		return self::upload($s3, $options, self::FIVE_MB, 'bigtest_5mb.dat', false);
+		return static::upload($s3, $options, static::FIVE_MB, 'bigtest_5mb.dat', false);
 	}
 
 	public static function upload6MBFile(Connector $s3, array $options): bool
 	{
-		return self::upload($s3, $options, self::SIX_MB, 'bigtest_6mb.dat', false);
+		return static::upload($s3, $options, static::SIX_MB, 'bigtest_6mb.dat', false);
 	}
 
 	public static function upload10MBFile(Connector $s3, array $options): bool
 	{
-		return self::upload($s3, $options, self::TEN_MB, 'bigtest_10mb.dat', false);
+		return static::upload($s3, $options, static::TEN_MB, 'bigtest_10mb.dat', false);
 	}
 
 	public static function upload11MBFile(Connector $s3, array $options): bool
 	{
-		return self::upload($s3, $options, self::ELEVEN_MB, 'bigtest_11mb.dat', false);
+		return static::upload($s3, $options, static::ELEVEN_MB, 'bigtest_11mb.dat', false);
 	}
 
 	protected static function upload(Connector $s3, array $options, int $size, string $uri, bool $useString = true): bool
@@ -103,24 +103,24 @@ class BigFiles extends AbstractTest
 		$dotPos = strrpos($uri, '.');
 		$uri    = substr($uri, 0, $dotPos) . '.' . md5(microtime(false)) . substr($uri, $dotPos);
 
-		self::$numberOfChunks = 0;
+		static::$numberOfChunks = 0;
 
 		if ($useString)
 		{
-			$sourceData = self::getRandomData($size);
+			$sourceData = static::getRandomData($size);
 			$input      = Input::createFromData($sourceData);
 		}
 		else
 		{
 			// Create a file with random data
-			$sourceFile = self::createFile($size);
+			$sourceFile = static::createFile($size);
 			$input      = Input::createFromFile($sourceFile);
 		}
 
 		// Upload the file. Throws exception if it fails.
 		$bucket = $options['bucket'];
 
-		if (!self::$multipart)
+		if (!static::$multipart)
 		{
 			$s3->putObject($input, $bucket, $uri);
 		}
@@ -149,7 +149,7 @@ class BigFiles extends AbstractTest
 				$input->setEtags($eTags);
 				$input->setPartNumber($partNumber);
 
-				$etag = $s3->uploadMultipart($input, $bucket, $uri, [], self::$uploadChunkSize);
+				$etag = $s3->uploadMultipart($input, $bucket, $uri, [], static::$uploadChunkSize);
 
 				// If the result was null we have no more file parts to process.
 				if (is_null($etag))
@@ -166,7 +166,7 @@ class BigFiles extends AbstractTest
 				$partNumber++;
 			}
 
-			self::$numberOfChunks = count($eTags);
+			static::$numberOfChunks = count($eTags);
 
 			// Finalize the multipart upload. Tells Amazon to construct the file from the uploaded parts.
 			$s3->finalizeMultipart($input, $bucket, $uri);
@@ -176,7 +176,7 @@ class BigFiles extends AbstractTest
 		$result = true;
 
 		// Should I download the file and compare its contents?
-		if (self::$downloadAfter)
+		if (static::$downloadAfter)
 		{
 			if ($useString)
 			{
@@ -184,16 +184,16 @@ class BigFiles extends AbstractTest
 				$downloadedData = $s3->getObject($bucket, $uri);
 
 				// Compare the file contents.
-				$result = self::areStringsEqual($sourceData, $downloadedData);
+				$result = static::areStringsEqual($sourceData, $downloadedData);
 			}
 			else
 			{
 				// Download the data. Throws exception if it fails.
-				$downloadedFile = tempnam(self::getTempFolder(), 'as3');
+				$downloadedFile = tempnam(static::getTempFolder(), 'as3');
 				$s3->getObject($bucket, $uri, $downloadedFile);
 
 				// Compare the file contents.
-				$result = self::areFilesEqual($sourceFile, $downloadedFile);
+				$result = static::areFilesEqual($sourceFile, $downloadedFile);
 
 				@unlink($downloadedFile);
 			}
@@ -206,7 +206,7 @@ class BigFiles extends AbstractTest
 		}
 
 		// Should I delete the remotely stored file?
-		if (self::$deleteRemote)
+		if (static::$deleteRemote)
 		{
 			// Delete the remote file. Throws exception if it fails.
 			$s3->deleteObject($bucket, $uri);

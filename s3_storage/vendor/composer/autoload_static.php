@@ -6,48 +6,52 @@ namespace Composer\Autoload;
 
 class ComposerStaticInitS3StorageAddon
 {
+    public static $files = array (
+        '714ccd4b330431237faf946f71c4c9a4' => __DIR__ . '/..' . '/akeeba/s3/src/aliasing.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
         'A' => 
         array (
-            'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\' => 38,
+            'Akeeba\\S3\\' => 10,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\' => 
+        'Akeeba\\S3\\' => 
         array (
             0 => __DIR__ . '/..' . '/akeeba/s3/src',
         ),
     );
 
     public static $classMap = array (
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Acl' => __DIR__ . '/..' . '/akeeba/s3/src/Acl.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Configuration' => __DIR__ . '/..' . '/akeeba/s3/src/Configuration.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Connector' => __DIR__ . '/..' . '/akeeba/s3/src/Connector.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Exception\\CannotDeleteFile' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/CannotDeleteFile.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Exception\\CannotGetBucket' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/CannotGetBucket.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Exception\\CannotGetFile' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/CannotGetFile.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Exception\\CannotListBuckets' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/CannotListBuckets.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Exception\\CannotOpenFileForRead' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/CannotOpenFileForRead.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Exception\\CannotOpenFileForWrite' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/CannotOpenFileForWrite.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Exception\\CannotPutFile' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/CannotPutFile.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Exception\\ConfigurationError' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/ConfigurationError.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Exception\\InvalidAccessKey' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/InvalidAccessKey.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Exception\\InvalidBody' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/InvalidBody.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Exception\\InvalidEndpoint' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/InvalidEndpoint.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Exception\\InvalidFilePointer' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/InvalidFilePointer.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Exception\\InvalidRegion' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/InvalidRegion.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Exception\\InvalidSecretKey' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/InvalidSecretKey.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Exception\\InvalidSignatureMethod' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/InvalidSignatureMethod.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Exception\\PropertyNotFound' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/PropertyNotFound.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Input' => __DIR__ . '/..' . '/akeeba/s3/src/Input.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Request' => __DIR__ . '/..' . '/akeeba/s3/src/Request.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Response' => __DIR__ . '/..' . '/akeeba/s3/src/Response.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Response\\Error' => __DIR__ . '/..' . '/akeeba/s3/src/Response/Error.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Signature' => __DIR__ . '/..' . '/akeeba/s3/src/Signature.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Signature\\V2' => __DIR__ . '/..' . '/akeeba/s3/src/Signature/V2.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Signature\\V4' => __DIR__ . '/..' . '/akeeba/s3/src/Signature/V4.php',
-        'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\StorageClass' => __DIR__ . '/..' . '/akeeba/s3/src/StorageClass.php',
+        'Akeeba\\S3\\Acl' => __DIR__ . '/..' . '/akeeba/s3/src/Acl.php',
+        'Akeeba\\S3\\Configuration' => __DIR__ . '/..' . '/akeeba/s3/src/Configuration.php',
+        'Akeeba\\S3\\Connector' => __DIR__ . '/..' . '/akeeba/s3/src/Connector.php',
+        'Akeeba\\S3\\Exception\\CannotDeleteFile' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/CannotDeleteFile.php',
+        'Akeeba\\S3\\Exception\\CannotGetBucket' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/CannotGetBucket.php',
+        'Akeeba\\S3\\Exception\\CannotGetFile' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/CannotGetFile.php',
+        'Akeeba\\S3\\Exception\\CannotListBuckets' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/CannotListBuckets.php',
+        'Akeeba\\S3\\Exception\\CannotOpenFileForRead' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/CannotOpenFileForRead.php',
+        'Akeeba\\S3\\Exception\\CannotOpenFileForWrite' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/CannotOpenFileForWrite.php',
+        'Akeeba\\S3\\Exception\\CannotPutFile' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/CannotPutFile.php',
+        'Akeeba\\S3\\Exception\\ConfigurationError' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/ConfigurationError.php',
+        'Akeeba\\S3\\Exception\\InvalidAccessKey' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/InvalidAccessKey.php',
+        'Akeeba\\S3\\Exception\\InvalidBody' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/InvalidBody.php',
+        'Akeeba\\S3\\Exception\\InvalidEndpoint' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/InvalidEndpoint.php',
+        'Akeeba\\S3\\Exception\\InvalidFilePointer' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/InvalidFilePointer.php',
+        'Akeeba\\S3\\Exception\\InvalidRegion' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/InvalidRegion.php',
+        'Akeeba\\S3\\Exception\\InvalidSecretKey' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/InvalidSecretKey.php',
+        'Akeeba\\S3\\Exception\\InvalidSignatureMethod' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/InvalidSignatureMethod.php',
+        'Akeeba\\S3\\Exception\\PropertyNotFound' => __DIR__ . '/..' . '/akeeba/s3/src/Exception/PropertyNotFound.php',
+        'Akeeba\\S3\\Input' => __DIR__ . '/..' . '/akeeba/s3/src/Input.php',
+        'Akeeba\\S3\\Request' => __DIR__ . '/..' . '/akeeba/s3/src/Request.php',
+        'Akeeba\\S3\\Response' => __DIR__ . '/..' . '/akeeba/s3/src/Response.php',
+        'Akeeba\\S3\\Response\\Error' => __DIR__ . '/..' . '/akeeba/s3/src/Response/Error.php',
+        'Akeeba\\S3\\Signature' => __DIR__ . '/..' . '/akeeba/s3/src/Signature.php',
+        'Akeeba\\S3\\Signature\\V2' => __DIR__ . '/..' . '/akeeba/s3/src/Signature/V2.php',
+        'Akeeba\\S3\\Signature\\V4' => __DIR__ . '/..' . '/akeeba/s3/src/Signature/V4.php',
+        'Akeeba\\S3\\StorageClass' => __DIR__ . '/..' . '/akeeba/s3/src/StorageClass.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

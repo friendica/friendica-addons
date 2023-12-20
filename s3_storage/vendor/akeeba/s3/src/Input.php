@@ -3,14 +3,14 @@
  * Akeeba Engine
  *
  * @package   akeebaengine
- * @copyright Copyright (c)2006-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2006-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
-namespace Akeeba\Engine\Postproc\Connector\S3v4;
+namespace Akeeba\S3;
 
 // Protection against direct access
-defined('AKEEBAENGINE') or die();
+defined('AKEEBAENGINE') || die();
 
 /**
  * Defines an input source for PUT/POST requests to Amazon S3
@@ -20,17 +20,17 @@ class Input
 	/**
 	 * Input type: resource
 	 */
-	const INPUT_RESOURCE = 1;
+	public const INPUT_RESOURCE = 1;
 
 	/**
 	 * Input type: file
 	 */
-	const INPUT_FILE = 2;
+	public const INPUT_FILE = 2;
 
 	/**
 	 * Input type: raw data
 	 */
-	const INPUT_DATA = 3;
+	public const INPUT_DATA = 3;
 
 	/**
 	 * File pointer, in case we have a resource
@@ -177,7 +177,13 @@ class Input
 	{
 		if (is_resource($this->fp))
 		{
-			@fclose($this->fp);
+			try
+			{
+				@fclose($this->fp);
+			}
+			catch (\Throwable $e)
+			{
+			}
 		}
 	}
 
@@ -258,10 +264,16 @@ class Input
 
 		if (is_resource($this->fp))
 		{
-			@fclose($this->fp);
+			try
+			{
+				@fclose($this->fp);
+			}
+			catch (\Throwable $e)
+			{
+			}
 		}
 
-		$this->fp = @fopen($file, 'rb');
+		$this->fp = @fopen($file, 'r');
 
 		if ($this->fp === false)
 		{
@@ -295,7 +307,13 @@ class Input
 
 		if (is_resource($this->fp))
 		{
-			@fclose($this->fp);
+			try
+			{
+				@fclose($this->fp);
+			}
+			catch (\Throwable $e)
+			{
+			}
 		}
 
 		$this->file = null;
@@ -329,7 +347,13 @@ class Input
 
 		if (is_resource($this->fp))
 		{
-			@fclose($this->fp);
+			try
+			{
+				@fclose($this->fp);
+			}
+			catch (\Throwable $e)
+			{
+			}
 		}
 
 		$this->file = null;
@@ -450,7 +474,7 @@ class Input
 	 */
 	public function setSha256(?string $sha256): void
 	{
-		$this->sha256 = strtolower($sha256);
+		$this->sha256 = is_null($sha256) ? null : strtolower($sha256);
 	}
 
 	/**
@@ -532,7 +556,7 @@ class Input
 		switch ($this->getInputType())
 		{
 			case self::INPUT_DATA:
-				return function_exists('mb_strlen') ? mb_strlen($this->data, '8bit') : strlen($this->data);
+				return function_exists('mb_strlen') ? mb_strlen($this->data ?? '', '8bit') : strlen($this->data ?? '');
 				break;
 
 			case self::INPUT_FILE:
@@ -635,7 +659,7 @@ class Input
 
 		$ext = strtolower(pathInfo($file, PATHINFO_EXTENSION));
 
-		return isset($exts[$ext]) ? $exts[$ext] : 'application/octet-stream';
+		return $exts[$ext] ?? 'application/octet-stream';
 	}
 
 	/**
