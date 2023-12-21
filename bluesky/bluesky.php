@@ -498,13 +498,13 @@ function bluesky_cron()
 		// Refresh the token now, so that it doesn't need to be refreshed in parallel by the following workers
 		bluesky_get_token($pconfig['uid']);
 
-		Worker::add(['priority' => Worker::PRIORITY_MEDIUM, 'force_priority' => true], 'addon/bluesky/bluesky_timeline.php', $pconfig['uid']);
-		Worker::add(['priority' => Worker::PRIORITY_MEDIUM, 'force_priority' => true], 'addon/bluesky/bluesky_notifications.php', $pconfig['uid']);
+		Worker::add(['priority' => Worker::PRIORITY_MEDIUM, 'force_priority' => true], 'addon/bluesky/bluesky_timeline.php', $pconfig['uid'], $last);
+		Worker::add(['priority' => Worker::PRIORITY_MEDIUM, 'force_priority' => true], 'addon/bluesky/bluesky_notifications.php', $pconfig['uid'], $last);
 
 		if (DI::pConfig()->get($pconfig['uid'], 'bluesky', 'import_feeds')) {
 			$feeds = bluesky_get_feeds($pconfig['uid']);
 			foreach ($feeds as $feed) {
-				Worker::add(['priority' => Worker::PRIORITY_MEDIUM, 'force_priority' => true], 'addon/bluesky/bluesky_feed.php', $pconfig['uid'], $feed);
+				Worker::add(['priority' => Worker::PRIORITY_MEDIUM, 'force_priority' => true], 'addon/bluesky/bluesky_feed.php', $pconfig['uid'], $feed, $last);
 			}
 		}
 	}
@@ -930,7 +930,7 @@ function bluesky_delete_post(string $uri, int $uid)
 	Logger::debug('Deleted', ['parts' => $parts]);
 }
 
-function bluesky_fetch_timeline(int $uid)
+function bluesky_fetch_timeline(int $uid, int $last_poll)
 {
 	$data = bluesky_xrpc_get($uid, 'app.bsky.feed.getTimeline');
 	if (empty($data)) {
@@ -942,7 +942,7 @@ function bluesky_fetch_timeline(int $uid)
 	}
 
 	foreach (array_reverse($data->feed) as $entry) {
-		bluesky_process_post($entry->post, $uid, Item::PR_NONE, 0);
+		bluesky_process_post($entry->post, $uid, Item::PR_NONE, 0, $last_poll);
 		if (!empty($entry->reason)) {
 			bluesky_process_reason($entry->reason, bluesky_get_uri($entry->post), $uid);
 		}
@@ -993,7 +993,7 @@ function bluesky_process_reason(stdClass $reason, string $uri, int $uid)
 	}
 }
 
-function bluesky_fetch_notifications(int $uid)
+function bluesky_fetch_notifications(int $uid, int $last_poll)
 {
 	$data = bluesky_xrpc_get($uid, 'app.bsky.notification.listNotifications');
 	if (empty($data->notifications)) {
@@ -1012,7 +1012,7 @@ function bluesky_fetch_notifications(int $uid)
 				$item['gravity'] = Item::GRAVITY_ACTIVITY;
 				$item['body'] = $item['verb'] = Activity::LIKE;
 				$item['thr-parent'] = bluesky_get_uri($notification->record->subject);
-				$item['thr-parent'] = bluesky_fetch_missing_post($item['thr-parent'], $uid, $uid, $item['contact-id'], 0);
+				$item['thr-parent'] = bluesky_fetch_missing_post($item['thr-parent'], $uid, $uid, $item['contact-id'], 0, $last_poll);
 				if (!empty($item['thr-parent'])) {
 					$data = Item::insert($item);
 					Logger::debug('Got like', ['uid' => $uid, 'result' => $data, 'uri' => $uri]);
@@ -1026,7 +1026,7 @@ function bluesky_fetch_notifications(int $uid)
 				$item['gravity'] = Item::GRAVITY_ACTIVITY;
 				$item['body'] = $item['verb'] = Activity::ANNOUNCE;
 				$item['thr-parent'] = bluesky_get_uri($notification->record->subject);
-				$item['thr-parent'] = bluesky_fetch_missing_post($item['thr-parent'], $uid, $uid, $item['contact-id'], 0);
+				$item['thr-parent'] = bluesky_fetch_missing_post($item['thr-parent'], $uid, $uid, $item['contact-id'], 0, $last_poll);
 				if (!empty($item['thr-parent'])) {
 					$data = Item::insert($item);
 					Logger::debug('Got repost', ['uid' => $uid, 'result' => $data, 'uri' => $uri]);
@@ -1041,17 +1041,17 @@ function bluesky_fetch_notifications(int $uid)
 				break;
 
 			case 'mention':
-				$data = bluesky_process_post($notification, $uid, Item::PR_PUSHED, 0);
+				$data = bluesky_process_post($notification, $uid, Item::PR_PUSHED, 0, $last_poll);
 				Logger::debug('Got mention', ['uid' => $uid, 'result' => $data, 'uri' => $uri]);
 				break;
 
 			case 'reply':
-				$data = bluesky_process_post($notification, $uid, Item::PR_PUSHED, 0);
+				$data = bluesky_process_post($notification, $uid, Item::PR_PUSHED, 0, $last_poll);
 				Logger::debug('Got reply', ['uid' => $uid, 'result' => $data, 'uri' => $uri]);
 				break;
 
 			case 'quote':
-				$data = bluesky_process_post($notification, $uid, Item::PR_PUSHED, 0);
+				$data = bluesky_process_post($notification, $uid, Item::PR_PUSHED, 0, $last_poll);
 				Logger::debug('Got quote', ['uid' => $uid, 'result' => $data, 'uri' => $uri]);
 				break;
 
@@ -1062,7 +1062,7 @@ function bluesky_fetch_notifications(int $uid)
 	}
 }
 
-function bluesky_fetch_feed(int $uid, string $feed)
+function bluesky_fetch_feed(int $uid, string $feed, int $last_poll)
 {
 	$data = bluesky_xrpc_get($uid, 'app.bsky.feed.getFeed', ['feed' => $feed]);
 	if (empty($data)) {
@@ -1090,7 +1090,7 @@ function bluesky_fetch_feed(int $uid, string $feed)
 			Logger::debug('Unwanted language detected', ['text' => $entry->post->record->text]);
 			continue;
 		}
-		$id = bluesky_process_post($entry->post, $uid, Item::PR_TAG, 0);
+		$id = bluesky_process_post($entry->post, $uid, Item::PR_TAG, 0, $last_poll);
 		if (!empty($id)) {
 			$post = Post::selectFirst(['uri-id'], ['id' => $id]);
 			if (!empty($post['uri-id'])) {
@@ -1106,7 +1106,7 @@ function bluesky_fetch_feed(int $uid, string $feed)
 	}
 }
 
-function bluesky_process_post(stdClass $post, int $uid, int $post_reason, $level): int
+function bluesky_process_post(stdClass $post, int $uid, int $post_reason, int $level, int $last_poll): int
 {
 	$uri = bluesky_get_uri($post);
 
@@ -1121,20 +1121,20 @@ function bluesky_process_post(stdClass $post, int $uid, int $post_reason, $level
 	Logger::debug('Importing post', ['uid' => $uid, 'indexedAt' => $post->indexedAt, 'uri' => $post->uri, 'cid' => $post->cid, 'root' => $post->record->reply->root ?? '']);
 
 	$item = bluesky_get_header($post, $uri, $uid, $uid);
-	$item = bluesky_get_content($item, $post->record, $uri, $uid, $uid, $level);
+	$item = bluesky_get_content($item, $post->record, $uri, $uid, $uid, $level, $last_poll);
 	if (empty($item)) {
 		return 0;
 	}
 
 	if (!empty($post->embed)) {
-		$item = bluesky_add_media($post->embed, $item, $uid, $level);
+		$item = bluesky_add_media($post->embed, $item, $uid, $level, $last_poll);
 	}
 
 	if (empty($item['post-reason'])) {
 		$item['post-reason'] = $post_reason;
 	}
 
-	return item::insert($item);
+	return Item::insert($item);
 }
 
 function bluesky_get_header(stdClass $post, string $uri, int $uid, int $fetch_uid): array
@@ -1172,7 +1172,7 @@ function bluesky_get_header(stdClass $post, string $uri, int $uid, int $fetch_ui
 	return $item;
 }
 
-function bluesky_get_content(array $item, stdClass $record, string $uri, int $uid, int $fetch_uid, int $level): array
+function bluesky_get_content(array $item, stdClass $record, string $uri, int $uid, int $fetch_uid, int $level, int $last_poll): array
 {
 	if (empty($item)) {
 		return [];
@@ -1181,7 +1181,7 @@ function bluesky_get_content(array $item, stdClass $record, string $uri, int $ui
 	if (!empty($record->reply)) {
 		$item['parent-uri'] = bluesky_get_uri($record->reply->root);
 		if ($item['parent-uri'] != $uri) {
-			$item['parent-uri'] = bluesky_fetch_missing_post($item['parent-uri'], $uid, $fetch_uid, $item['contact-id'], $level);
+			$item['parent-uri'] = bluesky_fetch_missing_post($item['parent-uri'], $uid, $fetch_uid, $item['contact-id'], $level, $last_poll);
 			if (empty($item['parent-uri'])) {
 				return [];
 			}
@@ -1189,7 +1189,7 @@ function bluesky_get_content(array $item, stdClass $record, string $uri, int $ui
 
 		$item['thr-parent'] = bluesky_get_uri($record->reply->parent);
 		if (!in_array($item['thr-parent'], [$uri, $item['parent-uri']])) {
-			$item['thr-parent'] = bluesky_fetch_missing_post($item['thr-parent'], $uid, $fetch_uid, $item['contact-id'], $level, $item['parent-uri']);
+			$item['thr-parent'] = bluesky_fetch_missing_post($item['thr-parent'], $uid, $fetch_uid, $item['contact-id'], $level, $last_poll, $item['parent-uri']);
 			if (empty($item['thr-parent'])) {
 				return [];
 			}
@@ -1199,6 +1199,11 @@ function bluesky_get_content(array $item, stdClass $record, string $uri, int $ui
 	$item['body']    = bluesky_get_text($record, $item['uri-id']);
 	$item['created'] = DateTimeFormat::utc($record->createdAt, DateTimeFormat::MYSQL);
 	$item['transmitted-languages'] = $record->langs ?? [];
+
+	if (($last_poll != 0) && strtotime($item['created']) > $last_poll) {
+		$item['received'] = $item['created'];
+	}
+
 	return $item;
 }
 
@@ -1259,7 +1264,7 @@ function bluesky_get_text(stdClass $record, int $uri_id): string
 	return $text;
 }
 
-function bluesky_add_media(stdClass $embed, array $item, int $fetch_uid, int $level): array
+function bluesky_add_media(stdClass $embed, array $item, int $fetch_uid, int $level, int $last_poll): array
 {
 	$type = '$type';
 	switch ($embed->$type) {
@@ -1296,11 +1301,11 @@ function bluesky_add_media(stdClass $embed, array $item, int $fetch_uid, int $le
 					break;
 				}
 				$shared = bluesky_get_header($embed->record, $uri, 0, $fetch_uid);
-				$shared = bluesky_get_content($shared, $embed->record->value, $uri, $item['uid'], $fetch_uid, $level);
+				$shared = bluesky_get_content($shared, $embed->record->value, $uri, $item['uid'], $fetch_uid, $level, $last_poll);
 				if (!empty($shared)) {
 					if (!empty($embed->record->embeds)) {
 						foreach ($embed->record->embeds as $single) {
-							$shared = bluesky_add_media($single, $shared, $fetch_uid, $level);
+							$shared = bluesky_add_media($single, $shared, $fetch_uid, $level, $last_poll);
 						}
 					}
 					Item::insert($shared);
@@ -1316,11 +1321,11 @@ function bluesky_add_media(stdClass $embed, array $item, int $fetch_uid, int $le
 			$shared = Post::selectFirst(['uri-id'], ['uri' => $uri, 'uid' => $item['uid']]);
 			if (empty($shared)) {
 				$shared = bluesky_get_header($embed->record->record, $uri, 0, $fetch_uid);
-				$shared = bluesky_get_content($shared, $embed->record->record->value, $uri, $item['uid'], $fetch_uid, $level);
+				$shared = bluesky_get_content($shared, $embed->record->record->value, $uri, $item['uid'], $fetch_uid, $level, $last_poll);
 				if (!empty($shared)) {
 					if (!empty($embed->record->record->embeds)) {
 						foreach ($embed->record->record->embeds as $single) {
-							$shared = bluesky_add_media($single, $shared, $fetch_uid, $level);
+							$shared = bluesky_add_media($single, $shared, $fetch_uid, $level, $last_poll);
 						}
 					}
 					Item::insert($shared);
@@ -1331,7 +1336,7 @@ function bluesky_add_media(stdClass $embed, array $item, int $fetch_uid, int $le
 			}
 
 			if (!empty($embed->media)) {
-				$item = bluesky_add_media($embed->media, $item, $fetch_uid, $level);
+				$item = bluesky_add_media($embed->media, $item, $fetch_uid, $level, $last_poll);
 			}
 			break;
 
@@ -1394,7 +1399,7 @@ function bluesky_get_uri_parts(string $uri): ?stdClass
 	return $class;
 }
 
-function bluesky_fetch_missing_post(string $uri, int $uid, int $fetch_uid, int $causer, int $level, string $fallback = ''): string
+function bluesky_fetch_missing_post(string $uri, int $uid, int $fetch_uid, int $causer, int $level, int $last_poll = 0, string $fallback = ''): string
 {
 	$fetched_uri = bluesky_fetch_post($uri, $uid);
 	if (!empty($fetched_uri)) {
@@ -1426,7 +1431,7 @@ function bluesky_fetch_missing_post(string $uri, int $uid, int $fetch_uid, int $
 		$cdata = [];
 	}
 
-	return bluesky_process_thread($data->thread, $uid, $fetch_uid, $cdata, $level);
+	return bluesky_process_thread($data->thread, $uid, $fetch_uid, $cdata, $level, $last_poll);
 }
 
 function bluesky_fetch_post(string $uri, int $uid): string
@@ -1444,7 +1449,7 @@ function bluesky_fetch_post(string $uri, int $uid): string
 	return '';
 }
 
-function bluesky_process_thread(stdClass $thread, int $uid, int $fetch_uid, array $cdata, int $level): string
+function bluesky_process_thread(stdClass $thread, int $uid, int $fetch_uid, array $cdata, int $level, int $last_poll): string
 {
 	if (empty($thread->post)) {
 		Logger::info('Invalid post', ['post' => $thread]);
@@ -1456,7 +1461,7 @@ function bluesky_process_thread(stdClass $thread, int $uid, int $fetch_uid, arra
 	if (empty($fetched_uri)) {
 		Logger::debug('Process missing post', ['uri' => $uri]);
 		$item = bluesky_get_header($thread->post, $uri, $uid, $uid);
-		$item = bluesky_get_content($item, $thread->post->record, $uri, $uid, $fetch_uid, $level);
+		$item = bluesky_get_content($item, $thread->post->record, $uri, $uid, $fetch_uid, $level, $last_poll);
 		if (!empty($item)) {
 			$item['post-reason'] = Item::PR_FETCHED;
 
@@ -1465,7 +1470,7 @@ function bluesky_process_thread(stdClass $thread, int $uid, int $fetch_uid, arra
 			}
 
 			if (!empty($thread->post->embed)) {
-				$item = bluesky_add_media($thread->post->embed, $item, $uid, $level);
+				$item = bluesky_add_media($thread->post->embed, $item, $uid, $level, $last_poll);
 			}
 			$id = Item::insert($item);
 			if (!$id) {
@@ -1483,7 +1488,7 @@ function bluesky_process_thread(stdClass $thread, int $uid, int $fetch_uid, arra
 	}
 
 	foreach ($thread->replies ?? [] as $reply) {
-		$reply_uri = bluesky_process_thread($reply, $uid, $fetch_uid, $cdata, $level);
+		$reply_uri = bluesky_process_thread($reply, $uid, $fetch_uid, $cdata, $level, $last_poll);
 		Logger::debug('Reply has been processed', ['uri' => $uri, 'reply' => $reply_uri]);
 	}
 

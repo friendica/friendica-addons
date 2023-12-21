@@ -439,8 +439,8 @@ function tumblr_cron()
 		}
 
 		Logger::notice('importing timeline - start', ['user' => $pconfig['uid']]);
-		tumblr_fetch_dashboard($pconfig['uid']);
-		tumblr_fetch_tags($pconfig['uid']);
+		tumblr_fetch_dashboard($pconfig['uid'], $last);
+		tumblr_fetch_tags($pconfig['uid'], $last);
 		Logger::notice('importing timeline - done', ['user' => $pconfig['uid']]);
 	}
 
@@ -719,10 +719,11 @@ function tumblr_get_post_from_uri(string $uri): array
 /**
  * Fetch posts for user defined hashtags for the given user
  *
- * @param integer $uid
+ * @param int $uid
+ * @param int $last_poll
  * @return void
  */
-function tumblr_fetch_tags(int $uid)
+function tumblr_fetch_tags(int $uid, int $last_poll)
 {
 	if (!DI::config()->get('tumblr', 'max_tags') ?? TUMBLR_DEFAULT_MAXIMUM_TAGS) {
 		return;
@@ -731,7 +732,7 @@ function tumblr_fetch_tags(int $uid)
 	foreach (DI::pConfig()->get($uid, 'tumblr', 'tags') ?? [] as $tag) {
 		$data = tumblr_get($uid, 'tagged', ['tag' => $tag]);
 		foreach (array_reverse($data->response) as $post) {
-			$id = tumblr_process_post($post, $uid, Item::PR_TAG);
+			$id = tumblr_process_post($post, $uid, Item::PR_TAG, $last_poll);
 			if (!empty($id)) {
 				Logger::debug('Tag post imported', ['tag' => $tag, 'id' => $id]);
 				$post = Post::selectFirst(['uri-id'], ['id' => $id]);
@@ -745,10 +746,11 @@ function tumblr_fetch_tags(int $uid)
 /**
  * Fetch the dashboard (timeline) for the given user
  *
- * @param integer $uid
+ * @param int $uid
+ * @param int $last_poll
  * @return void
  */
-function tumblr_fetch_dashboard(int $uid)
+function tumblr_fetch_dashboard(int $uid, int $last_poll)
 {
 	$parameters = ['reblog_info' => false, 'notes_info' => false, 'npf' => false];
 
@@ -774,13 +776,13 @@ function tumblr_fetch_dashboard(int $uid)
 
 		Logger::debug('Importing post', ['uid' => $uid, 'created' => date(DateTimeFormat::MYSQL, $post->timestamp), 'id' => $post->id_string]);
 
-		tumblr_process_post($post, $uid, Item::PR_NONE);
+		tumblr_process_post($post, $uid, Item::PR_NONE, $last_poll);
 
 		DI::pConfig()->set($uid, 'tumblr', 'last_id', $last);
 	}
 }
 
-function tumblr_process_post(stdClass $post, int $uid, int $post_reason): int
+function tumblr_process_post(stdClass $post, int $uid, int $post_reason, int $last_poll = 0): int
 {
 	$uri = 'tumblr::' . $post->id_string . ':' . $post->reblog_key;
 
@@ -798,7 +800,11 @@ function tumblr_process_post(stdClass $post, int $uid, int $post_reason): int
 		$item['post-reason'] = Item::PR_FOLLOWER;
 	}
 
-	$id = item::insert($item);
+	if (($last_poll != 0) && strtotime($item['created']) > $last_poll) {
+		$item['received'] = $item['created'];
+	}
+
+	$id = Item::insert($item);
 
 	if ($id) {
 		$stored = Post::selectFirst(['uri-id'], ['id' => $id]);
