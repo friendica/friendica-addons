@@ -463,7 +463,7 @@ function bluesky_jot_nets(array &$jotnets_fields)
 
 function bluesky_cron()
 {
-	$last = DI::keyValue()->get('bluesky_last_poll');
+	$last = (int)DI::keyValue()->get('bluesky_last_poll');
 
 	$poll_interval = intval(DI::config()->get('bluesky', 'poll_interval'));
 	if (!$poll_interval) {
