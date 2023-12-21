@@ -406,7 +406,7 @@ function tumblr_settings_post(array &$b)
 
 function tumblr_cron()
 {
-	$last = DI::keyValue()->get('tumblr_last_poll');
+	$last = (int)DI::keyValue()->get('tumblr_last_poll');
 
 	$poll_interval = intval(DI::config()->get('tumblr', 'poll_interval'));
 	if (!$poll_interval) {
