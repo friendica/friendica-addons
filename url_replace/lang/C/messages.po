@@ -1,0 +1,50 @@
+# ADDON url_replace
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica url_replace addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-05 00:06+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: url_replace.php:54
+msgid "Nitter server"
+msgstr ""
+
+#: url_replace.php:56
+msgid "Specify the URL with protocol. The default is https://nitter.net."
+msgstr ""
+
+#: url_replace.php:62
+msgid "Invidious server"
+msgstr ""
+
+#: url_replace.php:64
+msgid "Specify the URL with protocol. The default is https://yewtu.be."
+msgstr ""
+
+#: url_replace.php:70
+msgid "Sites which are accessed through 12ft.io"
+msgstr ""
+
+#: url_replace.php:72
+msgid "Specify the URLs with protocol, one per line."
+msgstr ""
+
+#: url_replace.php:76
+msgid "Save settings"
+msgstr ""
+
+#: url_replace.php:125
+msgid "(URL replace addon enabled for X, YouTube and some news sites.)"
+msgstr ""
