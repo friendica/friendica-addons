@@ -71,7 +71,7 @@ function url_replace_addon_admin(string &$o)
 			$twelvefeet_sites,
 			DI::l10n()->t('Specify the URLs with protocol, one per line.'),
 			null,
-			'rows=6'
+			'rows="6"'
 		],
 		'$submit' => DI::l10n()->t('Save settings'),
 	]);
@@ -113,6 +113,9 @@ function url_replace_render(array &$b)
 	}
 
 	$twelvefeet_sites = DI::config()->get('url_replace', 'twelvefeet_sites');
+	if (empty($twelvefeet_sites)) {
+		$twelvefeet_sites = [];
+	}
 	foreach ($twelvefeet_sites as $twelvefeet_site) {
 		if (strpos($b['html'], $twelvefeet_site) !== false) {
 			$b['html'] = str_replace($twelvefeet_site, 'https://12ft.io/'.$twelvefeet_site, $b['html']);
