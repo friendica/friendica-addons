@@ -201,7 +201,7 @@ function libertree_send(array &$b)
 		//	'token' => $ltree_api_token
 		];
 
-		$result = DI::httpClient()->post($ltree_blog, $params)->getBody();
+		$result = DI::httpClient()->post($ltree_blog, $params)->getBodyString();
 		Logger::notice('libertree: ' . $result);
 	}
 }

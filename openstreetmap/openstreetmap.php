@@ -121,7 +121,7 @@ function openstreetmap_get_coordinates(array &$b)
 	if (is_null($j)) {
 		$curlResult = DI::httpClient()->get($nomserver . $args);
 		if ($curlResult->isSuccess()) {
-			$j = json_decode($curlResult->getBody(), true);
+			$j = json_decode($curlResult->getBodyString(), true);
 			DI::cache()->set($cachekey, $j, Duration::MONTH);
 		}
 	}

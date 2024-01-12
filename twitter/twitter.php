@@ -362,7 +362,7 @@ function twitter_post(int $uid, string $url, string $type, array $data): stdClas
 	]);
 
 	$response = $client->post($url, ['auth' => 'oauth', $type => $data]);
-	$body     = $response->getBody()->getContents();
+	$body     = $response->getBodyString()->getContents();
 
 	$status = [
 		'code'    => $response->getStatusCode(),
@@ -399,7 +399,7 @@ function twitter_test_connection(int $uid)
 		$status = [
 			'code'   => $response->getStatusCode(),
 			'reason'  => $response->getReasonPhrase(),
-			'content' => $response->getBody()->getContents()
+			'content' => $response->getBodyString()->getContents()
 		];
 		DI::pConfig()->set(1, 'twitter', 'last_status',  $status);
 		Logger::info('Test successful', ['uid' => $uid]);
