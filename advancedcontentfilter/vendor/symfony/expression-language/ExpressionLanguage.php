@@ -28,20 +28,20 @@ class ExpressionLanguage
     private $parser;
     private $compiler;
 
-    protected $functions = array();
+    protected $functions = [];
 
     /**
      * @param CacheItemPoolInterface                $cache
      * @param ExpressionFunctionProviderInterface[] $providers
      */
-    public function __construct($cache = null, array $providers = array())
+    public function __construct($cache = null, array $providers = [])
     {
         if (null !== $cache) {
             if ($cache instanceof ParserCacheInterface) {
-                @trigger_error(sprintf('Passing an instance of %s as constructor argument for %s is deprecated as of 3.2 and will be removed in 4.0. Pass an instance of %s instead.', ParserCacheInterface::class, self::class, CacheItemPoolInterface::class), E_USER_DEPRECATED);
+                @trigger_error(sprintf('Passing an instance of %s as constructor argument for %s is deprecated as of 3.2 and will be removed in 4.0. Pass an instance of %s instead.', ParserCacheInterface::class, self::class, CacheItemPoolInterface::class), \E_USER_DEPRECATED);
                 $cache = new ParserCacheAdapter($cache);
             } elseif (!$cache instanceof CacheItemPoolInterface) {
-                throw new \InvalidArgumentException(sprintf('Cache argument has to implement %s.', CacheItemPoolInterface::class));
+                throw new \InvalidArgumentException(sprintf('Cache argument has to implement "%s".', CacheItemPoolInterface::class));
             }
         }
 
@@ -60,7 +60,7 @@ class ExpressionLanguage
      *
      * @return string The compiled PHP source code
      */
-    public function compile($expression, $names = array())
+    public function compile($expression, $names = [])
     {
         return $this->getCompiler()->compile($this->parse($expression, $names)->getNodes())->getSource();
     }
@@ -71,9 +71,9 @@ class ExpressionLanguage
      * @param Expression|string $expression The expression to compile
      * @param array             $values     An array of values
      *
-     * @return string The result of the evaluation of the expression
+     * @return mixed The result of the evaluation of the expression
      */
-    public function evaluate($expression, $values = array())
+    public function evaluate($expression, $values = [])
     {
         return $this->parse($expression, array_keys($values))->getNodes()->evaluate($this->functions, $values);
     }
@@ -93,10 +93,10 @@ class ExpressionLanguage
         }
 
         asort($names);
-        $cacheKeyItems = array();
+        $cacheKeyItems = [];
 
         foreach ($names as $nameKey => $name) {
-            $cacheKeyItems[] = is_int($nameKey) ? $name : $nameKey.':'.$name;
+            $cacheKeyItems[] = \is_int($nameKey) ? $name : $nameKey.':'.$name;
         }
 
         $cacheItem = $this->cache->getItem(rawurlencode($expression.'//'.implode('|', $cacheKeyItems)));
@@ -129,7 +129,7 @@ class ExpressionLanguage
             throw new \LogicException('Registering functions after calling evaluate(), compile() or parse() is not supported.');
         }
 
-        $this->functions[$name] = array('compiler' => $compiler, 'evaluator' => $evaluator);
+        $this->functions[$name] = ['compiler' => $compiler, 'evaluator' => $evaluator];
     }
 
     public function addFunction(ExpressionFunction $function)

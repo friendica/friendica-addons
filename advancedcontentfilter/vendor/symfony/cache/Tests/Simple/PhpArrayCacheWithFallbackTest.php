@@ -20,7 +20,7 @@ use Symfony\Component\Cache\Tests\Adapter\FilesystemAdapterTest;
  */
 class PhpArrayCacheWithFallbackTest extends CacheTestCase
 {
-    protected $skippedTests = array(
+    protected $skippedTests = [
         'testGetInvalidKeys' => 'PhpArrayCache does no validation',
         'testGetMultipleInvalidKeys' => 'PhpArrayCache does no validation',
         'testDeleteInvalidKeys' => 'PhpArrayCache does no validation',
@@ -32,17 +32,19 @@ class PhpArrayCacheWithFallbackTest extends CacheTestCase
         'testSetMultipleInvalidTtl' => 'PhpArrayCache does no validation',
         'testHasInvalidKeys' => 'PhpArrayCache does no validation',
         'testPrune' => 'PhpArrayCache just proxies',
-    );
+    ];
 
     protected static $file;
 
-    public static function setupBeforeClass()
+    public static function setUpBeforeClass()
     {
         self::$file = sys_get_temp_dir().'/symfony-cache/php-array-adapter-test.php';
     }
 
     protected function tearDown()
     {
+        $this->createSimpleCache()->clear();
+
         if (file_exists(sys_get_temp_dir().'/symfony-cache')) {
             FilesystemAdapterTest::rmdir(sys_get_temp_dir().'/symfony-cache');
         }

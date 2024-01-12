@@ -30,7 +30,7 @@ trait PhpFilesTrait
 
     public static function isSupported()
     {
-        return function_exists('opcache_invalidate') && ini_get('opcache.enable');
+        return \function_exists('opcache_invalidate') && filter_var(ini_get('opcache.enable'), \FILTER_VALIDATE_BOOLEAN);
     }
 
     /**
@@ -40,7 +40,7 @@ trait PhpFilesTrait
     {
         $time = time();
         $pruned = true;
-        $allowCompile = 'cli' !== PHP_SAPI || ini_get('opcache.enable_cli');
+        $allowCompile = 'cli' !== \PHP_SAPI || filter_var(ini_get('opcache.enable_cli'), \FILTER_VALIDATE_BOOLEAN);
 
         set_error_handler($this->includeHandler);
         try {
@@ -67,7 +67,7 @@ trait PhpFilesTrait
      */
     protected function doFetch(array $ids)
     {
-        $values = array();
+        $values = [];
         $now = time();
 
         if ($this->zendDetectUnicode) {
@@ -96,7 +96,7 @@ trait PhpFilesTrait
         foreach ($values as $id => $value) {
             if ('N;' === $value) {
                 $values[$id] = null;
-            } elseif (is_string($value) && isset($value[2]) && ':' === $value[1]) {
+            } elseif (\is_string($value) && isset($value[2]) && ':' === $value[1]) {
                 $values[$id] = parent::unserialize($value);
             }
         }
@@ -109,7 +109,7 @@ trait PhpFilesTrait
      */
     protected function doHave($id)
     {
-        return (bool) $this->doFetch(array($id));
+        return (bool) $this->doFetch([$id]);
     }
 
     /**
@@ -118,26 +118,26 @@ trait PhpFilesTrait
     protected function doSave(array $values, $lifetime)
     {
         $ok = true;
-        $data = array($lifetime ? time() + $lifetime : PHP_INT_MAX, '');
-        $allowCompile = 'cli' !== PHP_SAPI || ini_get('opcache.enable_cli');
+        $data = [$lifetime ? time() + $lifetime : \PHP_INT_MAX, ''];
+        $allowCompile = 'cli' !== \PHP_SAPI || filter_var(ini_get('opcache.enable_cli'), \FILTER_VALIDATE_BOOLEAN);
 
         foreach ($values as $key => $value) {
-            if (null === $value || is_object($value)) {
+            if (null === $value || \is_object($value)) {
                 $value = serialize($value);
-            } elseif (is_array($value)) {
+            } elseif (\is_array($value)) {
                 $serialized = serialize($value);
                 $unserialized = parent::unserialize($serialized);
                 // Store arrays serialized if they contain any objects or references
                 if ($unserialized !== $value || (false !== strpos($serialized, ';R:') && preg_match('/;R:[1-9]/', $serialized))) {
                     $value = $serialized;
                 }
-            } elseif (is_string($value)) {
+            } elseif (\is_string($value)) {
                 // Serialize strings if they could be confused with serialized objects or arrays
                 if ('N;' === $value || (isset($value[2]) && ':' === $value[1])) {
                     $value = serialize($value);
                 }
             } elseif (!is_scalar($value)) {
-                throw new InvalidArgumentException(sprintf('Cache key "%s" has non-serializable %s value.', $key, gettype($value)));
+                throw new InvalidArgumentException(sprintf('Cache key "%s" has non-serializable "%s" value.', $key, \gettype($value)));
             }
 
             $data[1] = $value;
@@ -150,7 +150,7 @@ trait PhpFilesTrait
         }
 
         if (!$ok && !is_writable($this->directory)) {
-            throw new CacheException(sprintf('Cache directory is not writable (%s)', $this->directory));
+            throw new CacheException(sprintf('Cache directory is not writable (%s).', $this->directory));
         }
 
         return $ok;

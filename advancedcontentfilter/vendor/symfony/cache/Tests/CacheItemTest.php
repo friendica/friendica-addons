@@ -23,33 +23,33 @@ class CacheItemTest extends TestCase
 
     /**
      * @dataProvider provideInvalidKey
-     * @expectedException \Symfony\Component\Cache\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Cache key
      */
     public function testInvalidKey($key)
     {
+        $this->expectException('Symfony\Component\Cache\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('Cache key');
         CacheItem::validateKey($key);
     }
 
     public function provideInvalidKey()
     {
-        return array(
-            array(''),
-            array('{'),
-            array('}'),
-            array('('),
-            array(')'),
-            array('/'),
-            array('\\'),
-            array('@'),
-            array(':'),
-            array(true),
-            array(null),
-            array(1),
-            array(1.1),
-            array(array(array())),
-            array(new \Exception('foo')),
-        );
+        return [
+            [''],
+            ['{'],
+            ['}'],
+            ['('],
+            [')'],
+            ['/'],
+            ['\\'],
+            ['@'],
+            [':'],
+            [true],
+            [null],
+            [1],
+            [1.1],
+            [[[]]],
+            [new \Exception('foo')],
+        ];
     }
 
     public function testTag()
@@ -57,20 +57,20 @@ class CacheItemTest extends TestCase
         $item = new CacheItem();
 
         $this->assertSame($item, $item->tag('foo'));
-        $this->assertSame($item, $item->tag(array('bar', 'baz')));
+        $this->assertSame($item, $item->tag(['bar', 'baz']));
 
-        call_user_func(\Closure::bind(function () use ($item) {
-            $this->assertSame(array('foo' => 'foo', 'bar' => 'bar', 'baz' => 'baz'), $item->tags);
+        \call_user_func(\Closure::bind(function () use ($item) {
+            $this->assertSame(['foo' => 'foo', 'bar' => 'bar', 'baz' => 'baz'], $item->tags);
         }, $this, CacheItem::class));
     }
 
     /**
      * @dataProvider provideInvalidKey
-     * @expectedException \Symfony\Component\Cache\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Cache tag
      */
     public function testInvalidTag($tag)
     {
+        $this->expectException('Symfony\Component\Cache\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('Cache tag');
         $item = new CacheItem();
         $item->tag($tag);
     }

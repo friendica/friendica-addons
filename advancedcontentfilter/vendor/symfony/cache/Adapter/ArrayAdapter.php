@@ -25,6 +25,7 @@ class ArrayAdapter implements AdapterInterface, LoggerAwareInterface, Resettable
     use ArrayTrait;
 
     private $createCacheItem;
+    private $defaultLifetime;
 
     /**
      * @param int  $defaultLifetime
@@ -32,14 +33,14 @@ class ArrayAdapter implements AdapterInterface, LoggerAwareInterface, Resettable
      */
     public function __construct($defaultLifetime = 0, $storeSerialized = true)
     {
+        $this->defaultLifetime = $defaultLifetime;
         $this->storeSerialized = $storeSerialized;
         $this->createCacheItem = \Closure::bind(
-            function ($key, $value, $isHit) use ($defaultLifetime) {
+            static function ($key, $value, $isHit) {
                 $item = new CacheItem();
                 $item->key = $key;
                 $item->value = $value;
                 $item->isHit = $isHit;
-                $item->defaultLifetime = $defaultLifetime;
 
                 return $item;
             },
@@ -66,7 +67,7 @@ class ArrayAdapter implements AdapterInterface, LoggerAwareInterface, Resettable
                 $isHit = false;
             }
         } catch (\Exception $e) {
-            CacheItem::log($this->logger, 'Failed to unserialize key "{key}"', array('key' => $key, 'exception' => $e));
+            CacheItem::log($this->logger, 'Failed to unserialize key "{key}"', ['key' => $key, 'exception' => $e]);
             $this->values[$key] = $value = null;
             $isHit = false;
         }
@@ -78,7 +79,7 @@ class ArrayAdapter implements AdapterInterface, LoggerAwareInterface, Resettable
     /**
      * {@inheritdoc}
      */
-    public function getItems(array $keys = array())
+    public function getItems(array $keys = [])
     {
         foreach ($keys as $key) {
             CacheItem::validateKey($key);
@@ -112,6 +113,10 @@ class ArrayAdapter implements AdapterInterface, LoggerAwareInterface, Resettable
         $value = $item["\0*\0value"];
         $expiry = $item["\0*\0expiry"];
 
+        if (0 === $expiry) {
+            $expiry = \PHP_INT_MAX;
+        }
+
         if (null !== $expiry && $expiry <= time()) {
             $this->deleteItem($key);
 
@@ -121,18 +126,18 @@ class ArrayAdapter implements AdapterInterface, LoggerAwareInterface, Resettable
             try {
                 $value = serialize($value);
             } catch (\Exception $e) {
-                $type = is_object($value) ? get_class($value) : gettype($value);
-                CacheItem::log($this->logger, 'Failed to save key "{key}" ({type})', array('key' => $key, 'type' => $type, 'exception' => $e));
+                $type = \is_object($value) ? \get_class($value) : \gettype($value);
+                CacheItem::log($this->logger, 'Failed to save key "{key}" ({type})', ['key' => $key, 'type' => $type, 'exception' => $e]);
 
                 return false;
             }
         }
-        if (null === $expiry && 0 < $item["\0*\0defaultLifetime"]) {
-            $expiry = time() + $item["\0*\0defaultLifetime"];
+        if (null === $expiry && 0 < $this->defaultLifetime) {
+            $expiry = time() + $this->defaultLifetime;
         }
 
         $this->values[$key] = $value;
-        $this->expiries[$key] = null !== $expiry ? $expiry : PHP_INT_MAX;
+        $this->expiries[$key] = null !== $expiry ? $expiry : \PHP_INT_MAX;
 
         return true;
     }

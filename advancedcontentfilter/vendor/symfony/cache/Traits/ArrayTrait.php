@@ -24,8 +24,8 @@ trait ArrayTrait
     use LoggerAwareTrait;
 
     private $storeSerialized;
-    private $values = array();
-    private $expiries = array();
+    private $values = [];
+    private $expiries = [];
 
     /**
      * Returns all cached values, with cache miss as null.
@@ -44,7 +44,7 @@ trait ArrayTrait
     {
         CacheItem::validateKey($key);
 
-        return isset($this->expiries[$key]) && ($this->expiries[$key] >= time() || !$this->deleteItem($key));
+        return isset($this->expiries[$key]) && ($this->expiries[$key] > time() || !$this->deleteItem($key));
     }
 
     /**
@@ -52,7 +52,7 @@ trait ArrayTrait
      */
     public function clear()
     {
-        $this->values = $this->expiries = array();
+        $this->values = $this->expiries = [];
 
         return true;
     }
@@ -81,7 +81,7 @@ trait ArrayTrait
     {
         foreach ($keys as $i => $key) {
             try {
-                if (!$isHit = isset($this->expiries[$key]) && ($this->expiries[$key] >= $now || !$this->deleteItem($key))) {
+                if (!$isHit = isset($this->expiries[$key]) && ($this->expiries[$key] > $now || !$this->deleteItem($key))) {
                     $this->values[$key] = $value = null;
                 } elseif (!$this->storeSerialized) {
                     $value = $this->values[$key];
@@ -92,7 +92,7 @@ trait ArrayTrait
                     $isHit = false;
                 }
             } catch (\Exception $e) {
-                CacheItem::log($this->logger, 'Failed to unserialize key "{key}"', array('key' => $key, 'exception' => $e));
+                CacheItem::log($this->logger, 'Failed to unserialize key "{key}"', ['key' => $key, 'exception' => $e]);
                 $this->values[$key] = $value = null;
                 $isHit = false;
             }

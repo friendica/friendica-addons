@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\Cache\Tests\Simple;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\PruneableInterface;
 use Symfony\Component\Cache\Simple\ArrayCache;
@@ -24,25 +25,21 @@ class ChainCacheTest extends CacheTestCase
 {
     public function createSimpleCache($defaultLifetime = 0)
     {
-        return new ChainCache(array(new ArrayCache($defaultLifetime), new FilesystemCache('', $defaultLifetime)), $defaultLifetime);
+        return new ChainCache([new ArrayCache($defaultLifetime), new FilesystemCache('', $defaultLifetime)], $defaultLifetime);
     }
 
-    /**
-     * @expectedException \Symfony\Component\Cache\Exception\InvalidArgumentException
-     * @expectedExceptionMessage At least one cache must be specified.
-     */
     public function testEmptyCachesException()
     {
-        new ChainCache(array());
+        $this->expectException('Symfony\Component\Cache\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('At least one cache must be specified.');
+        new ChainCache([]);
     }
 
-    /**
-     * @expectedException \Symfony\Component\Cache\Exception\InvalidArgumentException
-     * @expectedExceptionMessage The class "stdClass" does not implement
-     */
     public function testInvalidCacheException()
     {
-        new ChainCache(array(new \stdClass()));
+        $this->expectException('Symfony\Component\Cache\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('The class "stdClass" does not implement');
+        new ChainCache([new \stdClass()]);
     }
 
     public function testPrune()
@@ -51,23 +48,23 @@ class ChainCacheTest extends CacheTestCase
             $this->markTestSkipped($this->skippedTests[__FUNCTION__]);
         }
 
-        $cache = new ChainCache(array(
+        $cache = new ChainCache([
             $this->getPruneableMock(),
             $this->getNonPruneableMock(),
             $this->getPruneableMock(),
-        ));
+        ]);
         $this->assertTrue($cache->prune());
 
-        $cache = new ChainCache(array(
+        $cache = new ChainCache([
             $this->getPruneableMock(),
             $this->getFailingPruneableMock(),
             $this->getPruneableMock(),
-        ));
+        ]);
         $this->assertFalse($cache->prune());
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|PruneableCacheInterface
+     * @return MockObject|PruneableCacheInterface
      */
     private function getPruneableMock()
     {
@@ -78,13 +75,13 @@ class ChainCacheTest extends CacheTestCase
         $pruneable
             ->expects($this->atLeastOnce())
             ->method('prune')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         return $pruneable;
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|PruneableCacheInterface
+     * @return MockObject|PruneableCacheInterface
      */
     private function getFailingPruneableMock()
     {
@@ -95,13 +92,13 @@ class ChainCacheTest extends CacheTestCase
         $pruneable
             ->expects($this->atLeastOnce())
             ->method('prune')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         return $pruneable;
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|CacheInterface
+     * @return MockObject|CacheInterface
      */
     private function getNonPruneableMock()
     {

@@ -11,7 +11,7 @@
 
 namespace Symfony\Component\ExpressionLanguage\ParserCache;
 
-@trigger_error('The '.__NAMESPACE__.'\ArrayParserCache class is deprecated since Symfony 3.2 and will be removed in 4.0. Use the Symfony\Component\Cache\Adapter\ArrayAdapter class instead.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.'\ArrayParserCache class is deprecated since Symfony 3.2 and will be removed in 4.0. Use the Symfony\Component\Cache\Adapter\ArrayAdapter class instead.', \E_USER_DEPRECATED);
 
 use Symfony\Component\ExpressionLanguage\ParsedExpression;
 
@@ -22,7 +22,7 @@ use Symfony\Component\ExpressionLanguage\ParsedExpression;
  */
 class ArrayParserCache implements ParserCacheInterface
 {
-    private $cache = array();
+    private $cache = [];
 
     /**
      * {@inheritdoc}

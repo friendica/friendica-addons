@@ -28,15 +28,15 @@ use Symfony\Component\Cache\ResettableInterface;
  */
 class ChainAdapter implements AdapterInterface, PruneableInterface, ResettableInterface
 {
-    private $adapters = array();
+    private $adapters = [];
     private $adapterCount;
-    private $saveUp;
+    private $syncItem;
 
     /**
-     * @param CacheItemPoolInterface[] $adapters    The ordered list of adapters used to fetch cached items
-     * @param int                      $maxLifetime The max lifetime of items propagated from lower adapters to upper ones
+     * @param CacheItemPoolInterface[] $adapters        The ordered list of adapters used to fetch cached items
+     * @param int                      $defaultLifetime The default lifetime of items propagated from lower adapters to upper ones
      */
-    public function __construct(array $adapters, $maxLifetime = 0)
+    public function __construct(array $adapters, $defaultLifetime = 0)
     {
         if (!$adapters) {
             throw new InvalidArgumentException('At least one adapter must be specified.');
@@ -44,7 +44,10 @@ class ChainAdapter implements AdapterInterface, PruneableInterface, ResettableIn
 
         foreach ($adapters as $adapter) {
             if (!$adapter instanceof CacheItemPoolInterface) {
-                throw new InvalidArgumentException(sprintf('The class "%s" does not implement the "%s" interface.', get_class($adapter), CacheItemPoolInterface::class));
+                throw new InvalidArgumentException(sprintf('The class "%s" does not implement the "%s" interface.', \get_class($adapter), CacheItemPoolInterface::class));
+            }
+            if (\in_array(\PHP_SAPI, ['cli', 'phpdbg'], true) && $adapter instanceof ApcuAdapter && !filter_var(ini_get('apc.enable_cli'), \FILTER_VALIDATE_BOOLEAN)) {
+                continue; // skip putting APCu in the chain when the backend is disabled
             }
 
             if ($adapter instanceof AdapterInterface) {
@@ -53,18 +56,18 @@ class ChainAdapter implements AdapterInterface, PruneableInterface, ResettableIn
                 $this->adapters[] = new ProxyAdapter($adapter);
             }
         }
-        $this->adapterCount = count($this->adapters);
+        $this->adapterCount = \count($this->adapters);
 
-        $this->saveUp = \Closure::bind(
-            function ($adapter, $item) use ($maxLifetime) {
-                $origDefaultLifetime = $item->defaultLifetime;
+        $this->syncItem = \Closure::bind(
+            static function ($sourceItem, $item) use ($defaultLifetime) {
+                $item->value = $sourceItem->value;
+                $item->isHit = $sourceItem->isHit;
 
-                if (0 < $maxLifetime && ($origDefaultLifetime <= 0 || $maxLifetime < $origDefaultLifetime)) {
-                    $item->defaultLifetime = $maxLifetime;
+                if (0 < $defaultLifetime) {
+                    $item->expiresAfter($defaultLifetime);
                 }
 
-                $adapter->save($item);
-                $item->defaultLifetime = $origDefaultLifetime;
+                return $item;
             },
             null,
             CacheItem::class
@@ -76,18 +79,21 @@ class ChainAdapter implements AdapterInterface, PruneableInterface, ResettableIn
      */
     public function getItem($key)
     {
-        $saveUp = $this->saveUp;
+        $syncItem = $this->syncItem;
+        $misses = [];
 
         foreach ($this->adapters as $i => $adapter) {
             $item = $adapter->getItem($key);
 
             if ($item->isHit()) {
                 while (0 <= --$i) {
-                    $saveUp($this->adapters[$i], $item);
+                    $this->adapters[$i]->save($syncItem($item, $misses[$i]));
                 }
 
                 return $item;
             }
+
+            $misses[$i] = $item;
         }
 
         return $item;
@@ -96,14 +102,15 @@ class ChainAdapter implements AdapterInterface, PruneableInterface, ResettableIn
     /**
      * {@inheritdoc}
      */
-    public function getItems(array $keys = array())
+    public function getItems(array $keys = [])
     {
         return $this->generateItems($this->adapters[0]->getItems($keys), 0);
     }
 
     private function generateItems($items, $adapterIndex)
     {
-        $missing = array();
+        $missing = [];
+        $misses = [];
         $nextAdapterIndex = $adapterIndex + 1;
         $nextAdapter = isset($this->adapters[$nextAdapterIndex]) ? $this->adapters[$nextAdapterIndex] : null;
 
@@ -112,17 +119,18 @@ class ChainAdapter implements AdapterInterface, PruneableInterface, ResettableIn
                 yield $k => $item;
             } else {
                 $missing[] = $k;
+                $misses[$k] = $item;
             }
         }
 
         if ($missing) {
-            $saveUp = $this->saveUp;
+            $syncItem = $this->syncItem;
             $adapter = $this->adapters[$adapterIndex];
             $items = $this->generateItems($nextAdapter->getItems($missing), $nextAdapterIndex);
 
             foreach ($items as $k => $item) {
                 if ($item->isHit()) {
-                    $saveUp($adapter, $item);
+                    $adapter->save($syncItem($item, $misses[$k]));
                 }
 
                 yield $k => $item;

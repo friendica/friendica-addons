@@ -1,115 +1,116 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim
- * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
+ * @license https://github.com/slimphp/Slim/blob/4.x/LICENSE.md (MIT License)
  */
+
+declare(strict_types=1);
+
 namespace Slim\Interfaces;
 
-use InvalidArgumentException;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
 
-/**
- * Route Interface
- *
- * @package Slim
- * @since   3.0.0
- */
 interface RouteInterface
 {
-
     /**
-     * Retrieve a specific route argument
-     *
-     * @param string $name
-     * @param string|null $default
-     *
-     * @return string|null
+     * Get route invocation strategy
      */
-    public function getArgument($name, $default = null);
+    public function getInvocationStrategy(): InvocationStrategyInterface;
 
     /**
-     * Get route arguments
+     * Set route invocation strategy
+     */
+    public function setInvocationStrategy(InvocationStrategyInterface $invocationStrategy): RouteInterface;
+
+    /**
+     * Get route methods
      *
      * @return string[]
      */
-    public function getArguments();
-
-    /**
-     * Get route name
-     *
-     * @return null|string
-     */
-    public function getName();
+    public function getMethods(): array;
 
     /**
      * Get route pattern
-     *
-     * @return string
      */
-    public function getPattern();
+    public function getPattern(): string;
 
     /**
-     * Set a route argument
-     *
-     * @param string $name
-     * @param string $value
-     *
-     * @return self
+     * Set route pattern
      */
-    public function setArgument($name, $value);
+    public function setPattern(string $pattern): RouteInterface;
 
     /**
-     * Replace route arguments
+     * Get route callable
      *
-     * @param string[] $arguments
-     *
-     * @return self
+     * @return callable|string
      */
-    public function setArguments(array $arguments);
+    public function getCallable();
 
     /**
-     * Set output buffering mode
+     * Set route callable
      *
-     * One of: false, 'prepend' or 'append'
-     *
-     * @param boolean|string $mode
-     *
-     * @throws InvalidArgumentException If an unknown buffering mode is specified
+     * @param callable|string $callable
      */
-    public function setOutputBuffering($mode);
+    public function setCallable($callable): RouteInterface;
+
+    /**
+     * Get route name
+     */
+    public function getName(): ?string;
 
     /**
      * Set route name
      *
-     * @param string $name
-     *
      * @return static
-     * @throws InvalidArgumentException if the route name is not a string
      */
-    public function setName($name);
+    public function setName(string $name): RouteInterface;
 
     /**
-     * Add middleware
-     *
-     * This method prepends new middleware to the route's middleware stack.
-     *
-     * @param callable|string $callable The callback routine
-     *
-     * @return RouteInterface
+     * Get the route's unique identifier
      */
-    public function add($callable);
+    public function getIdentifier(): string;
+
+    /**
+     * Retrieve a specific route argument
+     */
+    public function getArgument(string $name, ?string $default = null): ?string;
+
+    /**
+     * Get route arguments
+     *
+     * @return array<string, string>
+     */
+    public function getArguments(): array;
+
+    /**
+     * Set a route argument
+     */
+    public function setArgument(string $name, string $value): RouteInterface;
+
+    /**
+     * Replace route arguments
+     *
+     * @param array<string, string> $arguments
+     */
+    public function setArguments(array $arguments): self;
+
+    /**
+     * @param MiddlewareInterface|string|callable $middleware
+     */
+    public function add($middleware): self;
+
+    public function addMiddleware(MiddlewareInterface $middleware): self;
 
     /**
      * Prepare the route for use
      *
-     * @param ServerRequestInterface $request
-     * @param array $arguments
+     * @param array<string, string> $arguments
      */
-    public function prepare(ServerRequestInterface $request, array $arguments);
+    public function prepare(array $arguments): self;
 
     /**
      * Run route
@@ -117,24 +118,6 @@ interface RouteInterface
      * This method traverses the middleware stack, including the route's callable
      * and captures the resultant HTTP response object. It then sends the response
      * back to the Application.
-     *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @return ResponseInterface
      */
-    public function run(ServerRequestInterface $request, ResponseInterface $response);
-
-    /**
-     * Dispatch route callable against current Request and Response objects
-     *
-     * This method invokes the route object's callable. If middleware is
-     * registered for the route, each callable middleware is invoked in
-     * the order specified.
-     *
-     * @param ServerRequestInterface $request  The current Request object
-     * @param ResponseInterface      $response The current Response object
-     *
-     * @return ResponseInterface
-     */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response);
+    public function run(ServerRequestInterface $request): ResponseInterface;
 }
