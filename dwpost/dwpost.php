@@ -192,7 +192,7 @@ EOT;
 		Logger::debug('dwpost: data: ' . $xml);
 
 		if ($dw_blog !== 'test') {
-			$x = DI::httpClient()->post($dw_blog, $xml, ['Content-Type' => 'text/xml'])->getBody();
+			$x = DI::httpClient()->post($dw_blog, $xml, ['Content-Type' => 'text/xml'])->getBodyString();
 		}
 
 		Logger::info('posted to dreamwidth: ' . ($x) ? $x : '');

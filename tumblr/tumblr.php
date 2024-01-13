@@ -1244,7 +1244,7 @@ function tumblr_get_contact_by_url(string $url, int $uid): ?array
 		} catch (\Exception $e) {
 			return null;
 		}
-		$html = $curlResult->getBody();
+		$html = $curlResult->getBodyString();
 		if (empty($html)) {
 			return null;
 		}
@@ -1372,7 +1372,7 @@ function tumblr_delete(int $uid, string $url, array $parameters): stdClass
  */
 function tumblr_format_result(ICanHandleHttpResponses $curlResult): stdClass
 {
-	$result = json_decode($curlResult->getBody());
+	$result = json_decode($curlResult->getBodyString());
 	if (empty($result) || empty($result->meta)) {
 		$result               = new stdClass;
 		$result->meta         = new stdClass;
@@ -1426,11 +1426,11 @@ function tumblr_get_token(int $uid, string $code = ''): string
 
 		$curlResult = DI::httpClient()->post('https://api.tumblr.com/v2/oauth2/token', $parameters);
 		if (!$curlResult->isSuccess()) {
-			Logger::info('Error fetching token', ['uid' => $uid, 'code' => $code, 'result' => $curlResult->getBody(), 'parameters' => $parameters]);
+			Logger::info('Error fetching token', ['uid' => $uid, 'code' => $code, 'result' => $curlResult->getBodyString(), 'parameters' => $parameters]);
 			return '';
 		}
 
-		$result = json_decode($curlResult->getBody());
+		$result = json_decode($curlResult->getBodyString());
 		if (empty($result)) {
 			Logger::info('Invalid result when updating token', ['uid' => $uid]);
 			return '';
@@ -1479,7 +1479,7 @@ function tumblr_exchange_token(int $uid): stdClass
 		]);
 
 		$response = $client->post('oauth2/exchange', ['auth' => 'oauth']);
-		return json_decode($response->getBody()->getContents());
+		return json_decode($response->getBodyString()->getContents());
 	} catch (RequestException $exception) {
 		Logger::notice('Exchange failed', ['code' => $exception->getCode(), 'message' => $exception->getMessage()]);
 		return new stdClass;

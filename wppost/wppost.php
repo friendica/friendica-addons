@@ -269,7 +269,7 @@ EOT;
 		Logger::debug('wppost: data: ' . $xml);
 
 		if ($wp_blog !== 'test') {
-			$x = DI::httpClient()->post($wp_blog, $xml)->getBody();
+			$x = DI::httpClient()->post($wp_blog, $xml)->getBodyString();
 		}
 		Logger::info('posted to wordpress: ' . (($x) ? $x : ''));
 	}

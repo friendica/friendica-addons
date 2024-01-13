@@ -186,7 +186,7 @@ EOT;
 		Logger::debug('ijpost: data: ' . $xml);
 
 		if ($ij_blog !== 'test') {
-			$x = DI::httpClient()->post($ij_blog, $xml, ['Content-Type' => 'text/xml'])->getBody();
+			$x = DI::httpClient()->post($ij_blog, $xml, ['Content-Type' => 'text/xml'])->getBodyString();
 		}
 		Logger::info('posted to insanejournal: ' . $x ? $x : '');
 	}

@@ -221,7 +221,7 @@ function mailstream_do_images(array &$item, array &$attachments)
 			continue;
 		}
 		$attachments[$url] = [
-			'data' => $curlResult->getBody(),
+			'data' => $curlResult->getBodyString(),
 			'guid' => hash('crc32', $url),
 			'filename' => basename($components['path']),
 			'type' => $curlResult->getContentType()

@@ -1111,11 +1111,11 @@ function bluesky_process_post(stdClass $post, int $uid, int $post_reason, int $l
 	$uri = bluesky_get_uri($post);
 
 	if ($id = Post::selectFirst(['id'], ['uri' => $uri, 'uid' => $uid])) {
-		return $id['id'];	
+		return $id['id'];
 	}
 
 	if ($id = Post::selectFirst(['id'], ['extid' => $uri, 'uid' => $uid])) {
-		return $id['id'];	
+		return $id['id'];
 	}
 
 	Logger::debug('Importing post', ['uid' => $uid, 'indexedAt' => $post->indexedAt, 'uri' => $post->uri, 'cid' => $post->cid, 'root' => $post->record->reply->root ?? '']);
@@ -1251,7 +1251,7 @@ function bluesky_get_text(stdClass $record, int $uri_id): string
 					$url      = DI::baseUrl() . '/search?tag=' . urlencode($feature->tag);
 					$linktext = '#' . $feature->tag;
 					break;
-	
+
 				default:
 					Logger::notice('Unhandled feature type', ['type' => $feature->$type, 'feature' => $feature, 'record' => $record]);
 					break;
@@ -1736,13 +1736,13 @@ function bluesky_post(int $uid, string $url, string $params, array $headers): ?s
 	}
 
 	if (!$curlResult->isSuccess()) {
-		Logger::notice('API Error', ['error' => json_decode($curlResult->getBody()) ?: $curlResult->getBody()]);
+		Logger::notice('API Error', ['error' => json_decode($curlResult->getBodyString()) ?: $curlResult->getBodyString()]);
 		DI::pConfig()->set($uid, 'bluesky', 'status', BLUEKSY_STATUS_API_FAIL);
 		return null;
 	}
 
 	DI::pConfig()->set($uid, 'bluesky', 'status', BLUEKSY_STATUS_SUCCESS);
-	return json_decode($curlResult->getBody());
+	return json_decode($curlResult->getBodyString());
 }
 
 function bluesky_xrpc_get(int $uid, string $url, array $parameters = []): ?stdClass
@@ -1767,9 +1767,9 @@ function bluesky_get(string $url, string $accept_content = HttpClientAccept::DEF
 	}
 
 	if (!$curlResult->isSuccess()) {
-		Logger::notice('API Error', ['error' => json_decode($curlResult->getBody()) ?: $curlResult->getBody()]);
+		Logger::notice('API Error', ['error' => json_decode($curlResult->getBodyString()) ?: $curlResult->getBodyString()]);
 		return null;
 	}
 
-	return json_decode($curlResult->getBody());
+	return json_decode($curlResult->getBodyString());
 }

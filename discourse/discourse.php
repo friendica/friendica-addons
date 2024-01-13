@@ -126,7 +126,7 @@ function discourse_fetch_post($host, $topic, $pid)
 		return false;
 	}
 
-	$raw = $curlResult->getBody();
+	$raw = $curlResult->getBodyString();
 	$data = json_decode($raw, true);
 	$posts = $data['post_stream']['posts'];
 	foreach($posts as $post) {
@@ -162,7 +162,7 @@ function discourse_fetch_post_from_api(&$message, $post, $host)
 		return false;
 	}
 
-	$raw = $curlResult->getBody();
+	$raw = $curlResult->getBodyString();
 	$data = json_decode($raw, true);
 	if (empty($data)) {
 		return false;

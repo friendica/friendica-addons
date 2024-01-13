@@ -82,7 +82,7 @@ function mastodoncustomemojis_fetch_custom_emojis_for_url($api_base_url)
 	$fetchResult = DI::httpClient()->fetchFull($api_url);
 
 	if ($fetchResult->isSuccess()) {
-		$emojis_array = json_decode($fetchResult->getBody(), true);
+		$emojis_array = json_decode($fetchResult->getBodyString(), true);
 
 		if (is_array($emojis_array) && count($emojis_array)) {
 			foreach ($emojis_array as $emoji) {

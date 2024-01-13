@@ -113,7 +113,7 @@ class WebDav implements ICanWriteToStorage
 		$response = $this->client->request('propfind', $uri, $opts);
 
 		$responseDoc = new \DOMDocument();
-		$responseDoc->loadXML($response->getBody());
+		$responseDoc->loadXML($response->getBodyString());
 		$responseDoc->formatOutput = true;
 
 		$xpath = new \DOMXPath($responseDoc);
@@ -205,7 +205,7 @@ class WebDav implements ICanWriteToStorage
 			throw new ReferenceStorageException(sprintf('Invalid reference %s', $reference));
 		}
 
-		return $response->getBody();
+		return $response->getBodyString();
 	}
 
 	/**
