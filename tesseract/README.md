@@ -1,0 +1,1 @@
+To make the addon work, you have to install the tesseract-ocr command line tool.
