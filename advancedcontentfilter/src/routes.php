@@ -20,20 +20,17 @@
  */
 
 /* @var $slim Slim\App */
-$slim->group('/advancedcontentfilter/api', function () {
-	/* @var $this Slim\App */
-	$this->group('/rules', function () {
-		/* @var $this Slim\App */
-		$this->get('', 'advancedcontentfilter_get_rules');
-		$this->post('', 'advancedcontentfilter_post_rules');
+$slim->group('/advancedcontentfilter/api', function (\Slim\Routing\RouteCollectorProxy $app) {
+	$app->group('/rules', function (\Slim\Routing\RouteCollectorProxy $app) {
+		$app->get('', 'advancedcontentfilter_get_rules');
+		$app->post('', 'advancedcontentfilter_post_rules');
 
-		$this->get('/{id}', 'advancedcontentfilter_get_rules_id');
-		$this->put('/{id}', 'advancedcontentfilter_put_rules_id');
-		$this->delete('/{id}', 'advancedcontentfilter_delete_rules_id');
+		$app->get('/{id}', 'advancedcontentfilter_get_rules_id');
+		$app->put('/{id}', 'advancedcontentfilter_put_rules_id');
+		$app->delete('/{id}', 'advancedcontentfilter_delete_rules_id');
 	});
 
-	$this->group('/variables', function () {
-		/* @var $this Slim\App */
-		$this->get('/{guid}', 'advancedcontentfilter_get_variables_guid');
+	$app->group('/variables', function (\Slim\Routing\RouteCollectorProxy $app) {
+		$app->get('/{guid}', 'advancedcontentfilter_get_variables_guid');
 	});
 });

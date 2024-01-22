@@ -23,15 +23,15 @@ trait ApcuTrait
 {
     public static function isSupported()
     {
-        return function_exists('apcu_fetch') && ini_get('apc.enabled');
+        return \function_exists('apcu_fetch') && filter_var(ini_get('apc.enabled'), \FILTER_VALIDATE_BOOLEAN);
     }
 
     private function init($namespace, $defaultLifetime, $version)
     {
         if (!static::isSupported()) {
-            throw new CacheException('APCu is not enabled');
+            throw new CacheException('APCu is not enabled.');
         }
-        if ('cli' === PHP_SAPI) {
+        if ('cli' === \PHP_SAPI) {
             ini_set('apc.use_request_time', 0);
         }
         parent::__construct($namespace, $defaultLifetime);
@@ -52,13 +52,13 @@ trait ApcuTrait
     protected function doFetch(array $ids)
     {
         try {
-            foreach (apcu_fetch($ids, $ok) ?: array() as $k => $v) {
+            foreach (apcu_fetch($ids, $ok) ?: [] as $k => $v) {
                 if (null !== $v || $ok) {
                     yield $k => $v;
                 }
             }
         } catch (\Error $e) {
-            throw new \ErrorException($e->getMessage(), $e->getCode(), E_ERROR, $e->getFile(), $e->getLine());
+            throw new \ErrorException($e->getMessage(), $e->getCode(), \E_ERROR, $e->getFile(), $e->getLine());
         }
     }
 
@@ -75,8 +75,8 @@ trait ApcuTrait
      */
     protected function doClear($namespace)
     {
-        return isset($namespace[0]) && class_exists('APCuIterator', false) && ('cli' !== PHP_SAPI || ini_get('apc.enable_cli'))
-            ? apcu_delete(new \APCuIterator(sprintf('/^%s/', preg_quote($namespace, '/')), APC_ITER_KEY))
+        return isset($namespace[0]) && class_exists('APCuIterator', false) && ('cli' !== \PHP_SAPI || filter_var(ini_get('apc.enable_cli'), \FILTER_VALIDATE_BOOLEAN))
+            ? apcu_delete(new \APCuIterator(sprintf('/^%s/', preg_quote($namespace, '/')), \APC_ITER_KEY))
             : apcu_clear_cache();
     }
 
@@ -107,7 +107,7 @@ trait ApcuTrait
         } catch (\Exception $e) {
         }
 
-        if (1 === count($values)) {
+        if (1 === \count($values)) {
             // Workaround https://github.com/krakjoe/apcu/issues/170
             apcu_delete(key($values));
         }

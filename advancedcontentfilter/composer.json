@@ -11,8 +11,7 @@
 		}
 	],
 	"require": {
-		"php": ">=5.6.0",
-		"slim/slim": "^3.1",
+		"slim/slim": "^4",
 		"symfony/expression-language": "^3.4"
 	},
 	"license": "3-clause BSD license",

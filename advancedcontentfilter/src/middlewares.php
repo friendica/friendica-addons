@@ -21,31 +21,12 @@
 
 use Friendica\DI;
 
-$container = $slim->getContainer();
+/** @var $slim \Slim\App */
 
-// Error handler based off https://stackoverflow.com/a/48135009/757392
-$container['errorHandler'] = function () {
-	return function(Psr\Http\Message\RequestInterface $request, Psr\Http\Message\ResponseInterface $response, Exception $exception)
-	{
-		$responseCode = 500;
+/**
+ * The routing middleware should be added before the ErrorMiddleware
+ * Otherwise exceptions thrown from it will not be handled
+ */
+$slim->addRoutingMiddleware();
 
-		if (is_a($exception, 'Friendica\Network\HTTPException')) {
-			$responseCode = $exception->getCode();
-		}
-
-		$errors['message'] = $exception->getMessage();
-
-		$errors['responseCode'] = $responseCode;
-
-		return $response
-				->withStatus($responseCode)
-				->withJson($errors);
-	};
-};
-
-$container['notFoundHandler'] = function () {
-	return function ()
-	{
-		throw new \Friendica\Network\HTTPException\NotFoundException(DI::l10n()->t('Method not found'));
-	};
-};
+$errorMiddleware = $slim->addErrorMiddleware(true, true, true);

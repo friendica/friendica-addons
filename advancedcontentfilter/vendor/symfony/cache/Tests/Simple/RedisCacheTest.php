@@ -15,7 +15,7 @@ use Symfony\Component\Cache\Simple\RedisCache;
 
 class RedisCacheTest extends AbstractRedisCacheTest
 {
-    public static function setupBeforeClass()
+    public static function setUpBeforeClass()
     {
         parent::setupBeforeClass();
         self::$redis = RedisCache::createConnection('redis://'.getenv('REDIS_HOST'));
@@ -33,50 +33,50 @@ class RedisCacheTest extends AbstractRedisCacheTest
         $redis = RedisCache::createConnection('redis://'.$redisHost.'/2');
         $this->assertSame(2, $redis->getDbNum());
 
-        $redis = RedisCache::createConnection('redis://'.$redisHost, array('timeout' => 3));
+        $redis = RedisCache::createConnection('redis://'.$redisHost, ['timeout' => 3]);
         $this->assertEquals(3, $redis->getTimeout());
 
         $redis = RedisCache::createConnection('redis://'.$redisHost.'?timeout=4');
         $this->assertEquals(4, $redis->getTimeout());
 
-        $redis = RedisCache::createConnection('redis://'.$redisHost, array('read_timeout' => 5));
+        $redis = RedisCache::createConnection('redis://'.$redisHost, ['read_timeout' => 5]);
         $this->assertEquals(5, $redis->getReadTimeout());
     }
 
     /**
      * @dataProvider provideFailedCreateConnection
-     * @expectedException \Symfony\Component\Cache\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Redis connection failed
      */
     public function testFailedCreateConnection($dsn)
     {
+        $this->expectException('Symfony\Component\Cache\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('Redis connection ');
         RedisCache::createConnection($dsn);
     }
 
     public function provideFailedCreateConnection()
     {
-        return array(
-            array('redis://localhost:1234'),
-            array('redis://foo@localhost'),
-            array('redis://localhost/123'),
-        );
+        return [
+            ['redis://localhost:1234'],
+            ['redis://foo@localhost'],
+            ['redis://localhost/123'],
+        ];
     }
 
     /**
      * @dataProvider provideInvalidCreateConnection
-     * @expectedException \Symfony\Component\Cache\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Invalid Redis DSN
      */
     public function testInvalidCreateConnection($dsn)
     {
+        $this->expectException('Symfony\Component\Cache\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('Invalid Redis DSN');
         RedisCache::createConnection($dsn);
     }
 
     public function provideInvalidCreateConnection()
     {
-        return array(
-            array('foo://localhost'),
-            array('redis://'),
-        );
+        return [
+            ['foo://localhost'],
+            ['redis://'],
+        ];
     }
 }
