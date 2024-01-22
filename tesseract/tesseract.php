@@ -24,6 +24,10 @@ function tesseract_ocr_detection(&$media)
 {
 	$ocr = new TesseractOCR();
 	try {
+		$languages = $ocr->availableLanguages();
+		if ($languages) {
+			$ocr->lang(implode('+', $languages));
+		}
 		$ocr->tempDir(System::getTempPath());
 		$ocr->imageData($media['img_str'], strlen($media['img_str']));
 		$media['description'] = $ocr->run();
