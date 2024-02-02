@@ -10,7 +10,7 @@ return [
 		'tmsserver' => 'https://www.openstreetmap.org',
 
 		// nomserver (String)
-		'nomserver' => 'https://nominatim.openstreetmap.org/search.php',
+		'nomserver' => 'https://nominatim.openstreetmap.org/search',
 
 		// zoom (Integer)
 		// The default zoom level on the map.
