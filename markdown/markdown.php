@@ -64,6 +64,7 @@ function markdown_post_local_start(&$request) {
 				// (right chevrons are used for quoting in Markdown)
 				// See https://github.com/friendica/friendica/issues/10634
 				$text = strtr($text, ['<' => '&lt;']);
+				$text = str_replace('[*]', '[li]', $text);
 
 				return Markdown::toBBCode($text);
 			});
