@@ -308,7 +308,7 @@ function twitter_upload_image(int $uid, array $image, int $retrial)
 
 	$picturedata = Photo::getImageForPhoto($photo);
 
-	$picture = new Image($picturedata, $photo['type']);
+	$picture = new Image($picturedata, $photo['type'], $photo['filename']);
 	$height  = $picture->getHeight();
 	$width   = $picture->getWidth();
 	$size    = strlen($picturedata);

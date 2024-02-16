@@ -896,7 +896,7 @@ function bluesky_upload_blob(int $uid, array $photo): ?stdClass
 	$retrial = Worker::getRetrial();
 	$content = Photo::getImageForPhoto($photo);
 
-	$picture = new Image($content, $photo['type']);
+	$picture = new Image($content, $photo['type'], $photo['filename']);
 	$height  = $picture->getHeight();
 	$width   = $picture->getWidth();
 	$size    = strlen($content);
