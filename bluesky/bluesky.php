@@ -1019,7 +1019,7 @@ function bluesky_fetch_notifications(int $uid, int $last_poll)
 				} else {
 					Logger::info('Thread parent not found', ['uid' => $uid, 'parent' => $item['thr-parent'], 'uri' => $uri]);
 				}
-			break;
+				break;
 
 			case 'repost':
 				$item = bluesky_get_header($notification, $uri, $uid, $uid);
@@ -1033,7 +1033,7 @@ function bluesky_fetch_notifications(int $uid, int $last_poll)
 				} else {
 					Logger::info('Thread parent not found', ['uid' => $uid, 'parent' => $item['thr-parent'], 'uri' => $uri]);
 				}
-			break;
+				break;
 
 			case 'follow':
 				$contact = bluesky_get_contact($notification->author, $uid, $uid);
@@ -1531,7 +1531,7 @@ function bluesky_get_contact(stdClass $author, int $uid, int $fetch_uid): array
 
 function bluesky_get_contact_fields(stdClass $author, int $uid, int $fetch_uid, bool $update): array
 {
-	$nick = $author->handle ?? $author->did;
+	$nick = $author->handle ?: $author->did;
 	$fields = [
 		'uid'      => $uid,
 		'network'  => Protocol::BLUESKY,
@@ -1543,7 +1543,7 @@ function bluesky_get_contact_fields(stdClass $author, int $uid, int $fetch_uid, 
 		'url'      => $author->did,
 		'nurl'     => $author->did,
 		'alias'    => BLUESKY_WEB . '/profile/' . $nick,
-		'name'     => $author->displayName ?? $nick,
+		'name'     => $author->displayName ?: $nick,
 		'nick'     => $nick,
 		'addr'     => $nick,
 	];
@@ -1741,7 +1741,6 @@ function bluesky_xrpc_get(int $uid, string $url, array $parameters = []): ?stdCl
 	$data = bluesky_get(bluesky_get_user_pds($uid) . '/xrpc/' . $url, HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
 	DI::pConfig()->set($uid, 'bluesky', 'status', is_null($data) ? BLUEKSY_STATUS_API_FAIL : BLUEKSY_STATUS_SUCCESS);
 	return $data;
-
 }
 
 function bluesky_get(string $url, string $accept_content = HttpClientAccept::DEFAULT, array $opts = []): ?stdClass
