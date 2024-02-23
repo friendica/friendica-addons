@@ -141,7 +141,7 @@ function bluesky_probe_detect(array &$hookData)
 		return;
 	}
 
-	$hookData['result'] = bluesky_get_contact_fields($data, 0, false);
+	$hookData['result'] = bluesky_get_contact_fields($data, 0, $pconfig['uid'], false);
 
 	$hookData['result']['baseurl'] = bluesky_get_pds($did);
 
@@ -942,7 +942,7 @@ function bluesky_fetch_timeline(int $uid, int $last_poll)
 	}
 
 	foreach (array_reverse($data->feed) as $entry) {
-		bluesky_process_post($entry->post, $uid, Item::PR_NONE, 0, $last_poll);
+		bluesky_process_post($entry->post, $uid, $uid, Item::PR_NONE, 0, 0, $last_poll);
 		if (!empty($entry->reason)) {
 			bluesky_process_reason($entry->reason, bluesky_get_uri($entry->post), $uid);
 		}
@@ -1041,18 +1041,21 @@ function bluesky_fetch_notifications(int $uid, int $last_poll)
 				break;
 
 			case 'mention':
-				$data = bluesky_process_post($notification, $uid, Item::PR_PUSHED, 0, $last_poll);
-				Logger::debug('Got mention', ['uid' => $uid, 'result' => $data, 'uri' => $uri]);
+				$contact = bluesky_get_contact($notification->author, 0, $uid);
+				$result  = bluesky_fetch_missing_post($uri, $uid, $uid, $contact['id'], 0, $last_poll);
+				Logger::debug('Got mention', ['uid' => $uid, 'nick' => $contact['nick'], 'result' => $result, 'uri' => $uri]);
 				break;
 
 			case 'reply':
-				$data = bluesky_process_post($notification, $uid, Item::PR_PUSHED, 0, $last_poll);
-				Logger::debug('Got reply', ['uid' => $uid, 'result' => $data, 'uri' => $uri]);
+				$contact = bluesky_get_contact($notification->author, 0, $uid);
+				$result  = bluesky_fetch_missing_post($uri, $uid, $uid, $contact['id'], 0, $last_poll);
+				Logger::debug('Got reply', ['uid' => $uid, 'nick' => $contact['nick'], 'result' => $result, 'uri' => $uri]);
 				break;
 
 			case 'quote':
-				$data = bluesky_process_post($notification, $uid, Item::PR_PUSHED, 0, $last_poll);
-				Logger::debug('Got quote', ['uid' => $uid, 'result' => $data, 'uri' => $uri]);
+				$contact = bluesky_get_contact($notification->author, 0, $uid);
+				$result  = bluesky_fetch_missing_post($uri, $uid, $uid, $contact['id'], 0, $last_poll);
+				Logger::debug('Got quote', ['uid' => $uid, 'nick' => $contact['nick'], 'result' => $result, 'uri' => $uri]);
 				break;
 
 			default:
@@ -1090,15 +1093,12 @@ function bluesky_fetch_feed(int $uid, string $feed, int $last_poll)
 			Logger::debug('Unwanted language detected', ['text' => $entry->post->record->text]);
 			continue;
 		}
-		$id = bluesky_process_post($entry->post, $uid, Item::PR_TAG, 0, $last_poll);
-		if (!empty($id)) {
-			$post = Post::selectFirst(['uri-id'], ['id' => $id]);
-			if (!empty($post['uri-id'])) {
-				$stored = Post\Category::storeFileByURIId($post['uri-id'], $uid, Post\Category::SUBCRIPTION, $feedname, $feedurl);
-				Logger::debug('Stored tag subscription for user', ['uri-id' => $post['uri-id'], 'uid' => $uid, 'name' => $feedname, 'url' => $feedurl, 'stored' => $stored]);
-			} else {
-				Logger::notice('Post not found', ['id' => $id, 'entry' => $entry]);
-			}
+		$uri_id = bluesky_process_post($entry->post, $uid, $uid, Item::PR_TAG, 0, 0, $last_poll);
+		if (!empty($uri_id)) {
+			$stored = Post\Category::storeFileByURIId($uri_id, $uid, Post\Category::SUBCRIPTION, $feedname, $feedurl);
+			Logger::debug('Stored tag subscription for user', ['uri-id' => $uri_id, 'uid' => $uid, 'name' => $feedname, 'url' => $feedurl, 'stored' => $stored]);
+		} else {
+			Logger::notice('Post not found', ['entry' => $entry]);
 		}
 		if (!empty($entry->reason)) {
 			bluesky_process_reason($entry->reason, bluesky_get_uri($entry->post), $uid);
@@ -1106,22 +1106,23 @@ function bluesky_fetch_feed(int $uid, string $feed, int $last_poll)
 	}
 }
 
-function bluesky_process_post(stdClass $post, int $uid, int $post_reason, int $level, int $last_poll): int
+function bluesky_process_post(stdClass $post, int $uid, int $fetch_uid, int $post_reason, int $causer, int $level, int $last_poll): int
 {
 	$uri = bluesky_get_uri($post);
 
-	if ($id = Post::selectFirst(['id'], ['uri' => $uri, 'uid' => $uid])) {
-		return $id['id'];
+	if ($uri_id = bluesky_fetch_uri_id($uri, $uid)) {
+		return $uri_id;
 	}
 
-	if ($id = Post::selectFirst(['id'], ['extid' => $uri, 'uid' => $uid])) {
-		return $id['id'];
+	if (empty($post->record)) {
+		Logger::debug('Invalid post', ['uri' => $uri]);
+		return 0;
 	}
 
 	Logger::debug('Importing post', ['uid' => $uid, 'indexedAt' => $post->indexedAt, 'uri' => $post->uri, 'cid' => $post->cid, 'root' => $post->record->reply->root ?? '']);
 
-	$item = bluesky_get_header($post, $uri, $uid, $uid);
-	$item = bluesky_get_content($item, $post->record, $uri, $uid, $uid, $level, $last_poll);
+	$item = bluesky_get_header($post, $uri, $uid, $fetch_uid);
+	$item = bluesky_get_content($item, $post->record, $uri, $uid, $fetch_uid, $level, $last_poll);
 	if (empty($item)) {
 		return 0;
 	}
@@ -1134,13 +1135,18 @@ function bluesky_process_post(stdClass $post, int $uid, int $post_reason, int $l
 		$item['post-reason'] = $post_reason;
 	}
 
-	return Item::insert($item);
+	if ($causer != 0) {
+		$item['causer-id'] = $causer;
+	}
+
+	Item::insert($item);
+	return bluesky_fetch_uri_id($uri, $uid);
 }
 
 function bluesky_get_header(stdClass $post, string $uri, int $uid, int $fetch_uid): array
 {
 	$parts = bluesky_get_uri_parts($uri);
-	if (empty($post->author)) {
+	if (empty($post->author) || empty($post->cid) || empty($parts->rkey)) {
 		return [];
 	}
 	$contact = bluesky_get_contact($post->author, $uid, $fetch_uid);
@@ -1293,55 +1299,35 @@ function bluesky_add_media(stdClass $embed, array $item, int $fetch_uid, int $le
 			break;
 
 		case 'app.bsky.embed.record#view':
-			$uri = bluesky_get_uri($embed->record);
-			$shared = Post::selectFirst(['uri-id'], ['uri' => $uri, 'uid' => $item['uid']]);
-			if (empty($shared)) {
-				if (empty($embed->record->value)) {
-					Logger::info('Record has got no value', ['record' => $embed->record]);
-					break;
-				}
-				$shared = bluesky_get_header($embed->record, $uri, 0, $fetch_uid);
-				$shared = bluesky_get_content($shared, $embed->record->value, $uri, $item['uid'], $fetch_uid, $level, $last_poll);
-				if (!empty($shared)) {
-					if (!empty($embed->record->embeds)) {
-						foreach ($embed->record->embeds as $single) {
-							$shared = bluesky_add_media($single, $shared, $fetch_uid, $level, $last_poll);
-						}
-					}
-					Item::insert($shared);
-				}
+			$original_uri = $uri = bluesky_get_uri($embed->record);
+			$uri = bluesky_fetch_missing_post($uri, $item['uid'], $fetch_uid, $item['contact-id'], $level, $last_poll);
+			if ($uri) {
+				$shared = Post::selectFirst(['uri-id'], ['uri' => $uri, 'uid' => [$item['uid'], 0]]);
+				$uri_id = $shared['uri-id'] ?? 0;
 			}
-			if (!empty($shared['uri-id'])) {
-				$item['quote-uri-id'] = $shared['uri-id'];
+			if (!empty($uri_id)) {
+				$item['quote-uri-id'] = $uri_id;
+			} else {
+				Logger::debug('Quoted post could not be fetched', ['original-uri' => $original_uri, 'uri' => $uri]);
 			}
 			break;
 
 		case 'app.bsky.embed.recordWithMedia#view':
-			$uri = bluesky_get_uri($embed->record->record);
-			$shared = Post::selectFirst(['uri-id'], ['uri' => $uri, 'uid' => $item['uid']]);
-			if (empty($shared)) {
-				$shared = bluesky_get_header($embed->record->record, $uri, 0, $fetch_uid);
-				$shared = bluesky_get_content($shared, $embed->record->record->value, $uri, $item['uid'], $fetch_uid, $level, $last_poll);
-				if (!empty($shared)) {
-					if (!empty($embed->record->record->embeds)) {
-						foreach ($embed->record->record->embeds as $single) {
-							$shared = bluesky_add_media($single, $shared, $fetch_uid, $level, $last_poll);
-						}
-					}
-					Item::insert($shared);
-				}
+			$original_uri = $uri = bluesky_get_uri($embed->record->record);
+			$uri = bluesky_fetch_missing_post($uri, $item['uid'], $fetch_uid, $item['contact-id'], $level, $last_poll);
+			if ($uri) {
+				$shared = Post::selectFirst(['uri-id'], ['uri' => $uri, 'uid' => [$item['uid'], 0]]);
+				$uri_id = $shared['uri-id'] ?? 0;
 			}
-			if (!empty($shared['uri-id'])) {
-				$item['quote-uri-id'] = $shared['uri-id'];
-			}
-
-			if (!empty($embed->media)) {
-				$item = bluesky_add_media($embed->media, $item, $fetch_uid, $level, $last_poll);
+			if (!empty($uri_id)) {
+				$item['quote-uri-id'] = $uri_id;
+			} else {
+				Logger::debug('Quoted post could not be fetched', ['original-uri' => $original_uri, 'uri' => $uri]);
 			}
 			break;
 
 		default:
-			Logger::notice('Unhandled embed type', ['type' => $embed->$type, 'embed' => $embed]);
+			Logger::notice('Unhandled embed type', ['uri-id' => $item['uri-id'], 'type' => $embed->$type, 'embed' => $embed]);
 			break;
 	}
 	return $item;
@@ -1449,6 +1435,21 @@ function bluesky_fetch_post(string $uri, int $uid): string
 	return '';
 }
 
+function bluesky_fetch_uri_id(string $uri, int $uid): string
+{
+	$reply = Post::selectFirst(['uri-id'], ['uri' => $uri, 'uid' => [$uid, 0]]);
+	if (!empty($reply['uri-id'])) {
+		Logger::debug('Post with extid exists', ['uri' => $uri]);
+		return $reply['uri-id'];
+	}
+	$reply = Post::selectFirst(['uri-id'], ['extid' => $uri, 'uid' => [$uid, 0]]);
+	if (!empty($reply['uri-id'])) {
+		Logger::debug('Post with extid exists', ['uri' => $uri]);
+		return $reply['uri-id'];
+	}
+	return 0;
+}
+
 function bluesky_process_thread(stdClass $thread, int $uid, int $fetch_uid, array $cdata, int $level, int $last_poll): string
 {
 	if (empty($thread->post)) {
@@ -1459,27 +1460,12 @@ function bluesky_process_thread(stdClass $thread, int $uid, int $fetch_uid, arra
 
 	$fetched_uri = bluesky_fetch_post($uri, $uid);
 	if (empty($fetched_uri)) {
-		Logger::debug('Process missing post', ['uri' => $uri]);
-		$item = bluesky_get_header($thread->post, $uri, $uid, $uid);
-		$item = bluesky_get_content($item, $thread->post->record, $uri, $uid, $fetch_uid, $level, $last_poll);
-		if (!empty($item)) {
-			$item['post-reason'] = Item::PR_FETCHED;
-
-			if (!empty($cdata['public'])) {
-				$item['causer-id']   = $cdata['public'];
-			}
-
-			if (!empty($thread->post->embed)) {
-				$item = bluesky_add_media($thread->post->embed, $item, $uid, $level, $last_poll);
-			}
-			$id = Item::insert($item);
-			if (!$id) {
-				Logger::info('Item has not not been stored', ['uri' => $uri]);
-				return '';
-			}
-			Logger::debug('Stored item', ['id' => $id, 'uri' => $uri]);
+		$uri_id = bluesky_process_post($thread->post, $uid, $fetch_uid, Item::PR_FETCHED, $cdata['public'], $level, $last_poll);
+		if ($uri_id) {
+			Logger::debug('Post has been processed and stored', ['uri-id' => $uri_id, 'uri' => $uri]);
+			return $uri;
 		} else {
-			Logger::info('Post has not not been fetched', ['uri' => $uri]);
+			Logger::info('Post has not not been stored', ['uri' => $uri]);
 			return '';
 		}
 	} else {
@@ -1502,7 +1488,7 @@ function bluesky_get_contact(stdClass $author, int $uid, int $fetch_uid): array
 
 	$update = empty($contact) || $contact['updated'] < DateTimeFormat::utc('now -24 hours');
 
-	$public_fields = $fields = bluesky_get_contact_fields($author, $fetch_uid, $update);
+	$public_fields = $fields = bluesky_get_contact_fields($author, $uid, $fetch_uid, $update);
 
 	$public_fields['uid'] = 0;
 	$public_fields['rel'] = Contact::NOTHING;
@@ -1543,8 +1529,9 @@ function bluesky_get_contact(stdClass $author, int $uid, int $fetch_uid): array
 	return Contact::getById($cid);
 }
 
-function bluesky_get_contact_fields(stdClass $author, int $uid, bool $update): array
+function bluesky_get_contact_fields(stdClass $author, int $uid, int $fetch_uid, bool $update): array
 {
+	$nick = $author->handle ?? $author->did;
 	$fields = [
 		'uid'      => $uid,
 		'network'  => Protocol::BLUESKY,
@@ -1555,10 +1542,10 @@ function bluesky_get_contact_fields(stdClass $author, int $uid, bool $update): a
 		'pending'  => false,
 		'url'      => $author->did,
 		'nurl'     => $author->did,
-		'alias'    => BLUESKY_WEB . '/profile/' . $author->handle,
-		'name'     => $author->displayName ?? $author->handle,
-		'nick'     => $author->handle,
-		'addr'     => $author->handle,
+		'alias'    => BLUESKY_WEB . '/profile/' . $nick,
+		'name'     => $author->displayName ?? $nick,
+		'nick'     => $nick,
+		'addr'     => $nick,
 	];
 
 	if (!$update) {
@@ -1572,7 +1559,7 @@ function bluesky_get_contact_fields(stdClass $author, int $uid, bool $update): a
 		$fields['gsid'] = GServer::getID($fields['baseurl'], true);
 	}
 
-	$data = bluesky_xrpc_get($uid, 'app.bsky.actor.getProfile', ['actor' => $author->did]);
+	$data = bluesky_xrpc_get($fetch_uid, 'app.bsky.actor.getProfile', ['actor' => $author->did]);
 	if (empty($data)) {
 		Logger::debug('Error fetching contact fields', ['uid' => $uid, 'url' => $fields['url']]);
 		return $fields;
