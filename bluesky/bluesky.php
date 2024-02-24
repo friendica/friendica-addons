@@ -1187,7 +1187,7 @@ function bluesky_get_content(array $item, stdClass $record, string $uri, int $ui
 	if (!empty($record->reply)) {
 		$item['parent-uri'] = bluesky_get_uri($record->reply->root);
 		if ($item['parent-uri'] != $uri) {
-			$item['parent-uri'] = bluesky_fetch_missing_post($item['parent-uri'], $uid, $fetch_uid, Item::PR_COMPLETION, $item['contact-id'], $level, $last_poll);
+			$item['parent-uri'] = bluesky_fetch_missing_post($item['parent-uri'], $uid, $fetch_uid, Item::PR_FETCHED, $item['contact-id'], $level, $last_poll);
 			if (empty($item['parent-uri'])) {
 				return [];
 			}
@@ -1195,7 +1195,7 @@ function bluesky_get_content(array $item, stdClass $record, string $uri, int $ui
 
 		$item['thr-parent'] = bluesky_get_uri($record->reply->parent);
 		if (!in_array($item['thr-parent'], [$uri, $item['parent-uri']])) {
-			$item['thr-parent'] = bluesky_fetch_missing_post($item['thr-parent'], $uid, $fetch_uid, Item::PR_COMPLETION, $item['contact-id'], $level, $last_poll, $item['parent-uri']);
+			$item['thr-parent'] = bluesky_fetch_missing_post($item['thr-parent'], $uid, $fetch_uid, Item::PR_FETCHED, $item['contact-id'], $level, $last_poll, $item['parent-uri']);
 			if (empty($item['thr-parent'])) {
 				return [];
 			}
@@ -1473,7 +1473,7 @@ function bluesky_process_thread(stdClass $thread, int $uid, int $fetch_uid, int 
 	}
 
 	foreach ($thread->replies ?? [] as $reply) {
-		$reply_uri = bluesky_process_thread($reply, $uid, $fetch_uid, Item::PR_COMPLETION, $causer, $level, $last_poll);
+		$reply_uri = bluesky_process_thread($reply, $uid, $fetch_uid, Item::PR_FETCHED, $causer, $level, $last_poll);
 		Logger::debug('Reply has been processed', ['uri' => $uri, 'reply' => $reply_uri]);
 	}
 
