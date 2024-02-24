@@ -183,7 +183,7 @@ function bluesky_item_by_link(array &$hookData)
 
 	$uri = 'at://' . $did . '/app.bsky.feed.post/' . $matches[2];
 
-	$uri = bluesky_fetch_missing_post($uri, $hookData['uid'], $hookData['uid'], 0, 0);
+	$uri = bluesky_fetch_missing_post($uri, $hookData['uid'], $hookData['uid'], Item::PR_FETCHED, 0, 0, 0);
 	Logger::debug('Got post', ['profile' => $matches[1], 'cid' => $matches[2], 'result' => $uri]);
 	if (!empty($uri)) {
 		$item = Post::selectFirst(['id'], ['uri' => $uri, 'uid' => $hookData['uid']]);
@@ -1012,7 +1012,7 @@ function bluesky_fetch_notifications(int $uid, int $last_poll)
 				$item['gravity'] = Item::GRAVITY_ACTIVITY;
 				$item['body'] = $item['verb'] = Activity::LIKE;
 				$item['thr-parent'] = bluesky_get_uri($notification->record->subject);
-				$item['thr-parent'] = bluesky_fetch_missing_post($item['thr-parent'], $uid, $uid, $item['contact-id'], 0, $last_poll);
+				$item['thr-parent'] = bluesky_fetch_missing_post($item['thr-parent'], $uid, $uid, Item::PR_FETCHED, $item['contact-id'], 0, $last_poll);
 				if (!empty($item['thr-parent'])) {
 					$data = Item::insert($item);
 					Logger::debug('Got like', ['uid' => $uid, 'result' => $data, 'uri' => $uri]);
@@ -1026,7 +1026,7 @@ function bluesky_fetch_notifications(int $uid, int $last_poll)
 				$item['gravity'] = Item::GRAVITY_ACTIVITY;
 				$item['body'] = $item['verb'] = Activity::ANNOUNCE;
 				$item['thr-parent'] = bluesky_get_uri($notification->record->subject);
-				$item['thr-parent'] = bluesky_fetch_missing_post($item['thr-parent'], $uid, $uid, $item['contact-id'], 0, $last_poll);
+				$item['thr-parent'] = bluesky_fetch_missing_post($item['thr-parent'], $uid, $uid, Item::PR_FETCHED, $item['contact-id'], 0, $last_poll);
 				if (!empty($item['thr-parent'])) {
 					$data = Item::insert($item);
 					Logger::debug('Got repost', ['uid' => $uid, 'result' => $data, 'uri' => $uri]);
@@ -1042,19 +1042,19 @@ function bluesky_fetch_notifications(int $uid, int $last_poll)
 
 			case 'mention':
 				$contact = bluesky_get_contact($notification->author, 0, $uid);
-				$result  = bluesky_fetch_missing_post($uri, $uid, $uid, $contact['id'], 0, $last_poll);
+				$result  = bluesky_fetch_missing_post($uri, $uid, $uid, Item::PR_TO, $contact['id'], 0, $last_poll);
 				Logger::debug('Got mention', ['uid' => $uid, 'nick' => $contact['nick'], 'result' => $result, 'uri' => $uri]);
 				break;
 
 			case 'reply':
 				$contact = bluesky_get_contact($notification->author, 0, $uid);
-				$result  = bluesky_fetch_missing_post($uri, $uid, $uid, $contact['id'], 0, $last_poll);
+				$result  = bluesky_fetch_missing_post($uri, $uid, $uid, Item::PR_COMMENT, $contact['id'], 0, $last_poll);
 				Logger::debug('Got reply', ['uid' => $uid, 'nick' => $contact['nick'], 'result' => $result, 'uri' => $uri]);
 				break;
 
 			case 'quote':
 				$contact = bluesky_get_contact($notification->author, 0, $uid);
-				$result  = bluesky_fetch_missing_post($uri, $uid, $uid, $contact['id'], 0, $last_poll);
+				$result  = bluesky_fetch_missing_post($uri, $uid, $uid, Item::PR_PUSHED, $contact['id'], 0, $last_poll);
 				Logger::debug('Got quote', ['uid' => $uid, 'nick' => $contact['nick'], 'result' => $result, 'uri' => $uri]);
 				break;
 
@@ -1187,7 +1187,7 @@ function bluesky_get_content(array $item, stdClass $record, string $uri, int $ui
 	if (!empty($record->reply)) {
 		$item['parent-uri'] = bluesky_get_uri($record->reply->root);
 		if ($item['parent-uri'] != $uri) {
-			$item['parent-uri'] = bluesky_fetch_missing_post($item['parent-uri'], $uid, $fetch_uid, $item['contact-id'], $level, $last_poll);
+			$item['parent-uri'] = bluesky_fetch_missing_post($item['parent-uri'], $uid, $fetch_uid, Item::PR_COMPLETION, $item['contact-id'], $level, $last_poll);
 			if (empty($item['parent-uri'])) {
 				return [];
 			}
@@ -1195,7 +1195,7 @@ function bluesky_get_content(array $item, stdClass $record, string $uri, int $ui
 
 		$item['thr-parent'] = bluesky_get_uri($record->reply->parent);
 		if (!in_array($item['thr-parent'], [$uri, $item['parent-uri']])) {
-			$item['thr-parent'] = bluesky_fetch_missing_post($item['thr-parent'], $uid, $fetch_uid, $item['contact-id'], $level, $last_poll, $item['parent-uri']);
+			$item['thr-parent'] = bluesky_fetch_missing_post($item['thr-parent'], $uid, $fetch_uid, Item::PR_COMPLETION, $item['contact-id'], $level, $last_poll, $item['parent-uri']);
 			if (empty($item['thr-parent'])) {
 				return [];
 			}
@@ -1300,7 +1300,7 @@ function bluesky_add_media(stdClass $embed, array $item, int $fetch_uid, int $le
 
 		case 'app.bsky.embed.record#view':
 			$original_uri = $uri = bluesky_get_uri($embed->record);
-			$uri = bluesky_fetch_missing_post($uri, $item['uid'], $fetch_uid, $item['contact-id'], $level, $last_poll);
+			$uri = bluesky_fetch_missing_post($uri, $item['uid'], $fetch_uid, Item::PR_FETCHED, $item['contact-id'], $level, $last_poll);
 			if ($uri) {
 				$shared = Post::selectFirst(['uri-id'], ['uri' => $uri, 'uid' => [$item['uid'], 0]]);
 				$uri_id = $shared['uri-id'] ?? 0;
@@ -1314,7 +1314,7 @@ function bluesky_add_media(stdClass $embed, array $item, int $fetch_uid, int $le
 
 		case 'app.bsky.embed.recordWithMedia#view':
 			$original_uri = $uri = bluesky_get_uri($embed->record->record);
-			$uri = bluesky_fetch_missing_post($uri, $item['uid'], $fetch_uid, $item['contact-id'], $level, $last_poll);
+			$uri = bluesky_fetch_missing_post($uri, $item['uid'], $fetch_uid, Item::PR_FETCHED, $item['contact-id'], $level, $last_poll);
 			if ($uri) {
 				$shared = Post::selectFirst(['uri-id'], ['uri' => $uri, 'uid' => [$item['uid'], 0]]);
 				$uri_id = $shared['uri-id'] ?? 0;
@@ -1385,7 +1385,7 @@ function bluesky_get_uri_parts(string $uri): ?stdClass
 	return $class;
 }
 
-function bluesky_fetch_missing_post(string $uri, int $uid, int $fetch_uid, int $causer, int $level, int $last_poll = 0, string $fallback = ''): string
+function bluesky_fetch_missing_post(string $uri, int $uid, int $fetch_uid, int $post_reason, int $causer, int $level, int $last_poll, string $fallback = ''): string
 {
 	$fetched_uri = bluesky_fetch_post($uri, $uid);
 	if (!empty($fetched_uri)) {
@@ -1413,11 +1413,10 @@ function bluesky_fetch_missing_post(string $uri, int $uid, int $fetch_uid, int $
 
 	if ($causer != 0) {
 		$cdata = Contact::getPublicAndUserContactID($causer, $uid);
-	} else {
-		$cdata = [];
+		$causer = $cdata['public'] ?? 0;
 	}
 
-	return bluesky_process_thread($data->thread, $uid, $fetch_uid, $cdata, $level, $last_poll);
+	return bluesky_process_thread($data->thread, $uid, $fetch_uid, $post_reason, $causer, $level, $last_poll);
 }
 
 function bluesky_fetch_post(string $uri, int $uid): string
@@ -1450,7 +1449,7 @@ function bluesky_fetch_uri_id(string $uri, int $uid): string
 	return 0;
 }
 
-function bluesky_process_thread(stdClass $thread, int $uid, int $fetch_uid, array $cdata, int $level, int $last_poll): string
+function bluesky_process_thread(stdClass $thread, int $uid, int $fetch_uid, int $post_reason, int $causer, int $level, int $last_poll): string
 {
 	if (empty($thread->post)) {
 		Logger::info('Invalid post', ['post' => $thread]);
@@ -1460,7 +1459,7 @@ function bluesky_process_thread(stdClass $thread, int $uid, int $fetch_uid, arra
 
 	$fetched_uri = bluesky_fetch_post($uri, $uid);
 	if (empty($fetched_uri)) {
-		$uri_id = bluesky_process_post($thread->post, $uid, $fetch_uid, Item::PR_FETCHED, $cdata['public'], $level, $last_poll);
+		$uri_id = bluesky_process_post($thread->post, $uid, $fetch_uid, $post_reason, $causer, $level, $last_poll);
 		if ($uri_id) {
 			Logger::debug('Post has been processed and stored', ['uri-id' => $uri_id, 'uri' => $uri]);
 			return $uri;
@@ -1474,7 +1473,7 @@ function bluesky_process_thread(stdClass $thread, int $uid, int $fetch_uid, arra
 	}
 
 	foreach ($thread->replies ?? [] as $reply) {
-		$reply_uri = bluesky_process_thread($reply, $uid, $fetch_uid, $cdata, $level, $last_poll);
+		$reply_uri = bluesky_process_thread($reply, $uid, $fetch_uid, Item::PR_COMPLETION, $causer, $level, $last_poll);
 		Logger::debug('Reply has been processed', ['uri' => $uri, 'reply' => $reply_uri]);
 	}
 
@@ -1531,7 +1530,7 @@ function bluesky_get_contact(stdClass $author, int $uid, int $fetch_uid): array
 
 function bluesky_get_contact_fields(stdClass $author, int $uid, int $fetch_uid, bool $update): array
 {
-	$nick = $author->handle ?: $author->did;
+	$nick = $author->handle ?? $author->did;
 	$fields = [
 		'uid'      => $uid,
 		'network'  => Protocol::BLUESKY,
@@ -1543,7 +1542,7 @@ function bluesky_get_contact_fields(stdClass $author, int $uid, int $fetch_uid, 
 		'url'      => $author->did,
 		'nurl'     => $author->did,
 		'alias'    => BLUESKY_WEB . '/profile/' . $nick,
-		'name'     => $author->displayName ?: $nick,
+		'name'     => $author->displayName ?? $nick,
 		'nick'     => $nick,
 		'addr'     => $nick,
 	];
