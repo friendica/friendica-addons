@@ -1479,7 +1479,7 @@ function tumblr_exchange_token(int $uid): stdClass
 		]);
 
 		$response = $client->post('oauth2/exchange', ['auth' => 'oauth']);
-		return json_decode($response->getBodyString()->getContents());
+		return json_decode($response->getBody()->getContents());
 	} catch (RequestException $exception) {
 		Logger::notice('Exchange failed', ['code' => $exception->getCode(), 'message' => $exception->getMessage()]);
 		return new stdClass;
