@@ -764,7 +764,7 @@ function bluesky_get_urls(string $body): array
 	if (preg_match_all("/#\[url\=(https?:.*?)\](.*?)\[\/url\]/ism", $body, $matches, PREG_SET_ORDER)) {
 		foreach ($matches as $match) {
 			$text = '#' . $match[2];
-			$urls[] = ['tag' => $match[2], 'text' => $text, 'hash' => $text];
+			$urls[strpos($body, $match[0])] = ['tag' => $match[2], 'text' => $text, 'hash' => $text];
 			$body = str_replace($match[0], $text, $body);
 		}
 	}
@@ -774,7 +774,7 @@ function bluesky_get_urls(string $body): array
 		foreach ($matches as $match) {
 			$text = Strings::getStyledURL($match[1]);
 			$hash = bluesky_get_hash_for_url($match[0], mb_strlen($text));
-			$urls[] = ['url' => $match[1], 'text' => $text, 'hash' => $hash];
+			$urls[strpos($body, $match[0])] = ['url' => $match[1], 'text' => $text, 'hash' => $hash];
 			$body = str_replace($match[0], $hash, $body);
 		}
 	}
@@ -789,16 +789,18 @@ function bluesky_get_urls(string $body): array
 			}
 			if (mb_strlen($text) < 100) {
 				$hash = bluesky_get_hash_for_url($match[0], mb_strlen($text));
-				$urls[] = ['url' => $match[1], 'text' => $text, 'hash' => $hash];
+				$urls[strpos($body, $match[0])] = ['url' => $match[1], 'text' => $text, 'hash' => $hash];
 				$body = str_replace($match[0], $hash, $body);
 			} else {
 				$text = Strings::getStyledURL($match[1]);
 				$hash = bluesky_get_hash_for_url($match[0], mb_strlen($text));
-				$urls[] = ['url' => $match[1], 'text' => $text, 'hash' => $hash];
+				$urls[strpos($body, $match[0])] = ['url' => $match[1], 'text' => $text, 'hash' => $hash];
 				$body = str_replace($match[0], $text . ' ' . $hash, $body);
 			}
 		}
 	}
+
+	asort($urls);
 
 	return ['body' => $body, 'urls' => $urls];
 }
