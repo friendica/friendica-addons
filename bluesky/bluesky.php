@@ -42,6 +42,7 @@ use Friendica\Model\ItemURI;
 use Friendica\Model\Photo;
 use Friendica\Model\Post;
 use Friendica\Model\Tag;
+use Friendica\Model\User;
 use Friendica\Network\HTTPClient\Client\HttpClientAccept;
 use Friendica\Network\HTTPClient\Client\HttpClientOptions;
 use Friendica\Object\Image;
@@ -316,20 +317,44 @@ function bluesky_unblock(array &$hook_data)
 	$hook_data['result'] = true;
 }
 
+function bluesky_addon_admin(string &$o)
+{
+	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/bluesky/');
+
+	$o = Renderer::replaceMacros($t, [
+		'$submit' => DI::l10n()->t('Save Settings'),
+		'$friendica_handles'    => ['friendica_handles', DI::l10n()->t('Allow your users to use your hostname for their Bluesky handles'), DI::config()->get('bluesky', 'friendica_handles'), DI::l10n()->t('Before enabling this option, you have to download and configure the bluesky-handles repository on your system. See https://git.friendi.ca/heluecht/bluesky-handles')],
+	]);
+}
+
+function bluesky_addon_admin_post()
+{
+	DI::config()->set('bluesky', 'friendica_handles', (bool)$_POST['friendica_handles']);
+}
+
 function bluesky_settings(array &$data)
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
-	$enabled      = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'post') ?? false;
-	$def_enabled  = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'post_by_default') ?? false;
-	$pds          = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'pds');
-	$handle       = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'handle');
-	$did          = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'did');
-	$token        = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'access_token');
-	$import       = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'import') ?? false;
-	$import_feeds = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'import_feeds') ?? false;
+	$enabled       = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'post') ?? false;
+	$def_enabled   = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'post_by_default') ?? false;
+	$pds           = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'pds');
+	$handle        = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'handle');
+	$did           = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'did');
+	$token         = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'access_token');
+	$import        = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'import') ?? false;
+	$import_feeds  = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'import_feeds') ?? false;
+	$custom_handle = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'friendica_handle') ?? false;
+
+	if (DI::config()->get('bluesky', 'friendica_handles')) {
+		$self = User::getById(DI::userSession()->getLocalUserId(), ['nickname']);
+		$handle = $self['nickname'] . '.' . DI::baseUrl()->getHost();
+		$friendica_handle = ['bluesky_friendica_handle', DI::l10n()->t('Allow to use %s as your Bluesky handle.', $handle), $custom_handle, DI::l10n()->t('When enabled, you can use %s as your Bluesky handle. After you enabled this option, please go to https://bsky.app/settings and select to change your handle. Select that you have got your own domain. Then enter %s and select "No DNS Panel". Then select "Verify Text File".', $handle, $handle)];
+	} else {
+		$friendica_handle = [];
+	}
 
 	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/bluesky/');
 	$html = Renderer::replaceMacros($t, [
@@ -337,6 +362,7 @@ function bluesky_settings(array &$data)
 		'$bydefault'    => ['bluesky_bydefault', DI::l10n()->t('Post to Bluesky by default'), $def_enabled],
 		'$import'       => ['bluesky_import', DI::l10n()->t('Import the remote timeline'), $import],
 		'$import_feeds' => ['bluesky_import_feeds', DI::l10n()->t('Import the pinned feeds'), $import_feeds, DI::l10n()->t('When activated, Posts will be imported from all the feeds that you pinned in Bluesky.')],
+		'$custom_handle' => $friendica_handle,
 		'$pds'          => ['bluesky_pds', DI::l10n()->t('Personal Data Server'), $pds, DI::l10n()->t('The personal data server (PDS) is the system that hosts your profile.'), '', 'readonly'],
 		'$handle'       => ['bluesky_handle', DI::l10n()->t('Bluesky handle'), $handle],
 		'$did'          => ['bluesky_did', DI::l10n()->t('Bluesky DID'), $did, DI::l10n()->t('This is the unique identifier. It will be fetched automatically, when the handle is entered.'), '', 'readonly'],
@@ -404,11 +430,12 @@ function bluesky_settings_post(array &$b)
 
 	$handle = trim($_POST['bluesky_handle'], ' @');
 
-	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'post',            intval($_POST['bluesky']));
-	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'post_by_default', intval($_POST['bluesky_bydefault']));
-	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'handle',          $handle);
-	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'import',          intval($_POST['bluesky_import']));
-	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'import_feeds',    intval($_POST['bluesky_import_feeds']));
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'post',             intval($_POST['bluesky']));
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'post_by_default',  intval($_POST['bluesky_bydefault']));
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'handle',           $handle);
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'import',           intval($_POST['bluesky_import']));
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'import_feeds',     intval($_POST['bluesky_import_feeds']));
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'friendica_handle', intval($_POST['bluesky_friendica_handle']));
 
 	if (!empty($handle)) {
 		if (empty($old_did) || $old_handle != $handle) {
@@ -1533,6 +1560,7 @@ function bluesky_get_contact(stdClass $author, int $uid, int $fetch_uid): array
 function bluesky_get_contact_fields(stdClass $author, int $uid, int $fetch_uid, bool $update): array
 {
 	$nick = $author->handle ?? $author->did;
+	$name = $author->displayName ?? $nick;
 	$fields = [
 		'uid'      => $uid,
 		'network'  => Protocol::BLUESKY,
@@ -1544,7 +1572,7 @@ function bluesky_get_contact_fields(stdClass $author, int $uid, int $fetch_uid, 
 		'url'      => $author->did,
 		'nurl'     => $author->did,
 		'alias'    => BLUESKY_WEB . '/profile/' . $nick,
-		'name'     => $author->displayName ?? $nick,
+		'name'     => $name ?: $nick,
 		'nick'     => $nick,
 		'addr'     => $nick,
 	];
