@@ -1,9 +1,11 @@
 <p>{{$status}}</p>
 {{include file="field_checkbox.tpl" field=$enable}}
 {{include file="field_checkbox.tpl" field=$bydefault}}
-{{include file="field_input.tpl" field=$client_id}}
-{{include file="field_input.tpl" field=$client_secret}}
-{{include file="field_input.tpl" field=$access_token}}
+{{if $user_client}}
+	{{include file="field_input.tpl" field=$client_id}}
+	{{include file="field_input.tpl" field=$client_secret}}
+	{{include file="field_input.tpl" field=$access_token}}
+{{/if}}
 {{if $authorize_url}}
 	<a href="{{$authorize_url}}">{{$authorize_text}}</a>
 {{/if}}

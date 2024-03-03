@@ -2,7 +2,7 @@
 /**
  * Name: Pnut Connector
  * Description: Post to pnut.io
- * Version: 0.1.1
+ * Version: 0.1.2
  * Author: Morgan McMillian <https://social.clacks.network/profile/spacenerdmo>
  * Status: In Development
  */
@@ -18,12 +18,10 @@ use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Core\System;
 use Friendica\DI;
-use Friendica\Model\Item;
 use Friendica\Model\Photo;
-use Friendica\Object\Image;
-use Friendica\Network\HTTPClient\Client\HttpClientAccept;
-use Friendica\Network\HTTPClient\Client\HttpClientOptions;
-use Friendica\Util\DateTimeFormat;
+use phpnut\phpnutException;
+
+const PNUT_LIMIT = 256;
 
 function pnut_install()
 {
@@ -63,19 +61,25 @@ function pnut_content()
 
 function pnut_connect()
 {
-	$client_id     = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'pnut', 'client_id');
-	$client_secret = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'pnut', 'client_secret');
+	$client_id     = DI::config()->get('pnut', 'client_id');
+	$client_secret = DI::config()->get('pnut', 'client_secret');
+
+	if (empty($client_id) || empty($client_secret)) {
+		$client_id     = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'pnut', 'client_id');
+		$client_secret = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'pnut', 'client_secret');
+	}
+
 	$callback_url = DI::baseUrl() . '/pnut/connect';
 
 	$nut = new phpnut\phpnut($client_id, $client_secret);
 
 	try {
 		$token = $nut->getAccessToken($callback_url);
-		Logger::debug('TOKEN', [$token]);
+		Logger::debug('Got Token', [$token]);
 		$o = DI::l10n()->t('You are now authenticated with pnut.io.');
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'pnut', 'access_token', $token);
 	} catch (phpnutException $e) {
-		$o = DI::l10n()->t('Error fetching token. Please try again.');
+		$o = DI::l10n()->t('Error fetching token. Please try again.', ['code' => $e->getCode(), 'message' => $e->getMessage()]);
 	}
 
 	$o .= '<br /><a href="' . DI::baseUrl() . '/settings/connectors">' . DI::l10n()->t("return to the connector page").'</a>';
@@ -86,6 +90,26 @@ function pnut_connect()
 function pnut_load_config(ConfigFileManager $loader)
 {
 	DI::app()->getConfigCache()->load($loader->loadAddonConfig('pnut'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+}
+
+function pnut_addon_admin(string &$o)
+{
+	$client_id     = DI::config()->get('pnut', 'client_id');
+	$client_secret = DI::config()->get('pnut', 'client_secret');
+
+	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/pnut/');
+
+	$o = Renderer::replaceMacros($t, [
+		'$submit'        => DI::l10n()->t('Save Settings'),
+		'$client_id'     => ['pnut_client_id', DI::l10n()->t('Client ID'), $client_id],
+		'$client_secret' => ['pnut_client_secret', DI::l10n()->t('Client Secret'), $client_secret],
+	]);
+}
+
+function pnut_addon_admin_post()
+{
+	DI::config()->set('pnut', 'client_id',     $_POST['pnut_client_id']);
+	DI::config()->set('pnut', 'client_secret', $_POST['pnut_client_secret']);
 }
 
 function pnut_settings(array &$data)
@@ -99,12 +123,15 @@ function pnut_settings(array &$data)
 
 	$enabled       = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'pnut', 'post') ?? false;
 	$def_enabled   = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'pnut', 'post_by_default') ?? false;
-	$client_id     = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'pnut', 'client_id');
-	$client_secret = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'pnut', 'client_secret');
+	$client_id     = DI::config()->get('pnut', 'client_id');
+	$client_secret = DI::config()->get('pnut', 'client_secret');
 	$token         = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'pnut', 'access_token');
-
-	Logger::debug('CLIENT_ID', [$client_id]);
-	Logger::debug('CLIENT_SECRET', [$client_secret]);
+	
+	$user_client = empty($client_id) || empty($client_secret);
+	if ($user_client) {
+		$client_id     = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'pnut', 'client_id');
+		$client_secret = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'pnut', 'client_secret');
+	}
 
 	if (!empty($client_id) && !empty($client_secret) && empty($token)) {
 		$nut = new phpnut\phpnut($client_id, $client_secret);
@@ -118,19 +145,20 @@ function pnut_settings(array &$data)
 
 	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/pnut/');
 	$html = Renderer::replaceMacros($t, [
-		'$enable'        => ['pnut', DI::l10n()->t('Enable Pnut Post Addon'), $enabled],
-		'$bydefault'     => ['pnut_bydefault', DI::l10n()->t('Post to Pnut by default'), $def_enabled],
-		'$client_id'     => ['pnut_client_id', DI::l10n()->t('Client ID'), $client_id],
-		'$client_secret' => ['pnut_client_secret', DI::l10n()->t('Client Secret'), $client_secret],
-		'$access_token'  => ['pnut_access_token', DI::l10n()->t('Access Token'), $token, '', '', 'readonly'],
-		'$authorize_url' => $authorize_url ?? '',
+		'$enable'         => ['pnut', DI::l10n()->t('Enable Pnut Post Addon'), $enabled],
+		'$bydefault'      => ['pnut_bydefault', DI::l10n()->t('Post to Pnut by default'), $def_enabled],
+		'$client_id'      => ['pnut_client_id', DI::l10n()->t('Client ID'), $client_id],
+		'$client_secret'  => ['pnut_client_secret', DI::l10n()->t('Client Secret'), $client_secret],
+		'$access_token'   => ['pnut_access_token', DI::l10n()->t('Access Token'), $token, '', '', 'readonly'],
+		'$authorize_url'  => $authorize_url ?? '',
 		'$authorize_text' => $authorize_text ?? '',
-		'$disconn_btn' => $disconn_btn ?? '',
+		'$disconn_btn'    => $disconn_btn ?? '',
+		'user_client'     => $user_client,
 	]);
 
 	$data = [
 		'connector' => 'pnut',
-		'title'     => DI::l10n()->t('Pnut Import/Export'),
+		'title'     => DI::l10n()->t('Pnut Export'),
 		'image'     => 'addon/pnut/pnut.svg',
 		'enabled'   => $enabled,
 		'html'      => $html,
@@ -152,8 +180,12 @@ function pnut_settings_post(array &$b)
 	} else {
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'pnut', 'post',            intval($_POST['pnut']));
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'pnut', 'post_by_default', intval($_POST['pnut_bydefault']));
-		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'pnut', 'client_id',       $_POST['pnut_client_id']);
-		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'pnut', 'client_secret',   $_POST['pnut_client_secret']);
+		if (!empty($_POST['pnut_client_id'])) {
+			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'pnut', 'client_id',     $_POST['pnut_client_id']);
+		}
+		if (!empty($_POST['pnut_client_secret'])) {
+			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'pnut', 'client_secret', $_POST['pnut_client_secret']);
+		}
 	}
 }
 
@@ -243,7 +275,7 @@ function pnut_post_hook(array &$b)
 	$token = DI::pConfig()->get($b['uid'], 'pnut', 'access_token');
 	$nut = new phpnut\phpnut($token);
 
-	$msgarr = Plaintext::getPost($b, 256, true, BBCode::EXTERNAL);
+	$msgarr = Plaintext::getPost($b, PNUT_LIMIT, true, BBCode::EXTERNAL);
 	$text = $msgarr['text'];
 	$raw = [];
 
@@ -275,7 +307,7 @@ function pnut_post_hook(array &$b)
 			$picturedata = Photo::getImageForPhoto($photo);
 
 			Logger::debug('PNUT photo', $photo);
-			$picurefile = System::getTempPath() . DIRECTORY_SEPARATOR . $photo['filename'];
+			$picurefile = tempnam(System::getTempPath(), 'pnut');
 			file_put_contents($picurefile, $picturedata);
 			Logger::debug('PNUT got file?', ['filename' => $picurefile]);
 			$imagefile = $nut->createFile($picurefile, $fileraw);
