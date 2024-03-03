@@ -169,6 +169,10 @@ function mailstream_post_hook(array &$item)
 			Logger::debug('mailstream: like item ' . $item['id']);
 			return;
 		}
+		if ($item['verb'] == Activity::DISLIKE) {
+			Logger::debug('mailstream: dislike item ' . $item['id']);
+			return;
+		}
 	}
 
 	$message_id = mailstream_generate_id($item['uri']);
