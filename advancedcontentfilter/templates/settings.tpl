@@ -3,7 +3,7 @@
 	<div id="rules"></div>
 
 	<script>
-		var existingRules = {{$rules nofilter}};
+		var existingRules = {{$rules|json_encode nofilter}};
 
 		var messages = {
 	{{foreach $messages as $key => $value}}
