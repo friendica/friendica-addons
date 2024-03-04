@@ -253,7 +253,7 @@ function advancedcontentfilter_content()
 				'cancel'            => DI::l10n()->t('Cancel'),
 			],
 			'$current_theme' => DI::app()->getCurrentTheme(),
-			'$rules' => advancedcontentfilter_get_rules(),
+			'$rules' => DBA::toArray(DBA::select('advancedcontentfilter_rules', [], ['uid' => DI::userSession()->getLocalUserId()])),
 			'$form_security_token' => BaseModule::getFormSecurityToken()
 		]);
 	}
@@ -305,7 +305,7 @@ function advancedcontentfilter_build_fields($data)
  * API
  */
 
-function advancedcontentfilter_get_rules(ServerRequestInterface $request, ResponseInterface $response)
+function advancedcontentfilter_get_rules(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
 {
 	if (!DI::userSession()->getLocalUserId()) {
 		throw new HTTPException\UnauthorizedException(DI::l10n()->t('You must be logged in to use this method'));
