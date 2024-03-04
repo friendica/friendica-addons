@@ -51,7 +51,7 @@ function blockbot_init_1()
 
 	$logdata = ['agent' => $_SERVER['HTTP_USER_AGENT'], 'uri' => $_SERVER['REQUEST_URI']];
 
-	// List of "good" crawlers
+	// List of "good" crawlers, mostly from the fediverse.
 	$good_agents = [
 		'fediverse.space crawler', 'fediverse.network crawler', 'Active_Pods_CheckBot_3.0',
 		'Social-Relay/', 'Test Certificate Info', 'Uptimebot/', 'GNUSocialBot', 'UptimeRobot/',
@@ -59,10 +59,10 @@ function blockbot_init_1()
 		'FedditLemmyverseCrawler/', 'kbinBot/', 'lemmy-explorer-crawler/',
 	];
 
-	// List of agents from social media systems that fetch preview data via opem graph or twitter cards
+	// List of agents from social media systems that fetch preview data via opem graph or twitter cards.
 	$socialmedia_agents = ['Twitterbot/', 'facebookexternalhit/', 'SkypeUriPreview Preview/',
 		'TelegramBot', 'WhatsApp/', 'github-camo', 'Bluesky Cardyb/', 'XING-contenttabreceiver/', 
-		'LinkedInBot/', 'Instagram ', 'Synapse (bot; ', 'Discordbot/'];
+		'LinkedInBot/', 'Instagram ', 'Synapse (bot; ', 'Discordbot/', 'SummalyBot/'];
 
 	// List of known unwanted crawlers.
 	$agents = [
@@ -84,7 +84,7 @@ function blockbot_init_1()
 		'Cliqzbot/', 'YaK/', 'Mediatoolkitbot', 'Snacktory', 'FunWebProducts', 'oBot/',
 		'7Siters/', 'KOCMOHABT', 'Google-SearchByImage', 'FemtosearchBot/',
 		'HubSpot Crawler', 'DomainStatsBot/', 'Re-re Studio', 'AwarioSmartBot/',
-		'SummalyBot/', 'DNSResearchBot/', 'PetalBot;', 'Nmap Scripting Engine;',
+		'DNSResearchBot/', 'PetalBot;', 'Nmap Scripting Engine;',
 		'Google-Apps-Script; beanserver;', 'woorankreview/', 'Seekport Crawler;', 'AHC/',
 		'Semanticbot/', 'Embed PHP library', 'XoviOnpageCrawler;', 'Pinterest/',
 		'GetHPinfo.com-Bot/', 'BoardReader Favicon Fetcher', 'Google-Adwords-Instant', 'newspaper/',
