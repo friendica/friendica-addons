@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-04 05:35+0000\n"
+"POT-Creation-Date: 2024-03-05 04:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,21 +42,32 @@ msgid ""
 msgstr ""
 
 #: blockbot.php:33
-msgid "Block GabSocial"
+msgid "Allow generic HTTP libraries"
 msgstr ""
 
 #: blockbot.php:33
+msgid ""
+"Don't block agents from generic HTTP libraries that could be used for good "
+"or for bad and that currently can't be traced back to any known Fediverse "
+"project."
+msgstr ""
+
+#: blockbot.php:34
+msgid "Block GabSocial"
+msgstr ""
+
+#: blockbot.php:34
 msgid ""
 "Block the software GabSocial. This will block every access for that "
 "software. You can block dedicated gab instances in the blocklist settings in "
 "the admin section."
 msgstr ""
 
-#: blockbot.php:34
+#: blockbot.php:35
 msgid "Training mode"
 msgstr ""
 
-#: blockbot.php:34
+#: blockbot.php:35
 msgid ""
 "Activates the training mode. This is only meant for developing purposes. "
 "Don't activate this on a production machine. This can cut communication with "
