@@ -30,6 +30,7 @@ function blockbot_addon_admin(string &$o)
 		'$submit'             => DI::l10n()->t('Save Settings'),
 		'$good_crawlers'      => ['good_crawlers', DI::l10n()->t('Allow "good" crawlers'), DI::config()->get('blockbot', 'good_crawlers'), DI::l10n()->t("Don't block fediverse crawlers, relay servers and other bots with good purposes.")],
 		'$socialmedia_agents' => ['socialmedia_agents', DI::l10n()->t('Allow preview agents'), DI::config()->get('blockbot', 'socialmedia_agents'), DI::l10n()->t("Don't block agents from social media systems that want to generate preview data for links that had been set by their users.")],
+		'$http_libraries'     => ['http_libraries', DI::l10n()->t('Allow generic HTTP libraries'), DI::config()->get('blockbot', 'http_libraries'), DI::l10n()->t("Don't block agents from generic HTTP libraries that could be used for good or for bad and that currently can't be traced back to any known Fediverse project.")],
 		'$block_gab'          => ['block_gab', DI::l10n()->t('Block GabSocial'), DI::config()->get('blockbot', 'block_gab'), DI::l10n()->t('Block the software GabSocial. This will block every access for that software. You can block dedicated gab instances in the blocklist settings in the admin section.')],
 		'$training'           => ['training', DI::l10n()->t('Training mode'), DI::config()->get('blockbot', 'training'), DI::l10n()->t("Activates the training mode. This is only meant for developing purposes. Don't activate this on a production machine. This can cut communication with some systems.")],
 	]);
@@ -39,6 +40,7 @@ function blockbot_addon_admin_post()
 {
 	DI::config()->set('blockbot', 'good_crawlers', $_POST['good_crawlers'] ?? false);
 	DI::config()->set('blockbot', 'socialmedia_agents', $_POST['socialmedia_agents'] ?? false);
+	DI::config()->set('blockbot', 'http_libraries', $_POST['http_libraries'] ?? false);
 	DI::config()->set('blockbot', 'block_gab', $_POST['block_gab'] ?? false);
 	DI::config()->set('blockbot', 'training', $_POST['training'] ?? false);
 }
@@ -50,19 +52,6 @@ function blockbot_init_1()
 	}
 
 	$logdata = ['agent' => $_SERVER['HTTP_USER_AGENT'], 'uri' => $_SERVER['REQUEST_URI']];
-
-	// List of "good" crawlers, mostly from the fediverse.
-	$good_agents = [
-		'fediverse.space crawler', 'fediverse.network crawler', 'Active_Pods_CheckBot_3.0',
-		'Social-Relay/', 'Test Certificate Info', 'Uptimebot/', 'GNUSocialBot', 'UptimeRobot/',
-		'PTST/', 'Zabbix', 'Poduptime/', 'FediFetcher', 'lemmy-stats-crawler',
-		'FedditLemmyverseCrawler/', 'kbinBot/', 'lemmy-explorer-crawler/',
-	];
-
-	// List of agents from social media systems that fetch preview data via opem graph or twitter cards.
-	$socialmedia_agents = ['Twitterbot/', 'facebookexternalhit/', 'SkypeUriPreview Preview/',
-		'TelegramBot', 'WhatsApp/', 'github-camo', 'Bluesky Cardyb/', 'XING-contenttabreceiver/', 
-		'LinkedInBot/', 'Instagram ', 'Synapse (bot; ', 'Discordbot/', 'SummalyBot/'];
 
 	// List of known unwanted crawlers.
 	$agents = [
@@ -86,40 +75,56 @@ function blockbot_init_1()
 		'HubSpot Crawler', 'DomainStatsBot/', 'Re-re Studio', 'AwarioSmartBot/',
 		'DNSResearchBot/', 'PetalBot;', 'Nmap Scripting Engine;',
 		'Google-Apps-Script; beanserver;', 'woorankreview/', 'Seekport Crawler;', 'AHC/',
-		'Semanticbot/', 'Embed PHP library', 'XoviOnpageCrawler;', 'Pinterest/',
+		'Semanticbot/', 'XoviOnpageCrawler;', 'Pinterest/',
 		'GetHPinfo.com-Bot/', 'BoardReader Favicon Fetcher', 'Google-Adwords-Instant', 'newspaper/',
-		'YurichevBot/', 'Crawling at Home Project', 'InfoTigerBot/',
-		'AdIdxBot/', 'MicrosoftPreview/', 'masscan/'
+		'YurichevBot/', 'Crawling at Home Project', 'InfoTigerBot/', 'AdIdxBot/',
+		'MicrosoftPreview/', 'masscan/', 'Timpibot/', 'everyfeed-spider/', 'AndroidDownloadManager/',
+		'WebZIP/', 'WDG_Validator/', 'Screaming Frog SEO Spider/', ' Bytespider;', 'ISSCyberRiskCrawler/',
+		'BitSightBot/', 'ev-crawler/',
 	];
-
-	if (!DI::config()->get('blockbot', 'good_crawlers')) {
-		$agents = array_merge($agents, $good_agents);
-	} else {
-		foreach ($good_agents as $good_agent) {
-			if (stristr($_SERVER['HTTP_USER_AGENT'], $good_agent)) {
-				return;
-			}
-		}
-	}
-
-	if (!DI::config()->get('blockbot', 'socialmedia_agents')) {
-		$agents = array_merge($agents, $socialmedia_agents);
-	} else {
-		foreach ($socialmedia_agents as $socialmedia_agent) {
-			if (stristr($_SERVER['HTTP_USER_AGENT'], $socialmedia_agent)) {
-				return;
-			}
-		}
-	}
 
 	if (DI::config()->get('blockbot', 'block_gab')) {
 		$agents[] = 'GabSocial/';
 	}
 
-	foreach ($agents as $agent) {
-		if (stristr($_SERVER['HTTP_USER_AGENT'], $agent)) {
-			throw new ForbiddenException('Bots are not allowed. If you consider this a mistake, create an issue at https://github.com/friendica/friendica');
-		}
+	// List of "good" crawlers, mostly from the fediverse.
+	$good_agents = [
+		'fediverse.space crawler', 'fediverse.network crawler', 'Active_Pods_CheckBot_3.0',
+		'Social-Relay/', 'Test Certificate Info', 'Uptimebot/', 'GNUSocialBot', 'UptimeRobot/',
+		'PTST/', 'Zabbix', 'Poduptime/', 'FediFetcher', 'lemmy-stats-crawler',
+		'FedditLemmyverseCrawler/', 'kbinBot/', 'lemmy-explorer-crawler/', 'URIports Validator',
+		'rss-is-dead.lol web bot;',
+	];
+
+	if (!DI::config()->get('blockbot', 'good_crawlers')) {
+		$agents = array_merge($agents, $good_agents);
+	} elseif (blockbot_match($good_agents)) {
+		return;
+	}
+
+	// List of agents from social media systems that fetch preview data via opem graph or twitter cards.
+	$socialmedia_agents = ['Twitterbot', 'facebookexternalhit/', 'SkypeUriPreview Preview/',
+		'TelegramBot', 'WhatsApp/', 'github-camo', 'Bluesky Cardyb/', 'XING-contenttabreceiver/', 
+		'LinkedInBot/', 'Instagram ', 'Synapse (bot; ', 'Discordbot/', 'SummalyBot/'];
+
+	if (!DI::config()->get('blockbot', 'socialmedia_agents')) {
+		$agents = array_merge($agents, $socialmedia_agents);
+	} elseif (blockbot_match($socialmedia_agents)) {
+		return;
+	}
+	
+	// HTTP Libraries
+	$http_libraries = ['ReactorNetty/', 'GuzzleHttp/', 'Embed PHP library', 'python-urllib3/',
+		'EventMachine HttpClient'];
+
+	if (!DI::config()->get('blockbot', 'http_libraries')) {
+		$agents = array_merge($agents, $http_libraries);
+	} elseif (blockbot_match($http_libraries)) {
+		return;
+	}
+
+	if (blockbot_match($agents)) {
+		throw new ForbiddenException('Bots are not allowed. If you consider this a mistake, create an issue at https://github.com/friendica/friendica');
 	}
 
 	// This switch here is only meant for developers who want to add more bots to the list above, it is not safe for production.
@@ -134,7 +139,7 @@ function blockbot_init_1()
 		return;
 	}
 
-	// List of false positives' strings of known "good" agents.
+	// List of known "good" agents, mostly used by Fediverse systems, feed readers, ...
 	$agents = [
 		'curl', 'zgrab', 'Go-http-client', 'curb', 'github.com', 'reqwest', 'Feedly/',
 		'Python-urllib/', 'Liferea/', 'aiohttp/', 'WordPress.com Reader', 'hackney/',
@@ -144,20 +149,25 @@ function blockbot_init_1()
 		'lua-resty-http/', 'Tiny Tiny RSS/', 'Wget/', 'PostmanRuntime/',
 		'W3C_Validator/', 'NetNewsWire', 'FeedValidator/', 'theoldreader.com', 'axios/',
 		'Paw/', 'PeerTube/', 'fedi.inex.dev', 'FediDB/', 'index.community crawler',
-		'Slackbot-LinkExpanding', 'Firefish/', 'Takahe/', 'Akkoma ', 'Misskey/'
+		'Slackbot-LinkExpanding', 'Firefish/', 'Takahe/', 'Akkoma ', 'Misskey/', 'Lynx/',
+		'camo-rs asset proxy', 'gotosocial/',
 	];
 
-	if (DI::config()->get('blockbot', 'good_crawlers')) {
-		$agents = array_merge($agents, $good_agents);
-	}
-
-	foreach ($agents as $agent) {
-		if (stristr($_SERVER['HTTP_USER_AGENT'], $agent)) {
-			logger::info('False positive', $logdata);
-			return;
-		}
+	if (blockbot_match($agents)) {
+		logger::info('False positive', $logdata);
+		return;
 	}
 
 	logger::notice('Blocked bot', $logdata);
 	throw new ForbiddenException('Bots are not allowed. If you consider this a mistake, create an issue at https://github.com/friendica/friendica');
+}
+
+function blockbot_match(array $agents)
+{
+	foreach ($agents as $agent) {
+		if (stristr($_SERVER['HTTP_USER_AGENT'], $agent)) {
+			return true;
+		}
+	}
+	return false;
 }
