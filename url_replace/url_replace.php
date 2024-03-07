@@ -47,7 +47,7 @@ function url_replace_addon_admin(string &$o)
 {
 	$nitter_server    = DI::config()->get('url_replace', 'nitter_server');
 	$invidious_server = DI::config()->get('url_replace', 'invidious_server');
-	$twelvefeet_sites = implode(PHP_EOL, DI::config()->get('url_replace', 'twelvefeet_sites'));
+	$twelvefeet_sites = implode(PHP_EOL, DI::config()->get('url_replace', 'twelvefeet_sites') ?? [] ?: []);
 
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/url_replace/');
 	$o = Renderer::replaceMacros($t, [
@@ -114,10 +114,7 @@ function url_replace_render(array &$b)
 		}
 	}
 
-	$twelvefeet_sites = DI::config()->get('url_replace', 'twelvefeet_sites');
-	if (empty($twelvefeet_sites)) {
-		$twelvefeet_sites = [];
-	}
+	$twelvefeet_sites = DI::config()->get('url_replace', 'twelvefeet_sites') ?? [] ?: [];
 	foreach ($twelvefeet_sites as $twelvefeet_site) {
 		if (strpos($b['html'], $twelvefeet_site) !== false) {
 			$b['html'] = str_replace($twelvefeet_site, 'https://12ft.io/' . $twelvefeet_site, $b['html']);
