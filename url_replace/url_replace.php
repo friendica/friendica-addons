@@ -6,6 +6,7 @@
  * Author: Dr. Tobias Quathamer <https://social.anoxinon.de/@toddy>
  * Maintainer: Dr. Tobias Quathamer <https://social.anoxinon.de/@toddy>
  */
+
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\DI;
@@ -25,13 +26,13 @@ function url_replace_addon_admin_post()
 	// Convert twelvefeet_sites into an array before setting the new value
 	$twelvefeet_sites = explode(PHP_EOL, $_POST['twelvefeet_sites']);
 	// Normalize URLs by using lower case, removing a trailing slash and whitespace
-	$twelvefeet_sites = array_map(fn ($value): string => rtrim(trim(strtolower($value)), '/'), $twelvefeet_sites);
+	$twelvefeet_sites = array_map(fn($value): string => rtrim(trim(strtolower($value)), '/'), $twelvefeet_sites);
 	// Do not store empty lines or duplicates
-	$twelvefeet_sites = array_filter($twelvefeet_sites, fn ($value): bool => !empty($value));
+	$twelvefeet_sites = array_filter($twelvefeet_sites, fn($value): bool => !empty($value));
 	$twelvefeet_sites = array_unique($twelvefeet_sites);
 	// Ensure a protocol and default to HTTPS
 	$twelvefeet_sites = array_map(
-		fn ($value): string => substr($value, 0, 4) !== 'http' ? 'https://'.$value : $value,
+		fn($value): string => substr($value, 0, 4) !== 'http' ? 'https://' . $value : $value,
 		$twelvefeet_sites
 	);
 	asort($twelvefeet_sites);
@@ -47,8 +48,9 @@ function url_replace_addon_admin(string &$o)
 	$nitter_server    = DI::config()->get('url_replace', 'nitter_server');
 	$invidious_server = DI::config()->get('url_replace', 'invidious_server');
 	$twelvefeet_sites = implode(PHP_EOL, DI::config()->get('url_replace', 'twelvefeet_sites'));
-	$t                = Renderer::getMarkupTemplate('admin.tpl', 'addon/url_replace/');
-	$o                = Renderer::replaceMacros($t, [
+
+	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/url_replace/');
+	$o = Renderer::replaceMacros($t, [
 		'$nitter_server' => [
 			'nitter_server',
 			DI::l10n()->t('Nitter server'),
@@ -118,7 +120,7 @@ function url_replace_render(array &$b)
 	}
 	foreach ($twelvefeet_sites as $twelvefeet_site) {
 		if (strpos($b['html'], $twelvefeet_site) !== false) {
-			$b['html'] = str_replace($twelvefeet_site, 'https://12ft.io/'.$twelvefeet_site, $b['html']);
+			$b['html'] = str_replace($twelvefeet_site, 'https://12ft.io/' . $twelvefeet_site, $b['html']);
 			$replaced  = true;
 		}
 	}
