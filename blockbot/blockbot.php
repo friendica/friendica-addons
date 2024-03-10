@@ -61,7 +61,7 @@ function blockbot_init_1()
 		'adscanner/', 'HeadlessChrome', 'wpif', 'startmebot/', 'Googlebot/', 'Applebot/',
 		'GoogleImageProxy', 'bingbot/', 'heritrix/', 'ldspider',
 		'AwarioRssBot/', 'TweetmemeBot/', 'dcrawl/', 'PhantomJS/', 'Googlebot-Image/',
-		'CrowdTanglebot/', 'Mediapartners-Google', 'Baiduspider/', 'datagnionbot',
+		'CrowdTanglebot/', 'Mediapartners-Google', 'Baiduspider', 'datagnionbot',
 		'MegaIndex.ru/', 'SMUrlExpander', 'Hatena-Favicon/', 'Wappalyzer', 'FlipboardProxy/',
 		'NetcraftSurveyAgent/', 'Dataprovider.com', 'SMTBot/', 'Nimbostratus-Bot/',
 		'DuckDuckGo-Favicons-Bot/', 'IndieWebCards/', 'proximic', 'netEstate NE Crawler',
@@ -83,7 +83,10 @@ function blockbot_init_1()
 		'BitSightBot/', 'ev-crawler/', 'CensysInspect/1.1', 'Protopage/', 'Gaisbot/', 'WellKnownBot/',
 		'SuperBot/', 'Googlebot-Mobile/', 'GPTBot/', 'GenomeCrawlerd/', '2ip bot/', 'Ocarinabot',
 		'Yahoo! Slurp;', 'AdsBot-Google', 'Gregarius/', 'FAST-WebCrawler/', 'Xenu Link Sleuth/',
-		'Ask Jeeves'
+		'Ask Jeeves', 'alexa site audit/', 'Yahoo! Slurp China;', 'Microsoft URL Control',
+		'Facebot', 'Googlebot-Video/', 'msnbot/', 'Offline Explorer/', 'YandexNews/', 'msnbot-media/',
+		'EmailWolf', 'Download Demon/', 'FeedFetcher-Google;', 'WebCopier', '+ONB_Bot_Btrix',
+		'scoopit-crawler/'
 	];
 
 	if (DI::config()->get('blockbot', 'block_gab')) {
@@ -97,7 +100,7 @@ function blockbot_init_1()
 		'PTST/', 'Zabbix', 'Poduptime/', 'FediFetcher', 'lemmy-stats-crawler',
 		'FedditLemmyverseCrawler/', 'lemmy-explorer-crawler/', 'URIports Validator',
 		'rss-is-dead.lol web bot;', 'fedistatsCrawler/', 'W3C_CSS_Validator_JFouffa/',
-		'IABot/', 'Slackbot 1',
+		'IABot/', 'Slackbot 1', 'BeeperBot/', 'Matrix-Media-Repo/', 'P3P Validator',
 	];
 
 	if (!DI::config()->get('blockbot', 'good_crawlers')) {
@@ -110,7 +113,7 @@ function blockbot_init_1()
 	$socialmedia_agents = ['Twitterbot', 'facebookexternalhit/', 'SkypeUriPreview Preview/',
 		'TelegramBot', 'WhatsApp/', 'github-camo', 'Bluesky Cardyb/', 'XING-contenttabreceiver/', 
 		'LinkedInBot/', 'Instagram ', 'Synapse (bot; ', 'Discordbot/', 'SummalyBot/',
-		'Slackbot-LinkExpanding', 'Slack-ImgProxy',
+		'Slackbot-LinkExpanding', 'Slack-ImgProxy', 'Iframely/',
 	];
 
 	if (!DI::config()->get('blockbot', 'socialmedia_agents')) {
@@ -159,7 +162,7 @@ function blockbot_init_1()
 		'Slackbot-LinkExpanding', 'Firefish/', 'Takahe/', 'Akkoma ', 'Misskey/', 'Lynx/',
 		'camo-rs asset proxy', 'gotosocial/', 'incestoma ', 'SpaceCowboys Android RSS Reader',
 		'NewsBlur Feed Finder', 'Lemmy/', 'enby-town/', 'rss2tg bot;', '; HTTrack ',
-		'MbinBot', 'kbinBot'
+		'MbinBot', 'kbinBot', 'Pixelfed/'
 	];
 
 	if (blockbot_match($agents)) {
