@@ -80,7 +80,10 @@ function blockbot_init_1()
 		'YurichevBot/', 'Crawling at Home Project', 'InfoTigerBot/', 'AdIdxBot/',
 		'MicrosoftPreview/', 'masscan/', 'Timpibot/', 'everyfeed-spider/', 'AndroidDownloadManager/',
 		'WebZIP/', 'WDG_Validator/', 'Screaming Frog SEO Spider/', ' Bytespider;', 'ISSCyberRiskCrawler/',
-		'BitSightBot/', 'ev-crawler/',
+		'BitSightBot/', 'ev-crawler/', 'CensysInspect/1.1', 'Protopage/', 'Gaisbot/', 'WellKnownBot/',
+		'SuperBot/', 'Googlebot-Mobile/', 'GPTBot/', 'GenomeCrawlerd/', '2ip bot/', 'Ocarinabot',
+		'Yahoo! Slurp;', 'AdsBot-Google', 'Gregarius/', 'FAST-WebCrawler/', 'Xenu Link Sleuth/',
+		'Ask Jeeves'
 	];
 
 	if (DI::config()->get('blockbot', 'block_gab')) {
@@ -92,8 +95,9 @@ function blockbot_init_1()
 		'fediverse.space crawler', 'fediverse.network crawler', 'Active_Pods_CheckBot_3.0',
 		'Social-Relay/', 'Test Certificate Info', 'Uptimebot/', 'GNUSocialBot', 'UptimeRobot/',
 		'PTST/', 'Zabbix', 'Poduptime/', 'FediFetcher', 'lemmy-stats-crawler',
-		'FedditLemmyverseCrawler/', 'kbinBot/', 'lemmy-explorer-crawler/', 'URIports Validator',
-		'rss-is-dead.lol web bot;',
+		'FedditLemmyverseCrawler/', 'lemmy-explorer-crawler/', 'URIports Validator',
+		'rss-is-dead.lol web bot;', 'fedistatsCrawler/', 'W3C_CSS_Validator_JFouffa/',
+		'IABot/', 'Slackbot 1',
 	];
 
 	if (!DI::config()->get('blockbot', 'good_crawlers')) {
@@ -105,7 +109,9 @@ function blockbot_init_1()
 	// List of agents from social media systems that fetch preview data via opem graph or twitter cards.
 	$socialmedia_agents = ['Twitterbot', 'facebookexternalhit/', 'SkypeUriPreview Preview/',
 		'TelegramBot', 'WhatsApp/', 'github-camo', 'Bluesky Cardyb/', 'XING-contenttabreceiver/', 
-		'LinkedInBot/', 'Instagram ', 'Synapse (bot; ', 'Discordbot/', 'SummalyBot/'];
+		'LinkedInBot/', 'Instagram ', 'Synapse (bot; ', 'Discordbot/', 'SummalyBot/',
+		'Slackbot-LinkExpanding', 'Slack-ImgProxy',
+	];
 
 	if (!DI::config()->get('blockbot', 'socialmedia_agents')) {
 		$agents = array_merge($agents, $socialmedia_agents);
@@ -115,7 +121,8 @@ function blockbot_init_1()
 	
 	// HTTP Libraries
 	$http_libraries = ['ReactorNetty/', 'GuzzleHttp/', 'Embed PHP library', 'python-urllib3/',
-		'EventMachine HttpClient'];
+		'EventMachine HttpClient', 'HTMLParser/'
+	];
 
 	if (!DI::config()->get('blockbot', 'http_libraries')) {
 		$agents = array_merge($agents, $http_libraries);
@@ -150,7 +157,9 @@ function blockbot_init_1()
 		'W3C_Validator/', 'NetNewsWire', 'FeedValidator/', 'theoldreader.com', 'axios/',
 		'Paw/', 'PeerTube/', 'fedi.inex.dev', 'FediDB/', 'index.community crawler',
 		'Slackbot-LinkExpanding', 'Firefish/', 'Takahe/', 'Akkoma ', 'Misskey/', 'Lynx/',
-		'camo-rs asset proxy', 'gotosocial/',
+		'camo-rs asset proxy', 'gotosocial/', 'incestoma ', 'SpaceCowboys Android RSS Reader',
+		'NewsBlur Feed Finder', 'Lemmy/', 'enby-town/', 'rss2tg bot;', '; HTTrack ',
+		'MbinBot', 'kbinBot'
 	];
 
 	if (blockbot_match($agents)) {
