@@ -1358,6 +1358,7 @@ function bluesky_add_media(stdClass $embed, array $item, int $fetch_uid, int $le
 			break;
 
 		case 'app.bsky.embed.recordWithMedia#view':
+			bluesky_add_media($embed->media, $item, $fetch_uid, $level, $last_poll);
 			$original_uri = $uri = bluesky_get_uri($embed->record->record);
 			$uri = bluesky_fetch_missing_post($uri, $item['uid'], $fetch_uid, Item::PR_FETCHED, $item['contact-id'], $level, $last_poll);
 			if ($uri) {
