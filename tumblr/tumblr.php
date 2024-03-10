@@ -677,9 +677,18 @@ function tumblr_send_npf(array $post): bool
 		return true;
 	}
 
-	$post['body'] = Post\Media::addAttachmentsToBody($post['uri-id'], $post['body']);
+	$post['body'] = Post\Media::addAttachmentsToBody($post['uri-id'], $post['body'], [Post\Media::IMAGE, Post\Media::AUDIO, Post\Media::VIDEO, Post\Media::ACTIVITY]);
 	if (!empty($post['title'])) {
 		$post['body'] = '[h1]' . $post['title'] . "[/h1]\n" . $post['body'];
+	}
+
+	if (!empty($post['quote-uri-id'])) {
+		$quote = Post::selectFirstPost(['uri', 'plink'], ['uri-id' => $post['quote-uri-id']]);
+		if (!empty($quote)) {
+			if ((strpos($post['body'], $quote['plink'] ?: $quote['uri']) === false) && (strpos($post['body'], $quote['uri']) === false)) {
+				$post['body'] .= "\n[url]" . ($quote['plink'] ?: $quote['uri']) . "[/url]\n";
+			}
+		}
 	}
 
 	$params = [
