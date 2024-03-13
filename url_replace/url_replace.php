@@ -2,7 +2,7 @@
 /**
  * Name: URL Replace
  * Description: Replaces occurrences of specified URLs with the address of alternative servers in all displays of postings on a node.
- * Version: 1.0
+ * Version: 1.1
  * Author: Dr. Tobias Quathamer <https://social.anoxinon.de/@toddy>
  * Maintainer: Dr. Tobias Quathamer <https://social.anoxinon.de/@toddy>
  */
