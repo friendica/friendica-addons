@@ -21,8 +21,11 @@ function url_replace_install()
  */
 function url_replace_addon_admin_post()
 {
+	DI::config()->set('url_replace', 'nitter_server_enabled', !empty($_POST['nitter_server_enabled']));
 	DI::config()->set('url_replace', 'nitter_server', rtrim(trim($_POST['nitter_server']), '/'));
+	DI::config()->set('url_replace', 'invidious_server_enabled', !empty($_POST['invidious_server_enabled']));
 	DI::config()->set('url_replace', 'invidious_server', rtrim(trim($_POST['invidious_server']), '/'));
+	DI::config()->set('url_replace', 'proxigram_server_enabled', !empty($_POST['proxigram_server_enabled']));
 	DI::config()->set('url_replace', 'proxigram_server', rtrim(trim($_POST['proxigram_server']), '/'));
 	// Convert twelvefeet_sites into an array before setting the new value
 	$twelvefeet_sites = explode(PHP_EOL, $_POST['twelvefeet_sites']);
@@ -46,13 +49,21 @@ function url_replace_addon_admin_post()
  */
 function url_replace_addon_admin(string &$o)
 {
+	$nitter_server_enabled    = DI::config()->get('url_replace', 'nitter_server_enabled', true);
 	$nitter_server    = DI::config()->get('url_replace', 'nitter_server');
+	$invidious_server_enabled = DI::config()->get('url_replace', 'invidious_server_enabled', true);
 	$invidious_server = DI::config()->get('url_replace', 'invidious_server');
+	$proxigram_server_enabled = DI::config()->get('url_replace', 'proxigram_server_enabled', true);
 	$proxigram_server = DI::config()->get('url_replace', 'proxigram_server');
 	$twelvefeet_sites = implode(PHP_EOL, DI::config()->get('url_replace', 'twelvefeet_sites') ?? []);
 
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/url_replace/');
 	$o = Renderer::replaceMacros($t, [
+		'$nitter_server_enabled' => [
+			'nitter_server_enabled',
+			DI::l10n()->t('Replace links to X.'),
+			$nitter_server_enabled,
+		],
 		'$nitter_server' => [
 			'nitter_server',
 			DI::l10n()->t('Nitter server'),
@@ -61,6 +72,11 @@ function url_replace_addon_admin(string &$o)
 			null,
 			'placeholder="https://nitter.net"',
 		],
+		'$invidious_server_enabled' => [
+			'invidious_server_enabled',
+			DI::l10n()->t('Replace links to YouTube.'),
+			$invidious_server_enabled,
+		],
 		'$invidious_server' => [
 			'invidious_server',
 			DI::l10n()->t('Invidious server'),
@@ -68,6 +84,11 @@ function url_replace_addon_admin(string &$o)
 			DI::l10n()->t('Specify the URL with protocol. The default is https://yewtu.be.'),
 			null,
 			'placeholder="https://yewtu.be"',
+		],
+		'$proxigram_server_enabled' => [
+			'proxigram_server_enabled',
+			DI::l10n()->t('Replace links to Instagram.'),
+			$proxigram_server_enabled,
 		],
 		'$proxigram_server' => [
 			'proxigram_server',
@@ -95,36 +116,49 @@ function url_replace_addon_admin(string &$o)
 function url_replace_render(array &$b)
 {
 	$replaced = false;
+	$replacements = [];
 
 	$nitter_server = DI::config()->get('url_replace', 'nitter_server');
 	if (empty($nitter_server)) {
 		$nitter_server = 'https://nitter.net';
+	}
+	$nitter_server_enabled = DI::config()->get('url_replace', 'nitter_server_enabled', true);
+	if ($nitter_server_enabled) {
+		$replacements = array_merge($replacements, [
+			'https://mobile.twitter.com' => $nitter_server,
+			'https://twitter.com'        => $nitter_server,
+			'https://mobile.x.com'       => $nitter_server,
+			'https://x.com'              => $nitter_server,
+		]);
 	}
 
 	$invidious_server = DI::config()->get('url_replace', 'invidious_server');
 	if (empty($invidious_server)) {
 		$invidious_server = 'https://yewtu.be';
 	}
+	$invidious_server_enabled = DI::config()->get('url_replace', 'invidious_server_enabled', true);
+	if ($invidious_server_enabled) {
+		$replacements = array_merge($replacements, [
+		'https://www.youtube.com'    => $invidious_server,
+		'https://youtube.com'        => $invidious_server,
+		'https://m.youtube.com'      => $invidious_server,
+		'https://youtu.be'           => $invidious_server,
+		]);
+	}
 
 	$proxigram_server = DI::config()->get('url_replace', 'proxigram_server');
 	if (empty($proxigram_server)) {
 		$proxigram_server = 'https://proxigram.lunar.icu';
 	}
-
-	// Handle some of twitter and youtube
-	$replacements = [
-		'https://mobile.twitter.com' => $nitter_server,
-		'https://twitter.com'        => $nitter_server,
-		'https://mobile.x.com'       => $nitter_server,
-		'https://x.com'              => $nitter_server,
-		'https://www.youtube.com'    => $invidious_server,
-		'https://youtube.com'        => $invidious_server,
-		'https://m.youtube.com'      => $invidious_server,
-		'https://youtu.be'           => $invidious_server,
+	$proxigram_server_enabled = DI::config()->get('url_replace', 'proxigram_server_enabled', true);
+	if ($proxigram_server_enabled) {
+		$replacements = array_merge($replacements, [
 		'https://www.instagram.com'  => $proxigram_server,
 		'https://instagram.com'      => $proxigram_server,
 		'https://ig.me'              => $proxigram_server,
-	];
+		]);
+	}
+
 	foreach ($replacements as $server => $replacement) {
 		if (strpos($b['html'], $server) !== false) {
 			$b['html'] = str_replace($server, $replacement, $b['html']);
