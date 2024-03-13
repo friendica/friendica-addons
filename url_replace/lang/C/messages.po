@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-05 00:06+0100\n"
+"POT-Creation-Date: 2024-03-13 22:56+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,34 +17,56 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: url_replace.php:54
+#: url_replace.php:64
+msgid "Replace links to X."
+msgstr ""
+
+#: url_replace.php:69
 msgid "Nitter server"
 msgstr ""
 
-#: url_replace.php:56
+#: url_replace.php:71
 msgid "Specify the URL with protocol. The default is https://nitter.net."
 msgstr ""
 
-#: url_replace.php:62
+#: url_replace.php:77
+msgid "Replace links to YouTube."
+msgstr ""
+
+#: url_replace.php:82
 msgid "Invidious server"
 msgstr ""
 
-#: url_replace.php:64
+#: url_replace.php:84
 msgid "Specify the URL with protocol. The default is https://yewtu.be."
 msgstr ""
 
-#: url_replace.php:70
+#: url_replace.php:90
+msgid "Replace links to Instagram."
+msgstr ""
+
+#: url_replace.php:95
+msgid "Proxigram server"
+msgstr ""
+
+#: url_replace.php:97
+msgid ""
+"Specify the URL with protocol. The default is https://proxigram.lunar.icu."
+msgstr ""
+
+#: url_replace.php:103
 msgid "Sites which are accessed through 12ft.io"
 msgstr ""
 
-#: url_replace.php:72
+#: url_replace.php:105
 msgid "Specify the URLs with protocol, one per line."
 msgstr ""
 
-#: url_replace.php:76
+#: url_replace.php:109
 msgid "Save settings"
 msgstr ""
 
-#: url_replace.php:125
-msgid "(URL replace addon enabled for X, YouTube and some news sites.)"
+#: url_replace.php:175
+msgid ""
+"(URL replace addon enabled for X, YouTube, Instagram and some news sites.)"
 msgstr ""
