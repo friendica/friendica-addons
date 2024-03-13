@@ -30,13 +30,13 @@ function url_replace_addon_admin_post()
 	// Convert twelvefeet_sites into an array before setting the new value
 	$twelvefeet_sites = explode(PHP_EOL, $_POST['twelvefeet_sites']);
 	// Normalize URLs by using lower case, removing a trailing slash and whitespace
-	$twelvefeet_sites = array_map(fn($value): string => rtrim(trim(strtolower($value)), '/'), $twelvefeet_sites);
+	$twelvefeet_sites = array_map(fn ($value): string => rtrim(trim(strtolower($value)), '/'), $twelvefeet_sites);
 	// Do not store empty lines or duplicates
-	$twelvefeet_sites = array_filter($twelvefeet_sites, fn($value): bool => !empty($value));
+	$twelvefeet_sites = array_filter($twelvefeet_sites, fn ($value): bool => !empty($value));
 	$twelvefeet_sites = array_unique($twelvefeet_sites);
 	// Ensure a protocol and default to HTTPS
 	$twelvefeet_sites = array_map(
-		fn($value): string => substr($value, 0, 4) !== 'http' ? 'https://' . $value : $value,
+		fn ($value): string => substr($value, 0, 4) !== 'http' ? 'https://' . $value : $value,
 		$twelvefeet_sites
 	);
 	asort($twelvefeet_sites);
@@ -50,12 +50,12 @@ function url_replace_addon_admin_post()
 function url_replace_addon_admin(string &$o)
 {
 	$nitter_server_enabled    = DI::config()->get('url_replace', 'nitter_server_enabled', true);
-	$nitter_server    = DI::config()->get('url_replace', 'nitter_server');
+	$nitter_server            = DI::config()->get('url_replace', 'nitter_server');
 	$invidious_server_enabled = DI::config()->get('url_replace', 'invidious_server_enabled', true);
-	$invidious_server = DI::config()->get('url_replace', 'invidious_server');
+	$invidious_server         = DI::config()->get('url_replace', 'invidious_server');
 	$proxigram_server_enabled = DI::config()->get('url_replace', 'proxigram_server_enabled', true);
-	$proxigram_server = DI::config()->get('url_replace', 'proxigram_server');
-	$twelvefeet_sites = implode(PHP_EOL, DI::config()->get('url_replace', 'twelvefeet_sites') ?? []);
+	$proxigram_server         = DI::config()->get('url_replace', 'proxigram_server');
+	$twelvefeet_sites         = implode(PHP_EOL, DI::config()->get('url_replace', 'twelvefeet_sites') ?? []);
 
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/url_replace/');
 	$o = Renderer::replaceMacros($t, [
@@ -115,7 +115,7 @@ function url_replace_addon_admin(string &$o)
  */
 function url_replace_render(array &$b)
 {
-	$replaced = false;
+	$replaced     = false;
 	$replacements = [];
 
 	$nitter_server = DI::config()->get('url_replace', 'nitter_server');
@@ -139,10 +139,10 @@ function url_replace_render(array &$b)
 	$invidious_server_enabled = DI::config()->get('url_replace', 'invidious_server_enabled', true);
 	if ($invidious_server_enabled) {
 		$replacements = array_merge($replacements, [
-		'https://www.youtube.com'    => $invidious_server,
-		'https://youtube.com'        => $invidious_server,
-		'https://m.youtube.com'      => $invidious_server,
-		'https://youtu.be'           => $invidious_server,
+			'https://www.youtube.com' => $invidious_server,
+			'https://youtube.com'     => $invidious_server,
+			'https://m.youtube.com'   => $invidious_server,
+			'https://youtu.be'        => $invidious_server,
 		]);
 	}
 
@@ -153,9 +153,9 @@ function url_replace_render(array &$b)
 	$proxigram_server_enabled = DI::config()->get('url_replace', 'proxigram_server_enabled', true);
 	if ($proxigram_server_enabled) {
 		$replacements = array_merge($replacements, [
-		'https://www.instagram.com'  => $proxigram_server,
-		'https://instagram.com'      => $proxigram_server,
-		'https://ig.me'              => $proxigram_server,
+			'https://www.instagram.com' => $proxigram_server,
+			'https://instagram.com'     => $proxigram_server,
+			'https://ig.me'             => $proxigram_server,
 		]);
 	}
 
@@ -173,7 +173,6 @@ function url_replace_render(array &$b)
 			$replaced  = true;
 		}
 	}
-
 
 	if ($replaced) {
 		$b['html'] .= '<hr><p><small>' . DI::l10n()->t('(URL replace addon enabled for X, YouTube, Instagram and some news sites.)') . '</small></p>';
