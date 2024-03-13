@@ -23,6 +23,7 @@ function url_replace_addon_admin_post()
 {
 	DI::config()->set('url_replace', 'nitter_server', rtrim(trim($_POST['nitter_server']), '/'));
 	DI::config()->set('url_replace', 'invidious_server', rtrim(trim($_POST['invidious_server']), '/'));
+	DI::config()->set('url_replace', 'proxigram_server', rtrim(trim($_POST['proxigram_server']), '/'));
 	// Convert twelvefeet_sites into an array before setting the new value
 	$twelvefeet_sites = explode(PHP_EOL, $_POST['twelvefeet_sites']);
 	// Normalize URLs by using lower case, removing a trailing slash and whitespace
@@ -41,12 +42,13 @@ function url_replace_addon_admin_post()
 
 /**
  * Hook into admin settings to enable choosing a different server
- * for twitter, youtube, and news sites.
+ * for twitter, youtube, instagram, and news sites.
  */
 function url_replace_addon_admin(string &$o)
 {
 	$nitter_server    = DI::config()->get('url_replace', 'nitter_server');
 	$invidious_server = DI::config()->get('url_replace', 'invidious_server');
+	$proxigram_server = DI::config()->get('url_replace', 'proxigram_server');
 	$twelvefeet_sites = implode(PHP_EOL, DI::config()->get('url_replace', 'twelvefeet_sites') ?? []);
 
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/url_replace/');
@@ -66,6 +68,14 @@ function url_replace_addon_admin(string &$o)
 			DI::l10n()->t('Specify the URL with protocol. The default is https://yewtu.be.'),
 			null,
 			'placeholder="https://yewtu.be"',
+		],
+		'$proxigram_server' => [
+			'proxigram_server',
+			DI::l10n()->t('Proxigram server'),
+			$proxigram_server,
+			DI::l10n()->t('Specify the URL with protocol. The default is https://proxigram.lunar.icu.'),
+			null,
+			'placeholder="https://proxigram.lunar.icu"',
 		],
 		'$twelvefeet_sites' => [
 			'twelvefeet_sites',
@@ -96,6 +106,11 @@ function url_replace_render(array &$b)
 		$invidious_server = 'https://yewtu.be';
 	}
 
+	$proxigram_server = DI::config()->get('url_replace', 'proxigram_server');
+	if (empty($proxigram_server)) {
+		$proxigram_server = 'https://proxigram.lunar.icu';
+	}
+
 	// Handle some of twitter and youtube
 	$replacements = [
 		'https://mobile.twitter.com' => $nitter_server,
@@ -106,6 +121,9 @@ function url_replace_render(array &$b)
 		'https://youtube.com'        => $invidious_server,
 		'https://m.youtube.com'      => $invidious_server,
 		'https://youtu.be'           => $invidious_server,
+		'https://www.instagram.com'  => $proxigram_server,
+		'https://instagram.com'      => $proxigram_server,
+		'https://ig.me'              => $proxigram_server,
 	];
 	foreach ($replacements as $server => $replacement) {
 		if (strpos($b['html'], $server) !== false) {
@@ -124,6 +142,6 @@ function url_replace_render(array &$b)
 
 
 	if ($replaced) {
-		$b['html'] .= '<hr><p><small>' . DI::l10n()->t('(URL replace addon enabled for X, YouTube and some news sites.)') . '</small></p>';
+		$b['html'] .= '<hr><p><small>' . DI::l10n()->t('(URL replace addon enabled for X, YouTube, Instagram and some news sites.)') . '</small></p>';
 	}
 }
