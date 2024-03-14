@@ -11,6 +11,10 @@ use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
+CONST URL_REPLACE_NITTER_DEFAULT = 'https://nitter.net';
+CONST URL_REPLACE_INVIDIOUS_DEFAULT = 'https://yewtu.be';
+CONST URL_REPLACE_PROXIGRAM_DEFAULT = 'https://proxigram.lunar.icu';
+
 function url_replace_install()
 {
 	Hook::register('prepare_body_final', 'addon/url_replace/url_replace.php', 'url_replace_render');
@@ -68,9 +72,9 @@ function url_replace_addon_admin(string &$o)
 			'nitter_server',
 			DI::l10n()->t('Nitter server'),
 			$nitter_server,
-			DI::l10n()->t('Specify the URL with protocol. The default is https://nitter.net.'),
+			DI::l10n()->t('Specify the URL with protocol. The default is %s.', URL_REPLACE_NITTER_DEFAULT),
 			null,
-			'placeholder="https://nitter.net"',
+			'placeholder="'.URL_REPLACE_NITTER_DEFAULT.'"',
 		],
 		'$invidious_server_enabled' => [
 			'invidious_server_enabled',
@@ -81,9 +85,9 @@ function url_replace_addon_admin(string &$o)
 			'invidious_server',
 			DI::l10n()->t('Invidious server'),
 			$invidious_server,
-			DI::l10n()->t('Specify the URL with protocol. The default is https://yewtu.be.'),
+			DI::l10n()->t('Specify the URL with protocol. The default is %s.', URL_REPLACE_INVIDIOUS_DEFAULT),
 			null,
-			'placeholder="https://yewtu.be"',
+			'placeholder="'.URL_REPLACE_INVIDIOUS_DEFAULT.'"',
 		],
 		'$proxigram_server_enabled' => [
 			'proxigram_server_enabled',
@@ -94,9 +98,9 @@ function url_replace_addon_admin(string &$o)
 			'proxigram_server',
 			DI::l10n()->t('Proxigram server'),
 			$proxigram_server,
-			DI::l10n()->t('Specify the URL with protocol. The default is https://proxigram.lunar.icu.'),
+			DI::l10n()->t('Specify the URL with protocol. The default is %s.', URL_REPLACE_PROXIGRAM_DEFAULT),
 			null,
-			'placeholder="https://proxigram.lunar.icu"',
+			'placeholder="'.URL_REPLACE_PROXIGRAM_DEFAULT.'"',
 		],
 		'$twelvefeet_sites' => [
 			'twelvefeet_sites',
@@ -119,7 +123,7 @@ function url_replace_render(array &$b)
 
 	$nitter_server = DI::config()->get('url_replace', 'nitter_server');
 	if (empty($nitter_server)) {
-		$nitter_server = 'https://nitter.net';
+		$nitter_server = URL_REPLACE_NITTER_DEFAULT;
 	}
 	$nitter_server_enabled = DI::config()->get('url_replace', 'nitter_server_enabled', true);
 	if ($nitter_server_enabled) {
@@ -133,7 +137,7 @@ function url_replace_render(array &$b)
 
 	$invidious_server = DI::config()->get('url_replace', 'invidious_server');
 	if (empty($invidious_server)) {
-		$invidious_server = 'https://yewtu.be';
+		$invidious_server = URL_REPLACE_INVIDIOUS_DEFAULT;
 	}
 	$invidious_server_enabled = DI::config()->get('url_replace', 'invidious_server_enabled', true);
 	if ($invidious_server_enabled) {
@@ -147,7 +151,7 @@ function url_replace_render(array &$b)
 
 	$proxigram_server = DI::config()->get('url_replace', 'proxigram_server');
 	if (empty($proxigram_server)) {
-		$proxigram_server = 'https://proxigram.lunar.icu';
+		$proxigram_server = URL_REPLACE_PROXIGRAM_DEFAULT;
 	}
 	$proxigram_server_enabled = DI::config()->get('url_replace', 'proxigram_server_enabled', true);
 	if ($proxigram_server_enabled) {
