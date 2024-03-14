@@ -11,9 +11,9 @@ use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
-CONST URL_REPLACE_NITTER_DEFAULT = 'https://nitter.net';
-CONST URL_REPLACE_INVIDIOUS_DEFAULT = 'https://yewtu.be';
-CONST URL_REPLACE_PROXIGRAM_DEFAULT = 'https://proxigram.lunar.icu';
+const URL_REPLACE_NITTER_DEFAULT    = 'https://nitter.net';
+const URL_REPLACE_INVIDIOUS_DEFAULT = 'https://yewtu.be';
+const URL_REPLACE_PROXIGRAM_DEFAULT = 'https://proxigram.lunar.icu';
 
 function url_replace_install()
 {
