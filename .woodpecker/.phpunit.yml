@@ -89,8 +89,8 @@ pipeline:
     image: friendicaci/codecov
     when:
       matrix:
-        PHP_MAJOR_VERSION: 7.4
-        PHP_VERSION: 7.4.33
+        PHP_MAJOR_VERSION: 8.2
+        PHP_VERSION: 8.2.16
       repo:
         - friendica/friendica-addons
     commands:
