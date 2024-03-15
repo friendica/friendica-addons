@@ -5,9 +5,11 @@ matrix:
     - PHP_MAJOR_VERSION: 8.0
       PHP_VERSION: 8.0.30
     - PHP_MAJOR_VERSION: 8.1
-      PHP_VERSION: 8.1.23
+      PHP_VERSION: 8.1.27
     - PHP_MAJOR_VERSION: 8.2
-      PHP_VERSION: 8.2.11
+      PHP_VERSION: 8.2.16
+    - PHP_MAJOR_VERSION: 8.3
+      PHP_VERSION: 8.3.3
 
 # This forces PHP Unit executions at the "opensocial" labeled location (because of much more power...)
 labels:
@@ -76,7 +78,7 @@ pipeline:
       - cp config/local-sample.config.php config/local.config.php
       - if ! bin/wait-for-connection $MYSQL_HOST $MYSQL_PORT 300; then echo "[ERROR] Waited 300 seconds, no response" >&2; exit 1; fi
       - mysql -h$MYSQL_HOST -P$MYSQL_PORT -p$MYSQL_PASSWORD -u$MYSQL_USER $MYSQL_DATABASE < database.sql
-      - if [ "${PHP_MAJOR_VERSION}" = "7.4" -a "${CI_REPO}" = "friendica/friendica-addons" ]; then
+      - if [ "${PHP_MAJOR_VERSION}" = "8.2" -a "${CI_REPO}" = "friendica/friendica-addons" ]; then
           phpenmod xdebug;
           export XDEBUG_MODE=coverage;
           phpunit --configuration tests/phpunit-addons.xml --coverage-clover clover.xml;
@@ -87,8 +89,8 @@ pipeline:
     image: friendicaci/codecov
     when:
       matrix:
-        PHP_MAJOR_VERSION: 7.4
-        PHP_VERSION: 7.4.33
+        PHP_MAJOR_VERSION: 8.2
+        PHP_VERSION: 8.2.16
       repo:
         - friendica/friendica-addons
     commands:
