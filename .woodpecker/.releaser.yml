@@ -42,7 +42,7 @@ pipeline:
       repo: friendica/friendica-addons
       event: tag
   composer_install:
-    image: friendicaci/php7.4:php7.4.33
+    image: friendicaci/php8.2:php8.2.16
     commands:
       - export COMPOSER_HOME=.composer
       - composer validate
