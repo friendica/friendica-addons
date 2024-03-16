@@ -86,7 +86,8 @@ function blockbot_init_1()
 		'Ask Jeeves', 'alexa site audit/', 'Yahoo! Slurp China;', 'Microsoft URL Control',
 		'Facebot', 'Googlebot-Video/', 'msnbot/', 'Offline Explorer/', 'YandexNews/', 'msnbot-media/',
 		'EmailWolf', 'Download Demon/', 'FeedFetcher-Google;', 'WebCopier', '+ONB_Bot_Btrix',
-		'scoopit-crawler/'
+		'scoopit-crawler/', 'ia_archiver', 'Quora-Bot/', 'WebwikiBot/', 'FullStoryBot/',
+		'wpbot/', 'SearchExpress', 'DuckDuckBot/', 'Google Web Preview',
 	];
 
 	if (DI::config()->get('blockbot', 'block_gab')) {
@@ -101,6 +102,7 @@ function blockbot_init_1()
 		'FedditLemmyverseCrawler/', 'lemmy-explorer-crawler/', 'URIports Validator',
 		'rss-is-dead.lol web bot;', 'fedistatsCrawler/', 'W3C_CSS_Validator_JFouffa/',
 		'IABot/', 'Slackbot 1', 'BeeperBot/', 'Matrix-Media-Repo/', 'P3P Validator',
+		'KeybaseBot;',
 	];
 
 	if (!DI::config()->get('blockbot', 'good_crawlers')) {
@@ -162,7 +164,7 @@ function blockbot_init_1()
 		'Slackbot-LinkExpanding', 'Firefish/', 'Takahe/', 'Akkoma ', 'Misskey/', 'Lynx/',
 		'camo-rs asset proxy', 'gotosocial/', 'incestoma ', 'SpaceCowboys Android RSS Reader',
 		'NewsBlur Feed Finder', 'Lemmy/', 'enby-town/', 'rss2tg bot;', '; HTTrack ',
-		'MbinBot', 'kbinBot', 'Pixelfed/'
+		'MbinBot', 'kbinBot', 'Pixelfed/', 'NewsBlur Feed Fetcher', 'NewsBlur Page Fetcher',
 	];
 
 	if (blockbot_match($agents)) {
