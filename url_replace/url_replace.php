@@ -89,7 +89,7 @@ function url_replace_addon_admin(string &$o)
 			$nitter_server,
 			DI::l10n()->t('Specify the URL with protocol. The default is %s.', URL_REPLACE_NITTER_DEFAULT),
 			null,
-			'placeholder="'.URL_REPLACE_NITTER_DEFAULT.'"',
+			'placeholder="' . URL_REPLACE_NITTER_DEFAULT . '"',
 		],
 		'$invidious_server_enabled' => [
 			'invidious_server_enabled',
@@ -102,7 +102,7 @@ function url_replace_addon_admin(string &$o)
 			$invidious_server,
 			DI::l10n()->t('Specify the URL with protocol. The default is %s.', URL_REPLACE_INVIDIOUS_DEFAULT),
 			null,
-			'placeholder="'.URL_REPLACE_INVIDIOUS_DEFAULT.'"',
+			'placeholder="' . URL_REPLACE_INVIDIOUS_DEFAULT . '"',
 		],
 		'$proxigram_server_enabled' => [
 			'proxigram_server_enabled',
@@ -115,7 +115,7 @@ function url_replace_addon_admin(string &$o)
 			$proxigram_server,
 			DI::l10n()->t('Specify the URL with protocol. The default is %s.', URL_REPLACE_PROXIGRAM_DEFAULT),
 			null,
-			'placeholder="'.URL_REPLACE_PROXIGRAM_DEFAULT.'"',
+			'placeholder="' . URL_REPLACE_PROXIGRAM_DEFAULT . '"',
 		],
 		'$twelvefeet_sites' => [
 			'twelvefeet_sites',
@@ -136,8 +136,8 @@ function url_replace_render(array &$b)
 {
 	$replacements = [];
 
-	$nitter_server = DI::config()->get('url_replace', 'nitter_server') ?? URL_REPLACE_NITTER_DEFAULT;
-	$nitter_server_enabled = DI::config()->get('url_replace', 'nitter_server_enabled', true);
+	$nitter_server         = DI::config()->get('url_replace', 'nitter_server')         ?? URL_REPLACE_NITTER_DEFAULT;
+	$nitter_server_enabled = DI::config()->get('url_replace', 'nitter_server_enabled') ?? true;
 	if ($nitter_server_enabled) {
 		$replacements = array_merge($replacements, [
 			'https://mobile.twitter.com' => $nitter_server,
@@ -147,8 +147,8 @@ function url_replace_render(array &$b)
 		]);
 	}
 
-	$invidious_server = DI::config()->get('url_replace', 'invidious_server') ?? URL_REPLACE_INVIDIOUS_DEFAULT;
-	$invidious_server_enabled = DI::config()->get('url_replace', 'invidious_server_enabled', true);
+	$invidious_server         = DI::config()->get('url_replace', 'invidious_server')         ?? URL_REPLACE_INVIDIOUS_DEFAULT;
+	$invidious_server_enabled = DI::config()->get('url_replace', 'invidious_server_enabled') ?? true;
 	if ($invidious_server_enabled) {
 		$replacements = array_merge($replacements, [
 			'https://www.youtube.com' => $invidious_server,
@@ -158,8 +158,8 @@ function url_replace_render(array &$b)
 		]);
 	}
 
-	$proxigram_server = DI::config()->get('url_replace', 'proxigram_server') ?? URL_REPLACE_PROXIGRAM_DEFAULT;
-	$proxigram_server_enabled = DI::config()->get('url_replace', 'proxigram_server_enabled', true);
+	$proxigram_server         = DI::config()->get('url_replace', 'proxigram_server')         ?? URL_REPLACE_PROXIGRAM_DEFAULT;
+	$proxigram_server_enabled = DI::config()->get('url_replace', 'proxigram_server_enabled') ?? true;
 	if ($proxigram_server_enabled) {
 		$replacements = array_merge($replacements, [
 			'https://www.instagram.com' => $proxigram_server,
