@@ -26,11 +26,26 @@ function url_replace_install()
 function url_replace_addon_admin_post()
 {
 	DI::config()->set('url_replace', 'nitter_server_enabled', !empty($_POST['nitter_server_enabled']));
-	DI::config()->set('url_replace', 'nitter_server', rtrim(trim($_POST['nitter_server']), '/'));
+	$server = rtrim(trim($_POST['nitter_server']), '/');
+	if (empty($server)) {
+		DI::config()->delete('url_replace', 'nitter_server');
+	} else {
+		DI::config()->set('url_replace', 'nitter_server', $server);
+	}
 	DI::config()->set('url_replace', 'invidious_server_enabled', !empty($_POST['invidious_server_enabled']));
-	DI::config()->set('url_replace', 'invidious_server', rtrim(trim($_POST['invidious_server']), '/'));
+	$server = rtrim(trim($_POST['invidious_server']), '/');
+	if (empty($server)) {
+		DI::config()->delete('url_replace', 'invidious_server');
+	} else {
+		DI::config()->set('url_replace', 'invidious_server', $server);
+	}
 	DI::config()->set('url_replace', 'proxigram_server_enabled', !empty($_POST['proxigram_server_enabled']));
-	DI::config()->set('url_replace', 'proxigram_server', rtrim(trim($_POST['proxigram_server']), '/'));
+	$server = rtrim(trim($_POST['proxigram_server']), '/');
+	if (empty($server)) {
+		DI::config()->delete('url_replace', 'proxigram_server');
+	} else {
+		DI::config()->set('url_replace', 'proxigram_server', $server);
+	}
 	// Convert twelvefeet_sites into an array before setting the new value
 	$twelvefeet_sites = explode(PHP_EOL, $_POST['twelvefeet_sites']);
 	// Normalize URLs by using lower case, removing a trailing slash and whitespace
@@ -121,10 +136,7 @@ function url_replace_render(array &$b)
 {
 	$replacements = [];
 
-	$nitter_server = DI::config()->get('url_replace', 'nitter_server');
-	if (empty($nitter_server)) {
-		$nitter_server = URL_REPLACE_NITTER_DEFAULT;
-	}
+	$nitter_server = DI::config()->get('url_replace', 'nitter_server') ?? URL_REPLACE_NITTER_DEFAULT;
 	$nitter_server_enabled = DI::config()->get('url_replace', 'nitter_server_enabled', true);
 	if ($nitter_server_enabled) {
 		$replacements = array_merge($replacements, [
@@ -135,10 +147,7 @@ function url_replace_render(array &$b)
 		]);
 	}
 
-	$invidious_server = DI::config()->get('url_replace', 'invidious_server');
-	if (empty($invidious_server)) {
-		$invidious_server = URL_REPLACE_INVIDIOUS_DEFAULT;
-	}
+	$invidious_server = DI::config()->get('url_replace', 'invidious_server') ?? URL_REPLACE_INVIDIOUS_DEFAULT;
 	$invidious_server_enabled = DI::config()->get('url_replace', 'invidious_server_enabled', true);
 	if ($invidious_server_enabled) {
 		$replacements = array_merge($replacements, [
@@ -149,10 +158,7 @@ function url_replace_render(array &$b)
 		]);
 	}
 
-	$proxigram_server = DI::config()->get('url_replace', 'proxigram_server');
-	if (empty($proxigram_server)) {
-		$proxigram_server = URL_REPLACE_PROXIGRAM_DEFAULT;
-	}
+	$proxigram_server = DI::config()->get('url_replace', 'proxigram_server') ?? URL_REPLACE_PROXIGRAM_DEFAULT;
 	$proxigram_server_enabled = DI::config()->get('url_replace', 'proxigram_server_enabled', true);
 	if ($proxigram_server_enabled) {
 		$replacements = array_merge($replacements, [
