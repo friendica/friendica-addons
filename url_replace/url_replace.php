@@ -134,6 +134,7 @@ function url_replace_addon_admin(string &$o)
  */
 function url_replace_render(array &$b)
 {
+	$replaced     = false;
 	$replacements = [];
 
 	$nitter_server         = DI::config()->get('url_replace', 'nitter_server')         ?? URL_REPLACE_NITTER_DEFAULT;
@@ -171,6 +172,7 @@ function url_replace_render(array &$b)
 	foreach ($replacements as $server => $replacement) {
 		if (strpos($b['html'], $server) !== false) {
 			$b['html'] = str_replace($server, $replacement, $b['html']);
+			$replaced  = true;
 		}
 	}
 
@@ -178,10 +180,11 @@ function url_replace_render(array &$b)
 	foreach ($twelvefeet_sites as $twelvefeet_site) {
 		if (strpos($b['html'], $twelvefeet_site) !== false) {
 			$b['html'] = str_replace($twelvefeet_site, 'https://12ft.io/' . $twelvefeet_site, $b['html']);
+			$replaced  = true;
 		}
 	}
 
-	if (count($replacements) > 0) {
+	if ($replaced) {
 		$b['html'] .= '<hr><p><small>' . DI::l10n()->t('(URL replace addon enabled for X, YouTube, Instagram and some news sites.)') . '</small></p>';
 	}
 }
