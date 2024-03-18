@@ -12,7 +12,7 @@ use Friendica\Core\Renderer;
 use Friendica\DI;
 
 const URL_REPLACE_NITTER_DEFAULT    = 'https://nitter.net';
-const URL_REPLACE_INVIDIOUS_DEFAULT = 'https://yewtu.be';
+const URL_REPLACE_INVIDIOUS_DEFAULT = 'https://invidio.us';
 const URL_REPLACE_PROXIGRAM_DEFAULT = 'https://proxigram.lunar.icu';
 
 function url_replace_install()
