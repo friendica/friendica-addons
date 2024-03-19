@@ -26,25 +26,25 @@ function url_replace_install()
 function url_replace_addon_admin_post()
 {
 	DI::config()->set('url_replace', 'nitter_server_enabled', !empty($_POST['nitter_server_enabled']));
-	$server = rtrim(trim($_POST['nitter_server']), '/');
-	if (empty($server)) {
-		DI::config()->delete('url_replace', 'nitter_server');
+	$nitter_server = rtrim(trim($_POST['nitter_server']), '/');
+	if ($nitter_server) {
+		DI::config()->set('url_replace', 'nitter_server', $nitter_server);
 	} else {
-		DI::config()->set('url_replace', 'nitter_server', $server);
+		DI::config()->delete('url_replace', 'nitter_server');
 	}
 	DI::config()->set('url_replace', 'invidious_server_enabled', !empty($_POST['invidious_server_enabled']));
-	$server = rtrim(trim($_POST['invidious_server']), '/');
-	if (empty($server)) {
-		DI::config()->delete('url_replace', 'invidious_server');
+	$invidious_server = rtrim(trim($_POST['invidious_server']), '/');
+	if ($invidious_server) {
+		DI::config()->set('url_replace', 'invidious_server', $invidious_server);
 	} else {
-		DI::config()->set('url_replace', 'invidious_server', $server);
+		DI::config()->delete('url_replace', 'invidious_server');
 	}
 	DI::config()->set('url_replace', 'proxigram_server_enabled', !empty($_POST['proxigram_server_enabled']));
-	$server = rtrim(trim($_POST['proxigram_server']), '/');
-	if (empty($server)) {
-		DI::config()->delete('url_replace', 'proxigram_server');
+	$proxigram_server = rtrim(trim($_POST['proxigram_server']), '/');
+	if ($proxigram_server) {
+		DI::config()->set('url_replace', 'proxigram_server', $proxigram_server);
 	} else {
-		DI::config()->set('url_replace', 'proxigram_server', $server);
+		DI::config()->delete('url_replace', 'proxigram_server');
 	}
 	// Convert twelvefeet_sites into an array before setting the new value
 	$twelvefeet_sites = explode(PHP_EOL, $_POST['twelvefeet_sites']);
@@ -64,16 +64,16 @@ function url_replace_addon_admin_post()
 
 /**
  * Hook into admin settings to enable choosing a different server
- * for twitter, youtube, instagram, and news sites.
+ * for Twitter, YouTube, Instagram, and news sites.
  */
 function url_replace_addon_admin(string &$o)
 {
-	$nitter_server_enabled    = DI::config()->get('url_replace', 'nitter_server_enabled', true);
-	$nitter_server            = DI::config()->get('url_replace', 'nitter_server');
-	$invidious_server_enabled = DI::config()->get('url_replace', 'invidious_server_enabled', true);
-	$invidious_server         = DI::config()->get('url_replace', 'invidious_server');
-	$proxigram_server_enabled = DI::config()->get('url_replace', 'proxigram_server_enabled', true);
-	$proxigram_server         = DI::config()->get('url_replace', 'proxigram_server');
+	$nitter_server_enabled    = DI::config()->get('url_replace', 'nitter_server_enabled')    ?? true;
+	$nitter_server            = DI::config()->get('url_replace', 'nitter_server')            ?? '';
+	$invidious_server_enabled = DI::config()->get('url_replace', 'invidious_server_enabled') ?? true;
+	$invidious_server         = DI::config()->get('url_replace', 'invidious_server')         ?? '';
+	$proxigram_server_enabled = DI::config()->get('url_replace', 'proxigram_server_enabled') ?? true;
+	$proxigram_server         = DI::config()->get('url_replace', 'proxigram_server')         ?? '';
 	$twelvefeet_sites         = implode(PHP_EOL, DI::config()->get('url_replace', 'twelvefeet_sites') ?? []);
 
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/url_replace/');
