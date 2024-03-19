@@ -5,7 +5,8 @@
  * Version: 0.3
  * Author: Matthias Ebers <https://loma.ml/profile/feb>
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
- *
+ * Status: Unsupported
+ * Note: Please use the URL Replace addon instead
  */
 
 use Friendica\Core\Hook;
@@ -91,7 +92,7 @@ function invidious_render(array &$b)
 
 	$original = $b['html'];
 	$server   = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'invidious', 'server', DI::config()->get('invidious', 'server', INVIDIOUS_DEFAULT));
-	
+
 	$b['html'] = preg_replace("/https?:\/\/www.youtube.com\/watch\?v\=(.*?)/ism", $server . '/watch?v=$1', $b['html']);
 	$b['html'] = preg_replace("/https?:\/\/www.youtube.com\/embed\/(.*?)/ism", $server . '/embed/$1', $b['html']);
 	$b['html'] = preg_replace("/https?:\/\/www.youtube.com\/shorts\/(.*?)/ism", $server . '/shorts/$1', $b['html']);

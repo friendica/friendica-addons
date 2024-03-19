@@ -4,18 +4,20 @@
  * Description: Replaces links to twitter.com to a nitter server in all displays of postings on a node.
  * Version: 2.0
  * Author: Tobias Diekershoff <tobias@social.diekershoff.de>
+ * Status: Unsupported
+ * Note: Please use the URL Replace addon instead
  *
  * Copyright (c) 2020 Tobias Diekershoff
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
  * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all copies or substantial
  * portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
  * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
@@ -49,7 +51,7 @@ function nitter_addon_admin(string &$o)
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/nitter/');
 	$o = Renderer::replaceMacros($t, [
 		'$settingdescription' => DI::l10n()->t('Which nitter server shall be used for the replacements in the post bodies? Use the URL with servername and protocol.  See %s for a list of available public Nitter servers.', 'https://github.com/zedeus/nitter/wiki/Instances'),
-		'$nitterserver' => ['nitterserver', DI::l10n()->t('Nitter server'), $nitterserver, 'https://example.com'], 
+		'$nitterserver' => ['nitterserver', DI::l10n()->t('Nitter server'), $nitterserver, 'https://example.com'],
 		'$submit' => DI::l10n()->t('Save Settings'),
 	]);
 }
