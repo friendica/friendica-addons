@@ -54,7 +54,7 @@ new Vue({
 					self.rules.push(responseJSON.rule);
 					self.resetForm();
 				}, function (response) {
-					self.errorMessage = response.responseJSON.message;
+					self.errorMessage = response.responseJSON.exception[0].message;
 				});
 			}
 		},
@@ -74,7 +74,7 @@ new Vue({
 				self.rules[self.editedIndex] = rule;
 				self.resetForm();
 			}, function (response) {
-				self.errorMessage = response.responseJSON.message;
+				self.errorMessage = response.responseJSON.exception[0].message;
 			});
 		},
 
