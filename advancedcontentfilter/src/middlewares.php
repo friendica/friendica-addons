@@ -29,4 +29,4 @@ use Friendica\DI;
  */
 $slim->addRoutingMiddleware();
 
-$errorMiddleware = $slim->addErrorMiddleware(true, true, true);
+$errorMiddleware = $slim->addErrorMiddleware(true, true, true, DI::logger());

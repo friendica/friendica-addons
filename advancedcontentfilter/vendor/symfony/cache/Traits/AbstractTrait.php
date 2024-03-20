@@ -27,6 +27,7 @@ trait AbstractTrait
     private $namespaceVersion = '';
     private $versioningIsEnabled = false;
     private $deferred = [];
+    private $ids = [];
 
     /**
      * @var int|null The maximum length to enforce for identifiers or null when no limit applies
@@ -77,10 +78,12 @@ trait AbstractTrait
      *
      * @return array|bool The identifiers that failed to be cached or a boolean stating if caching succeeded or not
      */
-    abstract protected function doSave(array $values, $lifetime);
+    abstract protected function doSave(array $values, int $lifetime);
 
     /**
      * {@inheritdoc}
+     *
+     * @return bool
      */
     public function hasItem($key)
     {
@@ -93,7 +96,7 @@ trait AbstractTrait
         try {
             return $this->doHave($id);
         } catch (\Exception $e) {
-            CacheItem::log($this->logger, 'Failed to check if key "{key}" is cached', ['key' => $key, 'exception' => $e]);
+            CacheItem::log($this->logger, 'Failed to check if key "{key}" is cached: '.$e->getMessage(), ['key' => $key, 'exception' => $e]);
 
             return false;
         }
@@ -101,26 +104,43 @@ trait AbstractTrait
 
     /**
      * {@inheritdoc}
+     *
+     * @param string $prefix
+     *
+     * @return bool
      */
-    public function clear()
+    public function clear(/* string $prefix = '' */)
     {
         $this->deferred = [];
         if ($cleared = $this->versioningIsEnabled) {
-            $namespaceVersion = substr_replace(base64_encode(pack('V', mt_rand())), static::NS_SEPARATOR, 5);
+            if ('' === $namespaceVersionToClear = $this->namespaceVersion) {
+                foreach ($this->doFetch([static::NS_SEPARATOR.$this->namespace]) as $v) {
+                    $namespaceVersionToClear = $v;
+                }
+            }
+            $namespaceToClear = $this->namespace.$namespaceVersionToClear;
+            $namespaceVersion = self::formatNamespaceVersion(mt_rand());
             try {
-                $cleared = $this->doSave([static::NS_SEPARATOR.$this->namespace => $namespaceVersion], 0);
+                $e = $this->doSave([static::NS_SEPARATOR.$this->namespace => $namespaceVersion], 0);
             } catch (\Exception $e) {
+            }
+            if (true !== $e && [] !== $e) {
                 $cleared = false;
-            }
-            if ($cleared = true === $cleared || [] === $cleared) {
+                $message = 'Failed to save the new namespace'.($e instanceof \Exception ? ': '.$e->getMessage() : '.');
+                CacheItem::log($this->logger, $message, ['exception' => $e instanceof \Exception ? $e : null]);
+            } else {
                 $this->namespaceVersion = $namespaceVersion;
+                $this->ids = [];
             }
+        } else {
+            $prefix = 0 < \func_num_args() ? (string) func_get_arg(0) : '';
+            $namespaceToClear = $this->namespace.$prefix;
         }
 
         try {
-            return $this->doClear($this->namespace) || $cleared;
+            return $this->doClear($namespaceToClear) || $cleared;
         } catch (\Exception $e) {
-            CacheItem::log($this->logger, 'Failed to clear the cache', ['exception' => $e]);
+            CacheItem::log($this->logger, 'Failed to clear the cache: '.$e->getMessage(), ['exception' => $e]);
 
             return false;
         }
@@ -128,6 +148,8 @@ trait AbstractTrait
 
     /**
      * {@inheritdoc}
+     *
+     * @return bool
      */
     public function deleteItem($key)
     {
@@ -136,6 +158,8 @@ trait AbstractTrait
 
     /**
      * {@inheritdoc}
+     *
+     * @return bool
      */
     public function deleteItems(array $keys)
     {
@@ -164,7 +188,8 @@ trait AbstractTrait
                 }
             } catch (\Exception $e) {
             }
-            CacheItem::log($this->logger, 'Failed to delete key "{key}"', ['key' => $key, 'exception' => $e]);
+            $message = 'Failed to delete key "{key}"'.($e instanceof \Exception ? ': '.$e->getMessage() : '.');
+            CacheItem::log($this->logger, $message, ['key' => $key, 'exception' => $e]);
             $ok = false;
         }
 
@@ -188,6 +213,7 @@ trait AbstractTrait
         $wasEnabled = $this->versioningIsEnabled;
         $this->versioningIsEnabled = (bool) $enable;
         $this->namespaceVersion = '';
+        $this->ids = [];
 
         return $wasEnabled;
     }
@@ -201,6 +227,7 @@ trait AbstractTrait
             $this->commit();
         }
         $this->namespaceVersion = '';
+        $this->ids = [];
     }
 
     /**
@@ -211,9 +238,13 @@ trait AbstractTrait
      * @return mixed
      *
      * @throws \Exception
+     *
+     * @deprecated since Symfony 4.2, use DefaultMarshaller instead.
      */
     protected static function unserialize($value)
     {
+        @trigger_error(sprintf('The "%s::unserialize()" method is deprecated since Symfony 4.2, use DefaultMarshaller instead.', __CLASS__), \E_USER_DEPRECATED);
+
         if ('b:0;' === $value) {
             return false;
         }
@@ -230,29 +261,45 @@ trait AbstractTrait
         }
     }
 
-    private function getId($key)
+    private function getId($key): string
     {
-        CacheItem::validateKey($key);
-
         if ($this->versioningIsEnabled && '' === $this->namespaceVersion) {
+            $this->ids = [];
             $this->namespaceVersion = '1'.static::NS_SEPARATOR;
             try {
                 foreach ($this->doFetch([static::NS_SEPARATOR.$this->namespace]) as $v) {
                     $this->namespaceVersion = $v;
                 }
+                $e = true;
                 if ('1'.static::NS_SEPARATOR === $this->namespaceVersion) {
-                    $this->namespaceVersion = substr_replace(base64_encode(pack('V', time())), static::NS_SEPARATOR, 5);
-                    $this->doSave([static::NS_SEPARATOR.$this->namespace => $this->namespaceVersion], 0);
+                    $this->namespaceVersion = self::formatNamespaceVersion(time());
+                    $e = $this->doSave([static::NS_SEPARATOR.$this->namespace => $this->namespaceVersion], 0);
                 }
             } catch (\Exception $e) {
             }
+            if (true !== $e && [] !== $e) {
+                $message = 'Failed to save the new namespace'.($e instanceof \Exception ? ': '.$e->getMessage() : '.');
+                CacheItem::log($this->logger, $message, ['exception' => $e instanceof \Exception ? $e : null]);
+            }
+        }
+
+        if (\is_string($key) && isset($this->ids[$key])) {
+            return $this->namespace.$this->namespaceVersion.$this->ids[$key];
+        }
+        CacheItem::validateKey($key);
+        $this->ids[$key] = $key;
+
+        if (\count($this->ids) > 1000) {
+            $this->ids = \array_slice($this->ids, 500, null, true); // stop memory leak if there are many keys
         }
 
         if (null === $this->maxIdLength) {
             return $this->namespace.$this->namespaceVersion.$key;
         }
         if (\strlen($id = $this->namespace.$this->namespaceVersion.$key) > $this->maxIdLength) {
-            $id = $this->namespace.$this->namespaceVersion.substr_replace(base64_encode(hash('sha256', $key, true)), static::NS_SEPARATOR, -(\strlen($this->namespaceVersion) + 22));
+            // Use MD5 to favor speed over security, which is not an issue here
+            $this->ids[$key] = $id = substr_replace(base64_encode(hash('md5', $key, true)), static::NS_SEPARATOR, -(\strlen($this->namespaceVersion) + 2));
+            $id = $this->namespace.$this->namespaceVersion.$id;
         }
 
         return $id;
@@ -264,5 +311,10 @@ trait AbstractTrait
     public static function handleUnserializeCallback($class)
     {
         throw new \DomainException('Class not found: '.$class);
+    }
+
+    private static function formatNamespaceVersion(int $value): string
+    {
+        return strtr(substr_replace(base64_encode(pack('V', $value)), static::NS_SEPARATOR, 5), '/', '_');
     }
 }

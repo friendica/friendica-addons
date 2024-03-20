@@ -1,24 +1,27 @@
 {
-	"name": "friendica-addons/advancedcontentfilter",
-	"description": "Advanced Content Filter addon for Friendica",
-	"type": "friendica-addon",
-	"authors": [
-		{
-			"name": "Hypolite Petovan",
-			"email": "hypolite@mrpetovan.com",
-			"homepage": "https://friendica.mrpetovan.com/profile/hypolite",
-			"role": "Developer"
-		}
-	],
-	"require": {
-		"slim/slim": "^4",
-		"symfony/expression-language": "^3.4"
-	},
-	"license": "3-clause BSD license",
-	"minimum-stability": "stable",
-	"config": {
-		"optimize-autoloader": true,
-		"autoloader-suffix": "AdvancedContentFilterAddon",
-		"preferred-install": "dist"
-	}
+    "name": "friendica-addons/advancedcontentfilter",
+    "description": "Advanced Content Filter addon for Friendica",
+    "type": "friendica-addon",
+    "authors": [
+        {
+            "name": "Hypolite Petovan",
+            "email": "hypolite@mrpetovan.com",
+            "homepage": "https://friendica.mrpetovan.com/profile/hypolite",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "slim/slim": "^4",
+        "symfony/expression-language": "^3.4"
+    },
+    "license": "3-clause BSD license",
+    "minimum-stability": "stable",
+    "config": {
+        "platform": {
+            "php": "7.4"
+        },
+        "optimize-autoloader": true,
+        "autoloader-suffix": "AdvancedContentFilterAddon",
+        "preferred-install": "dist"
+    }
 }

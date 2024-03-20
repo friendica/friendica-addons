@@ -3,7 +3,7 @@
  * Akeeba Engine
  *
  * @package   akeebaengine
- * @copyright Copyright (c)2006-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2006-2024 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -341,7 +341,7 @@ class Connector
 		 * Authenticated (pre-signed) URLs are always made against the generic S3 region endpoint, not the bucket's
 		 * virtual-hosting-style domain name. The bucket is always the first component of the path.
 		 *
-		 * For example, given a bucket called foobar and an object baz.txt in it we are pre-signing the URL
+		 * For example, given a bucket called foobar, and an object baz.txt in it, we are pre-signing the URL
 		 * https://s3-eu-west-1.amazonaws.com/foobar/baz.txt, not
 		 * https://foobar.s3-eu-west-1.amazonaws.com/foobar/baz.txt (as we'd be doing with v2 signatures).
 		 *
@@ -354,7 +354,7 @@ class Connector
 		 * object is true. Naturally, the default behavior being virtual-hosting-style access to buckets, this flag is
 		 * most likely **false**.
 		 *
-		 * Therefore we need to clone the Configuration object, set the flag to true and create a Request object using
+		 * Therefore, we need to clone the Configuration object, set the flag to true and create a Request object using
 		 * the falsified Configuration object.
 		 *
 		 * Note that v2 signatures are not affected. In v2 we are always appending the bucket name to the path, despite
@@ -368,7 +368,6 @@ class Connector
 		$newConfig->setUseLegacyPathStyle(true);
 
 		// Create the request object.
-		$uri     = str_replace('%2F', '/', rawurlencode($uri));
 		$request = new Request('GET', $bucket, $uri, $newConfig);
 
 		if ($query)

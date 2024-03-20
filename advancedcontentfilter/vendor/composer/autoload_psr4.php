@@ -6,11 +6,14 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Symfony\\Polyfill\\Apcu\\' => array($vendorDir . '/symfony/polyfill-apcu'),
+    'Symfony\\Polyfill\\Php80\\' => array($vendorDir . '/symfony/polyfill-php80'),
+    'Symfony\\Polyfill\\Php73\\' => array($vendorDir . '/symfony/polyfill-php73'),
+    'Symfony\\Contracts\\Service\\' => array($vendorDir . '/symfony/service-contracts'),
+    'Symfony\\Contracts\\Cache\\' => array($vendorDir . '/symfony/cache-contracts'),
+    'Symfony\\Component\\VarExporter\\' => array($vendorDir . '/symfony/var-exporter'),
     'Symfony\\Component\\ExpressionLanguage\\' => array($vendorDir . '/symfony/expression-language'),
     'Symfony\\Component\\Cache\\' => array($vendorDir . '/symfony/cache'),
     'Slim\\' => array($vendorDir . '/slim/slim/Slim'),
-    'Psr\\SimpleCache\\' => array($vendorDir . '/psr/simple-cache/src'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Psr\\Http\\Server\\' => array($vendorDir . '/psr/http-server-handler/src', $vendorDir . '/psr/http-server-middleware/src'),
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-factory/src', $vendorDir . '/psr/http-message/src'),

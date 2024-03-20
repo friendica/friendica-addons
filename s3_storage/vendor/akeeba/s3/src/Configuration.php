@@ -3,7 +3,7 @@
  * Akeeba Engine
  *
  * @package   akeebaengine
- * @copyright Copyright (c)2006-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2006-2024 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -81,6 +81,33 @@ class Configuration
 	 * @var  string
 	 */
 	protected $endpoint = 's3.amazonaws.com';
+
+	/**
+	 * Should I use an alternative date header format (D, d M Y H:i:s T instead of D, d M Y H:i:s O) for non-Amazon,
+	 * S3-compatible services?
+	 *
+	 * This is enabled by default.
+	 *
+	 * @var  bool
+	 */
+	protected $alternateDateHeaderFormat = true;
+
+	/**
+	 * Should I use the standard HTTP Date header instead of the X-Amz-Date header?
+	 *
+	 * @var  bool
+	 */
+	protected $useHTTPDateHeader = false;
+
+	/**
+	 * Should pre-signed URLs include the bucket name in the URL? Only applies to v4 signatures.
+	 *
+	 * Amazon S3 and most implementations need this turned off (default). LocalStack seems to not work properly with the
+	 * bucket name as a subdomain, hence the need for this flag.
+	 *
+	 * @var  bool
+	 */
+	protected $preSignedBucketInURL = false;
 
 	/**
 	 * Public constructor
@@ -362,5 +389,59 @@ class Configuration
 	public function setUseDualstackUrl(bool $useDualstackUrl): void
 	{
 		$this->useDualstackUrl = $useDualstackUrl;
+	}
+
+	/**
+	 * Get the flag for using an alternate date format for non-Amazon, S3-compatible services.
+	 *
+	 * @return bool
+	 */
+	public function getAlternateDateHeaderFormat(): bool
+	{
+		return $this->alternateDateHeaderFormat;
+	}
+
+	/**
+	 * Set the flag for using an alternate date format for non-Amazon, S3-compatible services.
+	 *
+	 * @param   bool  $alternateDateHeaderFormat
+	 *
+	 * @return  void
+	 */
+	public function setAlternateDateHeaderFormat(bool $alternateDateHeaderFormat): void
+	{
+		$this->alternateDateHeaderFormat = $alternateDateHeaderFormat;
+	}
+
+	/**
+	 * Get the flag indicating whether to use the HTTP Date header
+	 *
+	 * @return  bool  Flag indicating whether to use the HTTP Date header
+	 */
+	public function getUseHTTPDateHeader(): bool
+	{
+		return $this->useHTTPDateHeader;
+	}
+
+	/**
+	 * Set the flag indicating whether to use the HTTP Date header.
+	 *
+	 * @param   bool  $useHTTPDateHeader  Whether to use the HTTP Date header
+	 *
+	 * @return  void
+	 */
+	public function setUseHTTPDateHeader(bool $useHTTPDateHeader): void
+	{
+		$this->useHTTPDateHeader = $useHTTPDateHeader;
+	}
+
+	public function getPreSignedBucketInURL(): bool
+	{
+		return $this->preSignedBucketInURL;
+	}
+
+	public function setPreSignedBucketInURL(bool $preSignedBucketInURL): void
+	{
+		$this->preSignedBucketInURL = $preSignedBucketInURL;
 	}
 }

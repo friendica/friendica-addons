@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "akeeba/s3",
-            "version": "2.3.1",
+            "version": "2.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/akeeba/s3.git",
-                "reference": "7f5b3e929c93eb02ba24472560c0cbbef735aed9"
+                "reference": "452fbd3084f1cb581851a1602226224d29d586d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/akeeba/s3/zipball/7f5b3e929c93eb02ba24472560c0cbbef735aed9",
-                "reference": "7f5b3e929c93eb02ba24472560c0cbbef735aed9",
+                "url": "https://api.github.com/repos/akeeba/s3/zipball/452fbd3084f1cb581851a1602226224d29d586d4",
+                "reference": "452fbd3084f1cb581851a1602226224d29d586d4",
                 "shasum": ""
             },
             "require": {
@@ -51,7 +51,7 @@
             "keywords": [
                 "s3"
             ],
-            "time": "2023-09-26T11:40:10+00:00"
+            "time": "2024-02-19T10:08:06+00:00"
         }
     ],
     "packages-dev": [],

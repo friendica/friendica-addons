@@ -1,23 +1,26 @@
 {
-  "name": "friendica-addons/monolog",
-  "description": "Monolog can send your logs to files, sockets, inboxes, database, etc..",
-  "type": "friendica-addon",
-  "authors": [
-	{
-	  "name": "Philipp Holzer",
-	  "email": "admin@philipp.info",
-	  "homepage": "https://blog.philipp.info",
-	  "role": "Developer"
-	}
-  ],
-  "require": {
-    "php": ">=7.3",
-    "monolog/monolog": "^2.9"
-  },
-  "license": "3-clause BSD license",
-  "config": {
-	"optimize-autoloader": true,
-	"autoloader-suffix": "MonologAddon",
-	"preferred-install": "dist"
-  }
+    "name": "friendica-addons/monolog",
+    "description": "Monolog can send your logs to files, sockets, inboxes, database, etc..",
+    "type": "friendica-addon",
+    "authors": [
+        {
+            "name": "Philipp Holzer",
+            "email": "admin@philipp.info",
+            "homepage": "https://blog.philipp.info",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.3",
+        "monolog/monolog": "^2.9"
+    },
+    "license": "3-clause BSD license",
+    "config": {
+        "platform": {
+            "php": "7.4"
+        },
+        "optimize-autoloader": true,
+        "autoloader-suffix": "MonologAddon",
+        "preferred-install": "dist"
+    }
 }

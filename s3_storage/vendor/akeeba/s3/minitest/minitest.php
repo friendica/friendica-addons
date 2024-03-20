@@ -3,13 +3,29 @@
  * Akeeba Engine
  *
  * @package   akeebaengine
- * @copyright Copyright (c)2006-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2006-2024 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
 use Akeeba\S3\Configuration;
 use Akeeba\S3\Connector;
-use Akeeba\S3\Input;
+
+/**
+ * The Miniature Test Framework For The Akeeba S3 Library
+ *
+ * This is a self-contained test-suite runner. Running minitest.php will execute all the tests against all
+ * configurations set up in the config.php file. When it's decked out with all real world examples this can take many
+ * hours to complete (it's not as "mini" as its name would like you to believe).
+ *
+ * Please read NOTES.md before proceeding and do keep in mind that some tests may fail for reasons outside the control
+ * of the library such as network conditions, whether PHP has a configured Certification Authority cache etc.
+ *
+ * As to why we didn't use Unit Tests: Elementary, dear Watson. Unit Tests are great when testing your code against a
+ * specification. In this case, the specification would be the Amazon S3 API documentation. Sounds great in theory, but
+ * not even Amazon itself works according to its own documentation, let alone the third party "S3-compatible" services
+ * which each one implements its own interpretation of that documentation. Therefore, slow-as-heck integration testing
+ * is the only way to do any kind of meaningful testing.
+ */
 
 // Necessary for including the library
 define('AKEEBAENGINE', 1);
@@ -152,6 +168,13 @@ foreach ($testConfigurations as $description => $setup)
 	echo "▶ " . $description . PHP_EOL;
 	echo str_repeat('〰', 80) . PHP_EOL . PHP_EOL;
 
+	if ($setup['skip'] ?? false)
+	{
+		echo "\t🤡 Skipping\n\n";
+
+		continue;
+	}
+
 	// Extract the configuration options
 	if (!isset($setup['configuration']))
 	{
@@ -159,14 +182,14 @@ foreach ($testConfigurations as $description => $setup)
 	}
 
 	$configOptions = array_merge([
-		'access'      => DEFAULT_ACCESS_KEY,
-		'secret'      => DEFAULT_SECRET_KEY,
-		'region'      => DEFAULT_REGION,
-		'bucket'      => DEFAULT_BUCKET,
-		'signature'   => DEFAULT_SIGNATURE,
-		'dualstack'   => DEFAULT_DUALSTACK,
-		'path_access' => DEFAULT_PATH_ACCESS,
-		'ssl'         => DEFAULT_SSL,
+		'access'      => defined('DEFAULT_ACCESS_KEY') ? DEFAULT_ACCESS_KEY : null,
+		'secret'      => defined('DEFAULT_SECRET_KEY') ? DEFAULT_SECRET_KEY : null,
+		'region'      => defined('DEFAULT_REGION') ? DEFAULT_REGION : null,
+		'bucket'      => defined('DEFAULT_BUCKET') ? DEFAULT_BUCKET : null,
+		'signature'   => defined('DEFAULT_SIGNATURE') ? DEFAULT_SIGNATURE : null,
+		'dualstack'   => defined('DEFAULT_DUALSTACK') ? DEFAULT_DUALSTACK : null,
+		'path_access' => defined('DEFAULT_PATH_ACCESS') ? DEFAULT_PATH_ACCESS : null,
+		'ssl'         => defined('DEFAULT_SSL') ? DEFAULT_SSL : null,
 		'endpoint'    => defined('DEFAULT_ENDPOINT') ? constant('DEFAULT_ENDPOINT') : null,
 	], $setup['configuration']);
 
@@ -199,6 +222,22 @@ foreach ($testConfigurations as $description => $setup)
 	$s3Configuration->setUseDualstackUrl($configOptions['dualstack']);
 	$s3Configuration->setUseLegacyPathStyle($configOptions['path_access']);
 	$s3Configuration->setSSL($configOptions['ssl']);
+
+	// Feature flags
+	if (isset($configOptions['alternateDateHeaderFormat']))
+	{
+		$s3Configuration->setAlternateDateHeaderFormat((bool) $configOptions['alternateDateHeaderFormat']);
+	}
+
+	if (isset($configOptions['useHTTPDateHeader']))
+	{
+		$s3Configuration->setUseHTTPDateHeader((bool) $configOptions['useHTTPDateHeader']);
+	}
+
+	if (isset($configOptions['preSignedBucketInURL']))
+	{
+		$s3Configuration->setPreSignedBucketInURL((bool) $configOptions['preSignedBucketInURL']);
+	}
 
 	// Create the connector object
 	$s3Connector = new Connector($s3Configuration);
@@ -350,7 +389,7 @@ foreach ($testConfigurations as $description => $setup)
 			[$className, $method] = $callableSetup;
 			echo "  ⏱ Tearing down {$className}:{$method}…";
 			call_user_func($callableTeardown, $s3Connector, $configOptions);
-			echo "\r     Teared down {$className}   " . PHP_EOL;
+			echo "\r     Tore down {$className}   " . PHP_EOL;
 		}
 	}
 
