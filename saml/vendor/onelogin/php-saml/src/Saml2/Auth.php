@@ -168,13 +168,14 @@ class Auth
      * Initializes the SP SAML instance.
      *
      * @param array|null $settings Setting data
+     * @param bool $spValidationOnly if true, The library will only validate the SAML SP settings,
      *
      * @throws Exception
      * @throws Error
      */
-    public function __construct(array $settings = null)
+    public function __construct(array $settings = null, bool $spValidationOnly = false)
     {
-        $this->_settings = new Settings($settings);
+        $this->_settings = new Settings($settings, $spValidationOnly);
     }
 
     /**
@@ -251,7 +252,6 @@ class Auth
                 $this->_errors[] = 'invalid_response';
                 $this->_lastErrorException = $response->getErrorException();
                 $this->_lastError = $response->getError();
-                $this->_errors[] = $this->_lastError;
             }
         } else {
             $this->_errors[] = 'invalid_binding';
