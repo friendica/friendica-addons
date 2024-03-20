@@ -3,7 +3,7 @@
  * Akeeba Engine
  *
  * @package   akeebaengine
- * @copyright Copyright (c)2006-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2006-2024 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -143,7 +143,7 @@ class Request
 		$this->headers['Date'] = gmdate('D, d M Y H:i:s O');
 
 		// S3-"compatible" services use a different date format. Because why not?
-		if (strpos($this->headers['Host'], '.amazonaws.com') === false)
+		if ($this->configuration->getAlternateDateHeaderFormat() && strpos($this->headers['Host'], '.amazonaws.com') === false)
 		{
 			$this->headers['Date'] = gmdate('D, d M Y H:i:s T');
 		}
@@ -438,16 +438,30 @@ class Request
 		curl_setopt($curl, CURLOPT_URL, $url);
 
 		/**
-		 * Set the optional x-amz-date header for third party services.
+		 * Set the optional x-amz-date header instead of the standard HTTP Date header.
 		 *
-		 * Amazon S3 proper expects to get the date from the Date header. Third party services typically implement the
-		 * (wrongly) documented behaviour of using the x-amz-date header but, if it's missing, fall back to the Date
-		 * header. Wasabi does not fall back; it only uses the x-amz-date header which is why we have to set it here if
-		 * the request iss not made to Amazon S3 proper.
+		 * Amazon S3 proper expects to get the date from the Date header. It also allows you to instead use the optional
+		 * X-Amz-Date header as a means to resolve situations where your HTTP library does not let you control the
+		 * standard Date header. In other words, it accepts both, it encourages the standard Date header, but it will
+		 * give priority to the X-Amz-Date header to help you get out of a sticky situation.
+		 *
+		 * Unfortunately, third party services which claim to be "S3-compatible" are written by people with poor reading
+		 * skills or, more likely, under unrealistic time constraints to deliver working code. They are implementing the
+		 * date handling behaviout wrong. Instead of using the Date header unless the X-Amz-Date header is set, they
+		 * **expect** to only ever see the X-Amz-Date header. If it's missing, they do not fall back to the standard
+		 * Date header; they just spit out a message about the signature being wrong. Wasabi and ExoScale are two prime
+		 * examples of that, and only when using v2 signatures.
+		 *
+		 * To avoid this problem, we are now defaulting to always using the X-Amz-Date header everywhere. If you want to
+		 * revert to using the Date header with S3 proper please use setUseHTTPDateHeader(true) to your configuration
+		 * object. In this case DO NOT set the X-Amz-Date header yourself, or you're going to have a *really* bad time.
 		 */
-		$this->headers['x-amz-date'] = strpos($this->headers['Host'], '.amazonaws.com') !== false
-			? ''
-			: (new \DateTime($this->headers['Date']))->format('Ymd\THis\Z');
+		if (!$this->configuration->getUseHTTPDateHeader())
+		{
+			$this->amzHeaders['x-amz-date'] = (new \DateTime($this->headers['Date']))->format('Ymd\THis\Z');
+
+			unset ($this->headers['Date']);
+		}
 
 		/**
 		 * Remove empty headers.

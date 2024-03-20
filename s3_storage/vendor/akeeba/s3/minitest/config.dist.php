@@ -3,30 +3,88 @@
  * Akeeba Engine
  *
  * @package   akeebaengine
- * @copyright Copyright (c)2006-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2006-2024 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
-// Custom Endpoint. The example below is for using LocalStack, see https://localstack.cloud/
-// define('DEFAULT_ENDPOINT', 'localhost.localstack.cloud:4566');
-// Default Amazon S3 Access Key
-define('DEFAULT_ACCESS_KEY', 'your s3 access key');
-// Default Amazon S3 Secret Key
-define('DEFAULT_SECRET_KEY', 'your secret key');
-// Default region for the bucket
-define('DEFAULT_REGION', 'us-east-1');
-// Default bucket name
-define('DEFAULT_BUCKET', 'example');
-// Default signature method (v4 or v2)
-define('DEFAULT_SIGNATURE', 'v4');
-// Use Dualstack unless otherwise specified?
-define('DEFAULT_DUALSTACK', false);
-// Use legacy path access by default?
-define('DEFAULT_PATH_ACCESS', false);
-// Should I use SSL by default?
-define('DEFAULT_SSL', true);
 // Create the 2100 test files in the bucket?
 define('CREATE_2100_FILES', true);
+
+/**
+ * Configure the connection options for S3 and S3-compatible services here. Use them in the $testConfigurations array.
+ */
+$serviceConfigurations = [
+	's3-v4'         => [
+		'access'      => 'AK0123456789BCDEFGHI',
+		'secret'      => 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+		'region'      => 'eu-west-1',
+		'bucket'      => 'mybucket',
+		'signature'   => 'v4',
+		'dualstack'   => false,
+		'path_access' => false,
+		'ssl'         => false,
+		'endpoint'    => null,
+	],
+	's3-v2'         => [
+		'access'      => 'AK0123456789BCDEFGHI',
+		'secret'      => 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+		'region'      => 'eu-west-1',
+		'bucket'      => 'mybucket',
+		'signature'   => 'v2',
+		'dualstack'   => false,
+		'path_access' => false,
+		'ssl'         => false,
+		'endpoint'    => null,
+	],
+	'localstack-v4' => [
+		'access'      => 'KYLOREN',
+		'secret'      => 'BenSolo',
+		'region'      => 'us-east-1',
+		'bucket'      => 'test',
+		'signature'   => 'v4',
+		'dualstack'   => false,
+		'path_access' => true,
+		'ssl'         => false,
+		'endpoint'    => 'localhost.localstack.cloud:4566',
+	],
+	'localstack-v2' => [
+		'access'      => 'KYLOREN',
+		'secret'      => 'BenSolo',
+		'region'      => 'us-east-1',
+		'bucket'      => 'test',
+		'signature'   => 'v2',
+		'dualstack'   => false,
+		'path_access' => true,
+		'ssl'         => false,
+		'endpoint'    => 'localhost.localstack.cloud:4566',
+	],
+];
+
+/**
+ * Test EVERYTHING.
+ */
+$allTheTests = [
+	'BucketsList',
+	'BucketLocation',
+	'HeadObject',
+	'ListFiles',
+	'SmallFiles',
+	'SmallInlineFiles',
+	'SmallFilesNoDelete',
+	'SmallFilesOnlyUpload',
+	'SmallInlineFilesNoDelete',
+	'SmallInlineFilesOnlyUpload',
+	'SmallInlineXMLFiles',
+	'BigFiles',
+	'Multipart',
+	'StorageClasses',
+	'SignedURLs',
+];
+
+if (CREATE_2100_FILES)
+{
+	$allTheTests[] = 'ListThousandsOfFiles';
+}
 
 /**
  * Tests for standard key pairs allowing us to read, write and delete
@@ -36,15 +94,15 @@ define('CREATE_2100_FILES', true);
 $standardTests = [
 	'BucketsList',
 	'BucketLocation',
-	'SmallFiles',
 	'HeadObject',
+	'ListFiles',
+	'SmallFiles',
 	'SmallInlineFiles',
 	'SmallInlineXMLFiles',
-	'SignedURLs',
-	'StorageClasses',
-	'ListFiles',
 	'BigFiles',
 	'Multipart',
+	'StorageClasses',
+	'SignedURLs',
 ];
 
 /**
@@ -123,53 +181,123 @@ $testConfigurations = [
 	 * - Buckets with international letters
 	 * - Access from within EC2
 	 */
-	'Global key, v4, DNS, single stack'  => [
-		'configuration' => [
-			'signature'   => 'v4',
-			'dualstack'   => false,
-			'path_access' => false,
-		],
+
+	// Amazon S3, v2 signatures
+	'S3, v2, subdomain, single stack'  => [
+		'configuration' => array_merge(
+			$serviceConfigurations['s3-v2'],
+			[
+				'dualstack'   => false,
+				'path_access' => false,
+			]
+		),
 		'tests'         => $standardTests,
+		'skip'          => false,
 	],
-	'Global key, v4, DNS, dual stack'    => [
-		'configuration' => [
-			'signature'   => 'v4',
-			'dualstack'   => true,
-			'path_access' => false,
-		],
+	'S3, v2, subdomain, dual stack'    => [
+		'configuration' => array_merge(
+			$serviceConfigurations['s3-v2'],
+			[
+				'dualstack'   => true,
+				'path_access' => false,
+			]
+		),
 		'tests'         => $standardTests,
+		'skip'          => false,
 	],
-	'Global key, v4, path, single stack' => [
-		'configuration' => [
-			'signature'   => 'v4',
-			'dualstack'   => false,
-			'path_access' => true,
-		],
+	'S3, v2, path, single stack'  => [
+		'configuration' => array_merge(
+			$serviceConfigurations['s3-v2'],
+			[
+				'dualstack'   => false,
+				'path_access' => true,
+			]
+		),
 		'tests'         => $standardTests,
+		'skip'          => false,
 	],
-	'Global key, v4, path, dual stack'   => [
-		'configuration' => [
-			'signature'   => 'v4',
-			'dualstack'   => true,
-			'path_access' => true,
-		],
+	'S3, v2, path, dual stack'    => [
+		'configuration' => array_merge(
+			$serviceConfigurations['s3-v2'],
+			[
+				'dualstack'   => true,
+				'path_access' => true,
+			]
+		),
 		'tests'         => $standardTests,
+		'skip'          => false,
 	],
 
-	'Global key, v2, DNS, single stack' => [
-		'configuration' => [
-			'signature'   => 'v2',
-			'dualstack'   => false,
-			'path_access' => false,
-		],
+	// Amazon S3, v4 signatures
+	'S3, v4, subdomain, single stack'  => [
+		'configuration' => array_merge(
+			$serviceConfigurations['s3-v4'],
+			[
+				'dualstack'   => false,
+				'path_access' => false,
+			]
+		),
 		'tests'         => $standardTests,
+		'skip'          => false,
 	],
-	'Global key, v2, DNS, dual stack'   => [
-		'configuration' => [
-			'signature'   => 'v2',
-			'dualstack'   => true,
-			'path_access' => false,
-		],
+	'S3, v4, subdomain, dual stack'    => [
+		'configuration' => array_merge(
+			$serviceConfigurations['s3-v4'],
+			[
+				'dualstack'   => true,
+				'path_access' => false,
+			]
+		),
 		'tests'         => $standardTests,
+		'skip'          => false,
 	],
+	'S3, v4, path, single stack'  => [
+		'configuration' => array_merge(
+			$serviceConfigurations['s3-v4'],
+			[
+				'dualstack'   => false,
+				'path_access' => true,
+			]
+		),
+		'tests'         => $standardTests,
+		'skip'          => false,
+	],
+	'S3, v4, path, dual stack'    => [
+		'configuration' => array_merge(
+			$serviceConfigurations['s3-v4'],
+			[
+				'dualstack'   => true,
+				'path_access' => true,
+			]
+		),
+		'tests'         => $standardTests,
+		'skip'          => false,
+	],
+
+	// LocalStack
+	'LocalStack, V2 (always path access, single stack)' => [
+		'configuration' => $serviceConfigurations['localstack-v2'],
+		'tests'         => $allTheTests,
+		'skip'          => false,
+	],
+
+	'LocalStack, V4 (always path access, single stack)' => [
+		'configuration' => $serviceConfigurations['localstack-v4'],
+		'tests'         => $allTheTests,
+		'skip'          => false,
+	],
+
+	/**
+	 * In the real config file we also have tests running on:
+	 *
+	 * - Wasabi, v2, path-style access.
+	 * - Wasabi, v4, path-style access.
+	 * - Synology C2, subdomain access.
+	 *
+	 * See [[NOTES.md]] for more information. If you have another environment you think we should test with please
+	 * update NOTES.md and make a pull request, along with the reasoning behind it.
+	 *
+	 * There are known failures for some cases, notably LocalStack v4 (something is amiss?) and C2 (necessary flag is
+	 * not yet supported by the minitest framework).
+	 */
 ];

@@ -3,7 +3,7 @@
  * Akeeba Engine
  *
  * @package   akeebaengine
- * @copyright Copyright (c)2006-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2006-2024 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -22,20 +22,39 @@ class SignedURLs extends AbstractTest
 		return static::signedURL($s3, $options, Acl::ACL_PUBLIC_READ);
 	}
 
+	public static function signedURLPublicObjectSpaces(Connector $s3, array $options): bool
+	{
+		return static::signedURL($s3, array_merge($options, [
+			'spaces' => true
+		]), Acl::ACL_PUBLIC_READ);
+	}
+
 	public static function signedURLPrivateObject(Connector $s3, array $options): bool
 	{
 		return static::signedURL($s3, $options, Acl::ACL_PRIVATE);
 	}
 
+	public static function signedURLPrivateObjectSpaces(Connector $s3, array $options): bool
+	{
+		return static::signedURL($s3, array_merge($options, [
+			'spaces' => true
+		]), Acl::ACL_PRIVATE);
+	}
+
 	private static function signedURL(Connector $s3, array $options, string $aclPrivilege): bool
 	{
+		$spaces   = isset($options['spaces']) && boolval($options['spaces']);
 		$tempData = static::getRandomData(AbstractTest::TEN_KB);
 		$input    = Input::createFromData($tempData);
-		$uri      = 'test.' . md5(microtime(false)) . '.dat';
+		$prefix   = $spaces ? 'test file' : 'test';
+		$uri      = $prefix . '.' . md5(microtime(false)) . '.dat';
 
 		$s3->putObject($input, $options['bucket'], $uri, $aclPrivilege);
 
 		$downloadURL    = $s3->getAuthenticatedURL($options['bucket'], $uri, null, $options['ssl']);
+
+		echo "\n\tDownload URL: $downloadURL\n";
+
 		$downloadedData = @file_get_contents($downloadURL);
 
 		try

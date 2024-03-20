@@ -3,7 +3,7 @@
  * Akeeba Engine
  *
  * @package   akeebaengine
- * @copyright Copyright (c)2006-2023 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2006-2024 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -64,10 +64,11 @@ class V2 extends Signature
 
 		$search = '/' . $bucket;
 
-		if (strpos($uri, $search) === 0)
-		{
-			$uri = substr($uri, strlen($search));
-		}
+		// This does not look right... The bucket name must be included in the URL.
+//		 if (strpos($uri, $search) === 0)
+//		 {
+//		 	$uri = substr($uri, strlen($search));
+//		 }
 
 		$queryParameters = array_merge($this->request->getParameters(), [
 			'AWSAccessKeyId' => $accessKey,
@@ -134,7 +135,15 @@ class V2 extends Signature
 		// See http://docs.aws.amazon.com/AmazonS3/latest/dev/RESTAuthentication.html#RESTAuthenticationQueryStringAuth
 		if (isset($headers['Expires']))
 		{
-			$headers['Date'] = $headers['Expires'];
+			if (isset($headers['Date']))
+			{
+				$headers['Date'] = $headers['Expires'];
+			}
+			else
+			{
+				$amzHeaders['x-amz-date'] = $headers['Expires'];
+			}
+
 			unset ($headers['Expires']);
 
 			$isPresignedURL = true;
@@ -152,14 +161,14 @@ class V2 extends Signature
 		$stringToSign = $verb . "\n" .
 			($headers['Content-MD5'] ?? '') . "\n" .
 			($headers['Content-Type'] ?? '') . "\n" .
-			$headers['Date'] .
+			($headers['Date'] ?? '') .
 			$amzString . "\n" .
 			$resourcePath;
 
 		// CloudFront only requires a date to be signed
 		if ($headers['Host'] == 'cloudfront.amazonaws.com')
 		{
-			$stringToSign = $headers['Date'];
+			$stringToSign = $headers['Date'] ?? $amzHeaders['x-amz-date'] ?? '';
 		}
 
 		$amazonV2Hash = $this->amazonV2Hash($stringToSign);
