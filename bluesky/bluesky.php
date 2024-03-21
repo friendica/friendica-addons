@@ -323,7 +323,7 @@ function bluesky_addon_admin(string &$o)
 
 	$o = Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
-		'$friendica_handles'    => ['friendica_handles', DI::l10n()->t('Allow your users to use your hostname for their Bluesky handles'), DI::config()->get('bluesky', 'friendica_handles'), DI::l10n()->t('Before enabling this option, you have to download and configure the bluesky-handles repository on your system. See https://git.friendi.ca/heluecht/bluesky-handles')],
+		'$friendica_handles'    => ['friendica_handles', DI::l10n()->t('Allow your users to use your hostname for their Bluesky handles'), DI::config()->get('bluesky', 'friendica_handles'), DI::l10n()->t('Before enabling this option, you have to setup a wildcard domain configuration and you have to enable wildcard requests in your webserver configuration. On Apache this is done by adding "ServerAlias *.%s" to your HTTP configuration. You don\'t need to change the HTTPS configuration.', DI::baseUrl()->getHost())],
 	]);
 }
 
@@ -525,8 +525,8 @@ function bluesky_cron()
 		// Refresh the token now, so that it doesn't need to be refreshed in parallel by the following workers
 		bluesky_get_token($pconfig['uid']);
 
-		Worker::add(['priority' => Worker::PRIORITY_MEDIUM, 'force_priority' => true], 'addon/bluesky/bluesky_timeline.php', $pconfig['uid'], $last);
 		Worker::add(['priority' => Worker::PRIORITY_MEDIUM, 'force_priority' => true], 'addon/bluesky/bluesky_notifications.php', $pconfig['uid'], $last);
+		Worker::add(['priority' => Worker::PRIORITY_MEDIUM, 'force_priority' => true], 'addon/bluesky/bluesky_timeline.php', $pconfig['uid'], $last);
 
 		if (DI::pConfig()->get($pconfig['uid'], 'bluesky', 'import_feeds')) {
 			$feeds = bluesky_get_feeds($pconfig['uid']);
@@ -1176,6 +1176,8 @@ function bluesky_process_post(stdClass $post, int $uid, int $fetch_uid, int $pos
 		$item = bluesky_add_media($post->embed, $item, $uid, $level, $last_poll);
 	}
 
+	$item['restrictions'] = bluesky_get_restrictions_for_user($post, $item, $post_reason);
+
 	if (empty($item['post-reason'])) {
 		$item['post-reason'] = $post_reason;
 	}
@@ -1221,6 +1223,49 @@ function bluesky_get_header(stdClass $post, string $uri, int $uid, int $fetch_ui
 	}
 
 	return $item;
+}
+
+function bluesky_get_restrictions_for_user(stdClass $post, array $item, int $post_reason): ?int
+{
+	if (!empty($post->viewer->replyDisabled)) {
+		return Item::CANT_REPLY;
+	}
+
+	if(empty($post->threadgate)) {
+		return null;
+	}
+
+	if (!isset($post->threadgate->record->allow)) {
+		return null;
+	}
+
+	if ($item['uid'] == 0) {
+		return Item::CANT_REPLY;
+	}
+
+	$restrict = true;
+	$type = '$type';
+	foreach ($post->threadgate->record->allow as $allow) {
+		switch ($allow->$type) {
+			case 'app.bsky.feed.threadgate#followingRule':
+				// Only followers can reply.
+				if (Contact::isFollower($item['author-id'], $item['uid'])) {
+					$restrict = false;
+				}
+				break;
+			case 'app.bsky.feed.threadgate#mentionRule':
+				// Only mentioned accounts can reply.
+				if ($post_reason == Item::PR_TO) {
+					$restrict = false;
+				}
+				break;
+			case 'app.bsky.feed.threadgate#listRule';
+				// Only accounts in the provided list can reply. We don't support this at the moment.
+				break;
+		}
+	}
+
+	return $restrict ? Item::CANT_REPLY : null;
 }
 
 function bluesky_get_content(array $item, stdClass $record, string $uri, int $uid, int $fetch_uid, int $level, int $last_poll): array
