@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-28 03:05+0000\n"
+"POT-Creation-Date: 2024-03-22 05:31+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,10 +26,12 @@ msgid "Allow your users to use your hostname for their Bluesky handles"
 msgstr ""
 
 #: bluesky.php:326
+#, php-format
 msgid ""
-"Before enabling this option, you have to download and configure the bluesky-"
-"handles repository on your system. See https://git.friendi.ca/heluecht/"
-"bluesky-handles"
+"Before enabling this option, you have to setup a wildcard domain "
+"configuration and you have to enable wildcard requests in your webserver "
+"configuration. On Apache this is done by adding \"ServerAlias *.%s\" to your "
+"HTTP configuration. You don't need to change the HTTPS configuration."
 msgstr ""
 
 #: bluesky.php:354
