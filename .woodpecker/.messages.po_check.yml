@@ -13,7 +13,7 @@ pipeline:
     commands:
       - git config --global user.email "no-reply@friendi.ca"
       - git config --global user.name "Friendica"
-      - git clone $CI_REPO_LINK addon
+      - git clone $CI_REPO_CLONE_URL addon
       - cd addon/
       - git checkout $CI_COMMIT_BRANCH
       - git fetch origin $CI_COMMIT_REF
