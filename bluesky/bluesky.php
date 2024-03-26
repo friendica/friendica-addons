@@ -1222,6 +1222,17 @@ function bluesky_get_header(stdClass $post, string $uri, int $uid, int $fetch_ui
 		$item['post-reason'] = Item::PR_FOLLOWER;
 	}
 
+	if (!empty($post->labels)) {
+		foreach ($post->labels as $label) {
+			// Only flag posts as sensitive based on labels that had been provided by the author.
+			// When "ver" is set to "1" it was flagged by some automated process.
+			if (empty($label->ver)) {
+				$item['sensitive'] = true;
+				Logger::debug('Sensitive content', ['uri-id' => $item['uri-id'], 'label' => $label]);
+			}
+		}
+	}
+
 	return $item;
 }
 
