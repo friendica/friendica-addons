@@ -15,7 +15,6 @@ use Friendica\Core\Cache\Enum\Duration;
 use Friendica\Core\Hook;
 use Friendica\Core\Protocol;
 use Friendica\DI;
-use Friendica\Util\Proxy as ProxyUtils;
 
 function mastodoncustomemojis_install()
 {
@@ -88,7 +87,7 @@ function mastodoncustomemojis_fetch_custom_emojis_for_url($api_base_url)
 			foreach ($emojis_array as $emoji) {
 				if (!empty($emoji['shortcode']) && !empty($emoji['static_url'])) {
 					$return['texts'][] = ':' . $emoji['shortcode'] . ':';
-					$return['icons'][] = '<img class="emoji mastodon" src="' . ProxyUtils::proxifyUrl($emoji['static_url']) . '" alt=":' . $emoji['shortcode'] . ':" title=":' . $emoji['shortcode'] . ':"/>';
+					$return['icons'][] = '<img class="emoji mastodon" src="' . $emoji['static_url'] . '" alt=":' . $emoji['shortcode'] . ':" title=":' . $emoji['shortcode'] . ':"/>';
 				}
 			}
 		}
