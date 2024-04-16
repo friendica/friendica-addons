@@ -2,7 +2,7 @@
 /**
  * Name: blockbot
  * Description: Blocking bots based on detecting bots/crawlers/spiders via the user agent and http_from header.
- * Version: 0.2
+ * Version: 1.0
  * Author: Philipp Holzer <admin@philipp.info>
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  *
@@ -13,7 +13,9 @@ use Friendica\DI;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Core\System;
 use Friendica\Network\HTTPException\ForbiddenException;
+use Friendica\Util\Network;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
@@ -28,21 +30,22 @@ function blockbot_addon_admin(string &$o)
 
 	$o = Renderer::replaceMacros($t, [
 		'$submit'             => DI::l10n()->t('Save Settings'),
-		'$good_crawlers'      => ['good_crawlers', DI::l10n()->t('Allow "good" crawlers'), DI::config()->get('blockbot', 'good_crawlers'), DI::l10n()->t("Don't block fediverse crawlers, relay servers and other bots with good purposes.")],
-		'$socialmedia_agents' => ['socialmedia_agents', DI::l10n()->t('Allow preview agents'), DI::config()->get('blockbot', 'socialmedia_agents'), DI::l10n()->t("Don't block agents from social media systems that want to generate preview data for links that had been set by their users.")],
+		'$security_checker'   => ['security_checker', DI::l10n()->t('Allow security checkers'), DI::config()->get('blockbot', 'security_checker'), DI::l10n()->t("Don't block security checkers. They can be used for good or bad.")],
 		'$http_libraries'     => ['http_libraries', DI::l10n()->t('Allow generic HTTP libraries'), DI::config()->get('blockbot', 'http_libraries'), DI::l10n()->t("Don't block agents from generic HTTP libraries that could be used for good or for bad and that currently can't be traced back to any known Fediverse project.")],
-		'$block_gab'          => ['block_gab', DI::l10n()->t('Block GabSocial'), DI::config()->get('blockbot', 'block_gab'), DI::l10n()->t('Block the software GabSocial. This will block every access for that software. You can block dedicated gab instances in the blocklist settings in the admin section.')],
 		'$training'           => ['training', DI::l10n()->t('Training mode'), DI::config()->get('blockbot', 'training'), DI::l10n()->t("Activates the training mode. This is only meant for developing purposes. Don't activate this on a production machine. This can cut communication with some systems.")],
 	]);
 }
 
 function blockbot_addon_admin_post()
 {
-	DI::config()->set('blockbot', 'good_crawlers', $_POST['good_crawlers'] ?? false);
-	DI::config()->set('blockbot', 'socialmedia_agents', $_POST['socialmedia_agents'] ?? false);
+	DI::config()->set('blockbot', 'security_checker', $_POST['security_checker'] ?? false);
 	DI::config()->set('blockbot', 'http_libraries', $_POST['http_libraries'] ?? false);
-	DI::config()->set('blockbot', 'block_gab', $_POST['block_gab'] ?? false);
 	DI::config()->set('blockbot', 'training', $_POST['training'] ?? false);
+}
+
+function blockbot_reject()
+{
+	throw new ForbiddenException('Bots are not allowed. If you consider this a mistake, create an issue at https://github.com/friendica/friendica');
 }
 
 function blockbot_init_1()
@@ -51,92 +54,99 @@ function blockbot_init_1()
 		return;
 	}
 
-	$logdata = ['agent' => $_SERVER['HTTP_USER_AGENT'], 'uri' => $_SERVER['REQUEST_URI']];
+	$crawlerDetect = new CrawlerDetect();
 
-	// List of known unwanted crawlers.
-	$agents = [
-		'SemrushBot', 's~feedly-nikon3', 'Qwantify/Bleriot/', 'ltx71', 'Sogou web spider/',
-		'Diffbot/', 'YisouSpider', 'evc-batch/', 'LivelapBot/', 'TrendsmapResolver/',
-		'PaperLiBot/', 'Nuzzel', 'um-LN/', 'Google Favicon', 'Datanyze', 'BLEXBot/', '360Spider',
-		'adscanner/', 'HeadlessChrome', 'wpif', 'startmebot/', 'Googlebot/', 'Applebot/',
-		'GoogleImageProxy', 'bingbot/', 'heritrix/', 'ldspider',
-		'AwarioRssBot/', 'TweetmemeBot/', 'dcrawl/', 'PhantomJS/', 'Googlebot-Image/',
-		'CrowdTanglebot/', 'Mediapartners-Google', 'Baiduspider', 'datagnionbot',
-		'MegaIndex.ru/', 'SMUrlExpander', 'Hatena-Favicon/', 'Wappalyzer', 'FlipboardProxy/',
-		'NetcraftSurveyAgent/', 'Dataprovider.com', 'SMTBot/', 'Nimbostratus-Bot/',
-		'DuckDuckGo-Favicons-Bot/', 'IndieWebCards/', 'proximic', 'netEstate NE Crawler',
-		'AhrefsBot/', 'YandexBot/', 'Exabot/', 'Mediumbot-MetaTagFetcher/',
-		'SurdotlyBot/', 'BingPreview/', 'SabsimBot/', 'CCBot/', 'WbSrch/',
-		'DuckDuckBot-Https/', 'HTTP Banner Detection', 'YandexImages/', 'archive.org_bot',
-		'ArchiveTeam ArchiveBot/', 'yacybot', 'https://developers.google.com/+/web/snippet/',
-		'Scrapy/', 'MJ12bot/', 'DotBot/', 'Pinterestbot/', 'Jooblebot/',
-		'Cliqzbot/', 'YaK/', 'Mediatoolkitbot', 'Snacktory', 'FunWebProducts', 'oBot/',
-		'7Siters/', 'KOCMOHABT', 'Google-SearchByImage', 'FemtosearchBot/',
-		'HubSpot Crawler', 'DomainStatsBot/', 'Re-re Studio', 'AwarioSmartBot/',
-		'DNSResearchBot/', 'PetalBot;', 'Nmap Scripting Engine;',
-		'Google-Apps-Script; beanserver;', 'woorankreview/', 'Seekport Crawler;', 'AHC/',
-		'Semanticbot/', 'XoviOnpageCrawler;', 'Pinterest/',
-		'GetHPinfo.com-Bot/', 'BoardReader Favicon Fetcher', 'Google-Adwords-Instant', 'newspaper/',
-		'YurichevBot/', 'Crawling at Home Project', 'InfoTigerBot/', 'AdIdxBot/',
-		'MicrosoftPreview/', 'masscan/', 'Timpibot/', 'everyfeed-spider/', 'AndroidDownloadManager/',
-		'WebZIP/', 'WDG_Validator/', 'Screaming Frog SEO Spider/', ' Bytespider;', 'ISSCyberRiskCrawler/',
-		'BitSightBot/', 'ev-crawler/', 'CensysInspect/1.1', 'Protopage/', 'Gaisbot/', 'WellKnownBot/',
-		'SuperBot/', 'Googlebot-Mobile/', 'GPTBot/', 'GenomeCrawlerd/', '2ip bot/', 'Ocarinabot',
-		'Yahoo! Slurp;', 'AdsBot-Google', 'Gregarius/', 'FAST-WebCrawler/', 'Xenu Link Sleuth/',
-		'Ask Jeeves', 'alexa site audit/', 'Yahoo! Slurp China;', 'Microsoft URL Control',
-		'Facebot', 'Googlebot-Video/', 'msnbot/', 'Offline Explorer/', 'YandexNews/', 'msnbot-media/',
-		'EmailWolf', 'Download Demon/', 'FeedFetcher-Google;', 'WebCopier', '+ONB_Bot_Btrix',
-		'scoopit-crawler/', 'ia_archiver', 'Quora-Bot/', 'WebwikiBot/', 'FullStoryBot/',
-		'wpbot/', 'SearchExpress', 'DuckDuckBot/', 'Google Web Preview',
-	];
+	$isCrawler = $crawlerDetect->isCrawler();
 
-	if (DI::config()->get('blockbot', 'block_gab')) {
-		$agents[] = 'GabSocial/';
+	blockbot_save('all-agents', $_SERVER['HTTP_USER_AGENT']);
+
+	$parts = blockbot_get_parts($_SERVER['HTTP_USER_AGENT']);
+
+	$logdata = ['isCrawler' => $isCrawler, 'agent' => $_SERVER['HTTP_USER_AGENT'], 'uri' => $_SERVER['REQUEST_URI'], 'parts' => $parts];
+
+	if ($isCrawler) {
+		blockbot_check_login_attempt($_SERVER['REQUEST_URI'], $logdata);
 	}
 
-	// List of "good" crawlers, mostly from the fediverse.
-	$good_agents = [
-		'fediverse.space crawler', 'fediverse.network crawler', 'Active_Pods_CheckBot_3.0',
-		'Social-Relay/', 'Test Certificate Info', 'Uptimebot/', 'GNUSocialBot', 'UptimeRobot/',
-		'PTST/', 'Zabbix', 'Poduptime/', 'FediFetcher', 'lemmy-stats-crawler',
-		'FedditLemmyverseCrawler/', 'lemmy-explorer-crawler/', 'URIports Validator',
-		'rss-is-dead.lol web bot;', 'fedistatsCrawler/', 'W3C_CSS_Validator_JFouffa/',
-		'IABot/', 'Slackbot 1', 'BeeperBot/', 'Matrix-Media-Repo/', 'P3P Validator',
-		'KeybaseBot;',
-	];
-
-	if (!DI::config()->get('blockbot', 'good_crawlers')) {
-		$agents = array_merge($agents, $good_agents);
-	} elseif (blockbot_match($good_agents)) {
+	if (empty($parts)) {
+		Logger::debug('Known frontend found', $logdata);
+		if ($isCrawler) {
+			blockbot_save('badly-parsed-agents', $_SERVER['HTTP_USER_AGENT']);
+		}
 		return;
 	}
 
-	// List of agents from social media systems that fetch preview data via opem graph or twitter cards.
-	$socialmedia_agents = ['Twitterbot', 'facebookexternalhit/', 'SkypeUriPreview Preview/',
-		'TelegramBot', 'WhatsApp/', 'github-camo', 'Bluesky Cardyb/', 'XING-contenttabreceiver/', 
-		'LinkedInBot/', 'Instagram ', 'Synapse (bot; ', 'Discordbot/', 'SummalyBot/',
-		'Slackbot-LinkExpanding', 'Slack-ImgProxy', 'Iframely/',
-	];
-
-	if (!DI::config()->get('blockbot', 'socialmedia_agents')) {
-		$agents = array_merge($agents, $socialmedia_agents);
-	} elseif (blockbot_match($socialmedia_agents)) {
-		return;
-	}
-	
-	// HTTP Libraries
-	$http_libraries = ['ReactorNetty/', 'GuzzleHttp/', 'Embed PHP library', 'python-urllib3/',
-		'EventMachine HttpClient', 'HTMLParser/'
-	];
-
-	if (!DI::config()->get('blockbot', 'http_libraries')) {
-		$agents = array_merge($agents, $http_libraries);
-	} elseif (blockbot_match($http_libraries)) {
-		return;
+	if (blockbot_is_crawler($parts)) {
+		Logger::debug('Crawler found', $logdata);
+		blockbot_reject();
 	}
 
-	if (blockbot_match($agents)) {
-		throw new ForbiddenException('Bots are not allowed. If you consider this a mistake, create an issue at https://github.com/friendica/friendica');
+	if (blockbot_is_searchbot($parts)) {
+		Logger::debug('Search bot found', $logdata);
+		blockbot_reject();
+	}
+
+	if (blockbot_is_unwanted($parts)) {
+		Logger::debug('Uncategorized unwanted agent found', $logdata);
+		blockbot_reject();
+	}
+
+	if (blockbot_is_security_checker($parts)) {
+		Logger::debug('Security checker found', $logdata);
+		if (!DI::config()->get('blockbot', 'security_checker')) {
+			blockbot_reject();
+		}
+		return;
+	}
+
+	if (blockbot_is_social_media($parts)) {
+		Logger::debug('Social media service found', $logdata);
+		return;
+	}
+
+	if (blockbot_is_fediverse_client($parts)) {
+		Logger::debug('Fediverse client found', $logdata);
+		return;
+	}
+
+	if (blockbot_is_feed_reader($parts)) {
+		Logger::debug('Feed reader found', $logdata);
+		return;
+	}
+
+	if (blockbot_is_fediverse_tool($parts)) {
+		Logger::debug('Fediverse tool found', $logdata);
+		return;
+	}
+
+	if (blockbot_is_service_agent($parts)) {
+		Logger::debug('Service agent found', $logdata);
+		return;
+	}
+
+	if (blockbot_is_monitor($parts)) {
+		Logger::debug('Monitoring service found', $logdata);
+		return;
+	}
+
+	if (blockbot_is_validator($parts)) {
+		Logger::debug('Validation service found', $logdata);
+		return;
+	}
+
+	if (blockbot_is_good_tool($parts)) {
+		Logger::debug('Uncategorized helpful service found', $logdata);
+		return;
+	}
+
+	// Needs to be checked at the end, since other services might use these libraries
+	if (blockbot_is_http_library($parts)) {
+		blockbot_check_login_attempt($_SERVER['REQUEST_URI'], $logdata);
+		Logger::debug('HTTP Library found', $logdata);
+		if (!DI::config()->get('blockbot', 'http_libraries')) {
+			blockbot_reject();
+		}
+		return;
 	}
 
 	// This switch here is only meant for developers who want to add more bots to the list above, it is not safe for production.
@@ -144,44 +154,581 @@ function blockbot_init_1()
 		return;
 	}
 
-	$crawlerDetect = new CrawlerDetect();
-
-	if (!$crawlerDetect->isCrawler()) {
-		logger::debug('Good user agent detected', $logdata);
+	if (!$isCrawler) {
+		blockbot_save('good-agents', $_SERVER['HTTP_USER_AGENT']);
+		Logger::debug('Non-bot user agent detected', $logdata);
 		return;
 	}
 
-	// List of known "good" agents, mostly used by Fediverse systems, feed readers, ...
-	$agents = [
-		'curl', 'zgrab', 'Go-http-client', 'curb', 'github.com', 'reqwest', 'Feedly/',
-		'Python-urllib/', 'Liferea/', 'aiohttp/', 'WordPress.com Reader', 'hackney/',
-		'Faraday v', 'okhttp', 'UniversalFeedParser', 'PixelFedBot', 'python-requests',
-		'WordPress/', 'http.rb/', 'Apache-HttpClient/', 'WordPress.com;', 'Pleroma',
-		'Dispatch/', 'Ruby', 'Java/', 'libwww-perl/', 'Mastodon/', 'FeedlyApp/',
-		'lua-resty-http/', 'Tiny Tiny RSS/', 'Wget/', 'PostmanRuntime/',
-		'W3C_Validator/', 'NetNewsWire', 'FeedValidator/', 'theoldreader.com', 'axios/',
-		'Paw/', 'PeerTube/', 'fedi.inex.dev', 'FediDB/', 'index.community crawler',
-		'Slackbot-LinkExpanding', 'Firefish/', 'Takahe/', 'Akkoma ', 'Misskey/', 'Lynx/',
-		'camo-rs asset proxy', 'gotosocial/', 'incestoma ', 'SpaceCowboys Android RSS Reader',
-		'NewsBlur Feed Finder', 'Lemmy/', 'enby-town/', 'rss2tg bot;', '; HTTrack ',
-		'MbinBot', 'kbinBot', 'Pixelfed/', 'NewsBlur Feed Fetcher', 'NewsBlur Page Fetcher',
-	];
-
-	if (blockbot_match($agents)) {
-		logger::info('False positive', $logdata);
-		return;
-	}
-
-	logger::notice('Blocked bot', $logdata);
-	throw new ForbiddenException('Bots are not allowed. If you consider this a mistake, create an issue at https://github.com/friendica/friendica');
+	blockbot_save('bad-agents', $_SERVER['HTTP_USER_AGENT']);
+	Logger::notice('Blocked bot', $logdata);
+	blockbot_reject();
 }
 
-function blockbot_match(array $agents)
+function blockbot_save($database, $userAgent)
 {
-	foreach ($agents as $agent) {
-		if (stristr($_SERVER['HTTP_USER_AGENT'], $agent)) {
+	if (!DI::config()->get('blockbot', 'training') || !function_exists('dba_open')) {
+		return;
+	}
+
+	$resource = dba_open(System::getTempPath() . '/' . $database, 'cl');
+	$result = dba_fetch($userAgent, $resource);
+	if ($result === false) {
+		dba_insert($userAgent, true, $resource);
+	}
+	dba_close($resource);
+}
+
+function blockbot_check_login_attempt(string $url, array $logdata)
+{
+	if (in_array(trim(parse_url($url, PHP_URL_PATH), '/'), ['login', 'lostpass', 'register'])) {
+		Logger::debug('Login attempt detected', $logdata);
+		blockbot_reject();
+	}
+}
+
+/**
+ * Uncategorized and unwanted services
+ *
+ * @param array $parts
+ * @return boolean
+ */
+function blockbot_is_unwanted(array $parts): bool
+{
+	$agents = [
+		'oii-research', 'yisouspider', 'bots.retroverse.social', 'gaisbot', 'bloglines', 'emailwolf',
+		'webtech', 'facebookscraper', 'www.ecsl.cs.sunysb.edu/~maxim/cgi-bin/link',
+		'gulper', 'magellan', 'linkcheck', 'nerdybot',  'ms search robot', 'fast-webcrawler',
+		'yioopbot', 'webster', 'www.admantx.com', 'openhosebot', 'lssrocketcrawler', 'dow jones searchbot',
+		'gomezagent', 'domainsigmacrawler', 'netseer crawler', 'gptbot', 'superbot', 'searchexpress',
+		'alittle client', 'amazon-kendra', 'scanner.ducks.party', 'isscyberriskcrawler',
+		'google wireless transcoder',
+	];
+
+	foreach ($parts as $part) {
+		if (in_array($part, $agents)) {
 			return true;
 		}
 	}
 	return false;
+}
+
+/**
+ * Services defined as "crawlers"
+ *
+ * @param array $parts
+ * @return boolean
+ */
+function blockbot_is_crawler(array $parts): bool
+{
+	$agents = [
+		'ahrefsbot', 'pinterest', 'proximic', 'applebot', 'synapseworkstation.3.2.1',
+		'slackbot-linkexpanding', 'semrushbot-sa', 'qwantify', 'google search console',
+		'tbot-nutch', 'screaming frog seo spider', 'exaleadcloudview', 'dotbot', 'exabot',
+		'spbot', 'surdotlybot', 'tweetmemebot', 'cliqzbot', 'startmebot', 'ccbot', 'zoombot',
+		'domain re-animator bot', 'nutch', 'archive.org_bot http://www.archive.org/details',
+		'yahoo link preview', 'mxt', 'grapeshotcrawler', 'maxpointcrawler', 'vagabondo',
+		'archive.org_bot', 'infegyatlas', '2ip bot', 'accompanybot', 'antbot', 'anthropic-ai',
+		'aspiegelbot', 'cispa web analyzer', 'claudebot', 'colly', 'petalbot', 'ioncrawl',
+		'embedly +support@embed.ly', 'gitcrawlerbot', 'google favicon', 'httpx', 'seokicks',
+		'kocmohabt', 'masscan-ng', 'mixnodecache', 'nicecrawler', 'birdcrawlerbot', 'seolyt',
+		'dataprovider.com', 'dnsresearchbot', 'domains project', 'evc-batch', 'ev-crawler',
+		'example3', 'geedobot', 'internetmeasurement', 'ips-agent', 'semanticscholarbot',
+		'sputnikfaviconbot', 't3versionsbot', 'tchelebi', 'thinkchaos', 'velenpublicwebcrawler',
+		'webwikibot', 'woobot', 'project-resonance', 'mtrobot', 'webprosbot', 'youbot',
+		'queryseekerspider', 'scanning for research', 'semrushbot', 'senutobot', 'spawning-ai',
+		'statista.com publication finder crawler', 'turnitin', 'who.is bot', 'zaldamosearchbot',
+		'nuzzel', 'boardreader blog indexer', 'hatena-favicon', 'nbertaupete95', 'scrapy',
+		"electronic frontier foundation's do not track verifier", 'synapse', 'trendsmapresolver',
+		'pinterestbot', 'um-ln', 'slack-imgproxy', 'diffbot', 'dataforseobot', 'bw', 'bitlybot',
+		'twingly recon-klondike', 'imagesiftbot', 'google', 'rogerbot', 'yahoocachesystem',
+		'vkshare', 'appid: s~virustotalcloud', 'clickagy intelligence bot v2',
+	];
+
+	foreach ($parts as $part) {
+		if (substr($part, -13) == ' accompanybot') {
+			return true;
+		}
+
+		if (in_array($part, $agents)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * Services defined as search bots
+ *
+ * @param array $parts
+ * @return boolean
+ */
+function blockbot_is_searchbot(array $parts): bool
+{
+	$agents = [
+		'yahoo! slurp', 'linkcheck by siteimprove.com', 'googlebot', '360spider', 'haosouspider',
+		'mj12bot', 'feedfetcher-google', 'mediapartners-google', 'duckduckgo-favicons-bot',
+		'googlebot-mobile', 'gigablastopensource', 'bingbot', 'surveybot', 'yandexbot',
+		'baiduspider', 'google web preview', 'meanpathbot', 'wesee_bot:we_help_monitize_your_site',
+		'seznambot', 'sogou web spider', 'linkdexbot', 'msnbot', 'smtbot', 'yandexmetrika',
+		'google-site-verification', 'netcraft ssl server survey - contact info@netcraft.com',
+		'orangebot', 'google-adwords-instant', 'googlebot-richsnippets', 'google-lens',
+		'googleother', 'google-test', 'linkdex.com', 'mail.ru', 'awariobot', 'bytespider',
+		'coccocbot-image', 'discobot', 'google-inspectiontool', 'netcraftsurveyagent',
+		'tineye-bot', 'tineye-bot-live', 'bingpreview', 'ask jeeves', 'adsbot-google', "msnbot-media ",
+		'googlebot-image', 'googlebot-news', 'googlebot-video', 'msnbot-media', 'yahoo! slurp china',
+		'inoreader.com-like feedfetcher-google', 'google-amphtml', 'duckduckbot', 'coccocbot-web',
+		'googleassociationservice', 'yandexwebmaster', 'yacybot', 'duckduckbot-https', 'yandexmobilebot',
+		'mail.ru_bot/fast', 'yandeximages', 'mail.ru_bot/img', 'ia_archiver', 'yandexblogs',
+		'yandexaccessibilitybot', 'yandeximageresizer', 'mail.ru_bot', 'yeti', 'obot', 'baiduspider-render',
+	];
+
+	foreach ($parts as $part) {
+		if (in_array($part, $agents)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * Services in the "security" context
+ *
+ * @param array $parts
+ * @return boolean
+ */
+function blockbot_is_security_checker(array $parts): bool
+{
+	$agents = [
+		'http banner detection', 'l9explore', 'l9tcpid', 'lkx-apache2449traversalplugin',
+		'bitsightbot', 'censysinspect', 'pathspider', 'repolookoutbot', 'sqlmap', 'ltx71',
+		'netsystemsresearch studies the availability of various services across the internet. our website is netsystemsresearch.com',
+		'expanse a palo alto networks company searches across the global ipv4 space multiple times per day to identify customers&#39',
+		'zgrab', 'nmap scripting engine', 'l9scan', 'riddler',
+	];
+
+	foreach ($parts as $part) {
+		if (in_array($part, $agents)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * Services that check pages for e.g. valid HTML
+ *
+ * @param array $parts
+ * @return boolean
+ */
+function blockbot_is_validator(array $parts): bool
+{
+	$agents = [
+		'jigsaw', 'ssl labs', 'w3c_validator', 'w3c-checklink', 'p3p validator', 'csscheck',
+	];
+
+	foreach ($parts as $part) {
+		if (in_array($part, $agents)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * Services that monitor a page
+ *
+ * @param array $parts
+ * @return boolean
+ */
+function blockbot_is_monitor(array $parts): bool
+{
+	$agents = [
+		'alexa site audit', 'catchpoint', 'google page speed insights', 'checkhost',
+		'poduptime', 'chrome-lighthouse', 'zabbix', 'cloudflare-alwaysonline',
+	];
+
+	foreach ($parts as $part) {
+		if (in_array($part, $agents)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * Services in the centralized and decentralized social media environment 
+ *
+ * @param array $parts
+ * @return boolean
+ */
+function blockbot_is_social_media(array $parts): bool
+{
+	$agents = ['camo-rs asset proxy', 'camo asset proxy'];
+	foreach ($parts as $part) {
+		foreach ($agents as $agent) {
+			if (strpos($part, $agent) !== false) {
+				return true;
+			}
+		}
+	}
+
+	$agents = [
+		'facebookexternalhit', 'twitterbot', 'mastodon', 'facebookexternalua',
+		'friendica', 'diasporafederation', 'buzzrelay', 'activityrelay',
+		'aoderelay', 'ap-relay', 'peertube', 'misskey', 'pleroma', 'foundkey', 'akkoma',
+		'lemmy', 'calckey', 'mobilizon', 'zot', 'camo-rs', 'gotosocial', 'pixelfed',
+		'pixelfedbot', 'app.wafrn.net', 'go-camo', 'http://a.gup.pe', 'iceshrimp',
+		'firefish', 'activity-relay', 'juick', 'camo', 'python/federation', 'nextcloud',
+		'snac', 'bovine', 'takahe', 'freedica', 'gnu social', 'microblogpub',
+		'mbin', 'mammoth', 'kbinbot', 'honksnonk', 'misskeymediaproxy', 'kbinbot', 'jistflow',
+		'mastodon/3.4.1 fedibird', 'fedibird', 'funkwhale',
+		'wafrn-cache-generator', 'simple social network', 'mbinbot', 'wordpress.com',
+		'catnip', 'castopod', 'enby-town', 'vernissage', 'iceshrimp.net', 'plasmatrap',
+		'imgproxy', 'rustypub', 'flipboard activitypub', 'gnu social activitypub plugin',
+		'micro.blog', 'mastodon-bookmark-rss', 'bookwyrm', 'damus', 'primal', 'misskeyadmin',
+		'ruby, mastodon', 'nextcloud social', 'camo asset proxy', 'smithereen', 'sorasns',
+		'cherrypick', 'bonfire activitypub federation', 'upub+0.1.0', 'plume', 'incestoma',
+		'gyptazyfedi', 'apogee', 'quolibet',
+	];
+
+	foreach ($parts as $part) {
+		if (in_array($part, $agents)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * Fediverse clients
+ *
+ * @param array $parts
+ * @return boolean
+ */
+function blockbot_is_fediverse_client(array $parts): bool
+{
+	$agents = [
+		'mastodonandroid', 'tootdeck-worker', 'piefed', 'brighteon', 'pachli', 'tusky', 'mona', 'mitra',
+		'megalodonandroid', 'fedilab', 'mastodonapp', 'toot!', 'intravnews',
+		'pixeldroid', 'greatnews', 'protopage', 'newsfox', 'vienna', 'wp-urldetails', 'husky',
+		'activitypub-go-http-client', 'mobilesafari', 'mastodon-ios', 'mastodonpy', 'techniverse',
+	];
+
+	foreach ($parts as $part) {
+		if (in_array($part, $agents)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * Feed reading clients and services
+ *
+ * @param array $parts
+ * @return boolean
+ */
+function blockbot_is_feed_reader(array $parts): bool
+{
+	$agents = [
+		'tiny tiny rss', 'mlem', 'feedly', 'flipboardproxy',  'reeder', 'netnewswire',
+		'freshrss', 'feedlyapp', 'feedlybot', 'feeddemon', 'rssowl', 'simplepie',
+		'magpierss',  'universalfeedparser', 'newsgatoronline', 'theoldreader.com',
+		'quiterss', 'feedburner', 'digg feed fetcher', 'r6_feedfetcher', 'apple-pubsub',
+		'netvibes', 'newsblur page fetcher', 'newsblur favicon fetcher', 'newsblur favicon fetcher',
+		'liferea', 'http://www.jetbrains.com/omea_reader/', 'feedblitz', 'bloglovin',
+		'windows-rss-platform', 'feedshow', 'feedreader', 'rssbandit', 'everyfeed-spider',
+		'feeeed', 'spacecowboys android rss reader', 'gregarius', 'feedspot',
+		'feedspot ssl asset proxy', 'newsgator', 'newsgator fetchlinks extension',
+		'akregator',
+	];
+
+	foreach ($parts as $part) {
+		if (in_array($part, $agents)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function blockbot_is_fediverse_tool(array $parts): bool
+{
+	$agents = [
+		'diaspora-connection-tester', 'fediblock.manalejandro.com',
+		'mastodoninstances', 'fedilist agent', 'https://fedilist.com/', 'fedidb',
+		'https://wiki.communitydata.science/communitydata:fediverse_research', 'mastofeed.com',
+		'lemmy-explorer-crawler', 'fedicheck.online v1.0', 'momostr', 'fedditlemmyversecrawler',
+		'fediseer', 'fedistatscrawler', 'gnusocialbot', 'fedifetcher', 'fedineko', 'bird.makeup',
+		'fediverse', 'fedicheck.online', 'https://fed.brid.gy/', 'lemmy-stats-crawler',
+		"fediverse's stats", 'friendicadirectory', 'rss discovery engine',
+		'python-opengraph-jaywink', 'connect.rocks', 'tootsdk',
+	];
+
+
+	foreach ($parts as $part) {
+		if (in_array($part, $agents)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * General services
+ *
+ * @param array $parts
+ * @return boolean
+ */
+function blockbot_is_service_agent(array $parts): bool
+{
+	$agents = [
+		'chrome privacy preserving prefetch proxy', 'http compression test', 'microsoftpreview',
+		'pocketimagecache', 'wordpress', 'skypeuripreview preview', 'wordpress.com', 'discordbot',
+		'summalybot', 'livelapbot', 'whatsapp', 'facebot', 'skypeuripreview',
+		'plasmatrap image proxy server', 'grammarly',
+	];
+
+	foreach ($parts as $part) {
+		if (in_array($part, $agents)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * Libraries that perform HTTP requests
+ *
+ * @param array $parts
+ * @return boolean
+ */
+function blockbot_is_http_library(array $parts): bool
+{
+	if ((count($parts) == 1) && in_array($parts[0], ['okhttp', 'useragent'])) {
+		return true;
+	}
+
+	$agents = [
+		'python-urllib', 'go-http-client', 'axios', 'java', 'undici', 'node', 'ruby',
+		'mint', 'wget', 'dart:io', 'dart', 'caveman-sieve', 'guzzlehttp', 'deno',
+		'aiohttp', 'networkingextension', 'python-asks', 'fasthttp', 't7', 'scalaj-http',
+		'curl', 'python-requests', 'node-fetch', 'offline explorer', 'aria2',
+		'link_thumbnailer', 'python-httpx', 'com.apple.safari.searchhelper',
+		'com.apple.webkit.networking', 'luasocket', 'libwww-perl', 'google-http-java-client',
+		'appengine-google', 'reqwest', 'htmlparser', 'headlesschrome', 'winhttp',
+		'webcopier', 'webzip', 'http.jl', 'got', 'hackney', 'oca\mail\vendor\favicon',
+		'winhttp.winhttprequest.5', 'go package http', 'jakarta commons-httpclient',
+		'cpp-httplib', 'fuzz faster u fool v1.3.1-dev', 'fuzz faster u fool v1.5.0-dev',
+		'go http package', 'go-resty', 'http.rb', 'ivre-masscan', 'java1.0.21.0',
+		'jsdom', 'python-urllib3', 'reactornetty', 'req', 'restsharp', 'ruby-rdf-distiller',
+		'pycurl',
+	];
+
+	foreach ($parts as $part) {
+		if (in_array($part, $agents)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * Uncategorized helpful services
+ *
+ * @param array $parts
+ * @return boolean
+ */
+function blockbot_is_good_tool(array $parts): bool
+{
+	$agents = [
+		'easy-feed-oven', 'cutycapt', 'rss-is-dead.lol web bot', 'dnt-policy@eff.org',
+		'https://socnetv.org', 'opengraphreader', 'trendfetcher', 'iabot', 'rss-is-dead.lol feed bot',
+		'androiddownloadmanager', 'readybot.io', 'hydra', 'httrack', 'vlc', 'wellknownbot', 'wdg_validator', 'download demon',
+	];
+
+
+	foreach ($parts as $part) {
+		if (in_array($part, $agents)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function blockbot_get_parts(string $agent): array
+{
+	$parts        = [];
+	$level        = 0;
+	$start        = 0;
+	$end          = 0;
+	$has_brackets = false;
+	for ($pos = 0; $pos < strlen($agent); $pos++) {
+		if ((strpos(substr($agent, $pos), '(') === false) && ($level == 0)) {
+			$part = substr($agent, $pos);
+			$parts = array_merge($parts, blockbot_split_parts($part, strpos($part, '/'), !$has_brackets));
+			break;
+		} elseif (substr($agent, $pos, 1) == '(') {
+			$level++;
+			$has_brackets = true;
+			if ($level == 1) {
+				$part = substr($agent, $end, $pos - $end);
+				$parts = array_merge($parts, blockbot_split_parts($part, $start != 0, false));
+				$start = $pos + 1;
+			}
+		} elseif (substr($agent, $pos, 1) == ')') {
+			$level--;
+			if ($level == 0) {
+				$part = substr($agent, $start, $pos - $start);
+				$parts = array_merge($parts, blockbot_split_parts($part, false, true));
+				$end = $pos + 1;
+			}
+		}
+	}
+	return blockbot_remove_browser_parts($parts);
+}
+
+function blockbot_remove_browser_parts(array $parts): array
+{
+	$cleaned = [];
+	foreach ($parts as $part) {
+		if (substr($part, -6) == ' build') {
+			continue;
+		}
+		$known = [
+			'mozilla', 'x11', 'ubuntu', 'linux x86_64', 'gecko', 'firefox', 'windows nt',
+			'win64', 'x64', 'android', 'applewebkit', 'khtml', 'like', 'chrome', 'safari', 'edg',
+			'unsupported', 'compatible', 'macintosh', 'intel mac os x', 'version', 'windows',
+			'u', 'en-us', '.net', '.net', 'wow64', 'linux', 'k', 'mobile', 'opr', 'msie',
+			'dalvik', 'build', 'nt', 'mobile safari', 'gecko/firefox', 'zh-cn', 'en-gb', 'clr',
+			'trident', '.net clr', 'qtwebengine', 'linux i686', 'tablet pc', 'ppc mac os x',
+			'en', 'fedora', 'ppc', 'edge', 'yabrowser', 'yowser', 'media center pc', 'arm_64',
+			'android 9', 'cros x86_64', 'iphone', 'cpu iphone os like mac os x', 'core',
+			'qqbrowser', 'beta', 'khtml like gecko', 'psp (playstation portable)', 'ia64',
+			'firephp', 'live', 'slcc2', 'infopath.2', 'bidubrowser', 'ubrowser', 'baiduboxapp',
+			'waterfox', 'lynx', 'libwww-fm', 'ssl-mm', 'openssl', 'gnutls', '.net4.0c', '.net4.0e',
+			'infopath.3', 'opera', 'palemoon', 'goanna', 'vivaldi', 'presto', 'intrepid', 'ru',
+			'ipad', 'cpu os like mac os x', 'omniweb', 'chromium', 'thunderbird', 'ubuntu lts',
+			'os', 'qupzilla', 'seamonkey', 'warp', 'konqueror', 'meego', 'nokian9', 'nokiabrowser',
+			'profile', 'configuration', 'untrusted', 'samsungbrowser', 'es-us', 'pocophone f1',
+			'sonyericssonw995', 'crios', 'lbbrowser', 'gwx:qualified', 'gwx:red', 'gwx:reserved',
+			'microsoft outlook', 'word', 'microsoft', 'office', 'powerpoint', 'excel',
+			'internet explorer', 'like gecko', 'shuame', 'qianniu', 'khtml, like gecko',
+			'cutycapt version', 'khtml, live gecko', '68k', 'sv1', 'aef', 'gtb7.5', 'gfe',
+			'embedded web browser from: http://bsalsa.com', 'wv', 'malnjs', '2.00',
+			'fsl', 'lcjb', 'malcjs', 'touch', 'masmjs', 'malc', 'maln', 'foxy', 'bri', 'lcte',
+			'embeddedwb from: http://www.bsalsa.com', '2345explorer', 'hpntdfjs', 'h4213',
+			'rb.gy', 'sm-a505fn', 'lenovo tb-8504x', 'silk', 'lya-al00', 'windows xp', 'openbsd',
+			'netbsd amd64', 'sa', 'samsung sm-g950f', 'redmi note', 'hry-lx1', 'cph2205',
+			'16th', 'redmi note pro', 'xiaomi/miuibrowser', 'sk-sk', 'linux i686 on x86_64',
+			'debian iceweasel', 'rmx2101', 'mi note pro', 'rmx1921', 'nokia6100', '04.01',
+			'fr-fr', 'slackware', 'sm-a225f', 'fennec', 'links', 'i386', 'windows phone os',
+			'blackberry', 'maxthon', 'opera mini', 'j2me', 'winnt4.0', 'phoenix', 'avant browser',
+			'iceweasel', 'moto e(7) plus', 'like geckoo', 'wpdesktop', 'nokia', 'lumia', 'arm',
+			'de-at', 'pixel', 'puffin', 'zte blade a7', 'linux armv7l', 'hd1913', 'symbianos',
+			'symbian os', 'de', '452', 'opera [en-us]', 'iemobile', 'windows phone', 'sm-g991b',
+			'sm-j810g', 'da-dk', 'symbian', 'series60', 'nokiax7-00', 'freebsd amd64', 'openbsd amd64',
+			'sm-n920c', 'blazer', 'palmsource', '16;320x320', 'sm-g998b', 'sm-a505g', 'freebsd i386',
+			'jaunty', 'shiretoko', 'playbook', 'rim tablet os', 'asus;galaxy6', 'minimo',
+			'linux arm7tdmi', 'blackberry7520', 'dl1036', '100011886a', 'lt-gtklauncher',
+			'browserng', 'nokiae7-00', 'ubuntu chromium', 'silk-accelerated=true', 'openbsd i386',
+			'windows ce', 'microsoft zunehd', 'epiphany', 'es-es', 'ru-ru', 'netbsd', 'ipod',
+			'safari', 'xbox', 'xbox one', 'fxios', 'opx', 'ucbrowser', 'u3',
+			'webos', 'desktop', 'compatible msie windows nt', 'sm-a525f', 'sm-g991u', 'ze520kl',
+			'cros i686', 'de-de', 'en-ca', 'config', 'i686', 'sm-g970u', 'win95', 'i',
+			'nokia7250', 'oneplus a6003', 'i2126', 'nintendo wii', 'vog-l29', 'msoffice', 'ms-office',
+			'oneplus a5010', 'linux mint', 'blackberry8320', 'observatory', 'qdesk',
+			'alexatoolbar', 'se metasr', 'qqdownload', 'alexa toolbar', 'baiduclient', 'ddg_android',
+			'com.duckduckgo.mobile.android', 'android api', 'duckduckgo', 'googletoolbar', 'amaya',
+		];
+		if (!in_array($part, $known) && !preg_match('=^rv:[\d]+\S*$=', $part)) {
+			$cleaned[] = $part;
+		}
+	}
+	return $cleaned;
+}
+
+function blockbot_clean_part(string $part): string
+{
+	$part = trim($part);
+	$subparts = [];
+	foreach (explode(' ', $part) as $subpart) {
+		$subpart = trim($subpart, ' +,');
+		if (!empty($subpart) && (!preg_match('=^\d+[\w\-\+\.]+$=', $subpart) || empty($subparts))) {
+			$subparts[] = $subpart;
+		}
+	}
+	return implode(' ', $subparts);
+}
+
+function blockbot_split_parts(string $agent, bool $parse_spaces, bool $parse_semicolon): array
+{
+	$agent = strtolower(trim($agent, ' ;'));
+	$cleaned = [];
+
+	while (preg_match('=\w+[\s\w/\._\-]*/\d+[^;\s]*=', $agent, $matches)) {
+		$part = $matches[0];
+		if (preg_match('=/\d+[^;\s]*=', $part, $matches, PREG_OFFSET_CAPTURE)) {
+			$cleaned[] = substr($part, 0, $matches[0][1]);
+			$part = substr($part, 0, $matches[0][1] +  strlen($matches[0][0]));
+		}
+		$agent = trim(str_replace($part, '', $agent));
+	}
+	if ($parse_semicolon && strpos($agent, ';') !== false) {
+		$parse_spaces = false;
+		$parts = [];
+		foreach (explode(';', $agent) as $part) {
+			$parts[] = blockbot_clean_part($part);
+		}
+	} elseif (strpos($agent, ' - ') !== false) {
+		$parts = [];
+		foreach (explode(' - ', $agent) as $part) {
+			$parts[] = blockbot_clean_part($part);
+		}
+	} elseif ($parse_spaces) {
+		$parts = explode(' ', $agent);
+	} else {
+		$parts = [$agent];
+	}
+
+	if ($parse_spaces) {
+		$subparts = [];
+		foreach ($parts as $part) {
+			while (($pos_space = strpos($part, ' ')) !== false && ($pos_slash = strpos($part, '/')) !== false) {
+				if ($pos_space > $pos_slash) {
+					$subparts[] = substr($part, 0, $pos_space);
+					$part = trim(substr($part, $pos_space + 1), ' +,-;');
+				} else {
+					$subparts[] = $part;
+					$part = '';
+				}
+			}
+			if ($part != '') {
+				$subparts[] = $part;
+			}
+		}
+		$parts = $subparts;
+	}
+
+	foreach ($parts as $part) {
+		$part = trim($part, ' +');
+
+		if (!Network::isValidHttpUrl($part) && strpos($part, '/') !== false) {
+			$split = explode('/', $part);
+			array_pop($split);
+			$part = implode('/', $split);
+		}
+
+		$pos1 = strpos($part, "'");
+		$pos2 = strrpos($part, "'");
+		if ($pos1 != $pos2) {
+			$part = substr($part, 0, $pos1 - 1) . substr($part, $pos2 + 1);
+		}
+
+		$part = trim(preg_replace('=(.*) [\d\.]+=', '$1', $part), " +,-;\u{00AD}");
+		if (!empty($part)) {
+			$cleaned[] = $part;
+		}
+	}
+	return $cleaned;
 }
