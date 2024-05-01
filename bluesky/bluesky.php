@@ -97,7 +97,7 @@ function bluesky_load_config(ConfigFileManager $loader)
 
 function bluesky_check_item_notification(array &$notification_data)
 {
-	$did = DI::pConfig()->get($notification_data['uid'], 'bluesky', 'did');
+	$did = bluesky_get_user_did($notification_data['uid']);
 
 	if (!empty($did)) {
 		$notification_data['profiles'][] = $did;
@@ -342,7 +342,7 @@ function bluesky_settings(array &$data)
 	$def_enabled   = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'post_by_default') ?? false;
 	$pds           = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'pds');
 	$handle        = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'handle');
-	$did           = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'did');
+	$did           = bluesky_get_user_did(DI::userSession()->getLocalUserId());
 	$token         = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'access_token');
 	$import        = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'import') ?? false;
 	$import_feeds  = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'import_feeds') ?? false;
@@ -438,15 +438,7 @@ function bluesky_settings_post(array &$b)
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'friendica_handle', intval($_POST['bluesky_friendica_handle']));
 
 	if (!empty($handle)) {
-		if (empty($old_did) || $old_handle != $handle) {
-			$did = bluesky_get_did(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'handle'));
-			if (empty($did)) {
-				DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'status', BLUEKSY_STATUS_DID_FAIL);
-			}
-			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'did', $did);
-		} else {
-			$did = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'did');
-		}
+		$did = bluesky_get_user_did(DI::userSession()->getLocalUserId(), empty($old_did) || $old_handle != $handle);
 		if (!empty($did) && (empty($old_pds) || $old_handle != $handle)) {
 			$pds = bluesky_get_pds($did);
 			if (empty($pds)) {
@@ -664,7 +656,7 @@ function bluesky_create_activity(array $item, stdClass $parent = null)
 		return;
 	}
 
-	$did  = DI::pConfig()->get($uid, 'bluesky', 'did');
+	$did = bluesky_get_user_did($uid);
 
 	if ($item['verb'] == Activity::LIKE) {
 		$record = [
@@ -724,7 +716,7 @@ function bluesky_create_post(array $item, stdClass $root = null, stdClass $paren
 			$item['body'] .= "\n[url]" . $media['url'] . "[/url]\n";
 		}
 	}
-	
+
 	if (!empty($item['quote-uri-id'])) {
 		$quote = Post::selectFirstPost(['uri', 'plink'], ['uri-id' => $item['quote-uri-id']]);
 		if (!empty($quote)) {
@@ -733,7 +725,7 @@ function bluesky_create_post(array $item, stdClass $root = null, stdClass $paren
 			}
 		}
 	}
-	
+
 	$urls = bluesky_get_urls($item['body']);
 	$item['body'] = $urls['body'];
 
@@ -1242,7 +1234,7 @@ function bluesky_get_restrictions_for_user(stdClass $post, array $item, int $pos
 		return Item::CANT_REPLY;
 	}
 
-	if(empty($post->threadgate)) {
+	if (empty($post->threadgate)) {
 		return null;
 	}
 
@@ -1725,7 +1717,7 @@ function bluesky_get_did_by_wellknown(string $handle): string
 	if ($curlResult->isSuccess() && substr($curlResult->getBodyString(), 0, 4) == 'did:') {
 		$did = $curlResult->getBodyString();
 		if (!bluesky_valid_did($did, $handle)) {
-			Logger::notice('Invalid DID', ['handle' => $handle, 'did' => $did]);	
+			Logger::notice('Invalid DID', ['handle' => $handle, 'did' => $did]);
 			return '';
 		}
 		Logger::debug('Got DID by wellknown', ['handle' => $handle, 'did' => $did]);
@@ -1744,7 +1736,7 @@ function bluesky_get_did_by_dns(string $handle): string
 		if (!empty($record['txt']) && substr($record['txt'], 0, 4) == 'did=') {
 			$did = substr($record['txt'], 4);
 			if (!bluesky_valid_did($did, $handle)) {
-				Logger::notice('Invalid DID', ['handle' => $handle, 'did' => $did]);	
+				Logger::notice('Invalid DID', ['handle' => $handle, 'did' => $did]);
 				return '';
 			}
 			Logger::debug('Got DID by DNS', ['handle' => $handle, 'did' => $did]);
@@ -1761,12 +1753,12 @@ function bluesky_get_did(string $handle): string
 	//if ($did != '') {
 	//	return $did;
 	//}
-	
+
 	//$did = bluesky_get_did_by_wellknown($handle);
 	//if ($did != '') {
 	//	return $did;
 	//}
-	
+
 	$data = bluesky_get(BLUESKY_PDS . '/xrpc/com.atproto.identity.resolveHandle?handle=' . urlencode($handle));
 	if (empty($data) || empty($data->did)) {
 		return '';
@@ -1775,18 +1767,41 @@ function bluesky_get_did(string $handle): string
 	return $data->did;
 }
 
+function bluesky_get_user_did(int $uid, bool $refresh = false): string
+{
+	if (!$refresh) {
+		$did = DI::pConfig()->get($uid, 'bluesky', 'did');
+		if (!empty($did)) {
+			return $did;
+		}
+	}
+
+	$handle = DI::pConfig()->get($uid, 'bluesky', 'handle');
+	$did    = bluesky_get_did($handle);
+	if (empty($did)) {
+		Logger::notice('Error fetching DID for handle', ['uid' => $uid, 'handle' => $handle]);
+		DI::pConfig()->set($uid, 'bluesky', 'status', BLUEKSY_STATUS_DID_FAIL);
+	}
+	Logger::debug('Got DID for user', ['uid' => $uid, 'handle' => $handle, 'did' => $did]);
+	DI::pConfig()->set($uid, 'bluesky', 'did', $did);
+	return $did;
+}
+
 function bluesky_get_user_pds(int $uid): string
 {
 	$pds = DI::pConfig()->get($uid, 'bluesky', 'pds');
 	if (!empty($pds)) {
 		return $pds;
 	}
-	$did = DI::pConfig()->get($uid, 'bluesky', 'did');
-	if (empty($did)) {
+	$did = bluesky_get_user_did($uid);
+	if (!empty($did)) {
+		$pds = bluesky_get_pds($did);
+	} else {
 		Logger::notice('Empty did for user', ['uid' => $uid]);
-		return '';
 	}
-	$pds = bluesky_get_pds($did);
+	if (empty($pds)) {
+		return BLUESKY_PDS;
+	}
 	DI::pConfig()->set($uid, 'bluesky', 'pds', $pds);
 	return $pds;
 }
@@ -1849,7 +1864,7 @@ function bluesky_refresh_token(int $uid): string
 
 function bluesky_create_token(int $uid, string $password): string
 {
-	$did = DI::pConfig()->get($uid, 'bluesky', 'did');
+	$did = bluesky_get_user_did($uid);
 
 	$data = bluesky_post($uid, '/xrpc/com.atproto.server.createSession', json_encode(['identifier' => $did, 'password' => $password]), ['Content-type' => 'application/json']);
 	if (empty($data)) {
@@ -1906,12 +1921,12 @@ function bluesky_get(string $url, string $accept_content = HttpClientAccept::DEF
 	try {
 		$curlResult = DI::httpClient()->get($url, $accept_content, $opts);
 	} catch (\Exception $e) {
-		Logger::notice('Exception on get', ['exception' => $e]);
+		Logger::notice('Exception on get', ['url' => $url, 'exception' => $e]);
 		return null;
 	}
 
 	if (!$curlResult->isSuccess()) {
-		Logger::notice('API Error', ['error' => json_decode($curlResult->getBodyString()) ?: $curlResult->getBodyString()]);
+		Logger::notice('API Error', ['url' => $url, 'error' => json_decode($curlResult->getBodyString()) ?: $curlResult->getBodyString()]);
 		return null;
 	}
 
