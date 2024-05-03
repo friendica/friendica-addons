@@ -97,6 +97,10 @@ function bluesky_load_config(ConfigFileManager $loader)
 
 function bluesky_check_item_notification(array &$notification_data)
 {
+	if (empty($notification_data['uid'])) {
+		return;
+	}
+
 	$did = bluesky_get_user_did($notification_data['uid']);
 
 	if (!empty($did)) {
