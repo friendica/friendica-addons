@@ -1771,7 +1771,7 @@ function bluesky_get_did(string $handle): string
 	return $data->did;
 }
 
-function bluesky_get_user_did(int $uid, bool $refresh = false): string
+function bluesky_get_user_did(int $uid, bool $refresh = false): ?string
 {
 	if (!$refresh) {
 		$did = DI::pConfig()->get($uid, 'bluesky', 'did');
@@ -1781,7 +1781,9 @@ function bluesky_get_user_did(int $uid, bool $refresh = false): string
 	}
 
 	$handle = DI::pConfig()->get($uid, 'bluesky', 'handle');
-	$did    = bluesky_get_did($handle);
+	if (!empty($handle)) {
+		$did = bluesky_get_did($handle);
+	}
 	if (empty($did)) {
 		Logger::notice('Error fetching DID for handle', ['uid' => $uid, 'handle' => $handle]);
 		DI::pConfig()->set($uid, 'bluesky', 'status', BLUEKSY_STATUS_DID_FAIL);
