@@ -62,14 +62,14 @@ function blockbot_init_1()
 
 	$parts = blockbot_get_parts($_SERVER['HTTP_USER_AGENT']);
 
-	$logdata = ['isCrawler' => $isCrawler, 'agent' => $_SERVER['HTTP_USER_AGENT'], 'uri' => $_SERVER['REQUEST_URI'], 'parts' => $parts];
+	$logdata = ['isCrawler' => $isCrawler, 'agent' => $_SERVER['HTTP_USER_AGENT'], 'method' => $_SERVER['REQUEST_METHOD'], 'uri' => $_SERVER['REQUEST_URI'], 'parts' => $parts];
 
 	if ($isCrawler) {
 		blockbot_check_login_attempt($_SERVER['REQUEST_URI'], $logdata);
 	}
 
 	if (empty($parts)) {
-		Logger::debug('Known frontend found', $logdata);
+		Logger::debug('Known frontend found - accept', $logdata);
 		if ($isCrawler) {
 			blockbot_save('badly-parsed-agents', $_SERVER['HTTP_USER_AGENT']);
 		}
@@ -77,75 +77,77 @@ function blockbot_init_1()
 	}
 
 	if (blockbot_is_crawler($parts)) {
-		Logger::debug('Crawler found', $logdata);
+		Logger::debug('Crawler found - reject', $logdata);
 		blockbot_reject();
 	}
 
 	if (blockbot_is_searchbot($parts)) {
-		Logger::debug('Search bot found', $logdata);
+		Logger::debug('Search bot found - reject', $logdata);
 		blockbot_reject();
 	}
 
 	if (blockbot_is_unwanted($parts)) {
-		Logger::debug('Uncategorized unwanted agent found', $logdata);
+		Logger::debug('Uncategorized unwanted agent found - reject', $logdata);
 		blockbot_reject();
 	}
 
 	if (blockbot_is_security_checker($parts)) {
-		Logger::debug('Security checker found', $logdata);
 		if (!DI::config()->get('blockbot', 'security_checker')) {
+			Logger::debug('Security checker found - reject', $logdata);
 			blockbot_reject();
 		}
+		Logger::debug('Security checker found - accept', $logdata);
 		return;
 	}
 
 	if (blockbot_is_social_media($parts)) {
-		Logger::debug('Social media service found', $logdata);
+		Logger::debug('Social media service found - accept', $logdata);
 		return;
 	}
 
 	if (blockbot_is_fediverse_client($parts)) {
-		Logger::debug('Fediverse client found', $logdata);
+		Logger::debug('Fediverse client found - accept', $logdata);
 		return;
 	}
 
 	if (blockbot_is_feed_reader($parts)) {
-		Logger::debug('Feed reader found', $logdata);
+		Logger::debug('Feed reader found - accept', $logdata);
 		return;
 	}
 
 	if (blockbot_is_fediverse_tool($parts)) {
-		Logger::debug('Fediverse tool found', $logdata);
+		Logger::debug('Fediverse tool found - accept', $logdata);
 		return;
 	}
 
 	if (blockbot_is_service_agent($parts)) {
-		Logger::debug('Service agent found', $logdata);
+		Logger::debug('Service agent found - accept', $logdata);
 		return;
 	}
 
 	if (blockbot_is_monitor($parts)) {
-		Logger::debug('Monitoring service found', $logdata);
+		Logger::debug('Monitoring service found - accept', $logdata);
 		return;
 	}
 
 	if (blockbot_is_validator($parts)) {
-		Logger::debug('Validation service found', $logdata);
+		Logger::debug('Validation service found - accept', $logdata);
 		return;
 	}
 
 	if (blockbot_is_good_tool($parts)) {
-		Logger::debug('Uncategorized helpful service found', $logdata);
+		Logger::debug('Uncategorized helpful service found - accept', $logdata);
 		return;
 	}
 
 	// Needs to be checked at the end, since other services might use these libraries
 	if (blockbot_is_http_library($parts)) {
 		blockbot_check_login_attempt($_SERVER['REQUEST_URI'], $logdata);
-		Logger::debug('HTTP Library found', $logdata);
 		if (!DI::config()->get('blockbot', 'http_libraries')) {
+			Logger::debug('HTTP Library found - reject', $logdata);
 			blockbot_reject();
 		}
+		Logger::debug('HTTP Library found - accept', $logdata);
 		return;
 	}
 
@@ -161,7 +163,7 @@ function blockbot_init_1()
 	}
 
 	blockbot_save('bad-agents', $_SERVER['HTTP_USER_AGENT']);
-	Logger::notice('Blocked bot', $logdata);
+	Logger::notice('Possible bot found - reject', $logdata);
 	blockbot_reject();
 }
 
@@ -182,7 +184,7 @@ function blockbot_save($database, $userAgent)
 function blockbot_check_login_attempt(string $url, array $logdata)
 {
 	if (in_array(trim(parse_url($url, PHP_URL_PATH), '/'), ['login', 'lostpass', 'register'])) {
-		Logger::debug('Login attempt detected', $logdata);
+		Logger::debug('Login attempt detected - reject', $logdata);
 		blockbot_reject();
 	}
 }
@@ -198,9 +200,9 @@ function blockbot_is_unwanted(array $parts): bool
 	$agents = [
 		'oii-research', 'yisouspider', 'bots.retroverse.social', 'gaisbot', 'bloglines', 'emailwolf',
 		'webtech', 'facebookscraper', 'www.ecsl.cs.sunysb.edu/~maxim/cgi-bin/link',
-		'gulper', 'magellan', 'linkcheck', 'nerdybot',  'ms search robot', 'fast-webcrawler',
+		'gulper', 'magellan', 'linkcheck', 'nerdybot', 'ms search robot', 'fast-webcrawler',
 		'yioopbot', 'webster', 'www.admantx.com', 'openhosebot', 'lssrocketcrawler', 'dow jones searchbot',
-		'gomezagent', 'domainsigmacrawler', 'netseer crawler', 'gptbot', 'superbot', 'searchexpress',
+		'gomezagent', 'domainsigmacrawler', 'netseer crawler', 'superbot', 'searchexpress',
 		'alittle client', 'amazon-kendra', 'scanner.ducks.party', 'isscyberriskcrawler',
 		'google wireless transcoder',
 	];
@@ -222,6 +224,18 @@ function blockbot_is_unwanted(array $parts): bool
 function blockbot_is_crawler(array $parts): bool
 {
 	$agents = [
+		'+http://yourls.org', 'adbeat.com/policy', 'https://gtmetrix.com', 'hubspot', 'nutch-',
+		'openwebspider'
+	];
+	foreach ($parts as $part) {
+		foreach ($agents as $agent) {
+			if (strpos($part, $agent) !== false) {
+				return true;
+			}
+		}
+	}
+
+	$agents = [
 		'ahrefsbot', 'pinterest', 'proximic', 'applebot', 'synapseworkstation.3.2.1',
 		'slackbot-linkexpanding', 'semrushbot-sa', 'qwantify', 'google search console',
 		'tbot-nutch', 'screaming frog seo spider', 'exaleadcloudview', 'dotbot', 'exabot',
@@ -241,8 +255,26 @@ function blockbot_is_crawler(array $parts): bool
 		'nuzzel', 'boardreader blog indexer', 'hatena-favicon', 'nbertaupete95', 'scrapy',
 		"electronic frontier foundation's do not track verifier", 'synapse', 'trendsmapresolver',
 		'pinterestbot', 'um-ln', 'slack-imgproxy', 'diffbot', 'dataforseobot', 'bw', 'bitlybot',
-		'twingly recon-klondike', 'imagesiftbot', 'google', 'rogerbot', 'yahoocachesystem',
-		'vkshare', 'appid: s~virustotalcloud', 'clickagy intelligence bot v2',
+		'twingly recon-klondike', 'imagesiftbot', 'rogerbot', 'yahoocachesystem', 'favicon',
+		'vkshare', 'appid: s~virustotalcloud', 'clickagy intelligence bot v2', 'gptbot',
+		'archive.org_bot http://archive.org/details', 'wellknownbot', 'archiveteam archivebot',
+		'megaindex.ru', 'adbeat_bot', 'masscan', 'embedly', 'cloudflare-amp', 'exabot-thumbnails',
+		'yahoo ad monitoring', 'seokicks-robot', 'trendiction search', 'semrushbot-si', 'plukkie',
+		'hubpages v0.2.2', 'aream.bot', 'safednsbot', 'linkpadbot', 'gluten free crawler',
+		'turnitinbot', 'xovibot', 'domaincrawler', 'nettrack', 'domaincrawler', 'yak', 'bubing',
+		'netestate ne crawler', 'blexbot', 'the knowledge ai', 'optimizer', 'hubspot webcrawler',
+		'venuscrawler', 'adstxtcrawler', 'iframely', 'checkmarknetwork', 'semrushbot-ba',
+		'archive.org bot', 'aihitbot', 'sitesucker', 'adstxtlab.com crawler', 'jobboersebot',
+		'http://www.archive.org/details/archive.org_bot', 'heritrix', 'appid: s~snapchat-proxy',
+		'icc-crawler', 'mbcrawler', 'slackbot', 'trumind-crawler', 'newspaper', 'online-webceo-bot',
+		'haena-pepper', 'y! crawler', 'linkwalker', 'seznamemailproxy', 'seekport crawler',
+		'domainstatsbot', 'qwantify/mermoz', 'sprinklr', 'komodiabot', 'seoscanners.net',
+		'domainappender', 'mixrankbot', 'abonti', 'urlappendbot', 'sistrix crawler',
+		'hatenabookmark', 'metainspector', 'ezooms', 'quora link preview', 'semrushbot-bm',
+		'barkrowler', 'panscient.com', 'http://tweetedtimes.com', 'twingly recon',
+		'collection@infegy.com', 'mediatoolkitbot', 'cloudflare-amphtml', 'ramblermail',
+		'tineye', 'adscanner', 'datagnionbot', 'aa_crawler', 'http://www.profound.net/domainappender',
+		'appid: e~arsnova-filter-system', 'kinglandsystemscorp', 'crmnlcrawlagent', 'techfetch-bot',
 	];
 
 	foreach ($parts as $part) {
@@ -265,11 +297,20 @@ function blockbot_is_crawler(array $parts): bool
  */
 function blockbot_is_searchbot(array $parts): bool
 {
+	$agents = ['baiduspider'];
+	foreach ($parts as $part) {
+		foreach ($agents as $agent) {
+			if (strpos($part, $agent) !== false) {
+				return true;
+			}
+		}
+	}
+
 	$agents = [
 		'yahoo! slurp', 'linkcheck by siteimprove.com', 'googlebot', '360spider', 'haosouspider',
 		'mj12bot', 'feedfetcher-google', 'mediapartners-google', 'duckduckgo-favicons-bot',
 		'googlebot-mobile', 'gigablastopensource', 'bingbot', 'surveybot', 'yandexbot',
-		'baiduspider', 'google web preview', 'meanpathbot', 'wesee_bot:we_help_monitize_your_site',
+		'google web preview', 'meanpathbot', 'wesee_bot:we_help_monitize_your_site',
 		'seznambot', 'sogou web spider', 'linkdexbot', 'msnbot', 'smtbot', 'yandexmetrika',
 		'google-site-verification', 'netcraft ssl server survey - contact info@netcraft.com',
 		'orangebot', 'google-adwords-instant', 'googlebot-richsnippets', 'google-lens',
@@ -281,6 +322,15 @@ function blockbot_is_searchbot(array $parts): bool
 		'googleassociationservice', 'yandexwebmaster', 'yacybot', 'duckduckbot-https', 'yandexmobilebot',
 		'mail.ru_bot/fast', 'yandeximages', 'mail.ru_bot/img', 'ia_archiver', 'yandexblogs',
 		'yandexaccessibilitybot', 'yandeximageresizer', 'mail.ru_bot', 'yeti', 'obot', 'baiduspider-render',
+		'netcraft web server survey', 'yandexnews', 'google', 'yandexrenderresourcesbot',
+		'match by siteimprove.com', 'yandexsitelinks', 'yandexantivirus', 'daum', 'mail.ru_bot/robots',
+		'yandexmedia', 'msnbot-products', 'yandexvideo', 'yandexvertis', 'catexplorador', 'yandexcalendar',
+		'yandexfavicons', 'user-agent\x09baiduspider', 'baiduspider-image', 'yandexpagechecker', 'mojeekbot',
+		'adsbot-google-mobile', 'google-adwords-displayads-webrender', 'seznam screenshot-generator',
+		'yandexscreenshotbot', 'zumbot', 'tracemyfile', 'wotbox', 'google-adwords-express',
+		'google-adwords-displayads', 'google-youtube-links', 'yandexvideoparser', 'paperlibot',
+		'weborama-fetcher', 'googleproducer', 'coccoc', 'acoonbot', 'psbot', 'sosospider', 'voilabot',
+		'blekkobot', 'easouspider', 'omgili', 'yadirectfetcher', 'sogou pic spider', 'daumoa',
 	];
 
 	foreach ($parts as $part) {
@@ -304,7 +354,7 @@ function blockbot_is_security_checker(array $parts): bool
 		'bitsightbot', 'censysinspect', 'pathspider', 'repolookoutbot', 'sqlmap', 'ltx71',
 		'netsystemsresearch studies the availability of various services across the internet. our website is netsystemsresearch.com',
 		'expanse a palo alto networks company searches across the global ipv4 space multiple times per day to identify customers&#39',
-		'zgrab', 'nmap scripting engine', 'l9scan', 'riddler',
+		'zgrab', 'nmap scripting engine', 'l9scan', 'riddler', 'cloud mapping experiment. contact research@pdrlabs.net',
 	];
 
 	foreach ($parts as $part) {
@@ -324,7 +374,8 @@ function blockbot_is_security_checker(array $parts): bool
 function blockbot_is_validator(array $parts): bool
 {
 	$agents = [
-		'jigsaw', 'ssl labs', 'w3c_validator', 'w3c-checklink', 'p3p validator', 'csscheck',
+		'jigsaw', 'ssl labs', 'w3c_validator', 'w3c-checklink', 'p3p validator', 'csscheck', 'validator.nu',
+		'google-structured-data-testing-tool https://search.google.com/structured-data', 'w3c_unicorn',
 	];
 
 	foreach ($parts as $part) {
@@ -345,7 +396,9 @@ function blockbot_is_monitor(array $parts): bool
 {
 	$agents = [
 		'alexa site audit', 'catchpoint', 'google page speed insights', 'checkhost',
-		'poduptime', 'chrome-lighthouse', 'zabbix', 'cloudflare-alwaysonline',
+		'poduptime', 'chrome-lighthouse', 'zabbix', 'cloudflare-alwaysonline', 'ptst',
+		'pingadmin.ru', 'pingdomtms', 'nimbostratus-bot', 'uptimebot', 'uptimerobot',
+		'http://notifyninja.com/monitoring', 'http://www.freewebmonitoring.com',
 	];
 
 	foreach ($parts as $part) {
@@ -382,14 +435,14 @@ function blockbot_is_social_media(array $parts): bool
 		'firefish', 'activity-relay', 'juick', 'camo', 'python/federation', 'nextcloud',
 		'snac', 'bovine', 'takahe', 'freedica', 'gnu social', 'microblogpub',
 		'mbin', 'mammoth', 'kbinbot', 'honksnonk', 'misskeymediaproxy', 'kbinbot', 'jistflow',
-		'mastodon/3.4.1 fedibird', 'fedibird', 'funkwhale',
+		'mastodon/3.4.1 fedibird', 'fedibird', 'funkwhale', 'linkedinbot',
 		'wafrn-cache-generator', 'simple social network', 'mbinbot', 'wordpress.com',
 		'catnip', 'castopod', 'enby-town', 'vernissage', 'iceshrimp.net', 'plasmatrap',
 		'imgproxy', 'rustypub', 'flipboard activitypub', 'gnu social activitypub plugin',
 		'micro.blog', 'mastodon-bookmark-rss', 'bookwyrm', 'damus', 'primal', 'misskeyadmin',
 		'ruby, mastodon', 'nextcloud social', 'camo asset proxy', 'smithereen', 'sorasns',
 		'cherrypick', 'bonfire activitypub federation', 'upub+0.1.0', 'plume', 'incestoma',
-		'gyptazyfedi', 'apogee', 'quolibet',
+		'gyptazyfedi', 'apogee', 'quolibet', 'magpie-crawler', 'redditbot', 'facebookplatform',
 	];
 
 	foreach ($parts as $part) {
@@ -441,7 +494,7 @@ function blockbot_is_feed_reader(array $parts): bool
 		'windows-rss-platform', 'feedshow', 'feedreader', 'rssbandit', 'everyfeed-spider',
 		'feeeed', 'spacecowboys android rss reader', 'gregarius', 'feedspot',
 		'feedspot ssl asset proxy', 'newsgator', 'newsgator fetchlinks extension',
-		'akregator',
+		'akregator', 'appid: s~feedly-nikon3',
 	];
 
 	foreach ($parts as $part) {
@@ -482,11 +535,21 @@ function blockbot_is_fediverse_tool(array $parts): bool
  */
 function blockbot_is_service_agent(array $parts): bool
 {
+	$agents = ['wordpress.com'];
+	foreach ($parts as $part) {
+		foreach ($agents as $agent) {
+			if (strpos($part, $agent) !== false) {
+				return true;
+			}
+		}
+	}
+
 	$agents = [
 		'chrome privacy preserving prefetch proxy', 'http compression test', 'microsoftpreview',
 		'pocketimagecache', 'wordpress', 'skypeuripreview preview', 'wordpress.com', 'discordbot',
 		'summalybot', 'livelapbot', 'whatsapp', 'facebot', 'skypeuripreview',
-		'plasmatrap image proxy server', 'grammarly',
+		'plasmatrap image proxy server', 'grammarly', 'browsershots', 'google-apps-script',
+		'yahoomailproxy', 'pocketparser', 'apachebench',
 	];
 
 	foreach ($parts as $part) {
@@ -505,8 +568,17 @@ function blockbot_is_service_agent(array $parts): bool
  */
 function blockbot_is_http_library(array $parts): bool
 {
-	if ((count($parts) == 1) && in_array($parts[0], ['okhttp', 'useragent'])) {
+	if ((count($parts) == 1) && in_array($parts[0], ['okhttp', 'useragent', 'faraday'])) {
 		return true;
+	}
+
+	$agents = ['faraday '];
+	foreach ($parts as $part) {
+		foreach ($agents as $agent) {
+			if (strpos($part, $agent) !== false) {
+				return true;
+			}
+		}
 	}
 
 	$agents = [
@@ -522,7 +594,9 @@ function blockbot_is_http_library(array $parts): bool
 		'cpp-httplib', 'fuzz faster u fool v1.3.1-dev', 'fuzz faster u fool v1.5.0-dev',
 		'go http package', 'go-resty', 'http.rb', 'ivre-masscan', 'java1.0.21.0',
 		'jsdom', 'python-urllib3', 'reactornetty', 'req', 'restsharp', 'ruby-rdf-distiller',
-		'pycurl',
+		'pycurl', 'fdm', 'fdmx', 'lua-resty-http', 'python-httplib2', 'anyevent-http',
+		'node-superagent', 'unirest-java', 'gvfs', 'http_request2', 'java browser', 'cakephp',
+		'curly http client', 'lavf', 'typhoeus',
 	];
 
 	foreach ($parts as $part) {
@@ -544,7 +618,7 @@ function blockbot_is_good_tool(array $parts): bool
 	$agents = [
 		'easy-feed-oven', 'cutycapt', 'rss-is-dead.lol web bot', 'dnt-policy@eff.org',
 		'https://socnetv.org', 'opengraphreader', 'trendfetcher', 'iabot', 'rss-is-dead.lol feed bot',
-		'androiddownloadmanager', 'readybot.io', 'hydra', 'httrack', 'vlc', 'wellknownbot', 'wdg_validator', 'download demon',
+		'androiddownloadmanager', 'readybot.io', 'hydra', 'httrack', 'vlc', 'wdg_validator', 'download demon',
 	];
 
 
