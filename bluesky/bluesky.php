@@ -102,10 +102,11 @@ function bluesky_check_item_notification(array &$notification_data)
 	}
 
 	$did = bluesky_get_user_did($notification_data['uid']);
-
-	if (!empty($did)) {
-		$notification_data['profiles'][] = $did;
+	if (empty($did)) {
+		return;
 	}
+
+	$notification_data['profiles'][] = $did;
 }
 
 function bluesky_probe_detect(array &$hookData)
@@ -233,7 +234,7 @@ function bluesky_follow(array &$hook_data)
 
 	$post = [
 		'collection' => 'app.bsky.graph.follow',
-		'repo'       => DI::pConfig()->get($hook_data['uid'], 'bluesky', 'did'),
+		'repo'       => bluesky_get_user_did($hook_data['uid']),
 		'record'     => $record
 	];
 
@@ -286,7 +287,7 @@ function bluesky_block(array &$hook_data)
 
 	$post = [
 		'collection' => 'app.bsky.graph.block',
-		'repo'       => DI::pConfig()->get($hook_data['uid'], 'bluesky', 'did'),
+		'repo'       => bluesky_get_user_did($hook_data['uid']),
 		'record'     => $record
 	];
 
@@ -511,6 +512,10 @@ function bluesky_cron()
 
 	$pconfigs = DBA::selectToArray('pconfig', [], ['cat' => 'bluesky', 'k' => 'import', 'v' => true]);
 	foreach ($pconfigs as $pconfig) {
+		if (empty(bluesky_get_user_did($pconfig['uid']))) {
+			continue;
+		}
+
 		if ($abandon_days != 0) {
 			if (!DBA::exists('user', ["`uid` = ? AND `login_date` >= ?", $pconfig['uid'], $abandon_limit])) {
 				Logger::notice('abandoned account: timeline from user will not be imported', ['user' => $pconfig['uid']]);
@@ -661,6 +666,9 @@ function bluesky_create_activity(array $item, stdClass $parent = null)
 	}
 
 	$did = bluesky_get_user_did($uid);
+	if (empty($did)) {
+		return;
+	}
 
 	if ($item['verb'] == Activity::LIKE) {
 		$record = [
@@ -768,7 +776,7 @@ function bluesky_create_post(array $item, stdClass $root = null, stdClass $paren
 
 		$post = [
 			'collection' => 'app.bsky.feed.post',
-			'repo'       => DI::pConfig()->get($uid, 'bluesky', 'did'),
+			'repo'       => bluesky_get_user_did($uid),
 			'record'     => $record
 		];
 
@@ -1781,33 +1789,37 @@ function bluesky_get_user_did(int $uid, bool $refresh = false): ?string
 	}
 
 	$handle = DI::pConfig()->get($uid, 'bluesky', 'handle');
-	if (!empty($handle)) {
-		$did = bluesky_get_did($handle);
+	if (empty($handle)) {
+		return null;
 	}
+
+	$did = bluesky_get_did($handle);
 	if (empty($did)) {
-		Logger::notice('Error fetching DID for handle', ['uid' => $uid, 'handle' => $handle]);
-		DI::pConfig()->set($uid, 'bluesky', 'status', BLUEKSY_STATUS_DID_FAIL);
+		return null;
 	}
+
 	Logger::debug('Got DID for user', ['uid' => $uid, 'handle' => $handle, 'did' => $did]);
 	DI::pConfig()->set($uid, 'bluesky', 'did', $did);
 	return $did;
 }
 
-function bluesky_get_user_pds(int $uid): string
+function bluesky_get_user_pds(int $uid): ?string
 {
 	$pds = DI::pConfig()->get($uid, 'bluesky', 'pds');
 	if (!empty($pds)) {
 		return $pds;
 	}
+
 	$did = bluesky_get_user_did($uid);
-	if (!empty($did)) {
-		$pds = bluesky_get_pds($did);
-	} else {
-		Logger::notice('Empty did for user', ['uid' => $uid]);
+	if (empty($did)) {
+		return null;
 	}
+
+	$pds = bluesky_get_pds($did);
 	if (empty($pds)) {
-		return BLUESKY_PDS;
+		return null;
 	}
+
 	DI::pConfig()->set($uid, 'bluesky', 'pds', $pds);
 	return $pds;
 }
@@ -1871,6 +1883,9 @@ function bluesky_refresh_token(int $uid): string
 function bluesky_create_token(int $uid, string $password): string
 {
 	$did = bluesky_get_user_did($uid);
+	if (empty($did)) {
+		return '';
+	}
 
 	$data = bluesky_post($uid, '/xrpc/com.atproto.server.createSession', json_encode(['identifier' => $did, 'password' => $password]), ['Content-type' => 'application/json']);
 	if (empty($data)) {
@@ -1893,8 +1908,13 @@ function bluesky_xrpc_post(int $uid, string $url, $parameters): ?stdClass
 
 function bluesky_post(int $uid, string $url, string $params, array $headers): ?stdClass
 {
+	$pds = bluesky_get_user_pds($uid);
+	if (empty($pds)) {
+		return null;
+	}
+
 	try {
-		$curlResult = DI::httpClient()->post(bluesky_get_user_pds($uid) . $url, $params, $headers);
+		$curlResult = DI::httpClient()->post($pds . $url, $params, $headers);
 	} catch (\Exception $e) {
 		Logger::notice('Exception on post', ['exception' => $e]);
 		DI::pConfig()->set($uid, 'bluesky', 'status', BLUEKSY_STATUS_API_FAIL);
@@ -1917,7 +1937,12 @@ function bluesky_xrpc_get(int $uid, string $url, array $parameters = []): ?stdCl
 		$url .= '?' . http_build_query($parameters);
 	}
 
-	$data = bluesky_get(bluesky_get_user_pds($uid) . '/xrpc/' . $url, HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
+	$pds = bluesky_get_user_pds($uid);
+	if (empty($pds)) {
+		return null;
+	}
+
+	$data = bluesky_get($pds . '/xrpc/' . $url, HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
 	DI::pConfig()->set($uid, 'bluesky', 'status', is_null($data) ? BLUEKSY_STATUS_API_FAIL : BLUEKSY_STATUS_SUCCESS);
 	return $data;
 }
