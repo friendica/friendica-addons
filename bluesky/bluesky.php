@@ -1506,6 +1506,10 @@ function bluesky_fetch_missing_post(string $uri, int $uid, int $fetch_uid, int $
 	}
 
 	$class = bluesky_get_uri_class($uri);
+	if (empty($class)) {
+		return $fallback;
+	}
+
 	$fetch_uri = $class->uri;
 
 	Logger::debug('Fetch missing post', ['level' => $level, 'uid' => $uid, 'uri' => $uri]);
