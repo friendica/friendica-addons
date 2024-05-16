@@ -614,7 +614,7 @@ function tumblr_send_legacy(array $b)
 		$params['data'] = [];
 		foreach ($media as $photo) {
 			if ($photo['type'] == Post\Media::IMAGE) {
-				if (Network::isLocalLink($photo['url']) && ($data = Photo::getResourceData($photo['url']))) {
+				if (DI::baseUrl()->isLocalUrl($photo['url']) && ($data = Photo::getResourceData($photo['url']))) {
 					$photo = Photo::selectFirst([], ["`resource-id` = ? AND `scale` > ?", $data['guid'], 0]);
 					if (!empty($photo)) {
 						$params['data'][] = Photo::getImageDataForPhoto($photo);
