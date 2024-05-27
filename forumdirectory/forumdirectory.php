@@ -8,7 +8,6 @@
  * Note: Please use Group Directory instead
  */
 
-use Friendica\App;
 use Friendica\Content\Nav;
 use Friendica\Content\Pager;
 use Friendica\Content\Widget;
@@ -16,8 +15,8 @@ use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
-use Friendica\Model\Profile;
 use Friendica\Model\User;
+use Friendica\Security\OpenWebAuth;
 
 global $forumdirectory_search;
 
@@ -82,7 +81,7 @@ function forumdirectory_content()
 	$gdirpath = '';
 	$dirurl = DI::config()->get('system', 'directory');
 	if (strlen($dirurl)) {
-		$gdirpath = Profile::zrl($dirurl, true);
+		$gdirpath = OpenWebAuth::zrl($dirurl, true);
 	}
 
 	$sql_extra = '';
