@@ -13,8 +13,8 @@ use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
-use Friendica\Model\Profile;
 use Friendica\Model\User;
+use Friendica\Security\OpenWebAuth;
 
 global $groupdirectory_search;
 
@@ -79,7 +79,7 @@ function groupdirectory_content()
 	$gdirpath = '';
 	$dirurl   = DI::config()->get('system', 'directory');
 	if (strlen($dirurl)) {
-		$gdirpath = Profile::zrl($dirurl, true);
+		$gdirpath = OpenWebAuth::getZrlUrl($dirurl, true);
 	}
 
 	$sql_extra = '';
