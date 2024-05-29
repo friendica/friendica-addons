@@ -79,7 +79,7 @@ function groupdirectory_content()
 	$gdirpath = '';
 	$dirurl   = DI::config()->get('system', 'directory');
 	if (strlen($dirurl)) {
-		$gdirpath = OpenWebAuth::zrl($dirurl, true);
+		$gdirpath = OpenWebAuth::getZrlUrl($dirurl, true);
 	}
 
 	$sql_extra = '';
