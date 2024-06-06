@@ -1217,7 +1217,11 @@ function bluesky_get_header(stdClass $post, string $uri, int $uid, int $fetch_ui
 		'source'        => json_encode($post),
 	];
 
+	$account = Contact::selectFirstAccountUser(['pid'], ['id' => $contact['id']]);
+
+	$item['author-id'] = $account['pid'];
 	$item['uri-id']       = ItemURI::getIdByURI($uri);
+	$item['owner-id']     = $item['author-id'];
 	$item['owner-name']   = $item['author-name'];
 	$item['owner-link']   = $item['author-link'];
 	$item['owner-avatar'] = $item['author-avatar'];
@@ -1592,7 +1596,7 @@ function bluesky_process_thread(stdClass $thread, int $uid, int $fetch_uid, int 
 
 function bluesky_get_contact(stdClass $author, int $uid, int $fetch_uid): array
 {
-	$condition = ['network' => Protocol::BLUESKY, 'uid' => 0, 'url' => $author->did];
+	$condition = ['network' => Protocol::BLUESKY, 'uid' => 0, 'nurl' => $author->did];
 	$contact = Contact::selectFirst(['id', 'updated'], $condition);
 
 	$update = empty($contact) || $contact['updated'] < DateTimeFormat::utc('now -24 hours');
@@ -1610,7 +1614,7 @@ function bluesky_get_contact(stdClass $author, int $uid, int $fetch_uid): array
 	}
 
 	if ($uid != 0) {
-		$condition = ['network' => Protocol::BLUESKY, 'uid' => $uid, 'url' => $author->did];
+		$condition = ['network' => Protocol::BLUESKY, 'uid' => $uid, 'nurl' => $author->did];
 
 		$contact = Contact::selectFirst(['id', 'rel', 'uid'], $condition);
 		if (!isset($fields['rel']) && isset($contact['rel'])) {
