@@ -355,8 +355,11 @@ function bluesky_settings(array &$data)
 
 	if (DI::config()->get('bluesky', 'friendica_handles')) {
 		$self = User::getById(DI::userSession()->getLocalUserId(), ['nickname']);
-		$handle = $self['nickname'] . '.' . DI::baseUrl()->getHost();
-		$friendica_handle = ['bluesky_friendica_handle', DI::l10n()->t('Allow to use %s as your Bluesky handle.', $handle), $custom_handle, DI::l10n()->t('When enabled, you can use %s as your Bluesky handle. After you enabled this option, please go to https://bsky.app/settings and select to change your handle. Select that you have got your own domain. Then enter %s and select "No DNS Panel". Then select "Verify Text File".', $handle, $handle)];
+		$host_handle = $self['nickname'] . '.' . DI::baseUrl()->getHost();
+		$friendica_handle = ['bluesky_friendica_handle', DI::l10n()->t('Allow to use %s as your Bluesky handle.', $host_handle), $custom_handle, DI::l10n()->t('When enabled, you can use %s as your Bluesky handle. After you enabled this option, please go to https://bsky.app/settings and select to change your handle. Select that you have got your own domain. Then enter %s and select "No DNS Panel". Then select "Verify Text File".', $host_handle, $host_handle)];
+		if ($custom_handle) {
+			$handle = $host_handle;
+		}
 	} else {
 		$friendica_handle = [];
 	}
@@ -369,7 +372,7 @@ function bluesky_settings(array &$data)
 		'$import_feeds' => ['bluesky_import_feeds', DI::l10n()->t('Import the pinned feeds'), $import_feeds, DI::l10n()->t('When activated, Posts will be imported from all the feeds that you pinned in Bluesky.')],
 		'$custom_handle' => $friendica_handle,
 		'$pds'          => ['bluesky_pds', DI::l10n()->t('Personal Data Server'), $pds, DI::l10n()->t('The personal data server (PDS) is the system that hosts your profile.'), '', 'readonly'],
-		'$handle'       => ['bluesky_handle', DI::l10n()->t('Bluesky handle'), $handle],
+		'$handle'       => ['bluesky_handle', DI::l10n()->t('Bluesky handle'), $handle, '', '', $custom_handle ? 'readonly' : ''],
 		'$did'          => ['bluesky_did', DI::l10n()->t('Bluesky DID'), $did, DI::l10n()->t('This is the unique identifier. It will be fetched automatically, when the handle is entered.'), '', 'readonly'],
 		'$password'     => ['bluesky_password', DI::l10n()->t('Bluesky app password'), '', DI::l10n()->t("Please don't add your real password here, but instead create a specific app password in the Bluesky settings.")],
 		'$status'       => bluesky_get_status($handle, $did, $pds, $token),
@@ -440,7 +443,7 @@ function bluesky_settings_post(array &$b)
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'handle',           $handle);
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'import',           intval($_POST['bluesky_import']));
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'import_feeds',     intval($_POST['bluesky_import_feeds']));
-	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'friendica_handle', intval($_POST['bluesky_friendica_handle']));
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'friendica_handle', intval($_POST['bluesky_friendica_handle'] ?? false));
 
 	if (!empty($handle)) {
 		$did = bluesky_get_user_did(DI::userSession()->getLocalUserId(), empty($old_did) || $old_handle != $handle);
@@ -510,7 +513,7 @@ function bluesky_cron()
 
 	$abandon_limit = date(DateTimeFormat::MYSQL, time() - $abandon_days * 86400);
 
-	$pconfigs = DBA::selectToArray('pconfig', [], ['cat' => 'bluesky', 'k' => 'import', 'v' => true]);
+	$pconfigs = DBA::selectToArray('pconfig', [], ["`cat` = ? AND `k` IN (?, ?) AND `v`", 'bluesky', 'import', 'import_feeds']);
 	foreach ($pconfigs as $pconfig) {
 		if (empty(bluesky_get_user_did($pconfig['uid']))) {
 			continue;
@@ -527,8 +530,9 @@ function bluesky_cron()
 		bluesky_get_token($pconfig['uid']);
 
 		Worker::add(['priority' => Worker::PRIORITY_MEDIUM, 'force_priority' => true], 'addon/bluesky/bluesky_notifications.php', $pconfig['uid'], $last);
-		Worker::add(['priority' => Worker::PRIORITY_MEDIUM, 'force_priority' => true], 'addon/bluesky/bluesky_timeline.php', $pconfig['uid'], $last);
-
+		if (DI::pConfig()->get($pconfig['uid'], 'bluesky', 'import')) {
+			Worker::add(['priority' => Worker::PRIORITY_MEDIUM, 'force_priority' => true], 'addon/bluesky/bluesky_timeline.php', $pconfig['uid'], $last);
+		}
 		if (DI::pConfig()->get($pconfig['uid'], 'bluesky', 'import_feeds')) {
 			$feeds = bluesky_get_feeds($pconfig['uid']);
 			foreach ($feeds as $feed) {
