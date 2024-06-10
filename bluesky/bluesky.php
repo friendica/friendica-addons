@@ -516,6 +516,7 @@ function bluesky_cron()
 	$pconfigs = DBA::selectToArray('pconfig', [], ["`cat` = ? AND `k` IN (?, ?) AND `v`", 'bluesky', 'import', 'import_feeds']);
 	foreach ($pconfigs as $pconfig) {
 		if (empty(bluesky_get_user_did($pconfig['uid']))) {
+			Logger::debug('User has got no valid DID', ['uid' => $pconfig['uid']]);
 			continue;
 		}
 
@@ -527,6 +528,7 @@ function bluesky_cron()
 		}
 
 		// Refresh the token now, so that it doesn't need to be refreshed in parallel by the following workers
+		Logger::debug('Refresh the token', ['uid' => $pconfig['uid']]);
 		bluesky_get_token($pconfig['uid']);
 
 		Worker::add(['priority' => Worker::PRIORITY_MEDIUM, 'force_priority' => true], 'addon/bluesky/bluesky_notifications.php', $pconfig['uid'], $last);
@@ -534,12 +536,18 @@ function bluesky_cron()
 			Worker::add(['priority' => Worker::PRIORITY_MEDIUM, 'force_priority' => true], 'addon/bluesky/bluesky_timeline.php', $pconfig['uid'], $last);
 		}
 		if (DI::pConfig()->get($pconfig['uid'], 'bluesky', 'import_feeds')) {
+			Logger::debug('Fetch feeds for user', ['uid' => $pconfig['uid']]);
 			$feeds = bluesky_get_feeds($pconfig['uid']);
 			foreach ($feeds as $feed) {
 				Worker::add(['priority' => Worker::PRIORITY_MEDIUM, 'force_priority' => true], 'addon/bluesky/bluesky_feed.php', $pconfig['uid'], $feed, $last);
 			}
 		}
+		Logger::debug('Polling done for user', ['uid' => $pconfig['uid']]);
 	}
+
+	Logger::notice('Polling done for all users');
+
+	DI::keyValue()->set('bluesky_last_poll', time());
 
 	$last_clean = DI::keyValue()->get('bluesky_last_clean');
 	if (empty($last_clean) || ($last_clean + 86400 < time())) {
@@ -554,8 +562,6 @@ function bluesky_cron()
 	}
 
 	Logger::notice('cron_end');
-
-	DI::keyValue()->set('bluesky_last_poll', time());
 }
 
 function bluesky_hook_fork(array &$b)
