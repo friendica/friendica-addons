@@ -68,6 +68,7 @@ const BLUEKSY_STATUS_TOKEN_FAIL = 13;
 const BLUESKY_DIRECTORY = 'https://plc.directory'; // Path to the directory server service to fetch the PDS of a given DID
 const BLUESKY_PDS       = 'https://bsky.social';   // Path to the personal data server service (PDS) to fetch the DID for a given handle
 const BLUESKY_WEB       = 'https://bsky.app';      // Path to the web interface with the user profile and posts
+const BLUESKY_HOSTNAME  = 'bsky.social';           // Host name to be added to the handle if incomplete
 
 function bluesky_install()
 {
@@ -1719,6 +1720,9 @@ function bluesky_get_feeds(int $uid): array
 {
 	$type = '$type';
 	$preferences = bluesky_get_preferences($uid);
+	if (empty($preferences) || empty($preferences->preferences)) {
+		return [];
+	}
 	foreach ($preferences->preferences as $preference) {
 		if ($preference->$type == 'app.bsky.actor.defs#savedFeedsPref') {
 			return $preference->pinned ?? [];
@@ -1727,7 +1731,7 @@ function bluesky_get_feeds(int $uid): array
 	return [];
 }
 
-function bluesky_get_preferences(int $uid): stdClass
+function bluesky_get_preferences(int $uid): ?stdClass
 {
 	$cachekey = 'bluesky:preferences:' . $uid;
 	$data = DI::cache()->get($cachekey);
@@ -1736,6 +1740,9 @@ function bluesky_get_preferences(int $uid): stdClass
 	}
 
 	$data = bluesky_xrpc_get($uid, 'app.bsky.actor.getPreferences');
+	if (empty($data)) {
+		return null;
+	}
 
 	DI::cache()->set($cachekey, $data, Duration::HOUR);
 	return $data;
@@ -1778,6 +1785,14 @@ function bluesky_get_did_by_dns(string $handle): string
 
 function bluesky_get_did(string $handle): string
 {
+	if ($handle == '') {
+		return '';
+	}
+
+	if (strpos($handle, '.') === false) {
+		$handle .= '.' . BLUESKY_HOSTNAME;
+	}
+
 	// Deactivated at the moment, since it isn't reliable by now
 	//$did = bluesky_get_did_by_dns($handle);
 	//if ($did != '') {
