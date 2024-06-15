@@ -608,6 +608,15 @@ function tumblr_send_legacy(array $b)
 	$body = BBCode::removeShareInformation($b['body']);
 	$body = Post\Media::removeFromEndOfBody($body);
 
+	if (!empty($b['quote-uri-id'])) {
+		$quote = Post::selectFirstPost(['uri', 'plink'], ['uri-id' => $b['quote-uri-id']]);
+		if (!empty($quote)) {
+			if ((strpos($body, $quote['plink'] ?: $quote['uri']) === false) && (strpos($body, $quote['uri']) === false)) {
+				$body .= "\n[url]" . ($quote['plink'] ?: $quote['uri']) . "[/url]\n";
+			}
+		}
+	}
+
 	if ($photo !== false) {
 		$params['type'] = 'photo';
 		$params['caption'] = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
@@ -648,7 +657,7 @@ function tumblr_send_legacy(array $b)
 	} else {
 		$params['type']  = 'text';
 		$params['title'] = $title;
-		$params['body']  = BBCode::convertForUriId($b['uri-id'], $b['body'], BBCode::CONNECTORS);
+		$params['body']  = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
 	}
 
 	if (isset($params['caption']) && (trim($title) != '')) {
