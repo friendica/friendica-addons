@@ -50,7 +50,11 @@ function js_upload_post_init(array &$b)
 	// list of valid extensions
 	$allowedExtensions = [];
 	foreach (Images::IMAGETYPES as $type) {
-		$allowedExtensions[] = image_type_to_extension($type, false);
+		$extension = image_type_to_extension($type, false);
+		if ($extension == 'jpeg') {
+			$allowedExtensions[] = 'jpg';
+		}
+		$allowedExtensions[] = $extension;
 	}
 
 	// max file size in bytes
@@ -216,9 +220,9 @@ class qqFileUploader
 			return ['error' => DI::l10n()->t('Uploaded file is empty')];
 		}
 
-//		if ($size > $this->sizeLimit) {
-//			return array('error' => DI::l10n()->t('Uploaded file is too large'));
-//		}
+		//		if ($size > $this->sizeLimit) {
+		//			return array('error' => DI::l10n()->t('Uploaded file is too large'));
+		//		}
 
 		$maximagesize = Strings::getBytesFromShorthand(DI::config()->get('system', 'maximagesize'));
 
