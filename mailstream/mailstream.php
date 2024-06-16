@@ -220,6 +220,11 @@ function mailstream_do_images(array &$item, array &$attachments)
 		$cookiejar = tempnam(System::getTempPath(), 'cookiejar-mailstream-');
 		try {
 			$curlResult = DI::httpClient()->fetchFull($url, HttpClientAccept::DEFAULT, 0, $cookiejar);
+			if (!$curlResult->isSuccess()) {
+				Logger::debug('mailstream: fetch image url failed', [
+					'url' => $url, 'item_id' => $item['id'], 'return_code' => $curlResult->getReturnCode()]);
+				continue;
+			}
 		} catch (InvalidArgumentException $e) {
 			Logger::error('mailstream_do_images exception fetching url', ['url' => $url, 'item_id' => $item['id']]);
 			continue;
