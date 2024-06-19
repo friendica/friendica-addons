@@ -466,6 +466,7 @@ function blockbot_is_fediverse_client(array $parts): bool
 		'megalodonandroid', 'fedilab', 'mastodonapp', 'toot!', 'intravnews',
 		'pixeldroid', 'greatnews', 'protopage', 'newsfox', 'vienna', 'wp-urldetails', 'husky',
 		'activitypub-go-http-client', 'mobilesafari', 'mastodon-ios', 'mastodonpy', 'techniverse',
+		'relatica',
 	];
 
 	foreach ($parts as $part) {
