@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-21 19:17-0500\n"
+"POT-Creation-Date: 2023-04-29 06:56+0000\n"
 "PO-Revision-Date: 2014-06-23 12:58+0000\n"
 "Last-Translator: Sylke Vicious <silkevicious@gmail.com>, 2021\n"
 "Language-Team: Italian (http://app.transifex.com/Friendica/friendica/language/it/)\n"
@@ -20,54 +20,71 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
-#: tumblr.php:39
+#: tumblr.php:243
 msgid "Permission denied."
 msgstr "Permesso negato."
 
-#: tumblr.php:69
+#: tumblr.php:296
 msgid "Save Settings"
 msgstr "Salva Impostazioni"
 
-#: tumblr.php:71
+#: tumblr.php:297
 msgid "Consumer Key"
 msgstr "Consumer Key"
 
-#: tumblr.php:72
+#: tumblr.php:298
 msgid "Consumer Secret"
 msgstr "Consumer Secret"
 
-#: tumblr.php:177
-msgid "You are now authenticated to tumblr."
-msgstr "Sei autenticato su Tumblr."
+#: tumblr.php:299
+msgid "Maximum tags"
+msgstr ""
 
-#: tumblr.php:178
-msgid "return to the connector page"
-msgstr "ritorna alla pagina del connettore"
+#: tumblr.php:299
+msgid ""
+"Maximum number of tags that a user can follow. Enter 0 to deactivate the "
+"feature."
+msgstr ""
 
-#: tumblr.php:194
-msgid "Post to Tumblr"
-msgstr "Invia a Tumblr"
-
-#: tumblr.php:225
+#: tumblr.php:336
 msgid "Post to page:"
 msgstr "Invia alla pagina:"
 
-#: tumblr.php:231
+#: tumblr.php:342
 msgid "(Re-)Authenticate your tumblr page"
 msgstr "(Ri)Autenticati con la tua pagina Tumblr"
 
-#: tumblr.php:232
+#: tumblr.php:343
 msgid "You are not authenticated to tumblr"
 msgstr "Non sei autenticato su Tumblr"
 
-#: tumblr.php:237
+#: tumblr.php:348
 msgid "Enable Tumblr Post Addon"
 msgstr "Abilita componente aggiuntivo di invio a Tumblr"
 
-#: tumblr.php:238
+#: tumblr.php:349
 msgid "Post to Tumblr by default"
 msgstr "Invia sempre a Tumblr"
 
-#: tumblr.php:244
-msgid "Tumblr Export"
-msgstr "Esporta Tumblr"
+#: tumblr.php:350
+msgid "Import the remote timeline"
+msgstr ""
+
+#: tumblr.php:351
+msgid "Subscribed tags"
+msgstr ""
+
+#: tumblr.php:351
+#, php-format
+msgid ""
+"Comma separated list of up to %d tags that will be imported additionally to "
+"the timeline"
+msgstr ""
+
+#: tumblr.php:357
+msgid "Tumblr Import/Export"
+msgstr ""
+
+#: tumblr.php:375
+msgid "Post to Tumblr"
+msgstr "Invia a Tumblr"

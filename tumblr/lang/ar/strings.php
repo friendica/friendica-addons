@@ -7,4 +7,3 @@ function string_plural_select_ar($n){
 }}
 $a->strings['Permission denied.'] = 'الطلب مرفوض.';
 $a->strings['Save Settings'] = 'Save Settings';
-$a->strings['return to the connector page'] = 'الرجوع إلى صفحة الموصل';
