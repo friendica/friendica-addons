@@ -26,15 +26,6 @@ function ratioed_install()
 }
 
 /**
- * @brief Uninstallation hook for ratioed plugin
- */
-function ratioed_uninstall() {
-	Hook::unregister('moderation_users_tabs', 'addon/ratioed/ratioed.php', 'ratioed_users_tabs');
-
-	Logger::info("ratioed: uninstalled");
-}
-
-/**
  * This is a statement rather than an actual function definition. The simple
  * existence of this method is checked to figure out if the addon offers a
  * module.
