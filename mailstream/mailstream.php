@@ -144,12 +144,12 @@ function mailstream_post_hook(array &$item)
 {
 	mailstream_check_version();
 
-	if (!DI::pConfig()->get($item['uid'], 'mailstream', 'enabled')) {
-		Logger::debug('mailstream not enabled.', ['item' => $item['id'], 'uid' => $item['uid']]);
+	if ($item['uid'] === 0) {
+		Logger::debug('mailstream: root user, skipping item ' . $item['id']);
 		return;
 	}
-	if (!$item['uid']) {
-		Logger::debug('no uid', ['item' => $item['id']]);
+	if (!DI::pConfig()->get($item['uid'], 'mailstream', 'enabled')) {
+		Logger::debug('mailstream: not enabled.', ['item' => $item['id'], ' uid ' => $item['uid']]);
 		return;
 	}
 	if (!$item['contact-id']) {
