@@ -38,25 +38,6 @@ function mailstream_install()
 }
 
 /**
- * Enforces that mailstream_install has set up the current version
- */
-function mailstream_check_version()
-{
-	if (!is_null(DI::config()->get('mailstream', 'dbversion'))) {
-		DI::config()->delete('mailstream', 'dbversion');
-		Logger::info("old version detected, reinstalling");
-		mailstream_install();
-		Hook::loadHooks();
-		Hook::add(
-			'mailstream_convert_table_entries',
-			'addon/mailstream/mailstream.php',
-			'mailstream_convert_table_entries'
-		);
-		Hook::fork(Worker::PRIORITY_LOW, 'mailstream_convert_table_entries');
-	}
-}
-
-/**
  * This is a statement rather than an actual function definition. The simple
  * existence of this method is checked to figure out if the addon offers a
  * module.
@@ -142,8 +123,6 @@ function mailstream_send_hook(array $data)
  */
 function mailstream_post_hook(array &$item)
 {
-	mailstream_check_version();
-
 	if ($item['uid'] === 0) {
 		Logger::debug('mailstream: root user, skipping item ' . $item['id']);
 		return;
@@ -460,29 +439,6 @@ function mailstream_html_wrap(string &$text)
 	}
 	$text = implode($lines);
 	return $text;
-}
-
-/**
- * Convert v1 mailstream table entries to v2 workerqueue items
- */
-function mailstream_convert_table_entries()
-{
-	$ms_item_ids = DBA::selectToArray('mailstream_item', [], ['message-id', 'uri', 'uid', 'contact-id'], ["`mailstream_item`.`completed` IS NULL"]);
-	Logger::debug('processing items', ['count' => count($ms_item_ids)]);
-	foreach ($ms_item_ids as $ms_item_id) {
-		$send_hook_data = array('uid' => $ms_item_id['uid'],
-					'contact-id' => $ms_item_id['contact-id'],
-					'uri' => $ms_item_id['uri'],
-					'message_id' => $ms_item_id['message-id'],
-					'tries' => 0);
-		if (!$ms_item_id['message-id'] || !strlen($ms_item_id['message-id'])) {
-			Logger::info('item has no message-id', ['item' => $ms_item_id['id'], 'uri' => $ms_item_id['uri']]);
-			continue;
-		}
-		Logger::info('convert item to workerqueue', $send_hook_data);
-		Hook::fork(Worker::PRIORITY_LOW, 'mailstream_send_hook', $send_hook_data);
-	}
-	DBA::e('DROP TABLE `mailstream_item`');
 }
 
 /**
