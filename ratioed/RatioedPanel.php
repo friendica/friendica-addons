@@ -6,6 +6,7 @@ use Friendica\Content\Pager;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
+use Friendica\DI;
 use Friendica\Model\User;
 use Friendica\Module\Moderation\Users\Active;
 
@@ -17,6 +18,11 @@ class RatioedPanel extends Active
 	protected function content(array $request = []): string
 	{
 		Active::content();
+
+		if (isset(DI::args()->getArgv()[1]) and DI::args()->getArgv()[1] === 'help') {
+			$template = Renderer::getMarkupTemplate('/help.tpl', 'addon/ratioed/');
+			return Renderer::replaceMacros($template, array('$config' => DI::baseUrl() . '/settings/addon'));
+		}
 
 		$action = $this->parameters['action'] ?? '';
 		$uid	= $this->parameters['uid']	?? 0;
@@ -111,6 +117,7 @@ class RatioedPanel extends Active
 		return self::getTabsHTML('ratioed') . Renderer::replaceMacros($t, [
 			// strings //
 			'$title'		  => $this->t('Moderation'),
+			'$help_url'		  => $this->baseUrl . '/ratioed/help',
 			'$page'		   => $this->t('Behaviour'),
 			'$select_all'	 => $this->t('select all'),
 			'$delete'		 => $this->t('Delete'),
