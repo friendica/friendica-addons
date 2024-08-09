@@ -1946,6 +1946,7 @@ function bluesky_post(int $uid, string $url, string $params, array $headers): ?s
 		return null;
 	}
 
+	Item::incrementOutbound(Protocol::BLUESKY);
 	try {
 		$curlResult = DI::httpClient()->post($pds . $url, $params, $headers);
 	} catch (\Exception $e) {
@@ -1982,6 +1983,7 @@ function bluesky_xrpc_get(int $uid, string $url, array $parameters = []): ?stdCl
 
 function bluesky_get(string $url, string $accept_content = HttpClientAccept::DEFAULT, array $opts = []): ?stdClass
 {
+	Item::incrementInbound(Protocol::BLUESKY);
 	try {
 		$curlResult = DI::httpClient()->get($url, $accept_content, $opts);
 	} catch (\Exception $e) {

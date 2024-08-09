@@ -1326,6 +1326,7 @@ function tumblr_get_contact_by_url(string $url, int $uid): ?array
  */
 function tumblr_get(int $uid, string $url, array $parameters = []): stdClass
 {
+	Item::incrementInbound(Protocol::TUMBLR);
 	$url = 'https://api.tumblr.com/v2/' . $url;
 
 	if ($uid == 0) {
@@ -1355,6 +1356,7 @@ function tumblr_get(int $uid, string $url, array $parameters = []): stdClass
  */
 function tumblr_post(int $uid, string $url, array $parameters): stdClass
 {
+	Item::incrementOutbound(Protocol::TUMBLR);
 	$url = 'https://api.tumblr.com/v2/' . $url;
 
 	$curlResult = DI::httpClient()->post($url, $parameters, ['Authorization' => ['Bearer ' . tumblr_get_token($uid)]]);
