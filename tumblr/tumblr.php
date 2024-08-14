@@ -133,6 +133,7 @@ function tumblr_item_by_link(array &$hookData)
 	Logger::debug('Got post', ['blog' => $matches[1], 'id' => $matches[2], 'result' => $result->response->posts]);
 	if (!empty($result->response->posts)) {
 		$hookData['item_id'] = tumblr_process_post($result->response->posts[0], $hookData['uid'], Item::PR_FETCHED);
+		Item::incrementInbound(Protocol::TUMBLR);
 	}
 }
 
@@ -203,9 +204,9 @@ function tumblr_block(array &$hook_data)
 	$hook_data['result'] = ($result->meta->status <= 399);
 
 	if ($hook_data['result']) {
-		$cdata = Contact::getPublicAndUserContactID($hook_data['contact']['id'], $hook_data['uid']);
-		if (!empty($cdata['user'])) {
-			Contact::remove($cdata['user']);
+		$ucid = Contact::getUserContactId($hook_data['contact']['id'], $hook_data['uid']);
+		if ($ucid) {
+			Contact::remove($ucid);
 		}
 	}
 }
@@ -238,9 +239,7 @@ function tumblr_get_contact_uuid(array $contact): string
  * existence of this method is checked to figure out if the addon offers a
  * module.
  */
-function tumblr_module()
-{
-}
+function tumblr_module() {}
 
 function tumblr_content()
 {
@@ -756,6 +755,7 @@ function tumblr_fetch_tags(int $uid, int $last_poll)
 				$post = Post::selectFirst(['uri-id'], ['id' => $id]);
 				$stored = Post\Category::storeFileByURIId($post['uri-id'], $uid, Post\Category::SUBCRIPTION, $tag);
 				Logger::debug('Stored tag subscription for user', ['uri-id' => $post['uri-id'], 'uid' => $uid, 'tag' => $tag, 'stored' => $stored]);
+				Item::incrementInbound(Protocol::TUMBLR);
 			}
 		}
 	}
@@ -795,6 +795,7 @@ function tumblr_fetch_dashboard(int $uid, int $last_poll)
 		Logger::debug('Importing post', ['uid' => $uid, 'created' => date(DateTimeFormat::MYSQL, $post->timestamp), 'id' => $post->id_string]);
 
 		tumblr_process_post($post, $uid, Item::PR_NONE, $last_poll);
+		Item::incrementInbound(Protocol::TUMBLR);
 
 		DI::pConfig()->set($uid, 'tumblr', 'last_id', $last);
 	}
@@ -1167,6 +1168,7 @@ function tumblr_get_contact_fields(stdClass $blog, int $uid, bool $update): arra
 		Logger::notice('Error fetching blog info', ['meta' => $info->meta, 'response' => $info->response, 'errors' => $info->errors]);
 		return $fields;
 	}
+	Item::incrementInbound(Protocol::TUMBLR);
 
 	$avatar = $info->response->blog->avatar;
 	if (!empty($avatar)) {
@@ -1231,6 +1233,8 @@ function tumblr_get_blogs(int $uid): array
 		return [];
 	}
 
+	Item::incrementInbound(Protocol::TUMBLR);
+
 	$blogs = [];
 	foreach ($userinfo->response->user->blogs as $blog) {
 		$blogs[$blog->uuid] = $blog->name;
@@ -1287,9 +1291,10 @@ function tumblr_get_contact_by_url(string $url, int $uid): ?array
 	if ($info->meta->status > 399) {
 		Logger::notice('Error fetching blog info', ['meta' => $info->meta, 'response' => $info->response, 'errors' => $info->errors, 'blog' => $blog, 'uid' => $uid]);
 		return null;
-	} else {
-		Logger::debug('Got data', ['blog' => $blog, 'meta' => $info->meta]);
 	}
+
+	Logger::debug('Got data', ['blog' => $blog, 'meta' => $info->meta]);
+	Item::incrementInbound(Protocol::TUMBLR);
 
 	$baseurl = 'https://tumblr.com';
 	$url     = $baseurl . '/' . $info->response->blog->name;
@@ -1326,7 +1331,6 @@ function tumblr_get_contact_by_url(string $url, int $uid): ?array
  */
 function tumblr_get(int $uid, string $url, array $parameters = []): stdClass
 {
-	Item::incrementInbound(Protocol::TUMBLR);
 	$url = 'https://api.tumblr.com/v2/' . $url;
 
 	if ($uid == 0) {

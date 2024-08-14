@@ -294,9 +294,9 @@ function bluesky_block(array &$hook_data)
 
 	$activity = bluesky_xrpc_post($hook_data['uid'], 'com.atproto.repo.createRecord', $post);
 	if (!empty($activity->uri)) {
-		$cdata = Contact::getPublicAndUserContactID($hook_data['contact']['id'], $hook_data['uid']);
-		if (!empty($cdata['user'])) {
-			Contact::remove($cdata['user']);
+		$ucid = Contact::getUserContactId($hook_data['contact']['id'], $hook_data['uid']);
+		if ($ucid) {
+			Contact::remove($ucid);
 		}
 		Logger::debug('Successfully blocked contact', ['url' => $hook_data['contact']['url'], 'uri' => $activity->uri]);
 	}
@@ -975,6 +975,7 @@ function bluesky_upload_blob(int $uid, array $photo): ?stdClass
 		return null;
 	}
 
+	Item::incrementOutbound(Protocol::BLUESKY);
 	Logger::debug('Uploaded blob', ['return' => $data, 'uid' => $uid, 'retrial' => $retrial, 'height' => $new_height, 'width' => $new_width, 'size' => $new_size, 'orig-height' => $height, 'orig-width' => $width, 'orig-size' => $size]);
 	return $data->blob;
 }
@@ -1048,8 +1049,8 @@ function bluesky_process_reason(stdClass $reason, string $uri, int $uid)
 	$item['owner-link']   = $item['author-link'];
 	$item['owner-avatar'] = $item['author-avatar'];
 	if (Item::insert($item)) {
-		$cdata = Contact::getPublicAndUserContactID($contact['id'], $uid);
-		Item::update(['post-reason' => Item::PR_ANNOUNCEMENT, 'causer-id' => $cdata['public']], ['uri' => $uri, 'uid' => $uid]);
+		$pcid = Contact::getPublicContactId($contact['id'], $uid);
+		Item::update(['post-reason' => Item::PR_ANNOUNCEMENT, 'causer-id' => $pcid], ['uri' => $uri, 'uid' => $uid]);
 	}
 }
 
@@ -1537,8 +1538,7 @@ function bluesky_fetch_missing_post(string $uri, int $uid, int $fetch_uid, int $
 	Logger::debug('Reply count', ['level' => $level, 'uid' => $uid, 'uri' => $uri]);
 
 	if ($causer != 0) {
-		$cdata = Contact::getPublicAndUserContactID($causer, $uid);
-		$causer = $cdata['public'] ?? 0;
+		$causer = Contact::getPublicContactId($causer, $uid);
 	}
 
 	return bluesky_process_thread($data->thread, $uid, $fetch_uid, $post_reason, $causer, $level, $last_poll);
@@ -1936,7 +1936,11 @@ function bluesky_create_token(int $uid, string $password): string
 
 function bluesky_xrpc_post(int $uid, string $url, $parameters): ?stdClass
 {
-	return bluesky_post($uid, '/xrpc/' . $url, json_encode($parameters),  ['Content-type' => 'application/json', 'Authorization' => ['Bearer ' . bluesky_get_token($uid)]]);
+	$data = bluesky_post($uid, '/xrpc/' . $url, json_encode($parameters),  ['Content-type' => 'application/json', 'Authorization' => ['Bearer ' . bluesky_get_token($uid)]]);
+	if (!empty($data)) {
+		Item::incrementOutbound(Protocol::BLUESKY);
+	}
+	return $data;
 }
 
 function bluesky_post(int $uid, string $url, string $params, array $headers): ?stdClass
@@ -1946,7 +1950,6 @@ function bluesky_post(int $uid, string $url, string $params, array $headers): ?s
 		return null;
 	}
 
-	Item::incrementOutbound(Protocol::BLUESKY);
 	try {
 		$curlResult = DI::httpClient()->post($pds . $url, $params, $headers);
 	} catch (\Exception $e) {
@@ -1983,7 +1986,6 @@ function bluesky_xrpc_get(int $uid, string $url, array $parameters = []): ?stdCl
 
 function bluesky_get(string $url, string $accept_content = HttpClientAccept::DEFAULT, array $opts = []): ?stdClass
 {
-	Item::incrementInbound(Protocol::BLUESKY);
 	try {
 		$curlResult = DI::httpClient()->get($url, $accept_content, $opts);
 	} catch (\Exception $e) {
@@ -1996,5 +1998,6 @@ function bluesky_get(string $url, string $accept_content = HttpClientAccept::DEF
 		return null;
 	}
 
+	Item::incrementInbound(Protocol::BLUESKY);
 	return json_decode($curlResult->getBodyString());
 }
