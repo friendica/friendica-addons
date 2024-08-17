@@ -9,12 +9,10 @@
  *
  */
 
-use Friendica\App;
 use Friendica\Core\Cache\Enum\Duration;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\DI;
-use Friendica\Util\Proxy as ProxyUtils;
 
 function curweather_install()
 {
@@ -127,7 +125,7 @@ function curweather_network_mod_init(string &$body)
 		$t = Renderer::getMarkupTemplate("widget.tpl", "addon/curweather/" );
 		$curweather = Renderer::replaceMacros($t, [
 			'$title' => DI::l10n()->t("Current Weather"),
-			'$icon' => ProxyUtils::proxifyUrl('http://openweathermap.org/img/w/'.$res['icon'].'.png'),
+			'$icon' => 'http://openweathermap.org/img/w/'.$res['icon'].'.png',
 			'$city' => $res['city'],
 			'$lon' => $res['lon'],
 			'$lat' => $res['lat'],
@@ -154,7 +152,7 @@ function curweather_network_mod_init(string &$body)
 
 function curweather_addon_settings_post($post)
 {
-	if (!DI::userSession()->getLocalUserId() || empty($_POST['curweather-settings-submit'])) {
+	if (!DI::userSession()->getLocalUserId() || empty($_POST['curweather-submit'])) {
 		return;
 	}
 

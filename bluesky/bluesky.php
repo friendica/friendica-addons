@@ -68,6 +68,7 @@ const BLUEKSY_STATUS_TOKEN_FAIL = 13;
 const BLUESKY_DIRECTORY = 'https://plc.directory'; // Path to the directory server service to fetch the PDS of a given DID
 const BLUESKY_PDS       = 'https://bsky.social';   // Path to the personal data server service (PDS) to fetch the DID for a given handle
 const BLUESKY_WEB       = 'https://bsky.app';      // Path to the web interface with the user profile and posts
+const BLUESKY_HOSTNAME  = 'bsky.social';           // Host name to be added to the handle if incomplete
 
 function bluesky_install()
 {
@@ -97,11 +98,16 @@ function bluesky_load_config(ConfigFileManager $loader)
 
 function bluesky_check_item_notification(array &$notification_data)
 {
-	$did = DI::pConfig()->get($notification_data['uid'], 'bluesky', 'did');
-
-	if (!empty($did)) {
-		$notification_data['profiles'][] = $did;
+	if (empty($notification_data['uid'])) {
+		return;
 	}
+
+	$did = bluesky_get_user_did($notification_data['uid']);
+	if (empty($did)) {
+		return;
+	}
+
+	$notification_data['profiles'][] = $did;
 }
 
 function bluesky_probe_detect(array &$hookData)
@@ -229,7 +235,7 @@ function bluesky_follow(array &$hook_data)
 
 	$post = [
 		'collection' => 'app.bsky.graph.follow',
-		'repo'       => DI::pConfig()->get($hook_data['uid'], 'bluesky', 'did'),
+		'repo'       => bluesky_get_user_did($hook_data['uid']),
 		'record'     => $record
 	];
 
@@ -282,15 +288,15 @@ function bluesky_block(array &$hook_data)
 
 	$post = [
 		'collection' => 'app.bsky.graph.block',
-		'repo'       => DI::pConfig()->get($hook_data['uid'], 'bluesky', 'did'),
+		'repo'       => bluesky_get_user_did($hook_data['uid']),
 		'record'     => $record
 	];
 
 	$activity = bluesky_xrpc_post($hook_data['uid'], 'com.atproto.repo.createRecord', $post);
 	if (!empty($activity->uri)) {
-		$cdata = Contact::getPublicAndUserContactID($hook_data['contact']['id'], $hook_data['uid']);
-		if (!empty($cdata['user'])) {
-			Contact::remove($cdata['user']);
+		$ucid = Contact::getUserContactId($hook_data['contact']['id'], $hook_data['uid']);
+		if ($ucid) {
+			Contact::remove($ucid);
 		}
 		Logger::debug('Successfully blocked contact', ['url' => $hook_data['contact']['url'], 'uri' => $activity->uri]);
 	}
@@ -323,7 +329,7 @@ function bluesky_addon_admin(string &$o)
 
 	$o = Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
-		'$friendica_handles'    => ['friendica_handles', DI::l10n()->t('Allow your users to use your hostname for their Bluesky handles'), DI::config()->get('bluesky', 'friendica_handles'), DI::l10n()->t('Before enabling this option, you have to download and configure the bluesky-handles repository on your system. See https://git.friendi.ca/heluecht/bluesky-handles')],
+		'$friendica_handles'    => ['friendica_handles', DI::l10n()->t('Allow your users to use your hostname for their Bluesky handles'), DI::config()->get('bluesky', 'friendica_handles'), DI::l10n()->t('Before enabling this option, you have to setup a wildcard domain configuration and you have to enable wildcard requests in your webserver configuration. On Apache this is done by adding "ServerAlias *.%s" to your HTTP configuration. You don\'t need to change the HTTPS configuration.', DI::baseUrl()->getHost())],
 	]);
 }
 
@@ -342,7 +348,7 @@ function bluesky_settings(array &$data)
 	$def_enabled   = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'post_by_default') ?? false;
 	$pds           = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'pds');
 	$handle        = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'handle');
-	$did           = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'did');
+	$did           = bluesky_get_user_did(DI::userSession()->getLocalUserId());
 	$token         = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'access_token');
 	$import        = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'import') ?? false;
 	$import_feeds  = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'import_feeds') ?? false;
@@ -350,8 +356,11 @@ function bluesky_settings(array &$data)
 
 	if (DI::config()->get('bluesky', 'friendica_handles')) {
 		$self = User::getById(DI::userSession()->getLocalUserId(), ['nickname']);
-		$handle = $self['nickname'] . '.' . DI::baseUrl()->getHost();
-		$friendica_handle = ['bluesky_friendica_handle', DI::l10n()->t('Allow to use %s as your Bluesky handle.', $handle), $custom_handle, DI::l10n()->t('When enabled, you can use %s as your Bluesky handle. After you enabled this option, please go to https://bsky.app/settings and select to change your handle. Select that you have got your own domain. Then enter %s and select "No DNS Panel". Then select "Verify Text File".', $handle, $handle)];
+		$host_handle = $self['nickname'] . '.' . DI::baseUrl()->getHost();
+		$friendica_handle = ['bluesky_friendica_handle', DI::l10n()->t('Allow to use %s as your Bluesky handle.', $host_handle), $custom_handle, DI::l10n()->t('When enabled, you can use %s as your Bluesky handle. After you enabled this option, please go to https://bsky.app/settings and select to change your handle. Select that you have got your own domain. Then enter %s and select "No DNS Panel". Then select "Verify Text File".', $host_handle, $host_handle)];
+		if ($custom_handle) {
+			$handle = $host_handle;
+		}
 	} else {
 		$friendica_handle = [];
 	}
@@ -364,7 +373,7 @@ function bluesky_settings(array &$data)
 		'$import_feeds' => ['bluesky_import_feeds', DI::l10n()->t('Import the pinned feeds'), $import_feeds, DI::l10n()->t('When activated, Posts will be imported from all the feeds that you pinned in Bluesky.')],
 		'$custom_handle' => $friendica_handle,
 		'$pds'          => ['bluesky_pds', DI::l10n()->t('Personal Data Server'), $pds, DI::l10n()->t('The personal data server (PDS) is the system that hosts your profile.'), '', 'readonly'],
-		'$handle'       => ['bluesky_handle', DI::l10n()->t('Bluesky handle'), $handle],
+		'$handle'       => ['bluesky_handle', DI::l10n()->t('Bluesky handle'), $handle, '', '', $custom_handle ? 'readonly' : ''],
 		'$did'          => ['bluesky_did', DI::l10n()->t('Bluesky DID'), $did, DI::l10n()->t('This is the unique identifier. It will be fetched automatically, when the handle is entered.'), '', 'readonly'],
 		'$password'     => ['bluesky_password', DI::l10n()->t('Bluesky app password'), '', DI::l10n()->t("Please don't add your real password here, but instead create a specific app password in the Bluesky settings.")],
 		'$status'       => bluesky_get_status($handle, $did, $pds, $token),
@@ -435,18 +444,10 @@ function bluesky_settings_post(array &$b)
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'handle',           $handle);
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'import',           intval($_POST['bluesky_import']));
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'import_feeds',     intval($_POST['bluesky_import_feeds']));
-	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'friendica_handle', intval($_POST['bluesky_friendica_handle']));
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'friendica_handle', intval($_POST['bluesky_friendica_handle'] ?? false));
 
 	if (!empty($handle)) {
-		if (empty($old_did) || $old_handle != $handle) {
-			$did = bluesky_get_did(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'handle'));
-			if (empty($did)) {
-				DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'status', BLUEKSY_STATUS_DID_FAIL);
-			}
-			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'did', $did);
-		} else {
-			$did = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'did');
-		}
+		$did = bluesky_get_user_did(DI::userSession()->getLocalUserId(), empty($old_did) || $old_handle != $handle);
 		if (!empty($did) && (empty($old_pds) || $old_handle != $handle)) {
 			$pds = bluesky_get_pds($did);
 			if (empty($pds)) {
@@ -513,8 +514,13 @@ function bluesky_cron()
 
 	$abandon_limit = date(DateTimeFormat::MYSQL, time() - $abandon_days * 86400);
 
-	$pconfigs = DBA::selectToArray('pconfig', [], ['cat' => 'bluesky', 'k' => 'import', 'v' => true]);
+	$pconfigs = DBA::selectToArray('pconfig', [], ["`cat` = ? AND `k` IN (?, ?) AND `v`", 'bluesky', 'import', 'import_feeds']);
 	foreach ($pconfigs as $pconfig) {
+		if (empty(bluesky_get_user_did($pconfig['uid']))) {
+			Logger::debug('User has got no valid DID', ['uid' => $pconfig['uid']]);
+			continue;
+		}
+
 		if ($abandon_days != 0) {
 			if (!DBA::exists('user', ["`uid` = ? AND `login_date` >= ?", $pconfig['uid'], $abandon_limit])) {
 				Logger::notice('abandoned account: timeline from user will not be imported', ['user' => $pconfig['uid']]);
@@ -523,18 +529,26 @@ function bluesky_cron()
 		}
 
 		// Refresh the token now, so that it doesn't need to be refreshed in parallel by the following workers
+		Logger::debug('Refresh the token', ['uid' => $pconfig['uid']]);
 		bluesky_get_token($pconfig['uid']);
 
-		Worker::add(['priority' => Worker::PRIORITY_MEDIUM, 'force_priority' => true], 'addon/bluesky/bluesky_timeline.php', $pconfig['uid'], $last);
 		Worker::add(['priority' => Worker::PRIORITY_MEDIUM, 'force_priority' => true], 'addon/bluesky/bluesky_notifications.php', $pconfig['uid'], $last);
-
+		if (DI::pConfig()->get($pconfig['uid'], 'bluesky', 'import')) {
+			Worker::add(['priority' => Worker::PRIORITY_MEDIUM, 'force_priority' => true], 'addon/bluesky/bluesky_timeline.php', $pconfig['uid'], $last);
+		}
 		if (DI::pConfig()->get($pconfig['uid'], 'bluesky', 'import_feeds')) {
+			Logger::debug('Fetch feeds for user', ['uid' => $pconfig['uid']]);
 			$feeds = bluesky_get_feeds($pconfig['uid']);
 			foreach ($feeds as $feed) {
 				Worker::add(['priority' => Worker::PRIORITY_MEDIUM, 'force_priority' => true], 'addon/bluesky/bluesky_feed.php', $pconfig['uid'], $feed, $last);
 			}
 		}
+		Logger::debug('Polling done for user', ['uid' => $pconfig['uid']]);
 	}
+
+	Logger::notice('Polling done for all users');
+
+	DI::keyValue()->set('bluesky_last_poll', time());
 
 	$last_clean = DI::keyValue()->get('bluesky_last_clean');
 	if (empty($last_clean) || ($last_clean + 86400 < time())) {
@@ -549,8 +563,6 @@ function bluesky_cron()
 	}
 
 	Logger::notice('cron_end');
-
-	DI::keyValue()->set('bluesky_last_poll', time());
 }
 
 function bluesky_hook_fork(array &$b)
@@ -664,7 +676,10 @@ function bluesky_create_activity(array $item, stdClass $parent = null)
 		return;
 	}
 
-	$did  = DI::pConfig()->get($uid, 'bluesky', 'did');
+	$did = bluesky_get_user_did($uid);
+	if (empty($did)) {
+		return;
+	}
 
 	if ($item['verb'] == Activity::LIKE) {
 		$record = [
@@ -724,7 +739,7 @@ function bluesky_create_post(array $item, stdClass $root = null, stdClass $paren
 			$item['body'] .= "\n[url]" . $media['url'] . "[/url]\n";
 		}
 	}
-	
+
 	if (!empty($item['quote-uri-id'])) {
 		$quote = Post::selectFirstPost(['uri', 'plink'], ['uri-id' => $item['quote-uri-id']]);
 		if (!empty($quote)) {
@@ -733,7 +748,7 @@ function bluesky_create_post(array $item, stdClass $root = null, stdClass $paren
 			}
 		}
 	}
-	
+
 	$urls = bluesky_get_urls($item['body']);
 	$item['body'] = $urls['body'];
 
@@ -772,7 +787,7 @@ function bluesky_create_post(array $item, stdClass $root = null, stdClass $paren
 
 		$post = [
 			'collection' => 'app.bsky.feed.post',
-			'repo'       => DI::pConfig()->get($uid, 'bluesky', 'did'),
+			'repo'       => bluesky_get_user_did($uid),
 			'record'     => $record
 		];
 
@@ -960,6 +975,7 @@ function bluesky_upload_blob(int $uid, array $photo): ?stdClass
 		return null;
 	}
 
+	Item::incrementOutbound(Protocol::BLUESKY);
 	Logger::debug('Uploaded blob', ['return' => $data, 'uid' => $uid, 'retrial' => $retrial, 'height' => $new_height, 'width' => $new_width, 'size' => $new_size, 'orig-height' => $height, 'orig-width' => $width, 'orig-size' => $size]);
 	return $data->blob;
 }
@@ -1033,8 +1049,8 @@ function bluesky_process_reason(stdClass $reason, string $uri, int $uid)
 	$item['owner-link']   = $item['author-link'];
 	$item['owner-avatar'] = $item['author-avatar'];
 	if (Item::insert($item)) {
-		$cdata = Contact::getPublicAndUserContactID($contact['id'], $uid);
-		Item::update(['post-reason' => Item::PR_ANNOUNCEMENT, 'causer-id' => $cdata['public']], ['uri' => $uri, 'uid' => $uid]);
+		$pcid = Contact::getPublicContactId($contact['id'], $uid);
+		Item::update(['post-reason' => Item::PR_ANNOUNCEMENT, 'causer-id' => $pcid], ['uri' => $uri, 'uid' => $uid]);
 	}
 }
 
@@ -1176,6 +1192,8 @@ function bluesky_process_post(stdClass $post, int $uid, int $fetch_uid, int $pos
 		$item = bluesky_add_media($post->embed, $item, $uid, $level, $last_poll);
 	}
 
+	$item['restrictions'] = bluesky_get_restrictions_for_user($post, $item, $post_reason);
+
 	if (empty($item['post-reason'])) {
 		$item['post-reason'] = $post_reason;
 	}
@@ -1211,7 +1229,11 @@ function bluesky_get_header(stdClass $post, string $uri, int $uid, int $fetch_ui
 		'source'        => json_encode($post),
 	];
 
+	$account = Contact::selectFirstAccountUser(['pid'], ['id' => $contact['id']]);
+
+	$item['author-id'] = $account['pid'];
 	$item['uri-id']       = ItemURI::getIdByURI($uri);
+	$item['owner-id']     = $item['author-id'];
 	$item['owner-name']   = $item['author-name'];
 	$item['owner-link']   = $item['author-link'];
 	$item['owner-avatar'] = $item['author-avatar'];
@@ -1220,7 +1242,61 @@ function bluesky_get_header(stdClass $post, string $uri, int $uid, int $fetch_ui
 		$item['post-reason'] = Item::PR_FOLLOWER;
 	}
 
+	if (!empty($post->labels)) {
+		foreach ($post->labels as $label) {
+			// Only flag posts as sensitive based on labels that had been provided by the author.
+			// When "ver" is set to "1" it was flagged by some automated process.
+			if (empty($label->ver)) {
+				$item['sensitive'] = true;
+				Logger::debug('Sensitive content', ['uri-id' => $item['uri-id'], 'label' => $label]);
+			}
+		}
+	}
+
 	return $item;
+}
+
+function bluesky_get_restrictions_for_user(stdClass $post, array $item, int $post_reason): ?int
+{
+	if (!empty($post->viewer->replyDisabled)) {
+		return Item::CANT_REPLY;
+	}
+
+	if (empty($post->threadgate)) {
+		return null;
+	}
+
+	if (!isset($post->threadgate->record->allow)) {
+		return null;
+	}
+
+	if ($item['uid'] == 0) {
+		return Item::CANT_REPLY;
+	}
+
+	$restrict = true;
+	$type = '$type';
+	foreach ($post->threadgate->record->allow as $allow) {
+		switch ($allow->$type) {
+			case 'app.bsky.feed.threadgate#followingRule':
+				// Only followers can reply.
+				if (Contact::isFollower($item['author-id'], $item['uid'])) {
+					$restrict = false;
+				}
+				break;
+			case 'app.bsky.feed.threadgate#mentionRule':
+				// Only mentioned accounts can reply.
+				if ($post_reason == Item::PR_TO) {
+					$restrict = false;
+				}
+				break;
+			case 'app.bsky.feed.threadgate#listRule';
+				// Only accounts in the provided list can reply. We don't support this at the moment.
+				break;
+		}
+	}
+
+	return $restrict ? Item::CANT_REPLY : null;
 }
 
 function bluesky_get_content(array $item, stdClass $record, string $uri, int $uid, int $fetch_uid, int $level, int $last_poll): array
@@ -1446,6 +1522,10 @@ function bluesky_fetch_missing_post(string $uri, int $uid, int $fetch_uid, int $
 	}
 
 	$class = bluesky_get_uri_class($uri);
+	if (empty($class)) {
+		return $fallback;
+	}
+
 	$fetch_uri = $class->uri;
 
 	Logger::debug('Fetch missing post', ['level' => $level, 'uid' => $uid, 'uri' => $uri]);
@@ -1458,8 +1538,7 @@ function bluesky_fetch_missing_post(string $uri, int $uid, int $fetch_uid, int $
 	Logger::debug('Reply count', ['level' => $level, 'uid' => $uid, 'uri' => $uri]);
 
 	if ($causer != 0) {
-		$cdata = Contact::getPublicAndUserContactID($causer, $uid);
-		$causer = $cdata['public'] ?? 0;
+		$causer = Contact::getPublicContactId($causer, $uid);
 	}
 
 	return bluesky_process_thread($data->thread, $uid, $fetch_uid, $post_reason, $causer, $level, $last_poll);
@@ -1528,7 +1607,7 @@ function bluesky_process_thread(stdClass $thread, int $uid, int $fetch_uid, int 
 
 function bluesky_get_contact(stdClass $author, int $uid, int $fetch_uid): array
 {
-	$condition = ['network' => Protocol::BLUESKY, 'uid' => 0, 'url' => $author->did];
+	$condition = ['network' => Protocol::BLUESKY, 'uid' => 0, 'nurl' => $author->did];
 	$contact = Contact::selectFirst(['id', 'updated'], $condition);
 
 	$update = empty($contact) || $contact['updated'] < DateTimeFormat::utc('now -24 hours');
@@ -1546,7 +1625,7 @@ function bluesky_get_contact(stdClass $author, int $uid, int $fetch_uid): array
 	}
 
 	if ($uid != 0) {
-		$condition = ['network' => Protocol::BLUESKY, 'uid' => $uid, 'url' => $author->did];
+		$condition = ['network' => Protocol::BLUESKY, 'uid' => $uid, 'nurl' => $author->did];
 
 		$contact = Contact::selectFirst(['id', 'rel', 'uid'], $condition);
 		if (!isset($fields['rel']) && isset($contact['rel'])) {
@@ -1641,6 +1720,9 @@ function bluesky_get_feeds(int $uid): array
 {
 	$type = '$type';
 	$preferences = bluesky_get_preferences($uid);
+	if (empty($preferences) || empty($preferences->preferences)) {
+		return [];
+	}
 	foreach ($preferences->preferences as $preference) {
 		if ($preference->$type == 'app.bsky.actor.defs#savedFeedsPref') {
 			return $preference->pinned ?? [];
@@ -1649,7 +1731,7 @@ function bluesky_get_feeds(int $uid): array
 	return [];
 }
 
-function bluesky_get_preferences(int $uid): stdClass
+function bluesky_get_preferences(int $uid): ?stdClass
 {
 	$cachekey = 'bluesky:preferences:' . $uid;
 	$data = DI::cache()->get($cachekey);
@@ -1658,6 +1740,9 @@ function bluesky_get_preferences(int $uid): stdClass
 	}
 
 	$data = bluesky_xrpc_get($uid, 'app.bsky.actor.getPreferences');
+	if (empty($data)) {
+		return null;
+	}
 
 	DI::cache()->set($cachekey, $data, Duration::HOUR);
 	return $data;
@@ -1669,7 +1754,7 @@ function bluesky_get_did_by_wellknown(string $handle): string
 	if ($curlResult->isSuccess() && substr($curlResult->getBodyString(), 0, 4) == 'did:') {
 		$did = $curlResult->getBodyString();
 		if (!bluesky_valid_did($did, $handle)) {
-			Logger::notice('Invalid DID', ['handle' => $handle, 'did' => $did]);	
+			Logger::notice('Invalid DID', ['handle' => $handle, 'did' => $did]);
 			return '';
 		}
 		Logger::debug('Got DID by wellknown', ['handle' => $handle, 'did' => $did]);
@@ -1688,7 +1773,7 @@ function bluesky_get_did_by_dns(string $handle): string
 		if (!empty($record['txt']) && substr($record['txt'], 0, 4) == 'did=') {
 			$did = substr($record['txt'], 4);
 			if (!bluesky_valid_did($did, $handle)) {
-				Logger::notice('Invalid DID', ['handle' => $handle, 'did' => $did]);	
+				Logger::notice('Invalid DID', ['handle' => $handle, 'did' => $did]);
 				return '';
 			}
 			Logger::debug('Got DID by DNS', ['handle' => $handle, 'did' => $did]);
@@ -1700,17 +1785,25 @@ function bluesky_get_did_by_dns(string $handle): string
 
 function bluesky_get_did(string $handle): string
 {
+	if ($handle == '') {
+		return '';
+	}
+
+	if (strpos($handle, '.') === false) {
+		$handle .= '.' . BLUESKY_HOSTNAME;
+	}
+
 	// Deactivated at the moment, since it isn't reliable by now
 	//$did = bluesky_get_did_by_dns($handle);
 	//if ($did != '') {
 	//	return $did;
 	//}
-	
+
 	//$did = bluesky_get_did_by_wellknown($handle);
 	//if ($did != '') {
 	//	return $did;
 	//}
-	
+
 	$data = bluesky_get(BLUESKY_PDS . '/xrpc/com.atproto.identity.resolveHandle?handle=' . urlencode($handle));
 	if (empty($data) || empty($data->did)) {
 		return '';
@@ -1719,18 +1812,47 @@ function bluesky_get_did(string $handle): string
 	return $data->did;
 }
 
-function bluesky_get_user_pds(int $uid): string
+function bluesky_get_user_did(int $uid, bool $refresh = false): ?string
+{
+	if (!$refresh) {
+		$did = DI::pConfig()->get($uid, 'bluesky', 'did');
+		if (!empty($did)) {
+			return $did;
+		}
+	}
+
+	$handle = DI::pConfig()->get($uid, 'bluesky', 'handle');
+	if (empty($handle)) {
+		return null;
+	}
+
+	$did = bluesky_get_did($handle);
+	if (empty($did)) {
+		return null;
+	}
+
+	Logger::debug('Got DID for user', ['uid' => $uid, 'handle' => $handle, 'did' => $did]);
+	DI::pConfig()->set($uid, 'bluesky', 'did', $did);
+	return $did;
+}
+
+function bluesky_get_user_pds(int $uid): ?string
 {
 	$pds = DI::pConfig()->get($uid, 'bluesky', 'pds');
 	if (!empty($pds)) {
 		return $pds;
 	}
-	$did = DI::pConfig()->get($uid, 'bluesky', 'did');
+
+	$did = bluesky_get_user_did($uid);
 	if (empty($did)) {
-		Logger::notice('Empty did for user', ['uid' => $uid]);
-		return '';
+		return null;
 	}
+
 	$pds = bluesky_get_pds($did);
+	if (empty($pds)) {
+		return null;
+	}
+
 	DI::pConfig()->set($uid, 'bluesky', 'pds', $pds);
 	return $pds;
 }
@@ -1793,7 +1915,10 @@ function bluesky_refresh_token(int $uid): string
 
 function bluesky_create_token(int $uid, string $password): string
 {
-	$did = DI::pConfig()->get($uid, 'bluesky', 'did');
+	$did = bluesky_get_user_did($uid);
+	if (empty($did)) {
+		return '';
+	}
 
 	$data = bluesky_post($uid, '/xrpc/com.atproto.server.createSession', json_encode(['identifier' => $did, 'password' => $password]), ['Content-type' => 'application/json']);
 	if (empty($data)) {
@@ -1811,13 +1936,22 @@ function bluesky_create_token(int $uid, string $password): string
 
 function bluesky_xrpc_post(int $uid, string $url, $parameters): ?stdClass
 {
-	return bluesky_post($uid, '/xrpc/' . $url, json_encode($parameters),  ['Content-type' => 'application/json', 'Authorization' => ['Bearer ' . bluesky_get_token($uid)]]);
+	$data = bluesky_post($uid, '/xrpc/' . $url, json_encode($parameters),  ['Content-type' => 'application/json', 'Authorization' => ['Bearer ' . bluesky_get_token($uid)]]);
+	if (!empty($data)) {
+		Item::incrementOutbound(Protocol::BLUESKY);
+	}
+	return $data;
 }
 
 function bluesky_post(int $uid, string $url, string $params, array $headers): ?stdClass
 {
+	$pds = bluesky_get_user_pds($uid);
+	if (empty($pds)) {
+		return null;
+	}
+
 	try {
-		$curlResult = DI::httpClient()->post(bluesky_get_user_pds($uid) . $url, $params, $headers);
+		$curlResult = DI::httpClient()->post($pds . $url, $params, $headers);
 	} catch (\Exception $e) {
 		Logger::notice('Exception on post', ['exception' => $e]);
 		DI::pConfig()->set($uid, 'bluesky', 'status', BLUEKSY_STATUS_API_FAIL);
@@ -1840,7 +1974,12 @@ function bluesky_xrpc_get(int $uid, string $url, array $parameters = []): ?stdCl
 		$url .= '?' . http_build_query($parameters);
 	}
 
-	$data = bluesky_get(bluesky_get_user_pds($uid) . '/xrpc/' . $url, HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
+	$pds = bluesky_get_user_pds($uid);
+	if (empty($pds)) {
+		return null;
+	}
+
+	$data = bluesky_get($pds . '/xrpc/' . $url, HttpClientAccept::JSON, [HttpClientOptions::HEADERS => ['Authorization' => ['Bearer ' . bluesky_get_token($uid)]]]);
 	DI::pConfig()->set($uid, 'bluesky', 'status', is_null($data) ? BLUEKSY_STATUS_API_FAIL : BLUEKSY_STATUS_SUCCESS);
 	return $data;
 }
@@ -1850,14 +1989,15 @@ function bluesky_get(string $url, string $accept_content = HttpClientAccept::DEF
 	try {
 		$curlResult = DI::httpClient()->get($url, $accept_content, $opts);
 	} catch (\Exception $e) {
-		Logger::notice('Exception on get', ['exception' => $e]);
+		Logger::notice('Exception on get', ['url' => $url, 'exception' => $e]);
 		return null;
 	}
 
 	if (!$curlResult->isSuccess()) {
-		Logger::notice('API Error', ['error' => json_decode($curlResult->getBodyString()) ?: $curlResult->getBodyString()]);
+		Logger::notice('API Error', ['url' => $url, 'error' => json_decode($curlResult->getBodyString()) ?: $curlResult->getBodyString()]);
 		return null;
 	}
 
+	Item::incrementInbound(Protocol::BLUESKY);
 	return json_decode($curlResult->getBodyString());
 }

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-05 04:51+0000\n"
+"POT-Creation-Date: 2024-04-30 12:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,50 +17,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: blockbot.php:30
+#: blockbot.php:32
 msgid "Save Settings"
 msgstr ""
 
-#: blockbot.php:31
-msgid "Allow \"good\" crawlers"
-msgstr ""
-
-#: blockbot.php:31
-msgid ""
-"Don't block fediverse crawlers, relay servers and other bots with good "
-"purposes."
-msgstr ""
-
-#: blockbot.php:32
-msgid "Allow preview agents"
-msgstr ""
-
-#: blockbot.php:32
-msgid ""
-"Don't block agents from social media systems that want to generate preview "
-"data for links that had been set by their users."
+#: blockbot.php:33
+msgid "Allow security checkers"
 msgstr ""
 
 #: blockbot.php:33
+msgid "Don't block security checkers. They can be used for good or bad."
+msgstr ""
+
+#: blockbot.php:34
 msgid "Allow generic HTTP libraries"
 msgstr ""
 
-#: blockbot.php:33
+#: blockbot.php:34
 msgid ""
 "Don't block agents from generic HTTP libraries that could be used for good "
 "or for bad and that currently can't be traced back to any known Fediverse "
 "project."
-msgstr ""
-
-#: blockbot.php:34
-msgid "Block GabSocial"
-msgstr ""
-
-#: blockbot.php:34
-msgid ""
-"Block the software GabSocial. This will block every access for that "
-"software. You can block dedicated gab instances in the blocklist settings in "
-"the admin section."
 msgstr ""
 
 #: blockbot.php:35

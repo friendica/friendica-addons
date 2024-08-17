@@ -8,7 +8,6 @@
  * Note: Please use Group Directory instead
  */
 
-use Friendica\App;
 use Friendica\Content\Nav;
 use Friendica\Content\Pager;
 use Friendica\Content\Widget;
@@ -16,8 +15,8 @@ use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
-use Friendica\Model\Profile;
 use Friendica\Model\User;
+use Friendica\Security\OpenWebAuth;
 
 global $forumdirectory_search;
 
@@ -82,7 +81,7 @@ function forumdirectory_content()
 	$gdirpath = '';
 	$dirurl = DI::config()->get('system', 'directory');
 	if (strlen($dirurl)) {
-		$gdirpath = Profile::zrl($dirurl, true);
+		$gdirpath = OpenWebAuth::getZrlUrl($dirurl, true);
 	}
 
 	$sql_extra = '';
@@ -104,8 +103,8 @@ function forumdirectory_content()
 	$total = 0;
 	$cnt = DBA::fetchFirst("SELECT COUNT(*) AS `total` FROM `profile`
 				INNER JOIN `user` ON `user`.`uid` = `profile`.`uid`
-				WHERE $publish AND NOT `user`.`blocked` AND NOT `user`.`account_removed` AND `user`.`page-flags` = ? $sql_extra",
-				User::PAGE_FLAGS_COMMUNITY);
+				WHERE $publish AND NOT `user`.`blocked` AND NOT `user`.`account_removed` AND `user`.`page-flags` IN (?, ?) $sql_extra",
+				User::PAGE_FLAGS_COMMUNITY, User::PAGE_FLAGS_COMM_MAN);
 	if (DBA::isResult($cnt)) {
 		$total = $cnt['total'];
 	}
@@ -120,8 +119,8 @@ function forumdirectory_content()
 			`contact`.`addr`, `contact`.`url` FROM `profile`
 			INNER JOIN `user` ON `user`.`uid` = `profile`.`uid`
 			INNER JOIN `contact` ON `contact`.`uid` = `user`.`uid`
-			WHERE $publish AND NOT `user`.`blocked` AND NOT `user`.`account_removed` AND `user`.`page-flags` = ? AND `contact`.`self`
-			$sql_extra $order LIMIT $limit", User::PAGE_FLAGS_COMMUNITY
+			WHERE $publish AND NOT `user`.`blocked` AND NOT `user`.`account_removed` AND `user`.`page-flags` IN (?, ?) AND `contact`.`self`
+			$sql_extra $order LIMIT $limit", User::PAGE_FLAGS_COMMUNITY, User::PAGE_FLAGS_COMM_MAN
 	);
 
 	if (DBA::isResult($r)) {
