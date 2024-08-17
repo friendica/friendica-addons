@@ -15,6 +15,7 @@ use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Core\System;
 use Friendica\Network\HTTPException\ForbiddenException;
+use Friendica\Util\HTTPSignature;
 use Friendica\Util\Network;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
@@ -75,6 +76,8 @@ function blockbot_init_1()
 		}
 		return;
 	}
+
+	blockbot_log_activitypub($_SERVER['REQUEST_URI'], $_SERVER['HTTP_USER_AGENT']);
 
 	if (blockbot_is_crawler($parts)) {
 		Logger::debug('Crawler found - reject', $logdata);
@@ -169,7 +172,7 @@ function blockbot_init_1()
 
 function blockbot_save($database, $userAgent)
 {
-	if (!DI::config()->get('blockbot', 'training') || !function_exists('dba_open')) {
+	if (!DI::config()->get('blockbot', 'logging') || !function_exists('dba_open')) {
 		return;
 	}
 
@@ -179,6 +182,36 @@ function blockbot_save($database, $userAgent)
 		dba_insert($userAgent, true, $resource);
 	}
 	dba_close($resource);
+}
+
+function blockbot_log_activitypub(string $url, string $agent)
+{
+	if (!DI::config()->get('blockbot', 'logging')) {
+		return;
+	}
+
+	$bot = ['/.well-known/nodeinfo', '/nodeinfo/2.0', '/nodeinfo/1.0'];
+	if (in_array($url, $bot)) {
+		blockbot_save('activitypub-stats', $agent);
+	}
+
+	$bot = ['/api/v1/instance', '/api/v2/instance', '/api/v1/instance/extended_description',
+		'/api/v1/instance/peers'];
+	if (in_array($url, $bot)) {
+		blockbot_save('activitypub-api-stats', $agent);
+	}
+
+	if (substr($url, 0, 6) == '/api/v') {
+		blockbot_save('activitypub-api', $agent);
+	}
+
+	if (($_SERVER['REQUEST_METHOD'] == 'POST') && in_array('inbox', explode('/', parse_url($url, PHP_URL_PATH)))) {
+		blockbot_save('activitypub-inbox-agents', $agent);
+	}
+
+	if (!empty($_SERVER['HTTP_SIGNATURE']) && !empty(HTTPSignature::getSigner('', $_SERVER))) {
+		blockbot_save('activitypub-signature-agents', $agent);
+	}
 }
 
 function blockbot_check_login_attempt(string $url, array $logdata)
@@ -466,6 +499,7 @@ function blockbot_is_fediverse_client(array $parts): bool
 		'megalodonandroid', 'fedilab', 'mastodonapp', 'toot!', 'intravnews',
 		'pixeldroid', 'greatnews', 'protopage', 'newsfox', 'vienna', 'wp-urldetails', 'husky',
 		'activitypub-go-http-client', 'mobilesafari', 'mastodon-ios', 'mastodonpy', 'techniverse',
+		'relatica',
 	];
 
 	foreach ($parts as $part) {

@@ -152,7 +152,7 @@ function curweather_network_mod_init(string &$body)
 
 function curweather_addon_settings_post($post)
 {
-	if (!DI::userSession()->getLocalUserId() || empty($_POST['curweather-settings-submit'])) {
+	if (!DI::userSession()->getLocalUserId() || empty($_POST['curweather-submit'])) {
 		return;
 	}
 
