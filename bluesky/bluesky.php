@@ -1793,23 +1793,19 @@ function bluesky_get_did(string $handle): string
 		$handle .= '.' . BLUESKY_HOSTNAME;
 	}
 
-	// Deactivated at the moment, since it isn't reliable by now
-	//$did = bluesky_get_did_by_dns($handle);
-	//if ($did != '') {
-	//	return $did;
-	//}
-
-	//$did = bluesky_get_did_by_wellknown($handle);
-	//if ($did != '') {
-	//	return $did;
-	//}
-
 	$data = bluesky_get(BLUESKY_PDS . '/xrpc/com.atproto.identity.resolveHandle?handle=' . urlencode($handle));
-	if (empty($data) || empty($data->did)) {
-		return '';
+	if (!empty($data) && !empty($data->did)) {
+		Logger::debug('Got DID by PDS call', ['handle' => $handle, 'did' => $data->did]);
+		return $data->did;
 	}
-	Logger::debug('Got DID by PDS call', ['handle' => $handle, 'did' => $data->did]);
-	return $data->did;
+
+	// Possibly a custom PDS. 
+	$did = bluesky_get_did_by_dns($handle);
+	if ($did != '') {
+		return $did;
+	}
+	
+	return bluesky_get_did_by_wellknown($handle);
 }
 
 function bluesky_get_user_did(int $uid, bool $refresh = false): ?string
