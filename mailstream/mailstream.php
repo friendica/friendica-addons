@@ -6,7 +6,6 @@
  * Author: Matthew Exon <http://mat.exon.name>
  */
 
-use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
@@ -16,12 +15,11 @@ use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Contact;
-use Friendica\Model\Item;
 use Friendica\Model\Post;
 use Friendica\Model\User;
 use Friendica\Network\HTTPClient\Client\HttpClientAccept;
+use Friendica\Network\HTTPClient\Client\HttpClientOptions;
 use Friendica\Protocol\Activity;
-use Friendica\Util\DateTimeFormat;
 
 /**
  * Sets up the addon hooks and the database table
@@ -53,10 +51,12 @@ function mailstream_addon_admin(string &$o)
 {
 	$frommail = DI::config()->get('mailstream', 'frommail');
 	$template = Renderer::getMarkupTemplate('admin.tpl', 'addon/mailstream/');
-	$config = ['frommail',
+	$config = [
+		'frommail',
 		DI::l10n()->t('From Address'),
 		$frommail,
-		DI::l10n()->t('Email address that stream items will appear to be from.')];
+		DI::l10n()->t('Email address that stream items will appear to be from.')
+	];
 	$o .= Renderer::replaceMacros($template, [
 		'$frommail' => $config,
 		'$submit' => DI::l10n()->t('Save Settings')
@@ -101,7 +101,7 @@ function mailstream_send_hook(array $data)
 
 	$user = User::getById($item['uid']);
 	if (empty($user)) {
-			Logger::error('could not find user', ['uid' => $item['uid']]);
+		Logger::error('could not find user', ['uid' => $item['uid']]);
 		return;
 	}
 
@@ -198,10 +198,13 @@ function mailstream_do_images(array &$item, array &$attachments)
 
 		$cookiejar = tempnam(System::getTempPath(), 'cookiejar-mailstream-');
 		try {
-			$curlResult = DI::httpClient()->fetchFull($url, HttpClientAccept::DEFAULT, 0, $cookiejar);
+			$curlResult = DI::httpClient()->get($url, HttpClientAccept::DEFAULT, [HttpClientOptions::COOKIEJAR => $cookiejar]);
 			if (!$curlResult->isSuccess()) {
 				Logger::debug('mailstream: fetch image url failed', [
-					'url' => $url, 'item_id' => $item['id'], 'return_code' => $curlResult->getReturnCode()]);
+					'url' => $url,
+					'item_id' => $item['id'],
+					'return_code' => $curlResult->getReturnCode()
+				]);
 				continue;
 			}
 		} catch (InvalidArgumentException $e) {
@@ -361,7 +364,7 @@ function mailstream_send(string $message_id, array $item, array $user): bool
 		return true;
 	}
 
-	require_once (dirname(__file__) . '/phpmailer/class.phpmailer.php');
+	require_once(dirname(__file__) . '/phpmailer/class.phpmailer.php');
 
 	$item['body'] = Post\Media::addAttachmentsToBody($item['uri-id'], $item['body']);
 
@@ -406,10 +409,11 @@ function mailstream_send(string $message_id, array $item, array $user): bool
 		$item['body'] = BBCode::convertForUriId($item['uri-id'], $item['body'], BBCode::CONNECTORS);
 		$item['url'] = DI::baseUrl() . '/display/' . $item['guid'];
 		$mail->Body = Renderer::replaceMacros($template, [
-						 '$upstream' => DI::l10n()->t('Upstream'),
-						 '$uri' => DI::l10n()->t('URI'),
-						 '$local' => DI::l10n()->t('Local'),
-						 '$item' => $item]);
+			'$upstream' => DI::l10n()->t('Upstream'),
+			'$uri' => DI::l10n()->t('URI'),
+			'$local' => DI::l10n()->t('Local'),
+			'$item' => $item
+		]);
 		$mail->Body = mailstream_html_wrap($mail->Body);
 		if (!$mail->Send()) {
 			throw new Exception($mail->ErrorInfo);
