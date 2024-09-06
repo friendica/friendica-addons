@@ -45,10 +45,12 @@ use Friendica\Model\Tag;
 use Friendica\Model\User;
 use Friendica\Network\HTTPClient\Client\HttpClientAccept;
 use Friendica\Network\HTTPClient\Client\HttpClientOptions;
+use Friendica\Network\HTTPClient\Client\HttpClientRequest;
 use Friendica\Object\Image;
 use Friendica\Protocol\Activity;
 use Friendica\Protocol\Relay;
 use Friendica\Util\DateTimeFormat;
+use Friendica\Util\Network;
 use Friendica\Util\Strings;
 
 const BLUESKY_DEFAULT_POLL_INTERVAL = 10; // given in minutes
@@ -129,8 +131,13 @@ function bluesky_probe_detect(array &$hookData)
 
 	if (parse_url($hookData['uri'], PHP_URL_SCHEME) == 'did') {
 		$did = $hookData['uri'];
-	} elseif (preg_match('#^' . BLUESKY_WEB . '/profile/(.+)#', $hookData['uri'], $matches)) {
-		$did = bluesky_get_did($matches[1]);
+	} elseif (parse_url($hookData['uri'], PHP_URL_PATH) == $hookData['uri'] && strpos($hookData['uri'], '@') === false) {
+		$did = bluesky_get_did($hookData['uri'], $pconfig['uid']);
+		if (empty($did)) {
+			return;
+		}
+	} elseif (Network::isValidHttpUrl($hookData['uri'])) {
+		$did = bluesky_get_did_by_profile($hookData['uri']);
 		if (empty($did)) {
 			return;
 		}
@@ -148,19 +155,14 @@ function bluesky_probe_detect(array &$hookData)
 		return;
 	}
 
-	$hookData['result'] = bluesky_get_contact_fields($data, 0, $pconfig['uid'], false);
-
-	$hookData['result']['baseurl'] = bluesky_get_pds($did);
+	$hookData['result'] = bluesky_get_contact_fields($data, 0, $pconfig['uid'], true);
 
 	// Preparing probe data. This differs slightly from the contact array
-	$hookData['result']['about']    = HTML::toBBCode($data->description ?? '');
 	$hookData['result']['photo']    = $data->avatar ?? '';
-	$hookData['result']['header']   = $data->banner ?? '';
 	$hookData['result']['batch']    = '';
 	$hookData['result']['notify']   = '';
 	$hookData['result']['poll']     = '';
 	$hookData['result']['poco']     = '';
-	$hookData['result']['pubkey']   = '';
 	$hookData['result']['priority'] = 0;
 	$hookData['result']['guid']     = '';
 }
@@ -177,21 +179,21 @@ function bluesky_item_by_link(array &$hookData)
 		return;
 	}
 
-	if (!preg_match('#^' . BLUESKY_WEB . '/profile/(.+)/post/(.+)#', $hookData['uri'], $matches)) {
-		return;
-	}
-
-	$did = bluesky_get_did($matches[1]);
+	$did = bluesky_get_did_by_profile($hookData['uri']);
 	if (empty($did)) {
 		return;
 	}
 
-	Logger::debug('Found bluesky post', ['url' => $hookData['uri'], 'handle' => $matches[1], 'did' => $did, 'cid' => $matches[2]]);
+	if (!preg_match('#/profile/.+/post/(.+)#', $hookData['uri'], $matches)) {
+		return;
+	}
 
-	$uri = 'at://' . $did . '/app.bsky.feed.post/' . $matches[2];
+	Logger::debug('Found bluesky post', ['url' => $hookData['uri'], 'did' => $did, 'cid' => $matches[1]]);
+
+	$uri = 'at://' . $did . '/app.bsky.feed.post/' . $matches[1];
 
 	$uri = bluesky_fetch_missing_post($uri, $hookData['uid'], $hookData['uid'], Item::PR_FETCHED, 0, 0, 0);
-	Logger::debug('Got post', ['profile' => $matches[1], 'cid' => $matches[2], 'result' => $uri]);
+	Logger::debug('Got post', ['did' => $did, 'cid' => $matches[1], 'result' => $uri]);
 	if (!empty($uri)) {
 		$item = Post::selectFirst(['id'], ['uri' => $uri, 'uid' => $hookData['uid']]);
 		if (!empty($item['id'])) {
@@ -1678,10 +1680,14 @@ function bluesky_get_contact_fields(stdClass $author, int $uid, int $fetch_uid, 
 		return $fields;
 	}
 
-	$fields['baseurl'] = bluesky_get_pds($author->did);
-	if (!empty($fields['baseurl'])) {
-		GServer::check($fields['baseurl'], Protocol::BLUESKY);
-		$fields['gsid'] = GServer::getID($fields['baseurl'], true);
+	$data = bluesky_get(BLUESKY_DIRECTORY . '/' . $author->did);
+	if (!empty($data)) {		
+		$fields['baseurl'] = bluesky_get_pds('', $data);
+		if (!empty($fields['baseurl'])) {
+			GServer::check($fields['baseurl'], Protocol::BLUESKY);
+			$fields['gsid'] = GServer::getID($fields['baseurl'], true);
+		}
+		$fields['pubkey'] = bluesky_get_public_key('', $data);
 	}
 
 	$data = bluesky_xrpc_get($fetch_uid, 'app.bsky.actor.getProfile', ['actor' => $author->did]);
@@ -1748,6 +1754,42 @@ function bluesky_get_preferences(int $uid): ?stdClass
 	return $data;
 }
 
+function bluesky_get_did_by_profile(string $url): string
+{
+	try {
+		$curlResult = DI::httpClient()->get($url, HttpClientAccept::HTML, [HttpClientOptions::REQUEST => HttpClientRequest::CONTACTINFO]);
+	} catch (\Throwable $th) {
+		return '';
+	}
+	if (!$curlResult->isSuccess()) {
+		return '';
+	}
+	$profile = $curlResult->getBodyString();
+
+	$doc = new DOMDocument();
+	@$doc->loadHTML($profile);
+	$xpath = new DOMXPath($doc);
+	$list = $xpath->query('//p[@id]');
+	foreach ($list as $node) {
+		foreach ($node->attributes as $attribute) {
+			if ($attribute->name == 'id') {
+				$ids[$attribute->value] = $node->textContent;
+			}
+		}
+	}
+
+	if (empty($ids['bsky_handle']) || empty($ids['bsky_did'])) {
+		return '';
+	}
+
+	if (!bluesky_valid_did($ids['bsky_did'], $ids['bsky_handle'])) {
+		Logger::notice('Invalid DID', ['handle' => $ids['bsky_handle'], 'did' => $ids['bsky_did']]);
+		return '';
+	}
+
+	return $ids['bsky_did'];
+}
+
 function bluesky_get_did_by_wellknown(string $handle): string
 {
 	$curlResult = DI::httpClient()->get('http://' . $handle . '/.well-known/atproto-did');
@@ -1757,7 +1799,6 @@ function bluesky_get_did_by_wellknown(string $handle): string
 			Logger::notice('Invalid DID', ['handle' => $handle, 'did' => $did]);
 			return '';
 		}
-		Logger::debug('Got DID by wellknown', ['handle' => $handle, 'did' => $did]);
 		return $did;
 	}
 	return '';
@@ -1776,14 +1817,13 @@ function bluesky_get_did_by_dns(string $handle): string
 				Logger::notice('Invalid DID', ['handle' => $handle, 'did' => $did]);
 				return '';
 			}
-			Logger::debug('Got DID by DNS', ['handle' => $handle, 'did' => $did]);
 			return $did;
 		}
 	}
 	return '';
 }
 
-function bluesky_get_did(string $handle): string
+function bluesky_get_did(string $handle, int $uid): string
 {
 	if ($handle == '') {
 		return '';
@@ -1793,19 +1833,39 @@ function bluesky_get_did(string $handle): string
 		$handle .= '.' . BLUESKY_HOSTNAME;
 	}
 
+	// At first we use the user PDS. That should cover most cases.
+	$pds = DI::pConfig()->get($uid, 'bluesky', 'pds');
+	if (!empty($pds)) {
+		$data = bluesky_get($pds . '/xrpc/com.atproto.identity.resolveHandle?handle=' . urlencode($handle));
+		if (!empty($data) && !empty($data->did)) {
+			Logger::debug('Got DID by user PDS call', ['handle' => $handle, 'did' => $data->did]);
+			return $data->did;
+		}
+	}
+
+	// Then we query the DNS, which is used for third party handles (DNS should be faster than wellknown)
+	$did = bluesky_get_did_by_dns($handle);
+	if ($did != '') {
+		Logger::debug('Got DID by DNS', ['handle' => $handle, 'did' => $did]);
+		return $did;
+	}
+
+	// Then we query wellknown, which should mostly cover the rest.
+	$did = bluesky_get_did_by_wellknown($handle);
+	if ($did != '') {
+		Logger::debug('Got DID by wellknown', ['handle' => $handle, 'did' => $did]);
+		return $did;
+	}
+
+	// And finally we use the default PDS from Bluesky.
 	$data = bluesky_get(BLUESKY_PDS . '/xrpc/com.atproto.identity.resolveHandle?handle=' . urlencode($handle));
 	if (!empty($data) && !empty($data->did)) {
-		Logger::debug('Got DID by PDS call', ['handle' => $handle, 'did' => $data->did]);
+		Logger::debug('Got DID by system PDS call', ['handle' => $handle, 'did' => $data->did]);
 		return $data->did;
 	}
 
-	// Possibly a custom PDS. 
-	$did = bluesky_get_did_by_dns($handle);
-	if ($did != '') {
-		return $did;
-	}
-	
-	return bluesky_get_did_by_wellknown($handle);
+	Logger::notice('No DID detected', ['handle' => $handle]);
+	return '';
 }
 
 function bluesky_get_user_did(int $uid, bool $refresh = false): ?string
@@ -1822,7 +1882,7 @@ function bluesky_get_user_did(int $uid, bool $refresh = false): ?string
 		return null;
 	}
 
-	$did = bluesky_get_did($handle);
+	$did = bluesky_get_did($handle, $uid);
 	if (empty($did)) {
 		return null;
 	}
@@ -1853,9 +1913,11 @@ function bluesky_get_user_pds(int $uid): ?string
 	return $pds;
 }
 
-function bluesky_get_pds(string $did): ?string
+function bluesky_get_pds(string $did, stdClass $data = null): ?string
 {
-	$data = bluesky_get(BLUESKY_DIRECTORY . '/' . $did);
+	if (empty($data)) {
+		$data = bluesky_get(BLUESKY_DIRECTORY . '/' . $did);
+	}
 	if (empty($data) || empty($data->service)) {
 		return null;
 	}
@@ -1866,6 +1928,22 @@ function bluesky_get_pds(string $did): ?string
 		}
 	}
 
+	return null;
+}
+
+function bluesky_get_public_key(string $did, stdClass $data = null): ?string
+{
+	if (empty($data)) {
+		$data = bluesky_get(BLUESKY_DIRECTORY . '/' . $did);
+	}
+	if (empty($data) || empty($data->verificationMethod)) {
+		return null;
+	}
+	foreach ($data->verificationMethod as $method) {
+		if (!empty($method->publicKeyMultibase)) {
+			return $method->publicKeyMultibase;
+		}
+	}
 	return null;
 }
 
