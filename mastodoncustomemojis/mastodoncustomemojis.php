@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Name: Mastodon Custom Emojis
  * Description: Replace emojis shortcodes in Mastodon posts with their originating server custom emojis images.
@@ -9,7 +8,6 @@
  * Status: Unsupported
  */
 
-use Friendica\App;
 use Friendica\Content\Smilies;
 use Friendica\Core\Cache\Enum\Duration;
 use Friendica\Core\Hook;
@@ -78,7 +76,7 @@ function mastodoncustomemojis_fetch_custom_emojis_for_url($api_base_url)
 
 	$api_url = $api_base_url . '/api/v1/custom_emojis';
 
-	$fetchResult = DI::httpClient()->fetchFull($api_url);
+	$fetchResult = DI::httpClient()->get($api_url);
 
 	if ($fetchResult->isSuccess()) {
 		$emojis_array = json_decode($fetchResult->getBodyString(), true);
