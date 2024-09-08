@@ -96,6 +96,8 @@ function invidious_render(array &$b)
 	$b['html'] = preg_replace("~https?://(?:www\.)?youtube\.com/watch\?v=(.*?)~ism", $server . '/watch?v=$1', $b['html']);
 	$b['html'] = preg_replace("~https?://(?:www\.)?youtube\.com/embed/(.*?)~ism", $server . '/embed/$1', $b['html']);
 	$b['html'] = preg_replace("~https?://(?:www\.)?youtube\.com/shorts/(.*?)~ism", $server . '/shorts/$1', $b['html']);
+	$b['html'] = preg_replace ("/https?:\/\/music.youtube.com\/(.*?)/ism", $server . '/watch?v=$1', $b['html']);
+	$b['html'] = preg_replace ("/https?:\/\/m.youtube.com\/(.*?)/ism", $server . '/watch?v=$1', $b['html']);
 	$b['html'] = preg_replace("/https?:\/\/youtu.be\/(.*?)/ism", $server . '/watch?v=$1', $b['html']);
 
 	if ($original != $b['html']) {
