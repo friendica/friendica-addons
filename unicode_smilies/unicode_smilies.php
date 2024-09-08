@@ -1293,6 +1293,8 @@ function unicode_smilies_smilies(array &$b)
 	Smilies::add($b, ':microscope:', '&#x1F52C');
 	Smilies::add($b, ':telescope:', '&#x1F52D');
 	Smilies::add($b, ':satellite antenna:', '&#x1F4E1');
+	Smilies::add($b, ':asterism:', '&#8258');
+	Smilies::add($b, ':outlines white star:', '&#9885');
 
 // medical
 	Smilies::add($b, ':syringe:', '&#x1F489');
