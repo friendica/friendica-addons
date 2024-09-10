@@ -1765,9 +1765,16 @@ function bluesky_get_did_by_profile(string $url): string
 		return '';
 	}
 	$profile = $curlResult->getBodyString();
+	if (empty($profile)) {
+		return '';
+	}
 
 	$doc = new DOMDocument();
-	@$doc->loadHTML($profile);
+	try {
+		@$doc->loadHTML($profile);
+	} catch (\Throwable $th) {
+		return '';
+	}
 	$xpath = new DOMXPath($doc);
 	$list = $xpath->query('//p[@id]');
 	foreach ($list as $node) {
