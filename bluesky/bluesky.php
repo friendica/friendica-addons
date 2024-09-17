@@ -1410,6 +1410,19 @@ function bluesky_add_media(stdClass $embed, array $item, int $fetch_uid, int $le
 			}
 			break;
 
+		case 'app.bsky.embed.video#view':
+			$media = [
+				'uri-id'      => $item['uri-id'],
+				'type'        => Post\Media::HLS,
+				'url'         => $embed->playlist,
+				'preview'     => $embed->thumbnail,
+				'description' => $embed->alt ?? '',
+				'height'      => $embed->aspectRatio->height,
+				'width'       => $embed->aspectRatio->width,
+			];
+			Post\Media::insert($media);
+			break;
+	
 		case 'app.bsky.embed.external#view':
 			$media = [
 				'uri-id' => $item['uri-id'],
