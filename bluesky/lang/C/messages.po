@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-22 05:31+0000\n"
+"POT-Creation-Date: 2024-09-29 18:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,131 +17,117 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bluesky.php:325
+#: bluesky.php:335
 msgid "Save Settings"
 msgstr ""
 
-#: bluesky.php:326
+#: bluesky.php:336
 msgid "Allow your users to use your hostname for their Bluesky handles"
 msgstr ""
 
-#: bluesky.php:326
+#: bluesky.php:336
 #, php-format
-msgid ""
-"Before enabling this option, you have to setup a wildcard domain "
-"configuration and you have to enable wildcard requests in your webserver "
-"configuration. On Apache this is done by adding \"ServerAlias *.%s\" to your "
-"HTTP configuration. You don't need to change the HTTPS configuration."
+msgid "Before enabling this option, you have to setup a wildcard domain configuration and you have to enable wildcard requests in your webserver configuration. On Apache this is done by adding \"ServerAlias *.%s\" to your HTTP configuration. You don't need to change the HTTPS configuration."
 msgstr ""
 
-#: bluesky.php:354
+#: bluesky.php:365
 #, php-format
 msgid "Allow to use %s as your Bluesky handle."
 msgstr ""
 
-#: bluesky.php:354
+#: bluesky.php:365
 #, php-format
-msgid ""
-"When enabled, you can use %s as your Bluesky handle. After you enabled this "
-"option, please go to https://bsky.app/settings and select to change your "
-"handle. Select that you have got your own domain. Then enter %s and select "
-"\"No DNS Panel\". Then select \"Verify Text File\"."
-msgstr ""
-
-#: bluesky.php:361
-msgid "Enable Bluesky Post Addon"
-msgstr ""
-
-#: bluesky.php:362
-msgid "Post to Bluesky by default"
-msgstr ""
-
-#: bluesky.php:363
-msgid "Import the remote timeline"
-msgstr ""
-
-#: bluesky.php:364
-msgid "Import the pinned feeds"
-msgstr ""
-
-#: bluesky.php:364
-msgid ""
-"When activated, Posts will be imported from all the feeds that you pinned in "
-"Bluesky."
-msgstr ""
-
-#: bluesky.php:366
-msgid "Personal Data Server"
-msgstr ""
-
-#: bluesky.php:366
-msgid "The personal data server (PDS) is the system that hosts your profile."
-msgstr ""
-
-#: bluesky.php:367
-msgid "Bluesky handle"
-msgstr ""
-
-#: bluesky.php:368
-msgid "Bluesky DID"
-msgstr ""
-
-#: bluesky.php:368
-msgid ""
-"This is the unique identifier. It will be fetched automatically, when the "
-"handle is entered."
-msgstr ""
-
-#: bluesky.php:369
-msgid "Bluesky app password"
-msgstr ""
-
-#: bluesky.php:369
-msgid ""
-"Please don't add your real password here, but instead create a specific app "
-"password in the Bluesky settings."
+msgid "When enabled, you can use %s as your Bluesky handle. After you enabled this option, please go to https://bsky.app/settings and select to change your handle. Select that you have got your own domain. Then enter %s and select \"No DNS Panel\". Then select \"Verify Text File\"."
 msgstr ""
 
 #: bluesky.php:375
+msgid "Enable Bluesky Post Addon"
+msgstr ""
+
+#: bluesky.php:376
+msgid "Post to Bluesky by default"
+msgstr ""
+
+#: bluesky.php:377
+msgid "Import the remote timeline"
+msgstr ""
+
+#: bluesky.php:378
+msgid "Import the pinned feeds"
+msgstr ""
+
+#: bluesky.php:378
+msgid "When activated, Posts will be imported from all the feeds that you pinned in Bluesky."
+msgstr ""
+
+#: bluesky.php:379
+msgid "Complete the threads"
+msgstr ""
+
+#: bluesky.php:379
+msgid "When activated, the system fetches additional replies for the posts in the timeline. This leads to more complete threads."
+msgstr ""
+
+#: bluesky.php:381
+msgid "Personal Data Server"
+msgstr ""
+
+#: bluesky.php:381
+msgid "The personal data server (PDS) is the system that hosts your profile."
+msgstr ""
+
+#: bluesky.php:382
+msgid "Bluesky handle"
+msgstr ""
+
+#: bluesky.php:383
+msgid "Bluesky DID"
+msgstr ""
+
+#: bluesky.php:383
+msgid "This is the unique identifier. It will be fetched automatically, when the handle is entered."
+msgstr ""
+
+#: bluesky.php:384
+msgid "Bluesky app password"
+msgstr ""
+
+#: bluesky.php:384
+msgid "Please don't add your real password here, but instead create a specific app password in the Bluesky settings."
+msgstr ""
+
+#: bluesky.php:390
 msgid "Bluesky Import/Export"
 msgstr ""
 
-#: bluesky.php:385
-msgid ""
-"You are not authenticated. Please enter your handle and the app password."
+#: bluesky.php:400
+msgid "You are not authenticated. Please enter your handle and the app password."
 msgstr ""
 
-#: bluesky.php:405
-msgid ""
-"You are authenticated to Bluesky. For security reasons the password isn't "
-"stored."
+#: bluesky.php:420
+msgid "You are authenticated to Bluesky. For security reasons the password isn't stored."
 msgstr ""
 
-#: bluesky.php:407
-msgid ""
-"The communication with the personal data server service (PDS) is established."
+#: bluesky.php:422
+msgid "The communication with the personal data server service (PDS) is established."
 msgstr ""
 
-#: bluesky.php:409
+#: bluesky.php:424
 msgid "Communication issues with the personal data server service (PDS)."
 msgstr ""
 
-#: bluesky.php:411
-msgid ""
-"The DID for the provided handle could not be detected. Please check if you "
-"entered the correct handle."
+#: bluesky.php:426
+msgid "The DID for the provided handle could not be detected. Please check if you entered the correct handle."
 msgstr ""
 
-#: bluesky.php:413
+#: bluesky.php:428
 msgid "The personal data server service (PDS) could not be detected."
 msgstr ""
 
-#: bluesky.php:415
-msgid ""
-"The authentication with the provided handle and password failed. Please "
-"check if you entered the correct password."
+#: bluesky.php:430
+msgid "The authentication with the provided handle and password failed. Please check if you entered the correct password."
 msgstr ""
 
-#: bluesky.php:484
+#: bluesky.php:492
 msgid "Post to Bluesky"
 msgstr ""
