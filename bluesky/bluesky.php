@@ -1617,7 +1617,7 @@ function bluesky_fetch_parents(stdClass $parent, int $uid, array $parents = []):
 		$parents = bluesky_fetch_parents($parent->parent, $uid, $parents);
 	}
 	
-	if (empty(bluesky_fetch_post(bluesky_get_uri($parent->post), $uid))) {
+	if (!empty($parent->post) && empty(bluesky_fetch_post(bluesky_get_uri($parent->post), $uid))) {
 		$parents[] = $parent->post;
 	}
 
