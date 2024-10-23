@@ -278,14 +278,12 @@ function bluesky_block(array &$hook_data)
 		return;
 	}
 
-	Logger::debug('Check if contact is bluesky', ['data' => $hook_data]);
-	$contact = DBA::selectFirst('contact', [], ['network' => Protocol::BLUESKY, 'url' => $hook_data['url'], 'uid' => [0, $hook_data['uid']]]);
-	if (empty($contact)) {
+	if ($hook_data['contact']['network'] != Protocol::BLUESKY) {
 		return;
 	}
 
 	$record = [
-		'subject'   => $contact['url'],
+		'subject'   => $hook_data['contact']['url'],
 		'createdAt' => DateTimeFormat::utcNow(DateTimeFormat::ATOM),
 		'$type'     => 'app.bsky.graph.block'
 	];
@@ -1297,6 +1295,7 @@ function bluesky_get_header(stdClass $post, string $uri, int $uid, int $fetch_ui
 			// When "ver" is set to "1" it was flagged by some automated process.
 			if (empty($label->ver)) {
 				$item['sensitive'] = true;
+				$item['content-warning'] = $label->val ?? '';
 				Logger::debug('Sensitive content', ['uri-id' => $item['uri-id'], 'label' => $label]);
 			}
 		}
