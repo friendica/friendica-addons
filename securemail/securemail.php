@@ -82,7 +82,7 @@ function securemail_settings_post(array &$b)
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'securemail', 'enable', $enable);
 
 		if (!empty($_POST['securemail-test'])) {
-			$res = DI::emailer()->send(new SecureTestEmail(DI::app(), DI::config(), DI::pConfig(), DI::baseUrl()));
+			$res = DI::emailer()->send(new SecureTestEmail(DI::config(), DI::pConfig(), DI::baseUrl()));
 
 			// revert to saved value
 			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'securemail', 'enable', $enable);
