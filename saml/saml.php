@@ -161,7 +161,7 @@ function saml_sso_reply()
 	}
 
 	if (!empty($user['uid'])) {
-		DI::auth()->setForUser(DI::app(), $user);
+		DI::auth()->setForUser($user);
 	}
 
 	if (isset($_POST['RelayState']) && Utils::getSelfURL() != $_POST['RelayState']) {
