@@ -564,7 +564,7 @@ function tumblr_send(array &$b)
 			if ($result->meta->status < 400) {
 				Logger::info('Successfully performed activity', ['verb' => $b['verb'], 'deleted' => $b['deleted'], 'meta' => $result->meta, 'response' => $result->response]);
 				if (!$b['deleted'] && !empty($result->response->id_string)) {
-					Item::update(['extid' => 'tumblr::' . $result->response->id_string], ['id' => $b['id']]);
+					Item::update(['extid' => 'tumblr::' . $result->response->id_string], ['guid' => $b['guid']]);
 				}
 			} else {
 				Logger::notice('Error while performing activity', ['verb' => $b['verb'], 'deleted' => $b['deleted'], 'meta' => $result->meta, 'response' => $result->response, 'errors' => $result->errors, 'params' => $params]);
