@@ -17,7 +17,7 @@ labels:
 
 skip_clone: true
 
-pipeline:
+steps:
   clone_friendica_base:
     image: alpine/git
     commands:
