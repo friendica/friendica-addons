@@ -14,7 +14,7 @@ Means: When you have got both PHP 8.0 and 8.2 on your system, you have to instal
 
 Installation
 ---
-The original PHP extension is https://github.com/fntlnz/cld2-php-ext.
+The original PHP extension is https://github.com/fntlnz/cld2-php-ext .
 However, it doesn't support PHP8.
 So https://github.com/hiteule/cld2-php-ext/tree/support-php8 has to be used.
 
