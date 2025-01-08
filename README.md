@@ -2,7 +2,7 @@ Addons for Friendica
 ====================
 
 This repository is a collection of addons for the [Friendica Social Communications Server](https://github.com/friendica/friendica).
-You can add these addons to the /addon directory of your Friendica installation do extend the functionality of your node.
+You can add these addons to the `/addon` directory of your Friendica installation to extend the functionality of your node.
 
 After uploading the addons to your server, you need to activate the desired addons in the Admin panel. Addons not activated have no effect on your node.
 
