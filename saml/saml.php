@@ -75,11 +75,6 @@ function saml_install()
 	Hook::register('footer', __FILE__, 'saml_footer');
 }
 
-function saml_head(string &$body)
-{
-	DI::page()->registerStylesheet(__DIR__ . '/saml.css');
-}
-
 function saml_footer(string &$body)
 {
 	$fragment = addslashes(BBCode::convertForUriId(User::getSystemUriId(), DI::config()->get('saml', 'settings_statement')));
@@ -87,6 +82,10 @@ function saml_footer(string &$body)
 <script>
 var target=$("#settings-nickname-desc");
 if (target.length) { target.append("<p>$fragment</p>"); }
+document.getElementById('id_email').setAttribute('readonly', 'readonly');
+document.getElementById('password-settings').remove();
+document.getElementById('password-settings-collapse').remove();
+document.getElementById('id_mpassword_wrapper').remove();
 </script>
 EOL;
 }
