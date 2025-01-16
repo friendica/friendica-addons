@@ -83,9 +83,22 @@ function saml_footer(string &$body)
 var target=$("#settings-nickname-desc");
 if (target.length) { target.append("<p>$fragment</p>"); }
 document.getElementById('id_email').setAttribute('readonly', 'readonly');
-document.getElementById('password-settings').remove();
-document.getElementById('password-settings-collapse').remove();
-document.getElementById('id_mpassword_wrapper').remove();
+if ( document.getElementById('password-settings') != null ) {
+	document.getElementById('password-settings').remove();
+}
+if ( document.getElementById('password-settings-collapse') != null ) {
+	document.getElementById('password-settings-collapse').remove();
+}
+if ( document.getElementById('id_mpassword_wrapper') != null ) {
+	document.getElementById('id_mpassword_wrapper').remove();
+}
+if ( document.getElementById('wrapper_mpassword') != null ) {
+	document.getElementById('wrapper_mpassword').remove();
+}
+if ( document.getElementById('wrapper_password') != null ) {
+	document.getElementById('wrapper_password').parentNode.parentNode.children[0].remove();
+	document.getElementById('wrapper_password').parentNode.remove();
+}
 </script>
 EOL;
 }
