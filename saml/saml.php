@@ -78,26 +78,32 @@ function saml_install()
 function saml_footer(string &$body)
 {
 	$fragment = addslashes(BBCode::convertForUriId(User::getSystemUriId(), DI::config()->get('saml', 'settings_statement')));
+	$samlhint = DI::l10n()->t('managed via SAML authentication');
 	$body .= <<<EOL
 <script>
 var target=$("#settings-nickname-desc");
 if (target.length) { target.append("<p>$fragment</p>"); }
 document.getElementById('id_email').setAttribute('readonly', 'readonly');
-if ( document.getElementById('password-settings') != null ) {
-	document.getElementById('password-settings').remove();
-}
+var saml_hint = document.createElement("span");
+var saml_hint_text = document.createTextNode('$samlhint');
+saml_hint.appendChild(saml_hint_text);
+document.getElementById('id_email').parentNode.insertBefore(saml_hint, document.getElementById('id_email').nextSibling);
+// Frio theme
 if ( document.getElementById('password-settings-collapse') != null ) {
-	document.getElementById('password-settings-collapse').remove();
+	document.getElementById('password-settings-collapse').replaceChildren(saml_hint.cloneNode(true));
 }
 if ( document.getElementById('id_mpassword_wrapper') != null ) {
+	document.getElementById('id_mpassword_wrapper').parentNode.appendChild(saml_hint.cloneNode(true));
 	document.getElementById('id_mpassword_wrapper').remove();
+	document.getElementById('id_email').nextElementSibling.classList.add('help-block');
 }
+// Vier theme
 if ( document.getElementById('wrapper_mpassword') != null ) {
 	document.getElementById('wrapper_mpassword').remove();
+	document.getElementById('id_email').nextElementSibling.classList.add('field_help');
 }
 if ( document.getElementById('wrapper_password') != null ) {
-	document.getElementById('wrapper_password').parentNode.parentNode.children[0].remove();
-	document.getElementById('wrapper_password').parentNode.remove();
+	document.getElementById('wrapper_password').parentNode.replaceChildren(saml_hint.cloneNode(true));
 }
 </script>
 EOL;
