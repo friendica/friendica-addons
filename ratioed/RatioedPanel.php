@@ -163,47 +163,47 @@ SELECT
   SUM(original_like_point) AS original_like_total
 FROM (
   SELECT
-    reply_id,
-    like_date,
-    like_date IS NOT NULL AS like_point,
-    like_author = target_author AS target_like_point,
-    like_author = original_author AS original_like_point
+	reply_id,
+	like_date,
+	like_date IS NOT NULL AS like_point,
+	like_author = target_author AS target_like_point,
+	like_author = original_author AS original_like_point
   FROM (
-    SELECT
-      original_post.`uri-id` AS original_id,
-      original_post.`author-id` AS original_author,
-      original_post.created AS original_date,
-      target_post.`uri-id` AS target_id,
-      target_post.`author-id` AS target_author,
-      target_post.created AS target_date,
-      reply_post.`uri-id` AS reply_id,
-      reply_post.`author-id` AS reply_author,
-      reply_post.created AS reply_date,
-      like_post.`uri-id` AS like_id,
-      like_post.`author-id` AS like_author,
-      like_post.created AS like_date
-    FROM
-      post AS original_post
-    JOIN
-      post AS target_post
-    ON
-      original_post.`uri-id` = target_post.`parent-uri-id`
-    JOIN
-      post AS reply_post
-    ON
-      target_post.`uri-id` = reply_post.`thr-parent-id` AND
-      reply_post.`author-id` = ? AND
-      reply_post.`author-id` != target_post.`author-id` AND
-      reply_post.`author-id` != original_post.`author-id` AND
-      reply_post.`uri-id` != reply_post.`thr-parent-id` AND
-      reply_post.vid = ? AND
-      reply_post.created > CURDATE() - INTERVAL 1 MONTH
-    LEFT OUTER JOIN
-      post AS like_post
-    ON
-      reply_post.`uri-id` = like_post.`thr-parent-id` AND
-      like_post.vid = ? AND
-      like_post.`author-id` != reply_post.`author-id`
+	SELECT
+	  original_post.`uri-id` AS original_id,
+	  original_post.`author-id` AS original_author,
+	  original_post.created AS original_date,
+	  target_post.`uri-id` AS target_id,
+	  target_post.`author-id` AS target_author,
+	  target_post.created AS target_date,
+	  reply_post.`uri-id` AS reply_id,
+	  reply_post.`author-id` AS reply_author,
+	  reply_post.created AS reply_date,
+	  like_post.`uri-id` AS like_id,
+	  like_post.`author-id` AS like_author,
+	  like_post.created AS like_date
+	FROM
+	  post AS original_post
+	JOIN
+	  post AS target_post
+	ON
+	  original_post.`uri-id` = target_post.`parent-uri-id`
+	JOIN
+	  post AS reply_post
+	ON
+	  target_post.`uri-id` = reply_post.`thr-parent-id` AND
+	  reply_post.`author-id` = ? AND
+	  reply_post.`author-id` != target_post.`author-id` AND
+	  reply_post.`author-id` != original_post.`author-id` AND
+	  reply_post.`uri-id` != reply_post.`thr-parent-id` AND
+	  reply_post.vid = ? AND
+	  reply_post.created > CURDATE() - INTERVAL 1 MONTH
+	LEFT OUTER JOIN
+	  post AS like_post
+	ON
+	  reply_post.`uri-id` = like_post.`thr-parent-id` AND
+	  like_post.vid = ? AND
+	  like_post.`author-id` != reply_post.`author-id`
   ) AS post_meta
 ) AS reply_counts
 ', $contact_uid, $post_vid, $like_vid);
@@ -226,7 +226,8 @@ FROM (
 		return $answer;
 	}
 
-	protected function fillReplyGuyData(&$user) {
+	protected function fillReplyGuyData(&$user)
+	{
 		$reply_guy_result = $this->getReplyGuyRow($user['user_contact_uid']);
 		if (DBA::isResult($reply_guy_result)) {
 			$reply_guy_result_row = DBA::fetch($reply_guy_result);
@@ -235,22 +236,19 @@ FROM (
 			$user['reply_respondee_likes'] = $reply_guy_result_row['target_like_total'] ?? 0;
 			$user['reply_op_likes'] = $reply_guy_result_row['original_like_total'] ?? 0;
 
-			$denominator = $user['reply_likes'] + $user['reply_respondee_likes'] + $user['reply_op_likes'];
+			$denominator = (int)($user['reply_likes'] + $user['reply_respondee_likes'] + $user['reply_op_likes']);
 			if ($user['reply_count'] == 0) {
 				$user['reply_guy'] = false;
 				$user['reply_guy_score'] = 0;
-			}
-			elseif ($denominator == 0) {
+			} elseif ($denominator == 0) {
 				$user['reply_guy'] = true;
 				$user['reply_guy_score'] = '∞';
-			}
-			else {
+			} else {
 				$reply_guy_score = $user['reply_count'] / $denominator;
 				$user['reply_guy'] = $reply_guy_score >= 1.0;
 				$user['reply_guy_score'] = $this->sigFig($reply_guy_score, 2);
 			}
-		}
-		else {
+		} else {
 			$user['reply_count'] = "error";
 			$user['reply_likes'] = "error";
 			$user['reply_respondee_likes'] = "error";
@@ -272,9 +270,8 @@ FROM (
 			if (DBA::isResult($self_contact_result)) {
 				$self_contact_result_row = DBA::fetch($self_contact_result);
 				$user['user_contact_uid'] = $self_contact_result_row['user_contact_uid'];
-			}
-			else {
-				$user['user_contact_uid'] = NULL;
+			} else {
+				$user['user_contact_uid'] = null;
 			}
 
 			if ($user['user_contact_uid']) {
@@ -286,28 +283,24 @@ FROM (
 					if ($user['reactions'] > 0) {
 						$user['ratio'] = number_format($user['comments'] / $user['reactions'], 1, '.', '');
 						$user['ratioed'] = (float)($user['ratio']) >= 2.0;
-					}
-					else {
+					} else {
 						$user['reactions'] = 0;
 						if ($user['comments'] == 0) {
 							$user['comments'] = 0;
 							$user['ratio'] = 0;
 							$user['ratioed'] = false;
-						}
-						else {
+						} else {
 							$user['ratio'] = '∞';
 							$user['ratioed'] = false;
 						}
 					}
-				}
-				else {
+				} else {
 					$user['comments'] = 'error';
 					$user['reactions'] = 'error';
 					$user['ratio'] = 'error';
 					$user['ratioed'] = false;
 				}
-			}
-			else {
+			} else {
 				$user['comments'] = 'error';
 				$user['reactions'] = 'error';
 				$user['ratio'] = 'error';
