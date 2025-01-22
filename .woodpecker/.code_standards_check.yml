@@ -56,6 +56,10 @@ steps:
       - /tmp/drone-cache:/tmp/cache
     when:
       event: pull_request
+  phpstan:
+    image: friendicaci/php8.3:php8.3.3
+    commands:
+      - ./bin/composer.phar run phpstan;
   check:
     image: friendicaci/php-cs
     commands:
