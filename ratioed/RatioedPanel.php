@@ -236,7 +236,7 @@ FROM (
 			$user['reply_respondee_likes'] = $reply_guy_result_row['target_like_total'] ?? 0;
 			$user['reply_op_likes'] = $reply_guy_result_row['original_like_total'] ?? 0;
 
-			$denominator = (int)($user['reply_likes'] + $user['reply_respondee_likes'] + $user['reply_op_likes']);
+			$denominator = intval($user['reply_likes']) + intval($user['reply_respondee_likes']) + intval($user['reply_op_likes']);
 			if ($user['reply_count'] == 0) {
 				$user['reply_guy'] = false;
 				$user['reply_guy_score'] = 0;
