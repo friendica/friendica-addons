@@ -231,13 +231,13 @@ FROM (
 		$reply_guy_result = $this->getReplyGuyRow($user['user_contact_uid']);
 		if (DBA::isResult($reply_guy_result)) {
 			$reply_guy_result_row = DBA::fetch($reply_guy_result);
-			$user['reply_count'] = $reply_guy_result_row['replies_total'] ?? 0;
-			$user['reply_likes'] = $reply_guy_result_row['like_total'] ?? 0;
-			$user['reply_respondee_likes'] = $reply_guy_result_row['target_like_total'] ?? 0;
-			$user['reply_op_likes'] = $reply_guy_result_row['original_like_total'] ?? 0;
+			$user['reply_count'] = (int) $reply_guy_result_row['replies_total'] ?? 0;
+			$user['reply_likes'] = (int) $reply_guy_result_row['like_total'] ?? 0;
+			$user['reply_respondee_likes'] = (int) $reply_guy_result_row['target_like_total'] ?? 0;
+			$user['reply_op_likes'] = (int) $reply_guy_result_row['original_like_total'] ?? 0;
 
-			$denominator = intval($user['reply_likes']) + intval($user['reply_respondee_likes']) + intval($user['reply_op_likes']);
-			if ($user['reply_count'] == 0) {
+			$denominator = $user['reply_likes'] + $user['reply_respondee_likes'] + $user['reply_op_likes'];
+			if ($user['reply_count'] === 0) {
 				$user['reply_guy'] = false;
 				$user['reply_guy_score'] = 0;
 			} elseif ($denominator == 0) {
