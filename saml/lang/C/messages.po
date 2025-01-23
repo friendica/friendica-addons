@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-18 07:23+0200\n"
+"POT-Creation-Date: 2025-01-17 03:23+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,82 +17,82 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: saml.php:231
+#: saml.php:81
+msgid "managed via SAML authentication"
+msgstr ""
+
+#: saml.php:246
 msgid "Settings statement"
 msgstr ""
 
-#: saml.php:232
-msgid ""
-"A statement on the settings page explaining where the user should go to "
-"change their e-mail and password. BBCode allowed."
-msgstr ""
-
-#: saml.php:237
-msgid "IdP ID"
-msgstr ""
-
-#: saml.php:238
-msgid ""
-"Identity provider (IdP) entity URI (e.g., https://example.com/auth/realms/"
-"user)."
-msgstr ""
-
-#: saml.php:242
-msgid "Client ID"
-msgstr ""
-
-#: saml.php:243
-msgid "Identifier assigned to client by the identity provider (IdP)."
-msgstr ""
-
 #: saml.php:247
-msgid "IdP SSO URL"
-msgstr ""
-
-#: saml.php:248
-msgid "The URL for your identity provider's SSO endpoint."
+msgid "A statement on the settings page explaining where the user should go to change their e-mail and password. BBCode allowed."
 msgstr ""
 
 #: saml.php:252
-msgid "IdP SLO request URL"
+msgid "IdP ID"
 msgstr ""
 
 #: saml.php:253
-msgid "The URL for your identity provider's SLO request endpoint."
+msgid "Identity provider (IdP) entity URI (e.g., https://example.com/auth/realms/user)."
 msgstr ""
 
 #: saml.php:257
-msgid "IdP SLO response URL"
+msgid "Client ID"
 msgstr ""
 
 #: saml.php:258
-msgid "The URL for your identity provider's SLO response endpoint."
+msgid "Identifier assigned to client by the identity provider (IdP)."
 msgstr ""
 
 #: saml.php:262
-msgid "SP private key"
+msgid "IdP SSO URL"
 msgstr ""
 
 #: saml.php:263
-msgid "The private key the addon should use to authenticate."
+msgid "The URL for your identity provider's SSO endpoint."
 msgstr ""
 
 #: saml.php:267
-msgid "SP certificate"
+msgid "IdP SLO request URL"
 msgstr ""
 
 #: saml.php:268
-msgid "The certficate for the addon's private key."
+msgid "The URL for your identity provider's SLO request endpoint."
 msgstr ""
 
 #: saml.php:272
-msgid "IdP certificate"
+msgid "IdP SLO response URL"
 msgstr ""
 
 #: saml.php:273
+msgid "The URL for your identity provider's SLO response endpoint."
+msgstr ""
+
+#: saml.php:277
+msgid "SP private key"
+msgstr ""
+
+#: saml.php:278
+msgid "The private key the addon should use to authenticate."
+msgstr ""
+
+#: saml.php:282
+msgid "SP certificate"
+msgstr ""
+
+#: saml.php:283
+msgid "The certficate for the addon's private key."
+msgstr ""
+
+#: saml.php:287
+msgid "IdP certificate"
+msgstr ""
+
+#: saml.php:288
 msgid "The x509 certficate for your identity provider."
 msgstr ""
 
-#: saml.php:276
+#: saml.php:291
 msgid "Save Settings"
 msgstr ""
