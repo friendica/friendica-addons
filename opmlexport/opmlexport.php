@@ -9,7 +9,6 @@
 
 use Friendica\DI;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Protocol;
 use Friendica\Model\Contact;
 use Friendica\Model\User;
@@ -18,7 +17,7 @@ function opmlexport_install()
 {
 	Hook::register('addon_settings',        __FILE__, 'opmlexport_addon_settings');
 	Hook::register('addon_settings_post',   __FILE__, 'opmlexport_addon_settings_post');
-	Logger::notice('installed opmlexport Addon');
+	DI::logger()->notice('installed opmlexport Addon');
 }
 
 

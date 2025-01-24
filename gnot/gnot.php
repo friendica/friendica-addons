@@ -9,7 +9,6 @@
  */
 
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Model\Notification;
@@ -20,7 +19,7 @@ function gnot_install()
 	Hook::register('addon_settings_post', 'addon/gnot/gnot.php', 'gnot_settings_post');
 	Hook::register('enotify_mail', 'addon/gnot/gnot.php', 'gnot_enotify_mail');
 
-	Logger::notice("installed gnot");
+	DI::logger()->notice("installed gnot");
 }
 
 /**

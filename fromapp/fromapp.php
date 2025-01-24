@@ -8,7 +8,6 @@
  */
 
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
@@ -17,7 +16,7 @@ function fromapp_install()
 	Hook::register('post_local', 'addon/fromapp/fromapp.php', 'fromapp_post_hook');
 	Hook::register('addon_settings', 'addon/fromapp/fromapp.php', 'fromapp_settings');
 	Hook::register('addon_settings_post', 'addon/fromapp/fromapp.php', 'fromapp_settings_post');
-	Logger::notice("installed fromapp");
+	DI::logger()->notice("installed fromapp");
 }
 
 function fromapp_settings_post($post)

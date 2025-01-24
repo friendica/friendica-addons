@@ -8,7 +8,6 @@
 
 use Friendica\Addon\securemail\SecureTestEmail;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Object\EMail\IEmail;
@@ -22,7 +21,7 @@ function securemail_install()
 
 	Hook::register('emailer_send_prepare', 'addon/securemail/securemail.php', 'securemail_emailer_send_prepare', 10);
 
-	Logger::notice('installed securemail');
+	DI::logger()->notice('installed securemail');
 }
 
 /**

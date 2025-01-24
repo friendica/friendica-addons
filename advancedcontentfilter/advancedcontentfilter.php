@@ -36,7 +36,6 @@
 use Friendica\BaseModule;
 use Friendica\Content\Text\Markdown;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\Database\DBStructure;
@@ -62,7 +61,7 @@ function advancedcontentfilter_install()
 	Hook::add('dbstructure_definition'          , __FILE__, 'advancedcontentfilter_dbstructure_definition');
 	DBStructure::performUpdate();
 
-	Logger::notice('installed advancedcontentfilter');
+	DI::logger()->notice('installed advancedcontentfilter');
 }
 
 /*
