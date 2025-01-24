@@ -10,7 +10,6 @@
 
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Model\Item;
@@ -178,11 +177,11 @@ function ijpost_send(array &$b)
 
 EOT;
 
-		Logger::debug('ijpost: data: ' . $xml);
+		DI::logger()->debug('ijpost: data: ' . $xml);
 
 		if ($ij_blog !== 'test') {
 			$x = DI::httpClient()->post($ij_blog, $xml, ['Content-Type' => 'text/xml'])->getBodyString();
 		}
-		Logger::info('posted to insanejournal: ' . $x ? $x : '');
+		DI::logger()->info('posted to insanejournal: ' . $x ? $x : '');
 	}
 }
