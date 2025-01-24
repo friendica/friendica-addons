@@ -8,7 +8,6 @@
 
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
@@ -63,7 +62,7 @@ function saml_metadata()
 			);
 		}
 	} catch (Exception $e) {
-		Logger::error($e->getMessage());
+		DI::logger()->error($e->getMessage());
 	}
 }
 
@@ -125,7 +124,7 @@ function saml_is_configured()
 function saml_sso_initiate(string &$body)
 {
 	if (!saml_is_configured()) {
-		Logger::warning('SAML SSO tried to trigger, but the SAML addon is not configured yet!');
+		DI::logger()->warning('SAML SSO tried to trigger, but the SAML addon is not configured yet!');
 		return;
 	}
 
@@ -154,7 +153,7 @@ function saml_sso_reply()
 
 	if (!empty($errors)) {
 		echo 'Errors encountered.';
-		Logger::error(implode(', ', $errors));
+		DI::logger()->error(implode(', ', $errors));
 		exit();
 	}
 
@@ -190,7 +189,7 @@ function saml_sso_reply()
 function saml_slo_initiate()
 {
 	if (!saml_is_configured()) {
-		Logger::warning('SAML SLO tried to trigger, but the SAML addon is not configured yet!');
+		DI::logger()->warning('SAML SLO tried to trigger, but the SAML addon is not configured yet!');
 		return;
 	}
 
@@ -221,7 +220,7 @@ function saml_slo_reply()
 	if (empty($errors)) {
 		$auth->redirectTo(DI::baseUrl());
 	} else {
-		Logger::error(implode(', ', $errors));
+		DI::logger()->error(implode(', ', $errors));
 	}
 }
 
@@ -314,7 +313,7 @@ function saml_addon_admin_post()
 function saml_create_user($username, $email, $name)
 {
 	if (!strlen($email) || !strlen($name)) {
-		Logger::error('Could not create user: no email or username given.');
+		DI::logger()->error('Could not create user: no email or username given.');
 		return false;
 	}
 
@@ -336,7 +335,7 @@ function saml_create_user($username, $email, $name)
 
 		return $user;
 	} catch (Exception $e) {
-		Logger::error(
+		DI::logger()->error(
 			'Exception while creating user',
 			[
 				'username'  => $username,

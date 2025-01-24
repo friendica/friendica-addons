@@ -8,7 +8,6 @@
 
 use Friendica\Core\Addon;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Core\Config\Util\ConfigFileManager;
@@ -20,7 +19,7 @@ function libravatar_install()
 {
 	Hook::register('load_config',   'addon/libravatar/libravatar.php', 'libravatar_load_config');
 	Hook::register('avatar_lookup', 'addon/libravatar/libravatar.php', 'libravatar_lookup');
-	Logger::notice("registered libravatar in avatar_lookup hook");
+	DI::logger()->notice("registered libravatar in avatar_lookup hook");
 }
 
 function libravatar_load_config(ConfigFileManager $loader)

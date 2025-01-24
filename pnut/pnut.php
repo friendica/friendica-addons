@@ -14,7 +14,6 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\Plaintext;
 use Friendica\Core\Config\Util\ConfigFileManager;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Core\System;
 use Friendica\DI;
@@ -76,7 +75,7 @@ function pnut_connect()
 
 	try {
 		$token = $nut->getAccessToken($callback_url);
-		Logger::debug('Got Token', [$token]);
+		DI::logger()->debug('Got Token', [$token]);
 		$o = DI::l10n()->t('You are now authenticated with pnut.io.');
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'pnut', 'access_token', $token);
 	} catch (phpnutException $e) {
@@ -266,8 +265,8 @@ function pnut_post_hook(array &$b)
 		return;
 	}
 
-	Logger::notice('PNUT post invoked', ['id' => $b['id'], 'guid' => $b['guid'], 'plink' => $b['plink']]);
-	Logger::debug('PNUT array', $b);
+	DI::logger()->notice('PNUT post invoked', ['id' => $b['id'], 'guid' => $b['guid'], 'plink' => $b['plink']]);
+	DI::logger()->debug('PNUT array', $b);
 
 	$token = DI::pConfig()->get($b['uid'], 'pnut', 'access_token');
 	$nut = new phpnut\phpnut($token);
@@ -276,7 +275,7 @@ function pnut_post_hook(array &$b)
 	$text = $msgarr['text'];
 	$raw = [];
 
-	Logger::debug('PNUT msgarr', $msgarr);
+	DI::logger()->debug('PNUT msgarr', $msgarr);
 
 	if (count($msgarr['parts']) > 1) {
 		$tstamp = time();
@@ -292,23 +291,23 @@ function pnut_post_hook(array &$b)
 	if ($msgarr['type'] == 'photo') {
 		$fileraw = ['type' => 'dev.mcmillian.friendica.image', 'kind' => 'image', 'is_public' => true];
 		foreach ($msgarr['images'] as $image) {
-			Logger::debug('PNUT image', $image);
+			DI::logger()->debug('PNUT image', $image);
 
 			if (!empty($image['id'])) {
 				$photo = Photo::selectFirst([], ['id' => $image['id']]);
-				Logger::debug('PNUT selectFirst');
+				DI::logger()->debug('PNUT selectFirst');
 			} else {
 				$photo = Photo::createPhotoForExternalResource($image['url']);
-				Logger::debug('PNUT createPhotoForExternalResource');
+				DI::logger()->debug('PNUT createPhotoForExternalResource');
 			}
 			$picturedata = Photo::getImageForPhoto($photo);
 
-			Logger::debug('PNUT photo', $photo);
+			DI::logger()->debug('PNUT photo', $photo);
 			$picurefile = tempnam(System::getTempPath(), 'pnut');
 			file_put_contents($picurefile, $picturedata);
-			Logger::debug('PNUT got file?', ['filename' => $picurefile]);
+			DI::logger()->debug('PNUT got file?', ['filename' => $picurefile]);
 			$imagefile = $nut->createFile($picurefile, $fileraw);
-			Logger::debug('PNUT file', ['pnutimagefile' => $imagefile]);
+			DI::logger()->debug('PNUT file', ['pnutimagefile' => $imagefile]);
 			unlink($picurefile);
 
 			$raw['io.pnut.core.oembed'][] = ['+io.pnut.core.file' => ['file_id' => $imagefile['id'], 'file_token' => $imagefile['file_token'], 'format' => 'oembed']];
@@ -318,5 +317,5 @@ function pnut_post_hook(array &$b)
 	$raw['io.pnut.core.crosspost'][] = ['canonical_url' => $b['plink']];
 	$nut->createPost($text, ['raw' => $raw]);
 
-	Logger::debug('PNUT post complete', ['id' => $b['id'], 'text' => $text, 'raw' => $raw]);
+	DI::logger()->debug('PNUT post complete', ['id' => $b['id'], 'text' => $text, 'raw' => $raw]);
 }

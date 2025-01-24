@@ -8,7 +8,6 @@
 
 use Friendica\BaseModule;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Core\Config\Util\ConfigFileManager;
@@ -20,7 +19,7 @@ function gravatar_install() {
 	Hook::register('load_config',   'addon/gravatar/gravatar.php', 'gravatar_load_config');
 	Hook::register('avatar_lookup', 'addon/gravatar/gravatar.php', 'gravatar_lookup');
 
-	Logger::notice("registered gravatar in avatar_lookup hook");
+	DI::logger()->notice("registered gravatar in avatar_lookup hook");
 }
 
 function gravatar_load_config(ConfigFileManager $loader)

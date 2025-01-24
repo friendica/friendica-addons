@@ -11,7 +11,6 @@
 
 use Friendica\Core\Cache\Enum\Duration;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Core\Config\Util\ConfigFileManager;
@@ -31,7 +30,7 @@ function openstreetmap_install()
 	Hook::register('Map::getCoordinates', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_get_coordinates');
 	Hook::register('page_header', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_alterheader');
 
-	Logger::notice("installed openstreetmap");
+	DI::logger()->notice("installed openstreetmap");
 }
 
 function openstreetmap_load_config(ConfigFileManager $loader)
@@ -154,8 +153,8 @@ function openstreetmap_generate_map(array &$b)
 	$lat = $b['lat']; // round($b['lat'], 5);
 	$lon = $b['lon']; // round($b['lon'], 5);
 
-	Logger::debug('lat: ' . $lat);
-	Logger::debug('lon: ' . $lon);
+	DI::logger()->debug('lat: ' . $lat);
+	DI::logger()->debug('lon: ' . $lon);
 
 	$cardlink = '<a href="' . $tmsserver;
 
@@ -173,7 +172,7 @@ function openstreetmap_generate_map(array &$b)
 		$b['html'] .= '<br/>' . $cardlink;
 	}
 
-	Logger::debug('generate_map: ' . $b['html']);
+	DI::logger()->debug('generate_map: ' . $b['html']);
 }
 
 function openstreetmap_addon_admin(string &$o)

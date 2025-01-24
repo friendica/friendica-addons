@@ -3,7 +3,6 @@
 namespace Friendica\Addon\ratioed;
 
 use Friendica\Content\Pager;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
@@ -260,7 +259,7 @@ FROM (
 
 	protected function setupUserCallback(): \Closure
 	{
-		Logger::debug("ratioed: setupUserCallback");
+		DI::logger()->debug("ratioed: setupUserCallback");
 		$parentCallback = parent::setupUserCallback();
 		return function ($user) use ($parentCallback) {
 			$blocked_count = DBA::count('user-contact', ['uid' => $user['uid'], 'is-blocked' => 1]);
@@ -310,7 +309,7 @@ FROM (
 			$this->fillReplyGuyData($user);
 
 			$user = $parentCallback($user);
-			Logger::debug("ratioed: setupUserCallback", [
+			DI::logger()->debug("ratioed: setupUserCallback", [
 				'uid' => $user['uid'],
 				'blocked_by' => $user['blocked_by'],
 				'comments' => $user['comments'],

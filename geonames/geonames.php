@@ -7,7 +7,6 @@
  */
 
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Core\Config\Util\ConfigFileManager;
@@ -45,7 +44,7 @@ function geonames_post_hook(array &$item)
 	 *      - The profile owner must have allowed our addon
 	 */
 
-	Logger::notice('geonames invoked');
+	 DI::logger()->notice('geonames invoked');
 
 	if (!DI::userSession()->getLocalUserId()) {   /* non-zero if this is a logged in user of this system */
 		return;

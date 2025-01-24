@@ -8,7 +8,6 @@
  */
 
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Util\Images;
@@ -68,7 +67,7 @@ function js_upload_post_init(array &$b)
 	$js_upload_jsonresponse = htmlspecialchars(json_encode($result), ENT_NOQUOTES);
 
 	if (isset($result['error'])) {
-		Logger::info('mod/photos.php: photos_post(): error uploading photo: ' . $result['error']);
+		DI::logger()->info('mod/photos.php: photos_post(): error uploading photo: ' . $result['error']);
 		echo json_encode($result);
 		exit();
 	}
@@ -91,7 +90,7 @@ function js_upload_post_end(int &$b)
 {
 	global $js_upload_jsonresponse;
 
-	Logger::notice('upload_post_end');
+	DI::logger()->notice('upload_post_end');
 	if (!empty($js_upload_jsonresponse)) {
 		echo $js_upload_jsonresponse;
 		exit();
@@ -187,6 +186,10 @@ class js_upload_qqFileUploader
 {
 	private $allowedExtensions;
 	private $sizeLimit;
+
+	/**
+	 * @var js_upload_qqUploadedFileXhr|js_upload_qqUploadedFileForm
+	 */
 	private $file;
 
 	function __construct(array $allowedExtensions = [], $sizeLimit)
@@ -234,7 +237,7 @@ class js_upload_qqFileUploader
 		$filename = $pathinfo['filename'];
 
 		if (!isset($pathinfo['extension'])) {
-			Logger::warning('extension isn\'t set.', ['filename' => $filename]);
+			DI::logger()->warning('extension isn\'t set.', ['filename' => $filename]);
 		}
 		$ext = $pathinfo['extension'] ?? '';
 

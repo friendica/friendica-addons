@@ -9,7 +9,6 @@
 use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\HTML;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
@@ -257,13 +256,13 @@ function wppost_send(array &$b)
 
 EOT;
 
-		Logger::debug('wppost: data: ' . $xml);
+		DI::logger()->debug('wppost: data: ' . $xml);
 
 		$x = '';
 
 		if ($wp_blog !== 'test') {
 			$x = DI::httpClient()->post($wp_blog, $xml)->getBodyString();
 		}
-		Logger::info('posted to wordpress: ' . $x);
+		DI::logger()->info('posted to wordpress: ' . $x);
 	}
 }

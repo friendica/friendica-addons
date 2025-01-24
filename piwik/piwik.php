@@ -36,7 +36,6 @@
  */
 
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Core\Config\Util\ConfigFileManager;
@@ -45,7 +44,7 @@ function piwik_install() {
 	Hook::register('load_config', 'addon/piwik/piwik.php', 'piwik_load_config');
 	Hook::register('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
 
-	Logger::notice("installed piwik addon");
+	DI::logger()->notice("installed piwik addon");
 }
 
 function piwik_load_config(ConfigFileManager $loader)

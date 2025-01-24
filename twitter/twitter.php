@@ -38,7 +38,6 @@
 use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\Plaintext;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Core\Worker;
 use Friendica\DI;
@@ -217,7 +216,7 @@ function twitter_post_hook(array &$b)
 
 	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], DI::contentItem()->addSharedPost($b));
 
-	Logger::notice('twitter post invoked', ['id' => $b['id'], 'guid' => $b['guid']]);
+	DI::logger()->notice('twitter post invoked', ['id' => $b['id'], 'guid' => $b['guid']]);
 
 	DI::pConfig()->load($b['uid'], 'twitter');
 
@@ -227,17 +226,17 @@ function twitter_post_hook(array &$b)
 	$access_secret = DI::pConfig()->get($b['uid'], 'twitter', 'access_secret');
 
 	if (empty($api_key) || empty($api_secret) || empty($access_token) || empty($access_secret)) {
-		Logger::info('Missing keys, secrets or tokens.');
+		DI::logger()->info('Missing keys, secrets or tokens.');
 		return;
 	}
 
 	$msgarr = Plaintext::getPost($b, 280, true, BBCode::TWITTER);
-	Logger::debug('Got plaintext', ['id' => $b['id'], 'message' => $msgarr]);
+	DI::logger()->debug('Got plaintext', ['id' => $b['id'], 'message' => $msgarr]);
 
 	$media_ids = [];
 
 	if (!empty($msgarr['images']) || !empty($msgarr['remote_images'])) {
-		Logger::info('Got images', ['id' => $b['id'], 'images' => $msgarr['images'] ?? []]);
+		DI::logger()->info('Got images', ['id' => $b['id'], 'images' => $msgarr['images'] ?? []]);
 
 		$retrial = Worker::getRetrial();
 		if ($retrial > 4) {
@@ -250,7 +249,7 @@ function twitter_post_hook(array &$b)
 			try {
 				$media_ids[] = twitter_upload_image($b['uid'], $image, $retrial);
 			} catch (RequestException $exception) {
-				Logger::warning('Error while uploading image', ['image' => $image, 'code' => $exception->getCode(), 'message' => $exception->getMessage()]);
+				DI::logger()->warning('Error while uploading image', ['image' => $image, 'code' => $exception->getCode(), 'message' => $exception->getMessage()]);
 				Worker::defer();
 				return;
 			}
@@ -259,13 +258,13 @@ function twitter_post_hook(array &$b)
 
 	$in_reply_to_tweet_id = 0;
 
-	Logger::debug('Post message', ['id' => $b['id'], 'parts' => count($msgarr['parts'])]);
+	DI::logger()->debug('Post message', ['id' => $b['id'], 'parts' => count($msgarr['parts'])]);
 	foreach ($msgarr['parts'] as $key => $part) {
 		try {
 			$id = twitter_post_status($b['uid'], $part, $media_ids, $in_reply_to_tweet_id);
-			Logger::info('twitter_post send', ['part' => $key, 'id' => $b['id'], 'result' => $id]);
+			DI::logger()->info('twitter_post send', ['part' => $key, 'id' => $b['id'], 'result' => $id]);
 		} catch (RequestException $exception) {
-			Logger::warning('Error while posting message', ['part' => $key, 'id' => $b['id'], 'code' => $exception->getCode(), 'message' => $exception->getMessage()]);
+			DI::logger()->warning('Error while posting message', ['part' => $key, 'id' => $b['id'], 'code' => $exception->getCode(), 'message' => $exception->getMessage()]);
 			$status = [
 				'code'    => $exception->getCode(),
 				'reason'  => $exception->getResponse()->getReasonPhrase(),
@@ -319,9 +318,9 @@ function twitter_upload_image(int $uid, array $image, int $retrial)
 	$picturedata = $picture->asString();
 	$new_size    = strlen($picturedata);
 
-	Logger::info('Uploading', ['uid' => $uid, 'retrial' => $retrial, 'height' => $new_height, 'width' => $new_width, 'size' => $new_size, 'orig-height' => $height, 'orig-width' => $width, 'orig-size' => $size, 'image' => $image]);
+	DI::logger()->info('Uploading', ['uid' => $uid, 'retrial' => $retrial, 'height' => $new_height, 'width' => $new_width, 'size' => $new_size, 'orig-height' => $height, 'orig-width' => $width, 'orig-size' => $size, 'image' => $image]);
 	$media = twitter_post($uid, 'https://upload.twitter.com/1.1/media/upload.json', 'form_params', ['media' => base64_encode($picturedata)]);
-	Logger::info('Uploading done', ['uid' => $uid, 'retrial' => $retrial, 'height' => $new_height, 'width' => $new_width, 'size' => $new_size, 'orig-height' => $height, 'orig-width' => $width, 'orig-size' => $size, 'image' => $image]);
+	DI::logger()->info('Uploading done', ['uid' => $uid, 'retrial' => $retrial, 'height' => $new_height, 'width' => $new_width, 'size' => $new_size, 'orig-height' => $height, 'orig-width' => $width, 'orig-size' => $size, 'image' => $image]);
 
 	if (isset($media->media_id_string)) {
 		$media_id = $media->media_id_string;
@@ -334,10 +333,10 @@ function twitter_upload_image(int $uid, array $image, int $retrial)
 				]
 			];
 			$ret = twitter_post($uid, 'https://upload.twitter.com/1.1/media/metadata/create.json', 'json', $data);
-			Logger::info('Metadata create', ['uid' => $uid, 'data' => $data, 'return' => $ret]);
+			DI::logger()->info('Metadata create', ['uid' => $uid, 'data' => $data, 'return' => $ret]);
 		}
 	} else {
-		Logger::error('Failed upload', ['uid' => $uid, 'size' => strlen($picturedata), 'image' => $image['url'], 'return' => $media]);
+		DI::logger()->error('Failed upload', ['uid' => $uid, 'size' => strlen($picturedata), 'image' => $image['url'], 'return' => $media]);
 		throw new Exception('Failed upload of ' . $image['url']);
 	}
 
@@ -373,7 +372,7 @@ function twitter_post(int $uid, string $url, string $type, array $data): stdClas
 	DI::pConfig()->set($uid, 'twitter', 'last_status', $status);
 
 	$content = json_decode($body) ?? new stdClass;
-	Logger::debug('Success', ['content' => $content]);
+	DI::logger()->debug('Success', ['content' => $content]);
 	return $content;
 }
 
@@ -402,7 +401,7 @@ function twitter_test_connection(int $uid)
 			'content' => $response->getBody()->getContents()
 		];
 		DI::pConfig()->set(1, 'twitter', 'last_status',  $status);
-		Logger::info('Test successful', ['uid' => $uid]);
+		DI::logger()->info('Test successful', ['uid' => $uid]);
 	} catch (RequestException $exception) {
 		$status = [
 			'code'    => $exception->getCode(),
@@ -410,6 +409,6 @@ function twitter_test_connection(int $uid)
 			'content' => $exception->getMessage()
 		];
 		DI::pConfig()->set(1, 'twitter', 'last_status',  $status);
-		Logger::info('Test failed', ['uid' => $uid]);
+		DI::logger()->info('Test failed', ['uid' => $uid]);
 	}
 }

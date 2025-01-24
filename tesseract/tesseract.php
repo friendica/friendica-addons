@@ -7,8 +7,8 @@
  */
 
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\System;
+use Friendica\DI;
 use thiagoalessio\TesseractOCR\TesseractOCR;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
@@ -17,7 +17,7 @@ function tesseract_install()
 {
 	Hook::register('ocr-detection', __FILE__, 'tesseract_ocr_detection');
 
-	Logger::notice('installed tesseract');
+	DI::logger()->notice('installed tesseract');
 }
 
 function tesseract_ocr_detection(&$media)
@@ -33,6 +33,6 @@ function tesseract_ocr_detection(&$media)
 		$ocr->imageData($media['img_str'], strlen($media['img_str']));
 		$media['description'] = $ocr->run();
 	} catch (\Throwable $th) {
-		Logger::info('Error calling TesseractOCR', ['message' => $th->getMessage()]);
+		DI::logger()->info('Error calling TesseractOCR', ['message' => $th->getMessage()]);
 	}
 }
