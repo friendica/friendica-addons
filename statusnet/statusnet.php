@@ -40,7 +40,6 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . '
 use CodebirdSN\CodebirdSN;
 use Friendica\Content\Text\Plaintext;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Core\System;
 use Friendica\Database\DBA;
@@ -58,7 +57,7 @@ function statusnet_install()
 	Hook::register('hook_fork', 'addon/statusnet/statusnet.php', 'statusnet_hook_fork');
 	Hook::register('post_local', 'addon/statusnet/statusnet.php', 'statusnet_post_local');
 	Hook::register('jot_networks', 'addon/statusnet/statusnet.php', 'statusnet_jot_nets');
-	Logger::notice('installed GNU Social');
+	DI::logger()->notice('installed GNU Social');
 }
 
 function statusnet_jot_nets(array &$jotnets_fields)
@@ -355,7 +354,7 @@ function statusnet_post_hook(array &$b)
 		return;
 	}
 
-	Logger::notice('GNU Socialpost invoked');
+	DI::logger()->notice('GNU Socialpost invoked');
 
 	DI::pConfig()->load($b['uid'], 'statusnet');
 
@@ -407,7 +406,7 @@ function statusnet_post_hook(array &$b)
 			$cb->setToken($otoken, $osecret);
 			$result = $cb->statuses_update($postdata);
 			//$result = $dent->post('statuses/update', $postdata);
-			Logger::info('statusnet_post send, result: ' . print_r($result, true) .
+			DI::logger()->info('statusnet_post send, result: ' . print_r($result, true) .
 				"\nmessage: " . $msg . "\nOriginal post: " . print_r($b, true) . "\nPost Data: " . print_r($postdata, true));
 
 			if (!empty($result->source)) {
@@ -415,9 +414,9 @@ function statusnet_post_hook(array &$b)
 			}
 
 			if (!empty($result->error)) {
-				Logger::notice('Send to GNU Social failed: "' . $result->error . '"');
+				DI::logger()->notice('Send to GNU Social failed: "' . $result->error . '"');
 			} elseif ($iscomment) {
-				Logger::notice('statusnet_post: Update extid ' . $result->id . ' for post id ' . $b['id']);
+				DI::logger()->notice('statusnet_post: Update extid ' . $result->id . ' for post id ' . $b['id']);
 				Item::update(['extid' => $hostname . '::' . $result->id, 'body' => $result->text], ['id' => $b['id']]);
 			}
 		}
