@@ -10,7 +10,6 @@
 
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Model\Item;
@@ -200,7 +199,7 @@ function ljpost_send(array &$b)
 </methodCall>
 EOT;
 
-		Logger::debug('ljpost: data: ' . $xml);
+		DI::logger()->debug('ljpost: data: ' . $xml);
 
 		$x = '';
 
@@ -208,6 +207,6 @@ EOT;
 			$x = DI::httpClient()->post($lj_blog, $xml, ['Content-Type' => 'text/xml'])->getBodyString();
 		}
 
-		Logger::info('posted to livejournal: ' . $x);
+		DI::logger()->info('posted to livejournal: ' . $x);
 	}
 }
