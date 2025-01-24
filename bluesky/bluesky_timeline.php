@@ -1,6 +1,6 @@
 <?php
 
-use Friendica\Core\Logger;
+use Friendica\DI;
 
 function bluesky_timeline_run($argv, $argc)
 {
@@ -10,7 +10,7 @@ function bluesky_timeline_run($argv, $argc)
 		return;
 	}
 
-	Logger::notice('importing timeline - start', ['user' => $argv[1]]);
+	DI::logger()->notice('importing timeline - start', ['user' => $argv[1]]);
 	bluesky_fetch_timeline($argv[1]);
-	Logger::notice('importing timeline - done', ['user' => $argv[1]]);
+	DI::logger()->notice('importing timeline - done', ['user' => $argv[1]]);
 }
