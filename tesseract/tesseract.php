@@ -8,6 +8,7 @@
 
 use Friendica\Core\Hook;
 use Friendica\Core\System;
+use Friendica\DI;
 use thiagoalessio\TesseractOCR\TesseractOCR;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
