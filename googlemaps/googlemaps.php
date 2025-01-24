@@ -8,6 +8,7 @@
  */
 
 use Friendica\Core\Hook;
+use Friendica\DI;
 
 function googlemaps_install()
 {
