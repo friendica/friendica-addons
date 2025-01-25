@@ -82,11 +82,13 @@ function saml_footer(string &$body)
 <script>
 var target=$("#settings-nickname-desc");
 if (target.length) { target.append("<p>$fragment</p>"); }
-document.getElementById('id_email').setAttribute('readonly', 'readonly');
 var saml_hint = document.createElement("span");
 var saml_hint_text = document.createTextNode('$samlhint');
 saml_hint.appendChild(saml_hint_text);
-document.getElementById('id_email').parentNode.insertBefore(saml_hint, document.getElementById('id_email').nextSibling);
+if ( document.getElementById('id_email') != null ) {
+	document.getElementById('id_email').setAttribute('readonly', 'readonly');
+	document.getElementById('id_email').parentNode.insertBefore(saml_hint, document.getElementById('id_email').nextSibling);
+}
 // Frio theme
 if ( document.getElementById('password-settings-collapse') != null ) {
 	document.getElementById('password-settings-collapse').replaceChildren(saml_hint.cloneNode(true));
