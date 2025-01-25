@@ -208,7 +208,7 @@ function blockbot_log_activitypub(string $url, string $agent)
 		blockbot_save('activitypub-inbox-agents', $agent);
 	}
 
-	if (!empty($_SERVER['HTTP_SIGNATURE']) && !empty(HTTPSignature::getSigner('', $_SERVER))) {
+	if (!empty($_SERVER['HTTP_SIGNATURE']) && !empty(HTTPSignature::getSigner('', $_SERVER, false))) {
 		blockbot_save('activitypub-signature-agents', $agent);
 	}
 }
