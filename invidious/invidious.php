@@ -54,8 +54,8 @@ function invidious_settings(array &$data)
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/invidious/');
 	$html = Renderer::replaceMacros($t, [
-		'$enabled' => ['enabled', DI::l10n()->t('Replace Youtube links with links to an Invidious server'), $enabled, DI::l10n()->t('If enabled, Youtube links are replaced with the links to the specified Invidious server.')],
-		'$server'  => ['server', DI::l10n()->t('Invidious server'), $server, DI::l10n()->t('See %s for a list of available Invidious servers.', '<a href="https://api.invidious.io/">https://api.invidious.io/</a>')],
+		'$enabled' => ['invidious-enabled', DI::l10n()->t('Replace Youtube links with links to an Invidious server'), $enabled, DI::l10n()->t('If enabled, Youtube links are replaced with the links to the specified Invidious server.')],
+		'$server'  => ['invidious-server', DI::l10n()->t('Invidious server'), $server, DI::l10n()->t('See %s for a list of available Invidious servers.', '<a href="https://api.invidious.io/">https://api.invidious.io/</a>')],
 	]);
 
 	$data = [
@@ -71,9 +71,9 @@ function invidious_settings_post(array &$b)
 		return;
 	}
 
-	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'invidious', 'enabled', (bool)$_POST['enabled']);
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'invidious', 'enabled', (bool)$_POST['invidious-enabled']);
 
-	$server = trim($_POST['server'], " \n\r\t\v\x00/");
+	$server = trim($_POST['invidious-server'], " \n\r\t\v\x00/");
 	if ($server != DI::config()->get('invidious', 'server', INVIDIOUS_DEFAULT) && !empty($server)) {
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'invidious', 'server', $server);
 	} else {
