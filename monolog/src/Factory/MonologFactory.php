@@ -23,9 +23,6 @@ final class MonologFactory implements LoggerFactory
 
 	private IManageConfigValues $config;
 
-	/**
-	 * @param string $channel The channel for the logger
-	 */
 	public function __construct(IHaveCallIntrospections $introspection, IManageConfigValues $config)
 	{
 		$this->introspection = $introspection;
