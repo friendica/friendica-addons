@@ -743,6 +743,12 @@ function tumblr_fetch_tags(int $uid, int $last_poll)
 
 	foreach (DI::pConfig()->get($uid, 'tumblr', 'tags') ?? [] as $tag) {
 		$data = tumblr_get($uid, 'tagged', ['tag' => $tag]);
+
+		if (!is_array($data->response)) {
+			DI::logger()->warning('Unexpected Tumblr response format', ['uid' => $uid, 'url' => 'tagged', 'parameters' => ['tag' => $tag], 'data' => $data]);
+			continue;
+		}
+
 		foreach (array_reverse($data->response) as $post) {
 			$id = tumblr_process_post($post, $uid, Item::PR_TAG, $last_poll);
 			if (!empty($id)) {
