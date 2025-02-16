@@ -1005,6 +1005,10 @@ function bluesky_process_reason(stdClass $reason, string $uri, int $uid)
 		return;
 	}
 
+	if (Post::exists(['uid' => $item['uid'], 'thr-parent' => $item['thr-parent'], 'verb' => $item['verb'], 'contact-id' => $item['contact-id']])) {
+		return;
+	}
+
 	$item['guid']         = Item::guidFromUri($item['uri'], $contact['alias']);
 	$item['owner-name']   = $item['author-name'];
 	$item['owner-link']   = $item['author-link'];
