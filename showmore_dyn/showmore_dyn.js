@@ -59,7 +59,7 @@ function addHeightToggleHandler($item) {
 	$item.data("item-id", itemId);
 	var toggleId = "wall-item-body-toggle-" + itemId;
 
-	$item.append('<div class="wall-item-body-toggle" data-item-id="' + itemId + '" id="' + toggleId + '" ><button type="button" class="wall-item-body-toggle-text">' + showmore_dyn_showmore_linktext + '</button></div>');
+	$item.append('<div class="wall-item-body-toggle" data-item-id="' + itemId + '" id="' + toggleId + '" ><button type="button" class="wall-item-body-toggle-text" aria-hidden="true">' + showmore_dyn_showmore_linktext + '</button></div>');
 	$item.addClass("limitable limit-height");
 
 	var $toggle = $("#" + toggleId);
