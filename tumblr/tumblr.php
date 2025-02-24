@@ -391,12 +391,17 @@ function tumblr_settings_post(array &$b)
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'tumblr', 'import',          intval($_POST['tumblr_import']));
 
 		$max_tags = DI::config()->get('tumblr', 'max_tags') ?? TUMBLR_DEFAULT_MAXIMUM_TAGS;
-		$tags     = [];
-		foreach (explode(',', $_POST['tags']) as $tag) {
-			if (count($tags) < $max_tags) {
-				$tags[] = trim($tag, ' #');
-			}
-		}
+
+		$tags = array_slice(
+			array_filter(
+				array_map(
+					function($tag) { return trim($tag, ' #');},
+					explode(',', $_POST['tags']) ?: []
+				)
+			),
+			0,
+			$max_tags,
+		);
 
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'tumblr', 'tags', $tags);
 	}
@@ -742,6 +747,11 @@ function tumblr_fetch_tags(int $uid, int $last_poll)
 	}
 
 	foreach (DI::pConfig()->get($uid, 'tumblr', 'tags') ?? [] as $tag) {
+		// Tumblr will return an error for queries on empty tag
+		if (!$tag) {
+			continue;
+		}
+
 		$data = tumblr_get($uid, 'tagged', ['tag' => $tag]);
 
 		if (!is_array($data->response)) {
