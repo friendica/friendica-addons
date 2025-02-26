@@ -1025,7 +1025,7 @@ class phpnut
      * see: https://docs.pnut.io/resources/posts/search
      * @param string $query The search query. Supports
      * normal search terms. Searches post text.
-     * @return array An array of associative arrays, each representing one post.
+     * @return string|array|false An array of associative arrays, each representing one post.
      * or false on error
      */
     public function searchPosts(array $params=[], string $query='', string $order='default')
@@ -1769,7 +1769,7 @@ class phpnut
      * see: https://docs.pnut.io/resources/messages/search
      * @param string $query The search query. Supports
      * normal search terms. Searches common channel raw.
-     * @return array An array of associative arrays, each representing one channel.
+     * @return string|array|false An array of associative arrays, each representing one channel.
      * or false on error
      */
     public function searchMessages(array $params=[], string $query='', string $order='default')
