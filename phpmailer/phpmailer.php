@@ -28,10 +28,14 @@ function phpmailer_load_config(ConfigFileManager $loader)
 }
 
 /**
- * @param IEmail $email
+ * @param null|IEmail $email
  */
-function phpmailer_emailer_send_prepare(IEmail &$email)
+function phpmailer_emailer_send_prepare(?IEmail &$email)
 {
+	if ($email === null) {
+		return;
+	}
+
 	// Passing `true` enables exceptions
 	$mailer = new PHPMailer(true);
 	try {
