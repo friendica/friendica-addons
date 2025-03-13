@@ -17,7 +17,11 @@ function membersince_install()
 	Hook::register('profile_advanced', 'addon/membersince/membersince.php', 'membersince_display');
 }
 
-function membersince_display(array &$b)
+/**
+ * @param array|string|null $b
+ * @return void
+ */
+function membersince_display(&$b)
 {
 	$uid = DI::userSession()->getLocalUserId();
 
@@ -59,7 +63,7 @@ function membersince_display(array &$b)
 		$div->appendChild($entry);
 		$elm->parentNode->insertBefore($div, $elm->nextSibling);
 
-		$b = $doc->saveHTML();
+		$b = (string) $doc->saveHTML();
 	} else {
 		// Works in Vier.
 		$b = preg_replace('/<\/dl>/', "</dl>\n\n\n<dl id=\"aprofile-membersince\" class=\"aprofile\">\n<dt>" . DI::l10n()->t('Member since:') . "</dt>\n<dd>" . DateTimeFormat::local($user['register_date']) . "</dd>\n</dl>", $b, 1);
