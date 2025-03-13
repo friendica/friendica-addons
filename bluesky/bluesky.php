@@ -961,13 +961,13 @@ function bluesky_complete_post(stdClass $post, int $uid, int $post_reason, int $
 	if (!empty($existing_uri)) {
 		$comments = Post::countPosts(['thr-parent' => $existing_uri, 'gravity' => Item::GRAVITY_COMMENT]);
 		if (($post->replyCount <= $comments) || !$complete) {
-			return DI::atpProcessor()->fetchUriId($existing_uri, $uid);
+			return (int) DI::atpProcessor()->fetchUriId($existing_uri, $uid);
 		}
 	}
 
 	if ($complete) {
 		$uri = DI::atpProcessor()->fetchMissingPost(DI::atpProcessor()->getUri($post), $uid, $post_reason, $causer, 0, '', true, $protocol);
-		$uri_id = DI::atpProcessor()->fetchUriId($uri, $uid);
+		$uri_id = (int) DI::atpProcessor()->fetchUriId($uri, $uid);
 	} else {
 		$uri_id = DI::atpProcessor()->processPost($post, $uid, $post_reason, $causer, 0, $protocol);
 	}
