@@ -361,19 +361,19 @@ class Services_Libravatar
     protected function domainGet($identifier)
     {
         if ($identifier === null) {
-            return null;
+            return '';
         }
 
         // What are we, email or openid? Split ourself up and get the
         // important bit out.
         if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
             $email = explode('@', $identifier);
-            return $email[1];
+            return (string) $email[1];
         }
 
         //OpenID
         $url    = parse_url($identifier);
-        $domain = $url['host'];
+        $domain = (string) $url['host'];
         if (isset($url['port']) && $url['scheme'] === 'http'
             && $url['port'] != 80
             || isset($url['port']) && $url['scheme'] === 'https'
