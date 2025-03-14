@@ -368,12 +368,12 @@ class Services_Libravatar
         // important bit out.
         if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
             $email = explode('@', $identifier);
-            return (string) $email[1];
+            return $email[1];
         }
 
         //OpenID
         $url    = parse_url($identifier);
-        $domain = (string) $url['host'];
+        $domain = $url['host'];
         if (isset($url['port']) && $url['scheme'] === 'http'
             && $url['port'] != 80
             || isset($url['port']) && $url['scheme'] === 'https'
