@@ -43,12 +43,13 @@ function phpmailer_emailer_send_prepare(IEmail &$email)
 		if (DI::config()->get('phpmailer', 'smtp')) {
 			// Set mailer to use SMTP
 			$mailer->isSMTP();
+//			$mailer->isSendmail();
 
 			// Specify main and backup SMTP servers
 			$mailer->Host = DI::config()->get('phpmailer', 'smtp_server');
 			$mailer->Port = DI::config()->get('phpmailer', 'smtp_port');
 
-			if (DI::config()->get('system', 'smtp_secure') && DI::config()->get('phpmailer', 'smtp_port_s')) {
+			if (DI::config()->get('phpmailer', 'smtp_secure') && DI::config()->get('phpmailer', 'smtp_port_s')) {
 				$mailer->SMTPSecure = DI::config()->get('phpmailer', 'smtp_secure');
 				$mailer->Port       = DI::config()->get('phpmailer', 'smtp_port_s');
 			}
