@@ -48,7 +48,7 @@ steps:
       branch: [ develop, '*-rc' ]
       event: push
   composer_install:
-    image: friendicaci/php8.2:php8.2.16
+    image: friendicaci/php8.2:php8.2.28
     commands:
       - export COMPOSER_HOME=.composer
       - composer validate
