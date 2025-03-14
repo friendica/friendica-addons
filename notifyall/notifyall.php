@@ -50,14 +50,14 @@ function notifyall_post()
 
 	$recipients = DBA::p("SELECT DISTINCT `email` FROM `user`" . DBA::buildCondition($condition), $condition);
 
-	if (! $recipients || !is_iterable($recipients)) {
+	if (! $recipients) {
 		DI::sysmsg()->addNotice(DI::l10n()->t('No recipients found.'));
 		return;
 	}
 
 	$notifyEmail = new NotifyAllEmail(DI::l10n(), DI::config(), DI::baseUrl(), $text);
 
-	foreach ($recipients as $recipient) {
+	foreach (DBA::toArray($recipients) as $recipient) {
 		DI::emailer()->send($notifyEmail->withRecipient($recipient['email']));
 	}
 
