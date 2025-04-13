@@ -1174,8 +1174,14 @@ function bluesky_get_feeds(int $uid): array
 		return [];
 	}
 	foreach ($preferences->preferences as $preference) {
-		if ($preference->$type == 'app.bsky.actor.defs#savedFeedsPref') {
-			return $preference->pinned ?? [];
+		if ($preference->$type == 'app.bsky.actor.defs#savedFeedsPrefV2') {
+			$pinned = [];
+			foreach ($preference->items as $item) {
+				if (($item->type == 'feed') && $item->pinned) {
+					$pinned[] = $item->value;
+				}
+			}
+			return $pinned;
 		}
 	}
 	return [];
