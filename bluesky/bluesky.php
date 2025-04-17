@@ -672,6 +672,8 @@ function bluesky_create_post(array $item, stdClass $root = null, stdClass $paren
 		}
 	}
 
+	$item['body'] = bluesky_set_mentions($item['body']);
+
 	$urls = bluesky_get_urls($item['body']);
 	$item['body'] = $urls['body'];
 
@@ -733,13 +735,40 @@ function bluesky_create_post(array $item, stdClass $root = null, stdClass $paren
 	}
 }
 
-function bluesky_get_urls(string $body): array
+function bluesky_set_mentions(string $body): string
 {
-	// Remove all hashtag and mention links
+	// Remove all url based mention links
 	$body = preg_replace("/([@!])\[url\=(.*?)\](.*?)\[\/url\]/ism", '$1$3', $body);
 
+	if (!preg_match_all("/[@!]\[url\=(did:.*?)\](.*?)\[\/url\]/ism", $body, $matches, PREG_SET_ORDER)) {
+		return $body;
+	}
+
+	foreach ($matches as $match) {
+		$contact = Contact::selectFirst(['addr'], ['nurl' => $match[1]]);
+		if (!empty($contact['addr'])) {
+			$body = str_replace($match[0], '@[url=' . $match[1] . ']' . $contact['addr'] . '[/url]', $body);
+		} else {
+			$body = str_replace($match[0], '@' . $match[2], $body);
+		}
+	}
+
+	return $body;
+}
+
+function bluesky_get_urls(string $body): array
+{
 	$body = BBCode::expandVideoLinks($body);
 	$urls = [];
+
+	// Search for Mentions
+	if (preg_match_all("/[@!]\[url\=(did:.*?)\](.*?)\[\/url\]/ism", $body, $matches, PREG_SET_ORDER)) {
+		foreach ($matches as $match) {
+			$text = '@' . $match[2];
+			$urls[strpos($body, $match[0])] = ['mention' => $match[1], 'text' => $text, 'hash' => $text];
+			$body = str_replace($match[0], $text, $body);
+		}
+	}
 
 	// Search for hash tags
 	if (preg_match_all("/#\[url\=(https?:.*?)\](.*?)\[\/url\]/ism", $body, $matches, PREG_SET_ORDER)) {
@@ -825,6 +854,9 @@ function bluesky_get_facets(string $body, array $urls): array
 		} elseif (!empty($url['url'])) {
 			$feature->uri = $url['url'];
 			$feature->$type = 'app.bsky.richtext.facet#link';
+		} elseif (!empty($url['mention'])) {
+			$feature->did = $url['mention'];
+			$feature->$type = 'app.bsky.richtext.facet#mention';
 		} else {
 			continue;
 		}
