@@ -976,7 +976,7 @@ class CodebirdSN
      * @param string $method The method that has been called
      * @param string $reply  The actual reply, JSON-encoded or URL-encoded
      *
-     * @return array|object The parsed reply
+     * @return string|array|object The parsed reply
      */
     protected function _parseApiReply($method, $reply)
     {

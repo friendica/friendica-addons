@@ -52,7 +52,7 @@ class WebDavConfig implements ICanConfigureStorage
 		$this->config = $config;
 		$this->client = $client;
 
-		$this->authOptions = null;
+		$this->authOptions = [];
 
 		if (!empty($this->config->get('webdav', 'username'))) {
 			$this->authOptions = [

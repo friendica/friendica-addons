@@ -179,7 +179,7 @@ function mailstream_post_hook(array &$item)
 function mailstream_do_images(array &$item, array &$attachments)
 {
 	if (!DI::pConfig()->get($item['uid'], 'mailstream', 'attachimg')) {
-		return;
+		return $attachments;
 	}
 
 	$attachments = [];

@@ -791,7 +791,7 @@ function tumblr_fetch_dashboard(int $uid, int $last_poll)
 	$dashboard = tumblr_get($uid, 'user/dashboard', $parameters);
 	if ($dashboard->meta->status > 399) {
 		DI::logger()->notice('Error fetching dashboard', ['meta' => $dashboard->meta, 'response' => $dashboard->response, 'errors' => $dashboard->errors]);
-		return [];
+		return;
 	}
 
 	if (empty($dashboard->response->posts)) {

@@ -188,7 +188,7 @@ class js_upload_qqFileUploader
 	private $sizeLimit;
 
 	/**
-	 * @var js_upload_qqUploadedFileXhr|js_upload_qqUploadedFileForm
+	 * @var js_upload_qqUploadedFileXhr|js_upload_qqUploadedFileForm|false
 	 */
 	private $file;
 

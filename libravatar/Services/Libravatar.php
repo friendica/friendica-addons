@@ -361,7 +361,7 @@ class Services_Libravatar
     protected function domainGet($identifier)
     {
         if ($identifier === null) {
-            return null;
+            return '';
         }
 
         // What are we, email or openid? Split ourself up and get the
