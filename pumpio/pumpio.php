@@ -8,7 +8,6 @@
 
 use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\HTML;
-use Friendica\Core\Addon;
 use Friendica\Core\Hook;
 use Friendica\Core\Protocol;
 use Friendica\Core\Renderer;
@@ -627,7 +626,9 @@ function pumpio_action(int $uid, string $uri, string $action, string $content = 
 
 function pumpio_sync()
 {
-	if (!Addon::isEnabled('pumpio')) {
+	$addonHelper = DI::addonHelper();
+
+	if (!$addonHelper->isAddonEnabled('pumpio')) {
 		return;
 	}
 
