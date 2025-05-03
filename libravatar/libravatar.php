@@ -6,7 +6,6 @@
  * Author: Klaus Weidenbach <http://friendica.dszdw.net/profile/klaus>
  */
 
-use Friendica\Core\Addon;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\DI;
@@ -71,7 +70,9 @@ function libravatar_addon_admin(string &$o)
 		'pagan' => DI::l10n()->t('retro adventure game character'),
 	];
 
-	if (Addon::isEnabled('gravatar')) {
+	$addonHelper = DI::addonHelper();
+
+	if ($addonHelper->isAddonEnabled('gravatar')) {
 		$o = '<h5>' .DI::l10n()->t('Information') .'</h5><p>' .DI::l10n()->t('Gravatar addon is installed. Please disable the Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if nothing was found at Libravatar.') .'</p><br><br>';
 	}
 
