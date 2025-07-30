@@ -104,12 +104,13 @@ function nsfw_addon_settings_post(array &$b)
 function nsfw_prepare_body_content_filter(&$hook_data)
 {
 	$words = null;
-	if (DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'nsfw', 'disable')) {
+	$uid = $hook_data['uid'] ?: DI::userSession()->getLocalUserId();
+	if (DI::pConfig()->get($uid, 'nsfw', 'disable')) {
 		return;
 	}
 
-	if (DI::userSession()->getLocalUserId()) {
-		$words = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'nsfw', 'words');
+	if ($uid) {
+		$words = DI::pConfig()->get($uid, 'nsfw', 'words');
 	}
 
 	if ($words) {
