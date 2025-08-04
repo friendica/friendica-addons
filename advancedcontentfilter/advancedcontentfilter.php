@@ -120,7 +120,7 @@ function advancedcontentfilter_prepare_body_content_filter(&$hook_data)
 		$expressionLanguage = new ExpressionLanguage\ExpressionLanguage();
 	}
 
-	$uid = $hook_data['uid'] ?: DI::userSession()->getLocalUserId();
+	$uid = $hook_data['uid'] ?? DI::userSession()->getLocalUserId();
 	if (!$uid) {
 		return;
 	}

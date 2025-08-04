@@ -99,7 +99,7 @@ function langfilter_addon_settings_post(array &$b)
 
 function langfilter_prepare_body_content_filter(&$hook_data)
 {
-	$uid = $hook_data['uid'] ?: DI::userSession()->getLocalUserId();
+	$uid = $hook_data['uid'] ?? DI::userSession()->getLocalUserId();
 	if (!$uid) {
 		return;
 	}
