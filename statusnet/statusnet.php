@@ -338,6 +338,10 @@ function statusnet_post_hook(array &$b)
 		return;
 	}
 
+	if (Item::isGroupPost($b['uri-id'])) {
+		return;
+	}
+
 	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], DI::contentItem()->addSharedPost($b));
 
 	$api = DI::pConfig()->get($b['uid'], 'statusnet', 'baseapi');
