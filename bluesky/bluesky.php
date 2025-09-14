@@ -553,6 +553,10 @@ function bluesky_send(array &$b)
 		return;
 	}
 
+	if (Item::isGroupPost($b['uri-id'])) {
+		return;
+	}
+
 	if ($b['gravity'] != Item::GRAVITY_PARENT) {
 		DI::logger()->debug('Got comment', ['item' => $b]);
 
