@@ -24,6 +24,6 @@ See the [documentation](https://github.com/friendica/friendica/blob/stable/doc/A
 ## Translation
 
 Addons can be translated like any other part of Friendica.
-Translation for addons is done at [the Transifex Friendica page](https://www.transifex.com/Friendica/friendica/dashboard/).
+Translation for addons is done at [the Transifex Friendica page](https://app.transifex.com/Friendica/friendica/dashboard/).
 
 Read more about the workflow in the [Friendica translation documentation](https://github.com/friendica/friendica/blob/stable/doc/translations.md#addon).
