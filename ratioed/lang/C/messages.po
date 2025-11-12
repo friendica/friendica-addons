@@ -1,0 +1,130 @@
+# ADDON ratioed
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica ratioed addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-08 13:50+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: RatioedPanel.php:34
+msgid "User not found"
+msgstr ""
+
+#: RatioedPanel.php:69
+msgid "Name"
+msgstr ""
+
+#: RatioedPanel.php:70
+msgid "Email"
+msgstr ""
+
+#: RatioedPanel.php:71
+msgid "Register date"
+msgstr ""
+
+#: RatioedPanel.php:72
+msgid "Last login"
+msgstr ""
+
+#: RatioedPanel.php:73
+msgid "Last public item"
+msgstr ""
+
+#: RatioedPanel.php:74
+msgid "Type"
+msgstr ""
+
+#: RatioedPanel.php:75
+msgid "Blocked by"
+msgstr ""
+
+#: RatioedPanel.php:76
+msgid "Comments last 24h"
+msgstr ""
+
+#: RatioedPanel.php:77
+msgid "Reactions last 24h"
+msgstr ""
+
+#: RatioedPanel.php:78
+msgid "Ratio last 24h"
+msgstr ""
+
+#: RatioedPanel.php:79
+msgid "Replies last month"
+msgstr ""
+
+#: RatioedPanel.php:80
+msgid "Reply likes"
+msgstr ""
+
+#: RatioedPanel.php:81
+msgid "Respondee likes"
+msgstr ""
+
+#: RatioedPanel.php:82
+msgid "OP likes"
+msgstr ""
+
+#: RatioedPanel.php:83
+msgid "Reply guy score"
+msgstr ""
+
+#: RatioedPanel.php:109
+msgid "Moderation"
+msgstr ""
+
+#: RatioedPanel.php:111 ratioed.php:39
+msgid "Behaviour"
+msgstr ""
+
+#: RatioedPanel.php:112
+msgid "select all"
+msgstr ""
+
+#: RatioedPanel.php:113
+msgid "Delete"
+msgstr ""
+
+#: RatioedPanel.php:114
+msgid "Block"
+msgstr ""
+
+#: RatioedPanel.php:115
+msgid "User blocked"
+msgstr ""
+
+#: RatioedPanel.php:116
+msgid "Site admin"
+msgstr ""
+
+#: RatioedPanel.php:117
+msgid "Account expired"
+msgstr ""
+
+#: RatioedPanel.php:118
+msgid "Create a new user"
+msgstr ""
+
+#: RatioedPanel.php:124
+msgid "Selected users will be deleted!\\n\\nEverything these users had posted on this site will be permanently deleted!\\n\\nAre you sure?"
+msgstr ""
+
+#: RatioedPanel.php:125
+msgid "The user {0} will be deleted!\\n\\nEverything this user has posted on this site will be permanently deleted!\\n\\nAre you sure?"
+msgstr ""
+
+#: ratioed.php:42
+msgid "Statistics about users behaviour"
+msgstr ""
