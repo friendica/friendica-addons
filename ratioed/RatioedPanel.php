@@ -48,11 +48,11 @@ class RatioedPanel extends Active
 		];
 
 		$order		   = 'last-item';
-		$order_direction = '+';
+		$order_direction = '-';
 		if (!empty($_REQUEST['o'])) {
 			$new_order = $_REQUEST['o'];
-			if ($new_order[0] === '-') {
-				$order_direction = '-';
+			if ($new_order[0] !== '-') {
+				$order_direction = '+';
 				$new_order	   = substr($new_order, 1);
 			}
 
