@@ -1,8 +1,4 @@
 /* fix positioning if more than one jot tool */
-#profile-jot-plugin-wrapper {
-	width: 100%;
-	margin-top: 10px;
-}
 .jotplugins > div,
 #profile-jot-plugin-wrapper > div {
 	float: left;
@@ -13,33 +9,24 @@
 		display: block;
 		clear: both;
 	}
-
 #profile-smiley-wrapper {
 	display: block;
+	margin-bottom: -100px;
 }
 
 #smileybutton {
 	display: none;
 	position: absolute;
-	background-color: #FFF;
-	width: auto;
-	border-radius: 8px;
-	padding: 10px;
+	max-width: 770px;
 	z-index: 99;
-	-webkit-box-shadow: 0 0 5px rgba(0,0,0,.7);
-	box-shadow: 0 0 5px rgba(0,0,0,.7);
+	background-color: white;
 }
-	.jotplugins #smileybutton {
-		position: absolute;
-	}
+.smiley_button {
+	height: 42px;
+}
 .smiley_button > img {
-	height: 22px;
-	width: 22px;
-	position: relative;
-	left: 0px;
-	margin: 4px;
-	-moz-border-radius: 0px;
-	border-radius: 0px;
+	height: 18px;
+	width: 18px;
 }
 
 div.smiley-preview img.smiley {
@@ -50,10 +37,7 @@ div.smiley-preview img.smiley {
 }
 
 div.smiley-preview {
-	border: none;
-	-moz-border-radius: 5px;
-	border-radius: 5px;
-	margin: 5px;
+	border: 1px solid #AAAAAA;
 	max-height: 200px;
 	overflow: auto;
 }

@@ -2,7 +2,7 @@
 /**
  * Name: Smileybutton
  * Description: Adds a smileybutton to the Inputbox
- * Version: 1.0
+ * Version: 1.1
  * Author: Johannes Schwab <https://friendica.jschwab.org/profile/ddorian>
  * Maintainer: Hypolite Petovan <https://friendica.mrpetovan.com/profile/hypolite>
  */
@@ -18,14 +18,9 @@ function smileybutton_install()
 
 function smileybutton_jot_tool(string &$body)
 {
-	// Disable if theme is quattro
-	if (DI::appHelper()->getCurrentTheme() == 'quattro') {
-		return;
-	}
-
-	// Disable for mobile because they have a smiley key of their own
+	// this plugin may have smilies mobile devices do not have, disable for mobile by uncommenting return below
 	if (DI::mode()->isMobile() || DI::mode()->isMobile()) {
-		return;
+//		return;
 	}
 
 	$texts = [
@@ -85,12 +80,12 @@ function smileybutton_jot_tool(string &$body)
 	Hook::callAll('smilie', $params);
 
 	//Generate html for smiley list
-	$s = '<table class="smiley-preview"><tr>';
+	$s = '<div class="smiley-preview">';
 	for ($x = 0; $x < count($params['texts']); $x++) {
 		$icon = $params['icons'][$x];
-		$s .= '<td onclick="smileybutton_addsmiley(\'' . $params['texts'][$x] . '\')">' . $icon . '</td>';
+		$s .= '<span onclick="smileybutton_addsmiley(\'' . $params['texts'][$x] . '\')">' . $icon . '</span>';
 		if (($x + 1) % (floor(sqrt(count($params['texts']))) + 1) == 0) {
-			$s .= '</tr><tr>';
+			$s .= '</div>';
 		}
 	}
 	$s .= '</tr></table>';
@@ -112,7 +107,7 @@ function smileybutton_jot_tool(string &$body)
 	$image_url = DI::baseUrl() . '/' . $image;
 
 	//Add the hmtl and script to the page
-	$body = <<< EOT
+	$body .= <<< EOT
 	<div id="profile-smiley-wrapper">
 		<button type="button" class="btn btn-link smiley_button" onclick="toggle_smileybutton()"><img src="$image_url" alt="smiley"></button>
 		<div id="smileybutton">
