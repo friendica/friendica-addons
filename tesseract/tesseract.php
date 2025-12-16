@@ -26,7 +26,7 @@ function tesseract_ocr_detection(&$media)
 	try {
 		$languages = $ocr->availableLanguages();
 		if ($languages) {
-			/** @phpstan-ignore-next-line ignore call of \thiagoalessio\TesseractOCR\Option::lang() */
+			// @phpstan-ignore-next-line
 			$ocr->lang(implode('+', $languages));
 		}
 		$ocr->tempDir(System::getTempPath());
