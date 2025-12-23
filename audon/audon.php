@@ -6,6 +6,7 @@
  * Author: Stephen Mahood <https://friends.mayfirst.org/profile/marxistvegan>
  * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  * Author: Matthias Ebers <https://loma.ml/profile/feb>
+ * Status: Unsupported
  */
 
 use Friendica\Core\Hook;
