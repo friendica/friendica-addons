@@ -1,8 +1,7 @@
 <?php
 
-$a->strings["\"Show more\" Settings"] = "\"Montri pli\" agordoj";
-$a->strings["Enable Show More"] = "Ŝalti \"montri pli\"";
-$a->strings["Cutting posts after how much characters"] = "Limitigi afiŝojn al kiom da literoj";
-$a->strings["Submit"] = "Sendi";
-$a->strings["Show More Settings saved."] = "Konservis \"montri pli\" agordojn.";
-$a->strings["show more"] = "montri pli";
+if(! function_exists("string_plural_select_eo")) {
+function string_plural_select_eo($n){
+	$n = intval($n);
+	return intval($n != 1);
+}}

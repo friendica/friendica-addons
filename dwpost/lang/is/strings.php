@@ -1,9 +1,7 @@
 <?php
 
-$a->strings["Post to Dreamwidth"] = "";
-$a->strings["Dreamwidth Post Settings"] = "";
-$a->strings["Enable dreamwidth Post Addon"] = "";
-$a->strings["dreamwidth username"] = "";
-$a->strings["dreamwidth password"] = "";
-$a->strings["Post to dreamwidth by default"] = "";
-$a->strings["Submit"] = "Senda inn";
+if(! function_exists("string_plural_select_is")) {
+function string_plural_select_is($n){
+	$n = intval($n);
+	return intval($n % 10 != 1 || $n % 100 == 11);
+}}

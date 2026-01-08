@@ -19,6 +19,6 @@ $a->strings['Error'] = 'Błąd';
 $a->strings['Enable Diaspora Post Addon'] = 'Włącz dodatek Diaspora';
 $a->strings['Diaspora handle'] = 'Uchwyt Diaspory';
 $a->strings['Diaspora password'] = 'Hasło Diaspora';
-$a->strings['Privacy notice: Your Diaspora password will be stored unencrypted to authenticate you with your Diaspora pod. This means your Friendica node administrator can have access to it.'] = 'Informacja o ochronie prywatności: Twoje hasło Diaspora będzie przechowywane w postaci niezaszyfrowanej w celu uwierzytelnienia użytkownika za pomocą Diaspora. Oznacza to, że administrator węzła Friendica może mieć do niego dostęp.';
+$a->strings['Privacy notice: Your Diaspora password will be stored unencrypted to authenticate you with your Diaspora pod. This means your Friendica node administrator can have access to it.'] = 'Informacja o prywatności: Twoje hasło Diaspora będzie przechowywane w postaci niezaszyfrowanej w celu uwierzytelnienia użytkownika w instancji Diaspora. Oznacza to, że administrator instancji Friendica może mieć do niego dostęp.';
 $a->strings['Post to Diaspora by default'] = 'Wyślij domyślnie do Diaspory';
 $a->strings['Diaspora Export'] = 'Eksportuj do Diaspory';

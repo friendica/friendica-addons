@@ -15,6 +15,7 @@ $a->strings['Feed item'] = 'Element kanału';
 $a->strings['Email'] = 'E-mail';
 $a->strings['Friendica Item'] = 'Pozycja Friendica';
 $a->strings['Upstream'] = 'Nadrzędny';
+$a->strings['URI'] = 'URI';
 $a->strings['Local'] = 'Lokalny';
 $a->strings['Enabled'] = 'Włączone';
 $a->strings['Email Address'] = 'Adres e-mail';

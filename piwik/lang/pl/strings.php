@@ -13,3 +13,4 @@ $a->strings['Absolute path to your Matomo (Piwik) installation. (without protoco
 $a->strings['Site ID'] = 'Identyfikator ID witryny';
 $a->strings['Show opt-out cookie link?'] = 'Pokazać link do rezygnacji z plików cookie?';
 $a->strings['Asynchronous tracking'] = 'Śledzenie asynchroniczne';
+$a->strings['Shortcut path to the script (\'/js/\' instead of \'/piwik.js\')'] = 'Skrócona ścieżka do skryptu (\'/js/\' zamiast /piwik.js\')';

@@ -5,7 +5,7 @@ function string_plural_select_fr($n){
 	$n = intval($n);
 	if (($n == 0 || $n == 1)) { return 0; } else if ($n != 0 && $n % 1000000 == 0) { return 1; } else  { return 2; }
 }}
-$a->strings['Save Settings'] = 'Enregistrer les paramètres';
+$a->strings['Save Settings'] = 'Sauvegarder les paramètres';
 $a->strings['Show callstack'] = 'Afficher le callstack';
 $a->strings['Show detailed performance measures in the callstack. When deactivated, only the summary will be displayed.'] = 'Affiche les performances détaillées dans le callstack. Si désactivé, seul le résumé sera affiché.';
 $a->strings['Minimal time'] = 'Temps minimal';

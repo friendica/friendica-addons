@@ -1,0 +1,150 @@
+# ADDON statusnet
+# Copyright (C)
+# This file is distributed under the same license as the Friendica statusnet addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-12-21 22:32+0000\n"
+"PO-Revision-Date: 2014-06-23 12:54+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Catalan (http://app.transifex.com/Friendica/friendica/language/ca/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ca\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: statusnet.php:76
+msgid "Post to GNU Social"
+msgstr ""
+
+#: statusnet.php:122
+msgid ""
+"Please contact your site administrator.<br />The provided API URL is not "
+"valid."
+msgstr ""
+
+#: statusnet.php:150
+msgid "We could not contact the GNU Social API with the Path you entered."
+msgstr ""
+
+#: statusnet.php:208 statusnet.php:489
+msgid "Save Settings"
+msgstr ""
+
+#: statusnet.php:220
+#, php-format
+msgid "Currently connected to: <a href=\"%s\" target=\"_statusnet\">%s</a>"
+msgstr ""
+
+#: statusnet.php:225
+msgid ""
+"<strong>Note</strong>: Due your privacy settings (<em>Hide your profile "
+"details from unknown viewers?</em>) the link potentially included in public "
+"postings relayed to GNU Social will lead the visitor to a blank page "
+"informing the visitor that the access to your profile has been restricted."
+msgstr ""
+
+#: statusnet.php:228
+msgid "Clear OAuth configuration"
+msgstr ""
+
+#: statusnet.php:240
+msgid "Cancel GNU Social Connection"
+msgstr ""
+
+#: statusnet.php:247
+msgid "Globally Available GNU Social OAuthKeys"
+msgstr ""
+
+#: statusnet.php:248
+msgid ""
+"There are preconfigured OAuth key pairs for some GNU Social servers "
+"available. If you are using one of them, please use these credentials. If "
+"not feel free to connect to any other GNU Social instance (see below)."
+msgstr ""
+
+#: statusnet.php:249
+msgid "Provide your own OAuth Credentials"
+msgstr ""
+
+#: statusnet.php:250
+msgid ""
+"No consumer key pair for GNU Social found. Register your Friendica Account "
+"as a desktop application on your GNU Social account, copy the consumer key "
+"pair here and enter the API base root.<br />Before you register your own "
+"OAuth key pair ask the administrator if there is already a key pair for this"
+" Friendica installation at your favorite GNU Social installation."
+msgstr ""
+
+#: statusnet.php:251
+msgid ""
+"To connect to your GNU Social account click the button below to get a "
+"security code from GNU Social which you have to copy into the input box "
+"below and submit the form. Only your <strong>public</strong> posts will be "
+"posted to GNU Social."
+msgstr ""
+
+#: statusnet.php:252
+msgid "Log in with GNU Social"
+msgstr ""
+
+#: statusnet.php:253
+msgid "Cancel Connection Process"
+msgstr ""
+
+#: statusnet.php:254
+#, php-format
+msgid "Current GNU Social API is: %s"
+msgstr ""
+
+#: statusnet.php:271
+msgid "OAuth Consumer Key"
+msgstr ""
+
+#: statusnet.php:272
+msgid "OAuth Consumer Secret"
+msgstr ""
+
+#: statusnet.php:274 statusnet.php:469 statusnet.php:481
+msgid "Base API Path (remember the trailing /)"
+msgstr ""
+
+#: statusnet.php:275
+msgid "Copy the security code from GNU Social here"
+msgstr ""
+
+#: statusnet.php:277
+msgid "Allow posting to GNU Social"
+msgstr ""
+
+#: statusnet.php:277
+msgid ""
+"If enabled all your <strong>public</strong> postings can be posted to the "
+"associated GNU Social account. You can choose to do so by default (here) or "
+"for every posting separately in the posting options when writing the entry."
+msgstr ""
+
+#: statusnet.php:278
+msgid "Post to GNU Social by default"
+msgstr ""
+
+#: statusnet.php:283
+msgid "GNU Social Import/Export/Mirror"
+msgstr ""
+
+#: statusnet.php:480
+msgid "Site name"
+msgstr ""
+
+#: statusnet.php:482
+msgid "Consumer Secret"
+msgstr ""
+
+#: statusnet.php:483
+msgid "Consumer Key"
+msgstr ""

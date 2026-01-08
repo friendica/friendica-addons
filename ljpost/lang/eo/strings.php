@@ -1,9 +1,7 @@
 <?php
 
-$a->strings["Post to LiveJournal"] = "Afiŝi ĉe LiveJournal";
-$a->strings["LiveJournal Post Settings"] = "Agordoj pri afiŝoj ĉe LiveJournal";
-$a->strings["Enable LiveJournal Post Addon"] = "Ŝalti la LiveJournal-afiŝo kromprogramon.";
-$a->strings["LiveJournal username"] = "LiveJournal Salutnomo";
-$a->strings["LiveJournal password"] = "LiveJournal pasvorto";
-$a->strings["Post to LiveJournal by default"] = "Defaŭlte afiŝi al LiveJournal";
-$a->strings["Submit"] = "Sendi";
+if(! function_exists("string_plural_select_eo")) {
+function string_plural_select_eo($n){
+	$n = intval($n);
+	return intval($n != 1);
+}}
