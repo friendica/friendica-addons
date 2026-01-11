@@ -1,5 +1,7 @@
 <?php
 
-$a->strings["Planets Settings"] = "Ajustos de Planet";
-$a->strings["Enable Planets Addon"] = "Activa Addon de Planet";
-$a->strings["Submit"] = "Enviar";
+if(! function_exists("string_plural_select_ca")) {
+function string_plural_select_ca($n){
+	$n = intval($n);
+	return intval($n != 1);
+}}

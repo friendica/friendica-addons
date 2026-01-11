@@ -1,5 +1,7 @@
 <?php
 
-$a->strings["Randplace Settings"] = "Configuració de Randplace";
-$a->strings["Enable Randplace Addon"] = "Habilitar el Addon de Randplace";
-$a->strings["Submit"] = "Enviar";
+if(! function_exists("string_plural_select_ca")) {
+function string_plural_select_ca($n){
+	$n = intval($n);
+	return intval($n != 1);
+}}

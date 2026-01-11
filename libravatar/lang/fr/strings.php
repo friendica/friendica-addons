@@ -14,6 +14,6 @@ $a->strings['roboter face'] = 'Tête de robot';
 $a->strings['retro adventure game character'] = 'Personnage de jeu d\'aventure rétro';
 $a->strings['Information'] = 'Information';
 $a->strings['Gravatar addon is installed. Please disable the Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if nothing was found at Libravatar.'] = 'L\'extension Gravatar est installée. Veuillez la désactiver. <br>L\'extension Libravatar se repose sur Gravatar si l\'avatar n\'a pas été trouvé sur Libravatar.';
-$a->strings['Save Settings'] = 'Enregistrer les paramètres';
+$a->strings['Save Settings'] = 'Sauvegarder les paramètres';
 $a->strings['Default avatar image'] = 'Avatar par défaut';
 $a->strings['Select default avatar image if none was found. See README'] = 'Sélectionnez un avatar par défaut si rien n\'a été trouvé. Voir le README';

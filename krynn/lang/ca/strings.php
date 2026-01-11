@@ -1,5 +1,7 @@
 <?php
 
-$a->strings["Krynn Settings"] = "Ajustos de Krynn";
-$a->strings["Enable Krynn Addon"] = "Activa Addon de Krynn";
-$a->strings["Submit"] = "Enviar";
+if(! function_exists("string_plural_select_ca")) {
+function string_plural_select_ca($n){
+	$n = intval($n);
+	return intval($n != 1);
+}}

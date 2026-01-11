@@ -1,9 +1,7 @@
 <?php
 
-$a->strings["Post to libertree"] = "Enviament a libertree";
-$a->strings["libertree Post Settings"] = "Ajustos d'enviaments a libertree";
-$a->strings["Enable Libertree Post Addon"] = "Activa el addon d'enviaments a libertree";
-$a->strings["Libertree API token"] = "Libertree API token";
-$a->strings["Libertree site URL"] = "lloc URL libertree";
-$a->strings["Post to Libertree by default"] = "Enviar a libertree per defecte";
-$a->strings["Submit"] = "Enviar";
+if(! function_exists("string_plural_select_ca")) {
+function string_plural_select_ca($n){
+	$n = intval($n);
+	return intval($n != 1);
+}}

@@ -1,13 +1,7 @@
 <?php
 
-$a->strings["Post to Wordpress"] = "Сообщение для Wordpress";
-$a->strings["WordPress Post Settings"] = "Настройки сообщений для Wordpress";
-$a->strings["Enable WordPress Post Addon"] = "Включить WordPress  плагин сообщений";
-$a->strings["WordPress username"] = "WordPress Имя пользователя";
-$a->strings["WordPress password"] = "WordPress паролъ";
-$a->strings["WordPress API URL"] = "WordPress API URL";
-$a->strings["Post to WordPress by default"] = "Сообщение WordPress по умолчанию";
-$a->strings["Provide a backlink to the Friendica post"] = "";
-$a->strings["Submit"] = "Подтвердить";
-$a->strings["Post from Friendica"] = "Сообщение от Friendica";
-$a->strings["Read the original post and comment stream on Friendica"] = "";
+if(! function_exists("string_plural_select_ru")) {
+function string_plural_select_ru($n){
+	$n = intval($n);
+	if ($n%10==1 && $n%100!=11) { return 0; } else if ($n%10>=2 && $n%10<=4 && ($n%100<12 || $n%100>14)) { return 1; } else if ($n%10==0 || ($n%10>=5 && $n%10<=9) || ($n%100>=11 && $n%100<=14)) { return 2; } else  { return 3; }
+}}

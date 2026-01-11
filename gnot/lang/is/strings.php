@@ -1,8 +1,7 @@
 <?php
 
-$a->strings["Gnot settings updated."] = "";
-$a->strings["Gnot Settings"] = "";
-$a->strings["Allows threading of email comment notifications on Gmail and anonymising the subject line."] = "";
-$a->strings["Enable this addon?"] = "";
-$a->strings["Submit"] = "Senda inn";
-$a->strings["[Friendica:Notify] Comment to conversation #%d"] = "";
+if(! function_exists("string_plural_select_is")) {
+function string_plural_select_is($n){
+	$n = intval($n);
+	return intval($n % 10 != 1 || $n % 100 == 11);
+}}

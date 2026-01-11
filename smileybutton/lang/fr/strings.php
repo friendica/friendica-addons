@@ -8,4 +8,4 @@ function string_plural_select_fr($n){
 $a->strings['Smileybutton settings'] = 'Paramètres du bouton des Smileys';
 $a->strings['You can hide the button and show the smilies directly.'] = 'Vous pouvez cacher le bouton et montrer les smilies directement.';
 $a->strings['Hide the button'] = 'Cacher le bouton';
-$a->strings['Save Settings'] = 'Enregistrer les paramètres';
+$a->strings['Save Settings'] = 'Sauvegarder les paramètres';
