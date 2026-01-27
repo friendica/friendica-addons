@@ -1,5 +1,7 @@
 <?php
 
-$a->strings["Administrator"] = "Kerfisstjóri";
-$a->strings["Your account on %s will expire in a few days."] = "";
-$a->strings["Your Friendica account is about to expire."] = "";
+if(! function_exists("string_plural_select_is")) {
+function string_plural_select_is($n){
+	$n = intval($n);
+	return intval($n % 10 != 1 || $n % 100 == 11);
+}}

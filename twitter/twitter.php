@@ -214,6 +214,10 @@ function twitter_post_hook(array &$b)
 		return;
 	}
 
+	if (Item::isGroupPost($b['uri-id'])) {
+		return;
+	}
+
 	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], DI::contentItem()->addSharedPost($b));
 
 	DI::logger()->notice('twitter post invoked', ['id' => $b['id'], 'guid' => $b['guid']]);

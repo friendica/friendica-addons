@@ -387,6 +387,10 @@ function pumpio_send(array &$b)
 		return;
 	}
 
+	if (Item::isGroupPost($b['uri-id'])) {
+		return;
+	}
+
 	DI::logger()->debug('pumpio_send: parameter ', $b);
 
 	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], DI::contentItem()->addSharedPost($b));

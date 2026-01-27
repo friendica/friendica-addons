@@ -4,16 +4,17 @@
 # 
 # 
 # Translators:
-# Piotr Strębski <strebski@gmail.com>, 2022
+# Bartosz Kozień, 2025
+# Piotr Strebski <strebski@gmail.com>, 2022
 # Waldemar Stoczkowski, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-18 11:57-0500\n"
+"POT-Creation-Date: 2022-12-10 14:42-0500\n"
 "PO-Revision-Date: 2014-06-23 10:34+0000\n"
-"Last-Translator: Piotr Strębski <strebski@gmail.com>, 2022\n"
-"Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
+"Last-Translator: Bartosz Kozień, 2025\n"
+"Language-Team: Polish (http://app.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -40,18 +41,23 @@ msgstr "Rozdzielana przecinkami lista słów kluczowych do ukrycia"
 msgid ""
 "Use /expression/ to provide regular expressions, #tag to specfically match "
 "hashtags (case-insensitive), or regular words (case-sensitive)"
-msgstr ""
+msgstr "Użyj /wyrażenie/ dla wyrażenia regularnego, #tag by dopasować konkretne tagi (bez rozróżniania wielkości liter), lub zwykłych słów (z rozróżnianiem wielkości liter)"
 
 #: nsfw.php:72
 msgid "Content Filter (NSFW and more)"
 msgstr "Filtr zawartości (NSFW i więcej)"
 
-#: nsfw.php:140
+#: nsfw.php:96
+#, php-format
+msgid "Regular expression \"%s\" fails to compile"
+msgstr "Błąd kompilacji wyrażenia regularnego \"%s\""
+
+#: nsfw.php:154
 #, php-format
 msgid "Filtered tag: %s"
 msgstr "Filtrowane znaczników: %s"
 
-#: nsfw.php:142
+#: nsfw.php:156
 #, php-format
 msgid "Filtered word: %s"
 msgstr "Filtrowane słowo: %s"

@@ -1,9 +1,7 @@
 <?php
 
-$a->strings["Post to Insanejournal"] = "";
-$a->strings["InsaneJournal Post Settings"] = "";
-$a->strings["Enable InsaneJournal Post Addon"] = "";
-$a->strings["InsaneJournal username"] = "";
-$a->strings["InsaneJournal password"] = "";
-$a->strings["Post to InsaneJournal by default"] = "";
-$a->strings["Submit"] = "Senda inn";
+if(! function_exists("string_plural_select_is")) {
+function string_plural_select_is($n){
+	$n = intval($n);
+	return intval($n % 10 != 1 || $n % 100 == 11);
+}}

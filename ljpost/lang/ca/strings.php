@@ -1,9 +1,7 @@
 <?php
 
-$a->strings["Post to LiveJournal"] = "Missatge a Livejournal";
-$a->strings["LiveJournal Post Settings"] = "Configuració d'enviaments a Livejournal";
-$a->strings["Enable LiveJournal Post Addon"] = "Habilitat el addon d'enviaments a Livejournal";
-$a->strings["LiveJournal username"] = "Nom d'usuari a Livejournal";
-$a->strings["LiveJournal password"] = "Contrasenya a Livejournal";
-$a->strings["Post to LiveJournal by default"] = "Enviar per defecte a Livejournal";
-$a->strings["Submit"] = "Enviar";
+if(! function_exists("string_plural_select_ca")) {
+function string_plural_select_ca($n){
+	$n = intval($n);
+	return intval($n != 1);
+}}

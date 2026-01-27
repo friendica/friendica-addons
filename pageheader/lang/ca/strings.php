@@ -1,5 +1,7 @@
 <?php
 
-$a->strings["\"pageheader\" Settings"] = "Configuració de la capçalera de pàgina.";
-$a->strings["Submit"] = "Enviar";
-$a->strings["pageheader Settings saved."] = "guardada la configuració de la capçalera de pàgina.";
+if(! function_exists("string_plural_select_ca")) {
+function string_plural_select_ca($n){
+	$n = intval($n);
+	return intval($n != 1);
+}}

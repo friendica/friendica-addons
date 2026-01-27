@@ -1,6 +1,7 @@
 <?php
 
-$a->strings["Geonames settings updated."] = "Ĝidatigis la Geonames agordojn.";
-$a->strings["Geonames Settings"] = "Geonames Agordoj";
-$a->strings["Enable Geonames Addon"] = "Ŝalti la Geonames Kromprogramon";
-$a->strings["Submit"] = "Sendi";
+if(! function_exists("string_plural_select_eo")) {
+function string_plural_select_eo($n){
+	$n = intval($n);
+	return intval($n != 1);
+}}

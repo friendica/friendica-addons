@@ -1,9 +1,7 @@
 <?php
 
-$a->strings["Post to libertree"] = "";
-$a->strings["libertree Post Settings"] = "";
-$a->strings["Enable Libertree Post Addon"] = "";
-$a->strings["Libertree API token"] = "";
-$a->strings["Libertree site URL"] = "";
-$a->strings["Post to Libertree by default"] = "";
-$a->strings["Submit"] = "Senda inn";
+if(! function_exists("string_plural_select_is")) {
+function string_plural_select_is($n){
+	$n = intval($n);
+	return intval($n % 10 != 1 || $n % 100 == 11);
+}}

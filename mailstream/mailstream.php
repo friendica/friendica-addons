@@ -73,6 +73,68 @@ function mailstream_addon_admin_post()
 }
 
 /**
+ * Creates content for the "References" header.  When the message is
+ * part of a thread, this contains a handful of message IDs of other
+ * messages in the thread.  This should provide enough clues for mail
+ * agents to thread messages together, even if some messages or
+ * references are missing.  See https://www.jwz.org/doc/threading.html
+ *
+ * According to RFC 1036, these references should be in forwards
+ * chronological order separated by spaces.  That is, the first
+ * message ID is the top-level post, then the first-level reply, then
+ * the second-level reply, and so on, ending in the direct parent.
+ * The RFC allows for message IDs to be omitted for length.  To save
+ * database queries we only include the three nearest replies in the
+ * chain, plus the top-level post.
+ *
+ * @param array $item content of the item
+ *
+ * @return string the set of references as a space-separated string
+ */
+function mailstream_generate_references(array $item): string
+{
+	$ancestor_message_ids = [];
+
+	$top_level_post_uri = "";
+	if (array_key_exists("parent-uri", $item)) {
+		$top_level_post_uri = $item["parent-uri"];
+	}
+
+	$ancestor_uri = "";
+	if (array_key_exists("thr-parent", $item)) {
+		$ancestor_uri = $item["thr-parent"];
+	}
+	while ($ancestor_uri && count($ancestor_message_ids) < 3) {
+		if ($ancestor_uri == $top_level_post_uri) {
+			break;
+		}
+		$ancestor_message_id = mailstream_generate_id($ancestor_uri);
+		array_unshift($ancestor_message_ids, $ancestor_message_id);
+
+		$ancestor = Post::selectFirst([], array("uid" => $item["uid"], "uri" => $ancestor_uri));
+		if (empty($ancestor)) {
+			DI::logger()->error("Could not retrieve ancestor post", ["uri" => $item["uri"], "uid" => $item["uid"], "ancestor-uri" => $ancestor_uri]);
+			break;
+		}
+		if (!array_key_exists("thr-parent", $ancestor)) {
+			break;
+		}
+		$ancestor_uri = $ancestor["thr-parent"];
+	}
+
+	if ($top_level_post_uri) {
+		$top_level_post_message_id = mailstream_generate_id($top_level_post_uri);
+		array_unshift($ancestor_message_ids, $top_level_post_message_id);
+	}
+
+	if (empty($ancestor_message_ids)) {
+		DI::logger()->error('cannot generate references for item with no parent', ["uri" => $item['uri']]);
+		return "";
+	}
+	return implode(" ", $ancestor_message_ids);
+}
+
+/**
  * Creates a message ID for a post URI in accordance with RFC 1036
  * See also http://www.jwz.org/doc/mid.html
  *
@@ -386,6 +448,7 @@ function mailstream_send(string $message_id, array $item, array $user): bool
 		$mail->Subject = mailstream_subject($item);
 		if ($item['thr-parent'] != $item['uri']) {
 			$mail->addCustomHeader('In-Reply-To: ' . mailstream_generate_id($item['thr-parent']));
+			$mail->addCustomHeader('References: ' . mailstream_generate_references($item));
 		}
 		$mail->addCustomHeader('X-Friendica-Mailstream-URI: ' . $item['uri']);
 		if ($item['plink']) {

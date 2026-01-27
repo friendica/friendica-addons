@@ -1,5 +1,7 @@
 <?php
 
-$a->strings["\"pageheader\" Settings"] = "Stillingar \"pageheader\"";
-$a->strings["Submit"] = "Senda inn";
-$a->strings["pageheader Settings saved."] = "Stillingar pageheader vistaðar.";
+if(! function_exists("string_plural_select_is")) {
+function string_plural_select_is($n){
+	$n = intval($n);
+	return intval($n % 10 != 1 || $n % 100 == 11);
+}}

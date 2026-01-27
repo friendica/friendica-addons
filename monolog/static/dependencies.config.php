@@ -22,5 +22,6 @@
 return [
 	\Friendica\Core\Logger\Factory\LoggerFactory::class => [
 		'instanceOf' => \Friendica\Addon\monolog\src\Factory\MonologFactory::class,
+		'call' => null,
 	],
 ];

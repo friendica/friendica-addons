@@ -120,21 +120,22 @@ function advancedcontentfilter_prepare_body_content_filter(&$hook_data)
 		$expressionLanguage = new ExpressionLanguage\ExpressionLanguage();
 	}
 
-	if (!DI::userSession()->getLocalUserId()) {
+	$uid = $hook_data['uid'] ?? DI::userSession()->getLocalUserId();
+	if (!$uid) {
 		return;
 	}
 
 	$vars = advancedcontentfilter_get_filter_fields($hook_data['item']);
 
-	$rules = DI::cache()->get('rules_' . DI::userSession()->getLocalUserId());
+	$rules = DI::cache()->get('rules_' . $uid);
 	if (!isset($rules)) {
 		$rules = DBA::toArray(DBA::select(
 			'advancedcontentfilter_rules',
 			['name', 'expression', 'serialized'],
-			['uid' => DI::userSession()->getLocalUserId(), 'active' => true]
+			['uid' => $uid, 'active' => true]
 		));
 
-		DI::cache()->set('rules_' . DI::userSession()->getLocalUserId(), $rules);
+		DI::cache()->set('rules_' . $uid, $rules);
 	}
 
 	if ($rules) {

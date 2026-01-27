@@ -1,6 +1,7 @@
 <?php
 
-$a->strings["Numfriends settings updated."] = "";
-$a->strings["Numfriends Settings"] = "";
-$a->strings["How many contacts to display on profile sidebar"] = "";
-$a->strings["Submit"] = "Senda inn";
+if(! function_exists("string_plural_select_is")) {
+function string_plural_select_is($n){
+	$n = intval($n);
+	return intval($n % 10 != 1 || $n % 100 == 11);
+}}

@@ -91,6 +91,7 @@ function tesseract_ocr_detection(&$media)
 		// Detect and set available languages
 		$languages = $ocr->availableLanguages();
 		if ($languages) {
+			// @phpstan-ignore-next-line
 			$ocr->lang(implode('+', $languages));
 		}
 

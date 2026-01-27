@@ -122,6 +122,10 @@ function ijpost_send(array &$b)
 		return;
 	}
 
+	if (Item::isGroupPost($b['uri-id'])) {
+		return;
+	}
+
 	if ($b['parent'] != $b['id']) {
 		return;
 	}

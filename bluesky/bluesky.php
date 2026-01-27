@@ -138,7 +138,7 @@ function bluesky_follow(array &$hook_data)
 	}
 
 	DI::logger()->debug('Check if contact is bluesky', ['data' => $hook_data]);
-	$contact = DBA::selectFirst('contact', [], ['network' => Protocol::BLUESKY, 'url' => $hook_data['url'], 'uid' => [0, $hook_data['uid']]]);
+	$contact = DBA::selectFirst('contact', [], ['network' => Protocol::BLUESKY, 'nurl' => Strings::normaliseLink($hook_data['url']), 'uid' => [0, $hook_data['uid']]]);
 	if (empty($contact)) {
 		return;
 	}
@@ -550,6 +550,10 @@ function bluesky_post_local(array &$b)
 function bluesky_send(array &$b)
 {
 	if (($b['created'] !== $b['edited']) && !$b['deleted']) {
+		return;
+	}
+
+	if (Item::isGroupPost($b['uri-id'])) {
 		return;
 	}
 

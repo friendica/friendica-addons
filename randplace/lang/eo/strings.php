@@ -1,5 +1,7 @@
 <?php
 
-$a->strings["Randplace Settings"] = "Randplace agordoj.";
-$a->strings["Enable Randplace Addon"] = "Aktivigi la Randplace kromprogramon.";
-$a->strings["Submit"] = "Sendi";
+if(! function_exists("string_plural_select_eo")) {
+function string_plural_select_eo($n){
+	$n = intval($n);
+	return intval($n != 1);
+}}

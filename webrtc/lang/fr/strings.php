@@ -6,7 +6,7 @@ function string_plural_select_fr($n){
 	if (($n == 0 || $n == 1)) { return 0; } else if ($n != 0 && $n % 1000000 == 0) { return 1; } else  { return 2; }
 }}
 $a->strings['WebRTC Videochat'] = 'Tchat vidéo WebRTC';
-$a->strings['Save Settings'] = 'Enregistrer les paramètres';
+$a->strings['Save Settings'] = 'Sauvegarder les paramètres';
 $a->strings['WebRTC Base URL'] = 'URL de base WebRTC';
 $a->strings['Page your users will create a WebRTC chat room on. For example you could use https://live.mayfirst.org .'] = 'La page sur laquelle vos utilisateurs créeront un salon de discussion WebRTC. Par exemple, vous pouvez utiliser https://live.mayfirst.org .';
 $a->strings['Video Chat'] = 'Chat Video';

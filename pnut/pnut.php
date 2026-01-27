@@ -265,6 +265,10 @@ function pnut_post_hook(array &$b)
 		return;
 	}
 
+	if (Item::isGroupPost($b['uri-id'])) {
+		return;
+	}
+
 	DI::logger()->notice('PNUT post invoked', ['id' => $b['id'], 'guid' => $b['guid'], 'plink' => $b['plink']]);
 	DI::logger()->debug('PNUT array', $b);
 
