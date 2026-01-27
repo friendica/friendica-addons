@@ -8,7 +8,6 @@
  */
 
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Util\Images;
@@ -60,7 +59,7 @@ function js_upload_post_init(array &$b)
 	// max file size in bytes
 	$sizeLimit = Strings::getBytesFromShorthand(DI::config()->get('system', 'maximagesize'));
 
-	$uploader = new qqFileUploader($allowedExtensions, $sizeLimit);
+	$uploader = new js_upload_qqFileUploader($allowedExtensions, $sizeLimit);
 
 	$result = $uploader->handleUpload();
 
@@ -68,7 +67,7 @@ function js_upload_post_init(array &$b)
 	$js_upload_jsonresponse = htmlspecialchars(json_encode($result), ENT_NOQUOTES);
 
 	if (isset($result['error'])) {
-		Logger::info('mod/photos.php: photos_post(): error uploading photo: ' . $result['error']);
+		DI::logger()->info('mod/photos.php: photos_post(): error uploading photo: ' . $result['error']);
 		echo json_encode($result);
 		exit();
 	}
@@ -91,7 +90,7 @@ function js_upload_post_end(int &$b)
 {
 	global $js_upload_jsonresponse;
 
-	Logger::notice('upload_post_end');
+	DI::logger()->notice('upload_post_end');
 	if (!empty($js_upload_jsonresponse)) {
 		echo $js_upload_jsonresponse;
 		exit();
@@ -101,7 +100,7 @@ function js_upload_post_end(int &$b)
 /**
  * Handle file uploads via XMLHttpRequest
  */
-class qqUploadedFileXhr
+class js_upload_qqUploadedFileXhr
 {
 	private $pathnm = '';
 
@@ -155,7 +154,7 @@ class qqUploadedFileXhr
 /**
  * Handle file uploads via regular form post (uses the $_FILES array)
  */
-class qqUploadedFileForm
+class js_upload_qqUploadedFileForm
 {
 	/**
 	 * Save the file to the specified path
@@ -183,10 +182,14 @@ class qqUploadedFileForm
 	}
 }
 
-class qqFileUploader
+class js_upload_qqFileUploader
 {
 	private $allowedExtensions;
 	private $sizeLimit;
+
+	/**
+	 * @var js_upload_qqUploadedFileXhr|js_upload_qqUploadedFileForm|false
+	 */
 	private $file;
 
 	function __construct(array $allowedExtensions = [], $sizeLimit)
@@ -197,9 +200,9 @@ class qqFileUploader
 		$this->sizeLimit = $sizeLimit;
 
 		if (isset($_GET['qqfile'])) {
-			$this->file = new qqUploadedFileXhr();
+			$this->file = new js_upload_qqUploadedFileXhr();
 		} elseif (isset($_FILES['qqfile'])) {
-			$this->file = new qqUploadedFileForm();
+			$this->file = new js_upload_qqUploadedFileForm();
 		} else {
 			$this->file = false;
 		}
@@ -234,7 +237,7 @@ class qqFileUploader
 		$filename = $pathinfo['filename'];
 
 		if (!isset($pathinfo['extension'])) {
-			Logger::warning('extension isn\'t set.', ['filename' => $filename]);
+			DI::logger()->warning('extension isn\'t set.', ['filename' => $filename]);
 		}
 		$ext = $pathinfo['extension'] ?? '';
 

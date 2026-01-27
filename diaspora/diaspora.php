@@ -9,10 +9,8 @@
 
 require_once 'addon/diaspora/Diaspora_Connection.php';
 
-use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\Core\Worker;
@@ -187,13 +185,17 @@ function diaspora_send(array &$b)
 {
 	$hostname = DI::baseUrl()->getHost();
 
-	Logger::notice('diaspora_send: invoked');
+	DI::logger()->notice('diaspora_send: invoked');
 
 	if ($b['deleted'] || ($b['private'] == Item::PRIVATE) || ($b['created'] !== $b['edited'])) {
 		return;
 	}
 
 	if (!strstr($b['postopts'], 'diaspora')) {
+		return;
+	}
+
+	if (Item::isGroupPost($b['uri-id'])) {
 		return;
 	}
 
@@ -211,14 +213,14 @@ function diaspora_send(array &$b)
 		return;
 	}
 
-	Logger::info('diaspora_send: prepare posting');
+	DI::logger()->info('diaspora_send: prepare posting');
 
 	$handle = DI::pConfig()->get($b['uid'], 'diaspora', 'handle');
 	$password = DI::pConfig()->get($b['uid'], 'diaspora', 'password');
 	$aspect = DI::pConfig()->get($b['uid'], 'diaspora', 'aspect');
 
 	if ($handle && $password) {
-		Logger::info('diaspora_send: all values seem to be okay');
+		DI::logger()->info('diaspora_send: all values seem to be okay');
 
 		$title = $b['title'];
 		$body = $b['body'];
@@ -249,20 +251,20 @@ function diaspora_send(array &$b)
 		require_once "addon/diaspora/diasphp.php";
 
 		try {
-			Logger::info('diaspora_send: prepare');
+			DI::logger()->info('diaspora_send: prepare');
 			$conn = new Diaspora_Connection($handle, $password);
-			Logger::info('diaspora_send: try to log in ' . $handle);
+			DI::logger()->info('diaspora_send: try to log in ' . $handle);
 			$conn->logIn();
-			Logger::info('diaspora_send: try to send ' . $body);
+			DI::logger()->info('diaspora_send: try to send ' . $body);
 
 			$conn->provider = $hostname;
 			$conn->postStatusMessage($body, $aspect);
 
-			Logger::notice('diaspora_send: success');
+			DI::logger()->notice('diaspora_send: success');
 		} catch (Exception $e) {
-			Logger::notice("diaspora_send: Error submitting the post: " . $e->getMessage());
+			DI::logger()->notice("diaspora_send: Error submitting the post: " . $e->getMessage());
 
-			Logger::info('diaspora_send: requeueing ' . $b['uid']);
+			DI::logger()->info('diaspora_send: requeueing ' . $b['uid']);
 
 			Worker::defer();
 		}

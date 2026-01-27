@@ -9,9 +9,7 @@
  */
 
 use Friendica\Addon\notifyall\NotifyAllEmail;
-use Friendica\App;
 use Friendica\Database\DBA;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
@@ -59,7 +57,7 @@ function notifyall_post()
 
 	$notifyEmail = new NotifyAllEmail(DI::l10n(), DI::config(), DI::baseUrl(), $text);
 
-	foreach ($recipients as $recipient) {
+	foreach (DBA::toArray($recipients) as $recipient) {
 		DI::emailer()->send($notifyEmail->withRecipient($recipient['email']));
 	}
 

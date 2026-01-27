@@ -4,10 +4,10 @@ namespace Friendica\Addon\s3_storage\src;
 
 defined('AKEEBAENGINE') or define('AKEEBAENGINE', 1);
 
-use Akeeba\Engine\Postproc\Connector\S3v4\Configuration;
-use Akeeba\Engine\Postproc\Connector\S3v4\Connector;
-use Akeeba\Engine\Postproc\Connector\S3v4\Exception\CannotDeleteFile;
-use Akeeba\Engine\Postproc\Connector\S3v4\Input;
+use Akeeba\S3\Configuration;
+use Akeeba\S3\Connector;
+use Akeeba\S3\Exception\CannotDeleteFile;
+use Akeeba\S3\Input;
 use Friendica\Core\Storage\Capability\ICanWriteToStorage;
 use Friendica\Core\Storage\Exception\StorageException;
 use Friendica\Util\Strings;

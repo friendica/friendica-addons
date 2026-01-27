@@ -6,10 +6,8 @@
  * Version: 0.1
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
-use Friendica\App;
 use Friendica\Content\PageInfo;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
@@ -87,16 +85,16 @@ function ifttt_post()
 
 	$user = DBA::selectFirst('user', ['uid'], ['nickname' => $nickname]);
 	if (!DBA::isResult($user)) {
-		Logger::info('User ' . $nickname . ' not found.');
+		DI::logger()->info('User ' . $nickname . ' not found.');
 		return;
 	}
 
 	$uid = $user['uid'];
 
-	Logger::info('Received a post for user ' . $uid . ' from ifttt ' . print_r($_REQUEST, true));
+	DI::logger()->info('Received a post for user ' . $uid . ' from ifttt ' . print_r($_REQUEST, true));
 
 	if (!isset($_REQUEST['key'])) {
-		Logger::notice('No key found.');
+		DI::logger()->notice('No key found.');
 		return;
 	}
 
@@ -104,7 +102,7 @@ function ifttt_post()
 
 	// Check the key
 	if ($key != DI::pConfig()->get($uid, 'ifttt', 'key')) {
-		Logger::info('Invalid key for user ' . $uid);
+		DI::logger()->info('Invalid key for user ' . $uid);
 		return;
 	}
 
@@ -115,7 +113,7 @@ function ifttt_post()
 	}
 
 	if (!in_array($item['type'], ['status', 'link', 'photo'])) {
-		Logger::info('Unknown item type ' . $item['type']);
+		DI::logger()->info('Unknown item type ' . $item['type']);
 		return;
 	}
 

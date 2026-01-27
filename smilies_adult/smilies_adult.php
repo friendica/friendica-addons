@@ -4,12 +4,11 @@
  * Description: Smily icons that could or should not be included in core
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- * 
+ *
  * This is a template for how to extend the "smily" code.
- * 
+ *
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\DI;
 

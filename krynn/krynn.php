@@ -10,9 +10,7 @@
  *"My body was my sacrifice... for my magic. This damage is permanent." - Raistlin Majere
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
@@ -32,7 +30,7 @@ function krynn_install()
 	Hook::register('addon_settings', 'addon/krynn/krynn.php', 'krynn_settings');
 	Hook::register('addon_settings_post', 'addon/krynn/krynn.php', 'krynn_settings_post');
 
-	Logger::notice("installed krynn");
+	DI::logger()->notice("installed krynn");
 }
 
 function krynn_post_hook(&$item)

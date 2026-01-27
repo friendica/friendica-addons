@@ -8,10 +8,8 @@
  * Author: Cat Gray <https://free-haven.org/profile/catness>
  */
 
-use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Model\Item;
@@ -127,6 +125,10 @@ function dwpost_send(array &$b)
 		return;
 	}
 
+	if (Item::isGroupPost($b['uri-id'])) {
+		return;
+	}
+
 	if ($b['parent'] != $b['id']) {
 		return;
 	}
@@ -186,12 +188,12 @@ function dwpost_send(array &$b)
 
 EOT;
 
-		Logger::debug('dwpost: data: ' . $xml);
+		DI::logger()->debug('dwpost: data: ' . $xml);
 
 		if ($dw_blog !== 'test') {
 			$x = DI::httpClient()->post($dw_blog, $xml, ['Content-Type' => 'text/xml'])->getBodyString();
 		}
 
-		Logger::info('posted to dreamwidth: ' . ($x) ? $x : '');
+		DI::logger()->info('posted to dreamwidth: ' . ($x) ? $x : '');
 	}
 }

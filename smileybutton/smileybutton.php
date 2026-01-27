@@ -7,7 +7,6 @@
  * Maintainer: Hypolite Petovan <https://friendica.mrpetovan.com/profile/hypolite>
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\DI;
 
@@ -20,7 +19,7 @@ function smileybutton_install()
 function smileybutton_jot_tool(string &$body)
 {
 	// Disable if theme is quattro
-	if (DI::app()->getCurrentTheme() == 'quattro') {
+	if (DI::appHelper()->getCurrentTheme() == 'quattro') {
 		return;
 	}
 
@@ -97,7 +96,7 @@ function smileybutton_jot_tool(string &$body)
 	$s .= '</tr></table>';
 
 	//Add css to header
-	$css_file = __DIR__ . '/view/' . DI::app()->getCurrentTheme() . '.css';
+	$css_file = __DIR__ . '/view/' . DI::appHelper()->getCurrentTheme() . '.css';
 	if (!file_exists($css_file)) {
 		$css_file = __DIR__ . '/view/default.css';
 	}
@@ -105,7 +104,7 @@ function smileybutton_jot_tool(string &$body)
 	DI::page()->registerStylesheet($css_file);
 
 	//Get the correct image for the theme
-	$image = 'addon/smileybutton/view/' . DI::app()->getCurrentTheme() . '.png';
+	$image = 'addon/smileybutton/view/' . DI::appHelper()->getCurrentTheme() . '.png';
 	if (!file_exists($image)) {
 		$image = 'addon/smileybutton/view/default.png';
 	}

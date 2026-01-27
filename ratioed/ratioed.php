@@ -2,13 +2,12 @@
 /**
  * Name: Ratioed
  * Description: Additional moderation user table with statistics about user behaviour
- * Version: 0.1
+ * Version: 0.3
  * Author: Matthew Exon <http://mat.exon.name>
  */
 
 use Friendica\Addon\ratioed\RatioedPanel;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\DI;
 
 /**
@@ -18,7 +17,7 @@ function ratioed_install()
 {
 	Hook::register('moderation_users_tabs', 'addon/ratioed/ratioed.php', 'ratioed_users_tabs');
 
-	Logger::info("ratioed: installed");
+	DI::logger()->info("ratioed: installed");
 }
 
 /**
@@ -34,7 +33,7 @@ function ratioed_module() {}
  * @param array $arr Parameters, including "tabs" which is the list to modify, and "selectedTab", which is the currently selected tab ID
  */
 function ratioed_users_tabs(array &$arr) {
-	Logger::debug("ratioed: users tabs");
+	DI::logger()->debug("ratioed: users tabs");
 
 	array_push($arr['tabs'], [
 		'label'	 => DI::l10n()->t('Behaviour'),
@@ -50,7 +49,7 @@ function ratioed_users_tabs(array &$arr) {
  * @brief Displays the ratioed tab in the moderation panel
  */
 function ratioed_content() {
-	Logger::debug("ratioed: content");
+	DI::logger()->debug("ratioed: content");
 
 	$ratioed = DI::getDice()->create(RatioedPanel::class, [$_SERVER]);
 	$httpException = DI::getDice()->create(Friendica\Module\Special\HTTPException::class);

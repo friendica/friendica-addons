@@ -169,7 +169,6 @@ class UnitConvertor
 	* @param    string    name of the source unit from which to convert
     * @param    string    name of the target unit to which we are converting
     * @param    integer   double precision of the end result
-    * @return   void
     * @access   public
     */
 	function convert($value, $from_unit, $to_unit, $precision)

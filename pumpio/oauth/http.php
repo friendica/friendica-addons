@@ -109,9 +109,11 @@ class http_class
 	var $connected_port = -1;
 	var $connected_ssl = 0;
 
+	private $content_length_set;
+
 	/* Private methods - DO NOT CALL */
 
-	Function Tokenize($string,$separator="")
+	private function Tokenize($string,$separator="")
 	{
 		if(!strcmp($separator,""))
 		{
@@ -135,18 +137,18 @@ class http_class
 		}
 	}
 
-	Function CookieEncode($value, $name)
+	private function CookieEncode($value, $name)
 	{
 		return($name ? str_replace("=", "%25", $value) : str_replace(";", "%3B", $value));
 	}
 
-	Function SetError($error, $error_code = HTTP_CLIENT_ERROR_UNSPECIFIED_ERROR)
+	private function SetError($error, $error_code = HTTP_CLIENT_ERROR_UNSPECIFIED_ERROR)
 	{
 		$this->error_code = $error_code;
 		return($this->error=$error);
 	}
 
-	Function SetPHPError($error, &$php_error_message, $error_code = HTTP_CLIENT_ERROR_UNSPECIFIED_ERROR)
+	private function SetPHPError($error, &$php_error_message, $error_code = HTTP_CLIENT_ERROR_UNSPECIFIED_ERROR)
 	{
 		if(IsSet($php_error_message)
 		&& strlen($php_error_message))
@@ -154,7 +156,7 @@ class http_class
 		return($this->SetError($error, $error_code));
 	}
 
-	Function SetDataAccessError($error,$check_connection=0)
+	private function SetDataAccessError($error,$check_connection=0)
 	{
 		$this->error=$error;
 		$this->error_code = HTTP_CLIENT_ERROR_COMMUNICATION_FAILURE;
@@ -174,7 +176,7 @@ class http_class
 		}
 	}
 
-	Function OutputDebug($message)
+	private function OutputDebug($message)
 	{
 		if($this->log_debug)
 			error_log($message);
@@ -188,7 +190,7 @@ class http_class
 		}
 	}
 
-	Function GetLine()
+	private function GetLine()
 	{
 		for($line="";;)
 		{
@@ -227,7 +229,7 @@ class http_class
 		}
 	}
 
-	Function PutLine($line)
+	private function PutLine($line)
 	{
 		if($this->debug)
 			$this->OutputDebug("C $line");
@@ -239,7 +241,7 @@ class http_class
 		return(1);
 	}
 
-	Function PutData($data)
+	private function PutData($data)
 	{
 		if(strlen($data))
 		{
@@ -254,7 +256,7 @@ class http_class
 		return(1);
 	}
 
-	Function FlushData()
+	private function FlushData()
 	{
 		if(!fflush($this->connection))
 		{
@@ -264,7 +266,7 @@ class http_class
 		return(1);
 	}
 
-	Function ReadChunkSize()
+	private function ReadChunkSize()
 	{
 		if($this->remaining_chunk==0)
 		{
@@ -289,7 +291,7 @@ class http_class
 		return("");
 	}
 
-	Function ReadBytes($length)
+	private function ReadBytes($length)
 	{
 		if($this->use_curl)
 		{
@@ -356,7 +358,7 @@ class http_class
 		return($bytes);
 	}
 
-	Function EndOfInput()
+	private function EndOfInput()
 	{
 		if($this->use_curl)
 			return($this->read_response>=strlen($this->response));
@@ -367,7 +369,7 @@ class http_class
 		return(feof($this->connection));
 	}
 
-	Function Resolve($domain, &$ip, $server_type)
+	private function Resolve($domain, &$ip, $server_type)
 	{
 		if(preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/',$domain))
 			$ip=$domain;
@@ -385,7 +387,7 @@ class http_class
 		return('');
 	}
 
-	Function Connect($host_name, $host_port, $ssl, $server_type = 'HTTP')
+	private function Connect($host_name, $host_port, $ssl, $server_type = 'HTTP')
 	{
 		$domain=$host_name;
 		$port = $host_port;
@@ -552,7 +554,7 @@ class http_class
 		}
 	}
 
-	Function Disconnect()
+	private function Disconnect()
 	{
 		if($this->debug)
 			$this->OutputDebug("Disconnected from ".$this->connected_host);
@@ -569,7 +571,7 @@ class http_class
 
 	/* Public methods */
 
-	Function GetRequestArguments($url, &$arguments)
+	public function GetRequestArguments($url, &$arguments)
 	{
 		$this->error = '';
 		$this->error_code = HTTP_CLIENT_ERROR_NO_ERROR;
@@ -621,7 +623,7 @@ class http_class
 		return("");
 	}
 
-	Function Open($arguments)
+	public function Open($arguments)
 	{
 		if(strlen($this->error))
 			return($this->error);
@@ -750,7 +752,7 @@ class http_class
 		return("");
 	}
 
-	Function Close($force = 0)
+	public function Close($force = 0)
 	{
 		if($this->state=="Disconnected")
 			return("1 already disconnected");
@@ -767,7 +769,7 @@ class http_class
 		return($this->Disconnect());
 	}
 
-	Function PickCookies(&$cookies,$secure)
+	private function PickCookies(&$cookies,$secure)
 	{
 		if(IsSet($this->cookies[$secure]))
 		{
@@ -803,7 +805,7 @@ class http_class
 		}
 	}
 
-	Function GetFileDefinition($file, &$definition)
+	private function GetFileDefinition($file, &$definition)
 	{
 		$name="";
 		if(IsSet($file["FileName"]))
@@ -990,9 +992,6 @@ class http_class
 			if(GetType($length=@filesize($file["FileName"]))!="integer")
 			{
 				$error="it was not possible to determine the length of the file ".$file["FileName"];
-				if(IsSet($php_errormsg)
-				&& strlen($php_errormsg))
-					$error.=": ".$php_errormsg;
 				if(!file_exists($file["FileName"]))
 					$error="it was not possible to access the file ".$file["FileName"];
 				return($error);
@@ -1007,7 +1006,7 @@ class http_class
 		return("");
 	}
 
-	Function ConnectFromProxy($arguments, &$headers)
+	private function ConnectFromProxy($arguments, &$headers)
 	{
 		if(!$this->PutLine('CONNECT '.$this->host_name.':'.($this->host_port ? $this->host_port : 443).' HTTP/1.0')
 		|| (strlen($this->user_agent)
@@ -1052,7 +1051,7 @@ class http_class
 		return("");
 	}
 
-	Function SendRequest($arguments)
+	public function SendRequest($arguments)
 	{
 		if(strlen($this->error))
 			return($this->error);
@@ -1440,7 +1439,7 @@ class http_class
 		return("");
 	}
 
-	Function SetCookie($name, $value, $expires="" , $path="/" , $domain="" , $secure=0, $verbatim=0)
+	private function SetCookie($name, $value, $expires="" , $path="/" , $domain="" , $secure=0, $verbatim=0)
 	{
 		if(strlen($this->error))
 			return($this->error);
@@ -1472,7 +1471,7 @@ class http_class
 		return("");
 	}
 
-	Function SendRequestBody($data, $end_of_data)
+	private function SendRequestBody($data, $end_of_data)
 	{
 		if(strlen($this->error))
 			return($this->error);
@@ -1508,7 +1507,7 @@ class http_class
 		return("");
 	}
 
-	Function ReadReplyHeadersResponse(&$headers)
+	private function ReadReplyHeadersResponse(&$headers)
 	{
 		$headers=array();
 		if(strlen($this->error))
@@ -1635,7 +1634,7 @@ class http_class
 		return("");
 	}
 
-	Function Redirect(&$headers)
+	private function Redirect(&$headers)
 	{
 		if($this->follow_redirect)
 		{
@@ -1678,7 +1677,7 @@ class http_class
 		return("");
 	}
 
-	Function Authenticate(&$headers, $proxy, &$proxy_authorization, &$user, &$password, &$realm, &$workstation)
+	private function Authenticate(&$headers, $proxy, &$proxy_authorization, &$user, &$password, &$realm, &$workstation)
 	{
 		if($proxy)
 		{
@@ -1697,9 +1696,10 @@ class http_class
 		if(IsSet($headers[$authenticate_header])
 		&& $this->sasl_authenticate)
 		{
-			if(function_exists("class_exists")
-			&& !class_exists("sasl_client_class"))
+			if(!class_exists('sasl_client_class'))
+			{
 				return($this->SetError("the SASL client class needs to be loaded to be able to authenticate".($proxy ? " with the proxy server" : "")." and access this site", HTTP_CLIENT_ERROR_INVALID_PARAMETERS));
+			}
 			if(GetType($headers[$authenticate_header])=="array")
 				$authenticate=$headers[$authenticate_header];
 			else
@@ -1719,7 +1719,7 @@ class http_class
 				else
 					$mechanisms[]=$mechanism;
 			}
-			$sasl=new sasl_client_class;
+			$sasl=new \sasl_client_class();
 			if(IsSet($user))
 				$sasl->SetCredential("user",$user);
 			if(IsSet($password))
@@ -1731,6 +1731,8 @@ class http_class
 			$sasl->SetCredential("uri",$this->request_uri);
 			$sasl->SetCredential("method",$this->request_method);
 			$sasl->SetCredential("session",$this->session);
+			$message = '';
+			$interactions = [];
 			do
 			{
 				$status=$sasl->Start($mechanisms,$message,$interactions);
@@ -1906,8 +1908,8 @@ class http_class
 		}
 		return("");
 	}
-	
-	Function ReadReplyHeaders(&$headers)
+
+	public function ReadReplyHeaders(&$headers)
 	{
 		if(strlen($error=$this->ReadReplyHeadersResponse($headers)))
 			return($error);
@@ -1938,7 +1940,7 @@ class http_class
 		return("");
 	}
 
-	Function ReadReplyBody(&$body,$length)
+	private function ReadReplyBody(&$body,$length)
 	{
 		$body="";
 		if(strlen($this->error))
@@ -1980,7 +1982,7 @@ class http_class
 		return("");
 	}
 
-	Function ReadWholeReplyBody(&$body)
+	public function ReadWholeReplyBody(&$body)
 	{
 		$body = '';
 		for(;;)
@@ -1993,7 +1995,7 @@ class http_class
 		}
 	}
 
-	Function SaveCookies(&$cookies, $domain='', $secure_only=0, $persistent_only=0)
+	private function SaveCookies(&$cookies, $domain='', $secure_only=0, $persistent_only=0)
 	{
 		$now=gmdate("Y-m-d H-i-s");
 		$cookies=array();
@@ -2034,17 +2036,17 @@ class http_class
 		}
 	}
 
-	Function SavePersistentCookies(&$cookies, $domain='', $secure_only=0)
+	private function SavePersistentCookies(&$cookies, $domain='', $secure_only=0)
 	{
 		$this->SaveCookies($cookies, $domain, $secure_only, 1);
 	}
 
-	Function GetPersistentCookies(&$cookies, $domain='', $secure_only=0)
+	private function GetPersistentCookies(&$cookies, $domain='', $secure_only=0)
 	{
 		$this->SavePersistentCookies($cookies, $domain, $secure_only);
 	}
 
-	Function RestoreCookies($cookies, $clear=1)
+	private function RestoreCookies($cookies, $clear=1)
 	{
 		$new_cookies=($clear ? array() : $this->cookies);
 		for($secure_cookies=0, Reset($cookies); $secure_cookies<count($cookies); Next($cookies), $secure_cookies++)

@@ -2,12 +2,12 @@
 
 usleep(100000);
 
-$fileName;
-$fileSize;
+$fileName = '';
+$fileSize = 0;;
 
 if (isset($_GET['qqfile'])){
     $fileName = $_GET['qqfile'];
-    
+
 	// xhr request
 	$headers = apache_request_headers();
 	$fileSize = (int)$headers['Content-Length'];
@@ -34,13 +34,13 @@ if ($fileSize > 9 * 1024){
     die ('{error: "server-error file size is bigger than 9kB"}');
 }
 
-if (count($_GET)){	
+if (count($_GET)){
     array_merge($_GET, array('fileName'=>$fileName));
-    
+
     $response = array_merge($_GET, array('success'=>true, 'fileName'=>$fileName));
-    
-    // to pass data through iframe you will need to encode all html tags		
-	echo htmlspecialchars(json_encode($response), ENT_NOQUOTES);	
+
+    // to pass data through iframe you will need to encode all html tags
+	echo htmlspecialchars(json_encode($response), ENT_NOQUOTES);
 } else {
 	die ('{error: "server-error  query params not passed"}');
 }

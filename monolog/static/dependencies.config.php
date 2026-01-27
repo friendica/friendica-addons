@@ -20,10 +20,8 @@
  */
 
 return [
-	\Monolog\Logger::class => [
-		'instanceOf' => \Friendica\Addon\monolog\src\Factory\Monolog::class,
-		'call' => [
-			['create', [], \Dice\Dice::CHAIN_CALL],
-		],
+	\Friendica\Core\Logger\Factory\LoggerFactory::class => [
+		'instanceOf' => \Friendica\Addon\monolog\src\Factory\MonologFactory::class,
+		'call' => null,
 	],
 ];

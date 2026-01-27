@@ -11,7 +11,6 @@
 use Friendica\Core\Hook;
 use Friendica\DI;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Core\System;
 use Friendica\Network\HTTPException\ForbiddenException;
@@ -70,7 +69,7 @@ function blockbot_init_1()
 	}
 
 	if (empty($parts)) {
-		Logger::debug('Known frontend found - accept', $logdata);
+		DI::logger()->debug('Known frontend found - accept', $logdata);
 		if ($isCrawler) {
 			blockbot_save('badly-parsed-agents', $_SERVER['HTTP_USER_AGENT']);
 		}
@@ -80,66 +79,66 @@ function blockbot_init_1()
 	blockbot_log_activitypub($_SERVER['REQUEST_URI'], $_SERVER['HTTP_USER_AGENT']);
 
 	if (blockbot_is_crawler($parts)) {
-		Logger::debug('Crawler found - reject', $logdata);
+		DI::logger()->debug('Crawler found - reject', $logdata);
 		blockbot_reject();
 	}
 
 	if (blockbot_is_searchbot($parts)) {
-		Logger::debug('Search bot found - reject', $logdata);
+		DI::logger()->debug('Search bot found - reject', $logdata);
 		blockbot_reject();
 	}
 
 	if (blockbot_is_unwanted($parts)) {
-		Logger::debug('Uncategorized unwanted agent found - reject', $logdata);
+		DI::logger()->debug('Uncategorized unwanted agent found - reject', $logdata);
 		blockbot_reject();
 	}
 
 	if (blockbot_is_security_checker($parts)) {
 		if (!DI::config()->get('blockbot', 'security_checker')) {
-			Logger::debug('Security checker found - reject', $logdata);
+			DI::logger()->debug('Security checker found - reject', $logdata);
 			blockbot_reject();
 		}
-		Logger::debug('Security checker found - accept', $logdata);
+		DI::logger()->debug('Security checker found - accept', $logdata);
 		return;
 	}
 
 	if (blockbot_is_social_media($parts)) {
-		Logger::debug('Social media service found - accept', $logdata);
+		DI::logger()->debug('Social media service found - accept', $logdata);
 		return;
 	}
 
 	if (blockbot_is_fediverse_client($parts)) {
-		Logger::debug('Fediverse client found - accept', $logdata);
+		DI::logger()->debug('Fediverse client found - accept', $logdata);
 		return;
 	}
 
 	if (blockbot_is_feed_reader($parts)) {
-		Logger::debug('Feed reader found - accept', $logdata);
+		DI::logger()->debug('Feed reader found - accept', $logdata);
 		return;
 	}
 
 	if (blockbot_is_fediverse_tool($parts)) {
-		Logger::debug('Fediverse tool found - accept', $logdata);
+		DI::logger()->debug('Fediverse tool found - accept', $logdata);
 		return;
 	}
 
 	if (blockbot_is_service_agent($parts)) {
-		Logger::debug('Service agent found - accept', $logdata);
+		DI::logger()->debug('Service agent found - accept', $logdata);
 		return;
 	}
 
 	if (blockbot_is_monitor($parts)) {
-		Logger::debug('Monitoring service found - accept', $logdata);
+		DI::logger()->debug('Monitoring service found - accept', $logdata);
 		return;
 	}
 
 	if (blockbot_is_validator($parts)) {
-		Logger::debug('Validation service found - accept', $logdata);
+		DI::logger()->debug('Validation service found - accept', $logdata);
 		return;
 	}
 
 	if (blockbot_is_good_tool($parts)) {
-		Logger::debug('Uncategorized helpful service found - accept', $logdata);
+		DI::logger()->debug('Uncategorized helpful service found - accept', $logdata);
 		return;
 	}
 
@@ -147,10 +146,10 @@ function blockbot_init_1()
 	if (blockbot_is_http_library($parts)) {
 		blockbot_check_login_attempt($_SERVER['REQUEST_URI'], $logdata);
 		if (!DI::config()->get('blockbot', 'http_libraries')) {
-			Logger::debug('HTTP Library found - reject', $logdata);
+			DI::logger()->debug('HTTP Library found - reject', $logdata);
 			blockbot_reject();
 		}
-		Logger::debug('HTTP Library found - accept', $logdata);
+		DI::logger()->debug('HTTP Library found - accept', $logdata);
 		return;
 	}
 
@@ -161,12 +160,12 @@ function blockbot_init_1()
 
 	if (!$isCrawler) {
 		blockbot_save('good-agents', $_SERVER['HTTP_USER_AGENT']);
-		Logger::debug('Non-bot user agent detected', $logdata);
+		DI::logger()->debug('Non-bot user agent detected', $logdata);
 		return;
 	}
 
 	blockbot_save('bad-agents', $_SERVER['HTTP_USER_AGENT']);
-	Logger::notice('Possible bot found - reject', $logdata);
+	DI::logger()->notice('Possible bot found - reject', $logdata);
 	blockbot_reject();
 }
 
@@ -209,7 +208,7 @@ function blockbot_log_activitypub(string $url, string $agent)
 		blockbot_save('activitypub-inbox-agents', $agent);
 	}
 
-	if (!empty($_SERVER['HTTP_SIGNATURE']) && !empty(HTTPSignature::getSigner('', $_SERVER))) {
+	if (!empty($_SERVER['HTTP_SIGNATURE']) && !empty(HTTPSignature::getSigner('', $_SERVER, false))) {
 		blockbot_save('activitypub-signature-agents', $agent);
 	}
 }
@@ -217,7 +216,7 @@ function blockbot_log_activitypub(string $url, string $agent)
 function blockbot_check_login_attempt(string $url, array $logdata)
 {
 	if (in_array(trim(parse_url($url, PHP_URL_PATH), '/'), ['login', 'lostpass', 'register'])) {
-		Logger::debug('Login attempt detected - reject', $logdata);
+		DI::logger()->debug('Login attempt detected - reject', $logdata);
 		blockbot_reject();
 	}
 }
@@ -443,7 +442,7 @@ function blockbot_is_monitor(array $parts): bool
 }
 
 /**
- * Services in the centralized and decentralized social media environment 
+ * Services in the centralized and decentralized social media environment
  *
  * @param array $parts
  * @return boolean

@@ -21,7 +21,6 @@
 
 namespace Friendica\Addon\securemail;
 
-use Friendica\App;
 use Friendica\App\BaseURL;
 use Friendica\Core\Config\Capability\IManageConfigValues;
 use Friendica\Core\PConfig\Capability\IManagePersonalConfigValues;

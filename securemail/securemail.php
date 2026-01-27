@@ -7,9 +7,7 @@
  */
 
 use Friendica\Addon\securemail\SecureTestEmail;
-use Friendica\App;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Object\EMail\IEmail;
@@ -23,7 +21,7 @@ function securemail_install()
 
 	Hook::register('emailer_send_prepare', 'addon/securemail/securemail.php', 'securemail_emailer_send_prepare', 10);
 
-	Logger::notice('installed securemail');
+	DI::logger()->notice('installed securemail');
 }
 
 /**
@@ -32,8 +30,6 @@ function securemail_install()
  * @link  https://github.com/friendica/friendica/blob/develop/doc/Addons.md#addon_settings 'addon_settings' hook
  *
  * @param array $data
- *
- * @see   App
  */
 function securemail_settings(array &$data)
 {
@@ -67,8 +63,6 @@ function securemail_settings(array &$data)
  * @link  https://github.com/friendica/friendica/blob/develop/doc/Addons.md#addon_settings_post 'addon_settings_post' hook
  *
  * @param array $b hook data
- *
- * @see   App
  */
 function securemail_settings_post(array &$b)
 {
@@ -82,7 +76,7 @@ function securemail_settings_post(array &$b)
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'securemail', 'enable', $enable);
 
 		if (!empty($_POST['securemail-test'])) {
-			$res = DI::emailer()->send(new SecureTestEmail(DI::app(), DI::config(), DI::pConfig(), DI::baseUrl()));
+			$res = DI::emailer()->send(new SecureTestEmail(DI::config(), DI::pConfig(), DI::baseUrl()));
 
 			// revert to saved value
 			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'securemail', 'enable', $enable);
@@ -102,8 +96,6 @@ function securemail_settings_post(array &$b)
  * @link  https://github.com/friendica/friendica/blob/develop/doc/Addons.md#emailer_send_prepare 'emailer_send_prepare' hook
  *
  * @param IEmail $email Email
- *
- * @see   App
  */
 function securemail_emailer_send_prepare(IEmail &$email)
 {

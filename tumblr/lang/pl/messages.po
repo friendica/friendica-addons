@@ -4,7 +4,8 @@
 # 
 # 
 # Translators:
-# Piotr Strębski <strebski@gmail.com>, 2022
+# Bartosz Kozień, 2025
+# Piotr Strebski <strebski@gmail.com>, 2022
 # Waldemar Stoczkowski, 2018
 msgid ""
 msgstr ""
@@ -12,7 +13,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-29 06:56+0000\n"
 "PO-Revision-Date: 2014-06-23 12:58+0000\n"
-"Last-Translator: Piotr Strębski <strebski@gmail.com>, 2022\n"
+"Last-Translator: Bartosz Kozień, 2025\n"
 "Language-Team: Polish (http://app.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,13 +39,13 @@ msgstr "Tajny klucz klienta"
 
 #: tumblr.php:299
 msgid "Maximum tags"
-msgstr ""
+msgstr "Maksymalna liczba tagów"
 
 #: tumblr.php:299
 msgid ""
 "Maximum number of tags that a user can follow. Enter 0 to deactivate the "
 "feature."
-msgstr ""
+msgstr "Maksymalna liczba tagów, które użytkownik może subskrybować. Wpisz 0, by deaktywować tę funkcję."
 
 #: tumblr.php:336
 msgid "Post to page:"
@@ -68,22 +69,22 @@ msgstr "Wyślij domyślnie do Tumblr"
 
 #: tumblr.php:350
 msgid "Import the remote timeline"
-msgstr ""
+msgstr "Zaimportuj zdalną oś czasu"
 
 #: tumblr.php:351
 msgid "Subscribed tags"
-msgstr ""
+msgstr "Subskrybowane tagi"
 
 #: tumblr.php:351
 #, php-format
 msgid ""
 "Comma separated list of up to %d tags that will be imported additionally to "
 "the timeline"
-msgstr ""
+msgstr "Lista maks. %d tagów oddzielonych przecinkami, które zostaną dodatkowo zaimportowane do osi czasu"
 
 #: tumblr.php:357
 msgid "Tumblr Import/Export"
-msgstr ""
+msgstr "Importuj/Eksportuj z Tumblr"
 
 #: tumblr.php:375
 msgid "Post to Tumblr"

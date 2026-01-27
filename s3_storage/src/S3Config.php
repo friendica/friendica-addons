@@ -4,8 +4,8 @@ namespace Friendica\Addon\s3_storage\src;
 
 defined('AKEEBAENGINE') or define('AKEEBAENGINE', 1);
 
-use Akeeba\Engine\Postproc\Connector\S3v4\Configuration;
-use Akeeba\Engine\Postproc\Connector\S3v4\Connector;
+use Akeeba\S3\Configuration;
+use Akeeba\S3\Connector;
 use Friendica\Core\Config\Capability\IManageConfigValues;
 use Friendica\Core\L10n;
 use Friendica\Core\Storage\Capability\ICanConfigureStorage;

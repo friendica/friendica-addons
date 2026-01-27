@@ -9,7 +9,6 @@
  *
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\DI;
 
@@ -23,7 +22,7 @@ function smiley_pack_fr_smilies(array &$b)
 
 #Smileys are split into various directories by the intended range of emotions.  This is in case we get too big and need to modularise things.  We can then cut and paste the right lines, move the right directory, and just change the name of the addon to happy_smilies or whatever.
 
-#Be careful with invocation strings.  If you have a smiley called foo, and another called foobar, typing :foobar will call foo.  Avoid this with clever naming, using ~ instead of : 
+#Be careful with invocation strings.  If you have a smiley called foo, and another called foobar, typing :foobar will call foo.  Avoid this with clever naming, using ~ instead of :
 #when all else fails.
 
 
@@ -56,7 +55,7 @@ function smiley_pack_fr_smilies(array &$b)
 
 	$b['texts'][] = ':vache';
 	$b['icons'][] = '<img src="' . DI::baseUrl() . '/addon/smiley_pack/icons/animals/cow.gif' . '" alt="' . ':vache' . '" />';
-    
+
 	$b['texts'][] = ':crabe';
 	$b['icons'][] = '<img src="' . DI::baseUrl() . '/addon/smiley_pack/icons/animals/crab.gif' . '" alt="' . ':crabe' . '" />';
 
@@ -74,7 +73,7 @@ function smiley_pack_fr_smilies(array &$b)
 
 	$b['texts'][] = ':cheval';
 	$b['icons'][] = '<img src="' . DI::baseUrl() . '/addon/smiley_pack/icons/animals/horse.gif' . '" alt="' . ':cheval' . '" />';
-  
+
 	$b['texts'][] = ':perroquet';
 	$b['icons'][] = '<img src="' . DI::baseUrl() . '/addon/smiley_pack/icons/animals/parrot.gif' . '" alt="' . ':perroquet' . '" />';
 
@@ -108,7 +107,7 @@ function smiley_pack_fr_smilies(array &$b)
 
 	$b['texts'][] = ':litbébé';
 	$b['icons'][] = '<img src="' . DI::baseUrl() . '/addon/smiley_pack/icons/babies/babycot.gif' . '" alt="' . ':litbébé' . '" />';
-	
+
 
 	$b['texts'][] = ':enceinte';
 	$b['icons'][] = '<img src="' . DI::baseUrl() . '/addon/smiley_pack/icons/babies/pregnant.gif' . '" alt="' . ':enceinte' . '" />';
@@ -117,10 +116,10 @@ function smiley_pack_fr_smilies(array &$b)
 	$b['icons'][] = '<img src="' . DI::baseUrl() . '/addon/smiley_pack/icons/babies/stork.gif' . '" alt="' . ':cigogne' . '" />';
 
 
-#Confused Smileys	
+#Confused Smileys
 	$b['texts'][] = ':paumé';
 	$b['icons'][] = '<img src="' . DI::baseUrl() . '/addon/smiley_pack/icons/confused/confused.gif' . '" alt="' . ':paumé' . '" />';
-    
+
 	$b['texts'][] = ':hausseépaules';
 	$b['icons'][] = '<img src="' . DI::baseUrl() . '/addon/smiley_pack/icons/confused/shrug.gif' . '" alt="' . ':hausseépaules' . '" />';
 
@@ -152,13 +151,13 @@ function smiley_pack_fr_smilies(array &$b)
 
 	$b['texts'][] = ':démoniaque';
 	$b['icons'][] = '<img src="' . DI::baseUrl() . '/addon/smiley_pack/icons/devilangel/devil.gif' . '" alt="' . ':démoniaque' . '" />';
-	
+
 	$b['texts'][] = ':bascule';
 	$b['icons'][] = '<img src="' . DI::baseUrl() . '/addon/smiley_pack/icons/devilangel/daseesaw.gif' . '" alt="' . ':bascule' . '" />';
 
 	$b['texts'][] = ':possédé';
 	$b['icons'][] = '<img src="' . DI::baseUrl() . '/addon/smiley_pack/icons/devilangel/turnevil.gif' . '" alt="' . ':possédé' . '" />';
-	
+
 	$b['texts'][] = ':tombe';
 	$b['icons'][] = '<img src="' . DI::baseUrl() . '/addon/smiley_pack/icons/devilangel/graveside.gif' . '" alt="' . ':tombe' . '" />';
 
@@ -225,7 +224,7 @@ function smiley_pack_fr_smilies(array &$b)
 
 	$b['texts'][] = ':billard';
 	$b['icons'][] = '<img src="' . DI::baseUrl() . '/addon/smiley_pack/icons/sport/snooker.gif' . '" alt="' . ':billard' . '" />';
-  
+
 	$b['texts'][] = ':équitation';
 	$b['icons'][] = '<img src="' . DI::baseUrl() . '/addon/smiley_pack/icons/sport/horseriding.gif' . '" alt="' . ':équitation' . '" />';
 

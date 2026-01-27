@@ -7,15 +7,14 @@
  *
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
+use Friendica\DI;
 
 function googlemaps_install()
 {
 	Hook::register('render_location', 'addon/googlemaps/googlemaps.php', 'googlemaps_location');
 
-	Logger::notice('installed googlemaps');
+	DI::logger()->notice('installed googlemaps');
 }
 
 function googlemaps_location(&$item)

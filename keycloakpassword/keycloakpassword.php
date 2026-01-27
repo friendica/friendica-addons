@@ -6,9 +6,7 @@
  * Author: Ryan <https://verya.pe/profile/ryan>
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
@@ -38,7 +36,7 @@ function keycloakpassword_request($client_id, $secret, $url, $params = [])
 	$res = curl_exec($ch);
 
 	if (curl_errno($ch)) {
-		Logger::error(curl_error($ch));
+		DI::logger()->error(curl_error($ch));
 	}
 	curl_close($ch);
 
@@ -92,7 +90,7 @@ function keycloakpassword_authenticate(array &$b)
 			$client_id,
 			$secret,
 			$endpoint . '/logout',
-			[ 'refresh_token' => res['refresh_token'] ]
+			[ 'refresh_token' => $res['refresh_token'] ]
 		);
 	}
 }

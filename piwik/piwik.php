@@ -35,9 +35,7 @@
  *     setting.
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Core\Config\Util\ConfigFileManager;
@@ -46,12 +44,12 @@ function piwik_install() {
 	Hook::register('load_config', 'addon/piwik/piwik.php', 'piwik_load_config');
 	Hook::register('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
 
-	Logger::notice("installed piwik addon");
+	DI::logger()->notice("installed piwik addon");
 }
 
 function piwik_load_config(ConfigFileManager $loader)
 {
-	DI::app()->getConfigCache()->load($loader->loadAddonConfig('piwik'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	DI::appHelper()->getConfigCache()->load($loader->loadAddonConfig('piwik'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 function piwik_analytics(string &$b)
@@ -76,7 +74,7 @@ function piwik_analytics(string &$b)
 	 *   Add the Piwik tracking code for the site.
 	 *   If async is set to true use asynchronous tracking
 	 */
-	
+
 	$scriptAsyncValue = $async ? 'true' : 'false';
 	$scriptPhpEndpoint = $shortendpoint ? 'js/' : 'piwik.php';
 	$scriptJsEndpoint = $shortendpoint ? 'js/' : 'piwik.js';

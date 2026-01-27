@@ -12,7 +12,7 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'twitteroauth.php';
  */
 class StatusNetOAuth extends TwitterOAuth
 {
-	function get_maxlength()
+	public function get_maxlength()
 	{
 		$config = $this->get($this->host . 'statusnet/config.json');
 		if (empty($config)) {
@@ -21,27 +21,27 @@ class StatusNetOAuth extends TwitterOAuth
 		return $config->site->textlimit;
 	}
 
-	function accessTokenURL()
+	public function accessTokenURL()
 	{
 		return $this->host . 'oauth/access_token';
 	}
 
-	function authenticateURL()
+	public function authenticateURL()
 	{
 		return $this->host . 'oauth/authenticate';
 	}
 
-	function authorizeURL()
+	public function authorizeURL()
 	{
 		return $this->host . 'oauth/authorize';
 	}
 
-	function requestTokenURL()
+	public function requestTokenURL()
 	{
 		return $this->host . 'oauth/request_token';
 	}
 
-	function __construct($apipath, $consumer_key, $consumer_secret, $oauth_token = NULL, $oauth_token_secret = NULL)
+	public function __construct($apipath, $consumer_key, $consumer_secret, $oauth_token = NULL, $oauth_token_secret = NULL)
 	{
 		parent::__construct($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
 		$this->host = $apipath;
@@ -52,14 +52,9 @@ class StatusNetOAuth extends TwitterOAuth
 	 *
 	 * Copied here from the TwitterOAuth library and complemented by applying the proxy settings of Friendica
 	 *
-	 * @param string $method
-	 * @param string $host
-	 * @param string $path
-	 * @param array  $parameters
-	 *
-	 * @return array|object API results
+	 * @return array|object|mixed API results
 	 */
-	function http($url, $method, $postfields = NULL)
+	public function http($url, $method, $postfields = NULL)
 	{
 		$this->http_info = [];
 		$ci = curl_init();

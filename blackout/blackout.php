@@ -44,9 +44,7 @@
  * THE SOFTWARE.
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Core\System;
 use Friendica\DI;
@@ -78,7 +76,7 @@ function blackout_redirect ($b)
 	}
 
 	if (( $date1 <= $now ) && ( $now <= $date2 )) {
-		Logger::notice('redirecting user to blackout page');
+		DI::logger()->notice('redirecting user to blackout page');
 		System::externalRedirect($myurl);
 	}
 }

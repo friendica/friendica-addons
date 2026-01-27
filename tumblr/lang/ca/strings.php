@@ -1,13 +1,7 @@
 <?php
 
-$a->strings["Permission denied."] = "Permís denegat.";
-$a->strings["You are now authenticated to tumblr."] = "";
-$a->strings["return to the connector page"] = "";
-$a->strings["Post to Tumblr"] = "Publica-ho al Tumblr";
-$a->strings["Tumblr Post Settings"] = "Configuració d'Enviaments de Tumblr";
-$a->strings["(Re-)Authenticate your tumblr page"] = "";
-$a->strings["Enable Tumblr Post Addon"] = "Habilita el addon de enviaments de Tumblr";
-$a->strings["Post to Tumblr by default"] = "Enviar a Tumblr per defecte";
-$a->strings["Post to page:"] = "";
-$a->strings["You are not authenticated to tumblr"] = "";
-$a->strings["Submit"] = "Enviar";
+if(! function_exists("string_plural_select_ca")) {
+function string_plural_select_ca($n){
+	$n = intval($n);
+	return intval($n != 1);
+}}

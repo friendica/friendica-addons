@@ -77,10 +77,10 @@ class qqFileUploader {
 	public function __construct(array $allowedExtensions = [], $sizeLimit = 10485760)
 	{
 		$allowedExtensions = array_map('strtolower', $allowedExtensions);
-			
+
 		$this->allowedExtensions = $allowedExtensions;
 		$this->sizeLimit = $sizeLimit;
-		
+
 		$this->checkServerSettings();
 
 		if (isset($_GET['qqfile'])) {
@@ -88,7 +88,7 @@ class qqFileUploader {
 		} elseif (isset($_FILES['qqfile'])) {
 			$this->file = new qqUploadedFileForm();
 		} else {
-			$this->file = false; 
+			$this->file = false;
 		}
 	}
 
@@ -105,7 +105,7 @@ class qqFileUploader {
 
 	private function toBytes(string $str): int
 	{
-		$val = trim($str);
+		$val = (int) trim($str);
 		$last = strtolower($str[strlen($str) - 1]);
 
 		switch($last) {

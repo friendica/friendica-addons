@@ -2,6 +2,8 @@
 
 namespace phpnut;
 
+use CURLFile;
+
 /**
  * phpnut.php
  * pnut.io PHP library
@@ -99,10 +101,14 @@ class phpnut
     // if processing stream_markers or any fast stream, decrease $sleepFor
     public $streamingSleepFor = 20000;
 
+    private $_clientId;
+
+    private $_clientSecret;
+
     /**
      * Constructs an phpnut PHP object with the specified client ID and
      * client secret.
-     * @param string $client_id The client ID you received from pnut.io when
+     * @param string $client_id_or_token The client ID you received from pnut.io when
      * creating your app.
      * @param string $client_secret The client secret you received from
      * pnut.io when creating your app.
@@ -155,14 +161,14 @@ class phpnut
      * or not access to your app. Usually you would place this as a link for
      * the user to client, or a redirect to send them to the auth URL.
      * Also can be called after authentication for additional scopes
-     * @param string $callbackUri Where you want the user to be directed
+     * @param string $callback_uri Where you want the user to be directed
      * after authenticating with pnut.io. This must be one of the URIs
      * allowed by your pnut.io application settings.
      * @param array $scope An array of scopes (permissions) you wish to obtain
      * from the user. If you don't specify anything, you'll only receive
      * access to the user's basic profile (the default).
      */
-    public function getAuthUrl(?string $callback_uri=null, array|string|null $scope=null): string
+    public function getAuthUrl(?string $callback_uri=null, array $scope=null): string
     {
         if (empty($this->_clientId)) {
             throw new phpnutException('You must specify your pnut client ID');
@@ -256,8 +262,10 @@ class phpnut
     /**
      * Check the scope of current token to see if it has required scopes
      * has to be done after a check
+     *
+     * @return int|array
      */
-    public function checkScopes(array $app_scopes): int|array
+    public function checkScopes(array $app_scopes)
     {
         if (count($this->_scopes) === 0) {
             return -1; // _scope is empty
@@ -303,7 +311,7 @@ class phpnut
     {
         return $this->httpReq('delete', "{$this->_baseUrl}token");
     }
-    
+
     /**
      * Retrieve an app access token from the app.net API. This allows you
      * to access the API without going through the user access flow if you
@@ -314,7 +322,7 @@ class phpnut
      * @return string The app access token
      */
     public function getAppAccessToken()
-    {    
+    {
         if (empty($this->_clientId) || empty($this->_clientSecret)) {
             throw new phpnutException('You must specify your Pnut client ID and client secret');
         }
@@ -450,8 +458,10 @@ class phpnut
     /**
      * Internal function to handle all
      * HTTP requests (POST,PUT,GET,DELETE)
+     *
+     * @param string|array $params
      */
-    protected function httpReq(string $act, string $req, string|array $params=[], string $contentType='application/x-www-form-urlencoded')
+    protected function httpReq(string $act, string $req, $params = [], string $contentType='application/x-www-form-urlencoded')
     {
         $ch = curl_init($req);
         $headers = [];
@@ -520,7 +530,7 @@ class phpnut
                     } else {
                         throw new phpnutException($response['error']);
                     }
-                } 
+                }
 
                 // look for response migration errors
                 elseif (isset($response['meta'], $response['meta']['error_message'])) {
@@ -588,7 +598,7 @@ class phpnut
     {
         return $this->_last_request;
     }
-    
+
     public function getLastResponse()
     {
         return $this->_last_response;
@@ -738,7 +748,7 @@ class phpnut
      * Delete a Post. The current user must be the same user who created the Post.
      * It returns the deleted Post on success.
      * @param integer $post_id The ID of the post to delete
-     * @param array An associative array representing the post that was deleted
+     * @return array An associative array representing the post that was deleted
      */
     public function deletePost(int $post_id)
     {
@@ -752,7 +762,7 @@ class phpnut
      * Retrieve the Posts that are 'in reply to' a specific Post.
      * @param integer $post_id The ID of the post you want to retrieve replies for.
      * @param array $params An associative array of optional general parameters.
-     * @return An array of associative arrays, each representing a single post.
+     * @return array An array of associative arrays, each representing a single post.
      */
     public function getPostThread(int $post_id, array $params=[])
     {
@@ -767,7 +777,7 @@ class phpnut
      * Retrieve revisions of a post. Currently only one can be created.
      * @param integer $post_id The ID of the post you want to retrieve previous revisions of.
      * @param array $params An associative array of optional general parameters.
-     * @return An array of associative arrays, each representing a single post.
+     * @return array An array of associative arrays, each representing a single post.
      */
     public function getPostRevisions(int $post_id, array $params=[])
     {
@@ -781,13 +791,13 @@ class phpnut
     /**
      * Get the most recent Posts created by a specific User in reverse
      * chronological order (most recent first).
-     * @param mixed $user_id Either the ID of the user you wish to retrieve posts by,
+     * @param string|int $user_id $user_id Either the ID of the user you wish to retrieve posts by,
      * or the string "me", which will retrieve posts for the user you're authenticated
      * as.
      * @param array $params An associative array of optional general parameters.
-     * @return An array of associative arrays, each representing a single post.
+     * @return array An array of associative arrays, each representing a single post.
      */
-    public function getUserPosts(string|int $user_id='me', array $params=[])
+    public function getUserPosts($user_id = 'me', array $params=[])
     {
         return $this->httpReq(
             'get',
@@ -799,13 +809,13 @@ class phpnut
     /**
      * Get the most recent Posts mentioning by a specific User in reverse
      * chronological order (newest first).
-     * @param mixed $user_id Either the ID of the user who is being mentioned, or
+     * @param string|int $user_id Either the ID of the user who is being mentioned, or
      * the string "me", which will retrieve posts for the user you're authenticated
      * as.
      * @param array $params An associative array of optional general parameters.
-     * @return An array of associative arrays, each representing a single post.
+     * @return array An array of associative arrays, each representing a single post.
      */
-    public function getUserMentions(string|int $user_id='me', array $params=[])
+    public function getUserMentions($user_id='me', array $params=[])
     {
         return $this->httpReq(
             'get',
@@ -817,7 +827,7 @@ class phpnut
     /**
      * Get the currently authenticated user's recent messages
      * @param array $params An associative array of optional general parameters.
-     * @return An array of associative arrays, each representing a single post.
+     * @return array An array of associative arrays, each representing a single post.
      */
     public function getUserMessages(array $params=[])
     {
@@ -832,7 +842,7 @@ class phpnut
      * Return the 20 most recent posts from the current User and
      * the Users they follow.
      * @param array $params An associative array of optional general parameters.
-     * @return An array of associative arrays, each representing a single post.
+     * @return array An array of associative arrays, each representing a single post.
      */
     public function getUserStream(array $params=[])
     {
@@ -847,7 +857,7 @@ class phpnut
      * Retrieve a list of all public Posts on pnut.io, often referred to as the
      * global stream.
      * @param array $params An associative array of optional general parameters.
-     * @return An array of associative arrays, each representing a single post.
+     * @return array An array of associative arrays, each representing a single post.
      */
     public function getPublicPosts(array $params=[])
     {
@@ -860,7 +870,7 @@ class phpnut
 
     /**
      * Retrieve a list of "explore" streams
-     * @return An array of associative arrays, each representing a single explore stream.
+     * @return array An array of associative arrays, each representing a single explore stream.
      */
     public function getPostExploreStreams()
     {
@@ -874,7 +884,7 @@ class phpnut
      * Retrieve a list of posts from an "explore" stream on pnut.io.
      * @param  string $slug [<description>]
      * @param array $params An associative array of optional general parameters.
-     * @return An array of associative arrays, each representing a single post.
+     * @return array An array of associative arrays, each representing a single post.
      */
     public function getPostExploreStream(string $slug, array $params=[])
     {
@@ -916,10 +926,11 @@ class phpnut
     * are:    count, before_id, since_id, include_muted, include_deleted,
     * and include_post_raw.
     * See https://github.com/phpnut/api-spec/blob/master/resources/posts.md#general-parameters
+    * @param string|int $user_id
     * @return array An array of associative arrays, each representing a single
     * user who has bookmarked a post
     */
-    public function getBookmarked(string|int $user_id='me', array $params=[])
+    public function getBookmarked($user_id='me', array $params=[])
     {
         return $this->httpReq(
             'get',
@@ -967,7 +978,7 @@ class phpnut
     /**
      * Repost an existing Post object.
      * @param integer $post_id The id of the post
-     * @return the reposted post
+     * @return mixed the reposted post
      */
     public function repost(int $post_id)
     {
@@ -980,7 +991,7 @@ class phpnut
     /**
      * Delete a post that the user has reposted.
      * @param integer $post_id The id of the post
-     * @return the un-reposted post
+     * @return mixed the un-reposted post
      */
     public function deleteRepost(int $post_id)
     {
@@ -997,7 +1008,7 @@ class phpnut
      * This will likely change as the API evolves, as of this writing allowed keys
      * are: count, before_id, since_id, include_muted, include_deleted,
      * include_directed_posts, and include_raw.
-     * @return An array of associative arrays, each representing a single post.
+     * @return array An array of associative arrays, each representing a single post.
      */
     public function searchHashtags(string $hashtag, array $params=[])
     {
@@ -1014,7 +1025,7 @@ class phpnut
      * see: https://docs.pnut.io/resources/posts/search
      * @param string $query The search query. Supports
      * normal search terms. Searches post text.
-     * @return array An array of associative arrays, each representing one post.
+     * @return string|array|false An array of associative arrays, each representing one post.
      * or false on error
      */
     public function searchPosts(array $params=[], string $query='', string $order='default')
@@ -1044,7 +1055,7 @@ class phpnut
      * This will likely change as the API evolves, as of this writing allowed keys
      * are: count, before_id, since_id, include_muted, include_deleted,
      * and include_post_raw.
-     * @return An array of associative arrays, each representing a single post.
+     * @return array An array of associative arrays, each representing a single post.
      */
     public function getUserPersonalStream(array $params=[])
     {
@@ -1063,7 +1074,7 @@ class phpnut
             );
         }
     }
-    
+
     /**
     * Return the 20 most recent Posts from the current User's personalized stream
     * and mentions stream merged into one stream.
@@ -1071,7 +1082,7 @@ class phpnut
     * This will likely change as the API evolves, as of this writing allowed keys
     * are: count, before_id, since_id, include_muted, include_deleted,
     * include_directed_posts, and include_raw.
-    * @return An array of associative arrays, each representing a single post.
+    * @return array An array of associative arrays, each representing a single post.
     */
     public function getUserUnifiedStream(array $params=[])
     {
@@ -1096,14 +1107,14 @@ class phpnut
 
     /**
      * Returns a specific user object.
-     * @param mixed $user_id The ID of the user you want to retrieve, or the string "@-username", or the string
+     * @param string|int $user_id The ID of the user you want to retrieve, or the string "@-username", or the string
      * "me" to retrieve data for the users you're currently authenticated as.
      * @param array $params An associative array of optional general parameters.
      * This will likely change as the API evolves, as of this writing allowed keys
      * are: include_raw|include_user_raw.
      * @return array An associative array representing the user data.
      */
-    public function getUser(string|int $user_id='me', array $params=[])
+    public function getUser($user_id='me', array $params=[])
     {
         return $this->httpReq(
             'get',
@@ -1131,10 +1142,10 @@ class phpnut
     /**
      * Add the specified user ID to the list of users followed.
      * Returns the User object of the user being followed.
-     * @param integer $user_id The user ID of the user to follow.
+     * @param string|int $user_id The user ID of the user to follow.
      * @return array An associative array representing the user you just followed.
      */
-    public function followUser(string|int $user_id)
+    public function followUser($user_id)
     {
         return $this->httpReq(
             'put',
@@ -1145,10 +1156,10 @@ class phpnut
     /**
      * Removes the specified user ID to the list of users followed.
      * Returns the User object of the user being unfollowed.
-     * @param integer $user_id The user ID of the user to unfollow.
+     * @param string|int $user_id The user ID of the user to unfollow.
      * @return array An associative array representing the user you just unfollowed.
      */
-    public function unfollowUser(string|int $user_id)
+    public function unfollowUser($user_id)
     {
         return $this->httpReq(
             'delete',
@@ -1158,13 +1169,13 @@ class phpnut
 
     /**
      * Returns an array of User objects the specified user is following.
-     * @param mixed $user_id Either the ID of the user being followed, or
+     * @param string|int $user_id Either the ID of the user being followed, or
      * the string "me", which will retrieve posts for the user you're authenticated
      * as.
      * @return array An array of associative arrays, each representing a single
      * user following $user_id
      */
-    public function getFollowing(string|int $user_id='me', array $params=[])
+    public function getFollowing($user_id='me', array $params=[])
     {
         return $this->httpReq(
             'get',
@@ -1172,31 +1183,31 @@ class phpnut
                 . $this->buildQueryString($params)
         );
     }
-    
+
     /**
      * Returns an array of User ids the specified user is following.
-     * @param mixed $user_id Either the ID of the user being followed, or
+     * @param string|int $user_id Either the ID of the user being followed, or
      * the string "me", which will retrieve posts for the user you're authenticated
      * as.
      * @return array user ids the specified user is following.
      */
-    public function getFollowingIDs(string|int $user_id='me')
+    public function getFollowingIDs($user_id='me')
     {
         return $this->httpReq(
             'get',
             "{$this->_baseUrl}users/{$user_id}/following?include_user=0"
         );
     }
-    
+
     /**
      * Returns an array of User objects for users following the specified user.
-     * @param mixed $user_id Either the ID of the user being followed, or
+     * @param string|int $user_id Either the ID of the user being followed, or
      * the string "me", which will retrieve posts for the user you're authenticated
      * as.
      * @return array An array of associative arrays, each representing a single
      * user following $user_id
      */
-    public function getFollowers(string|int $user_id='me', array $params=[])
+    public function getFollowers($user_id='me', array $params=[])
     {
         return $this->httpReq(
             'get',
@@ -1204,15 +1215,15 @@ class phpnut
                 . $this->buildQueryString($params)
         );
     }
-    
+
     /**
      * Returns an array of User ids for users following the specified user.
-     * @param mixed $user_id Either the ID of the user being followed, or
+     * @param string|int $user_id Either the ID of the user being followed, or
      * the string "me", which will retrieve posts for the user you're authenticated
      * as.
      * @return array user ids for users following the specified user
      */
-    public function getFollowersIDs(string|int $user_id='me')
+    public function getFollowersIDs($user_id='me')
     {
         return $this->httpReq(
             'get',
@@ -1236,9 +1247,9 @@ class phpnut
 
     /**
      * Mute a user
-     * @param integer $user_id The user ID to mute
+     * @param string|int $user_id The user ID to mute
      */
-    public function muteUser(string|int $user_id)
+    public function muteUser($user_id)
     {
          return $this->httpReq(
             'put',
@@ -1248,9 +1259,9 @@ class phpnut
 
     /**
      * Unmute a user
-     * @param integer $user_id The user ID to unmute
+     * @param string|int $user_id The user ID to unmute
      */
-    public function unmuteUser(string|int $user_id)
+    public function unmuteUser($user_id)
     {
         return $this->httpReq(
             'delete',
@@ -1285,10 +1296,10 @@ class phpnut
 
     /**
      * List the users who match a specific search term
-     * @param string $search The search query. Supports @username or #tag searches as
+     * @param string $query The search query. Supports @username or #tag searches as
      * well as normal search terms. Searches username, display name, bio information.
      * Does not search posts.
-     * @return array An array of associative arrays, each representing one user.
+     * @return array|false An array of associative arrays, each representing one user.
      */
     public function searchUsers(array $params=[], string $query='')
     {
@@ -1328,12 +1339,14 @@ class phpnut
      */
     protected function updateUserImage(string $image, string $which='avatar')
     {
+        $mimeType = '';
+
         $test = @getimagesize($image);
         if ($test && array_key_exists('mime', $test)) {
             $mimeType = $test['mime'];
         }
         $data = [
-            $which => new CurlFile($image, $mimeType)
+            $which => new CURLFile($image, $mimeType)
         ];
         return $this->httpReq(
             'post-raw',
@@ -1445,10 +1458,10 @@ class phpnut
 
     /**
      * get an existing private message channel between multiple users
-     * @param mixed $users Can be a comma- or space-separated string, or an array.
+     * @param string|array $users Can be a comma- or space-separated string, or an array.
      * Usernames with @-symbol, or user ids.
      */
-    public function getExistingPM(string|array $users, array $params=[])
+    public function getExistingPM($users, array $params=[])
     {
         if (is_string($users)) {
             $users = explode(',', str_replace(' ', ',', $users));
@@ -1561,7 +1574,7 @@ class phpnut
 
     /**
      * Retrieve a list of "explore" streams
-     * @return An array of associative arrays, each representing a single explore stream.
+     * @return array An array of associative arrays, each representing a single explore stream.
      */
     public function getChannelExploreStreams()
     {
@@ -1575,7 +1588,7 @@ class phpnut
      * Retrieve a list of channels from an "explore" stream on pnut.io.
      * @param  string $slug [<description>]
      * @param array $params An associative array of optional general parameters.
-     * @return An array of associative arrays, each representing a single channel.
+     * @return array An array of associative arrays, each representing a single channel.
      */
     public function getChannelExploreStream(string $slug, array $params=[])
     {
@@ -1585,7 +1598,7 @@ class phpnut
                 . $this->buildQueryString($params)
         );
     }
-    
+
     /**
      * mark channel inactive
      */
@@ -1685,11 +1698,11 @@ class phpnut
 
     /**
      * create message
-     * @param $channelid numeric or "pm" for auto-channel (type=io.pnut.core.pm)
+     * @param string|int $channelid numeric or "pm" for auto-channel (type=io.pnut.core.pm)
      * @param array $data array('text'=>'YOUR_MESSAGE') If a type=io.pnut.core.pm, then "destinations" key can be set to address as an array of people to send this PM too
      * @param array $params query parameters
      */
-    public function createMessage(string|int $channelid, array $data, array $params=[])
+    public function createMessage($channelid, array $data, array $params=[])
     {
         if (isset($data['destinations'])) {
             if (is_string($data['destinations'])) {
@@ -1756,7 +1769,7 @@ class phpnut
      * see: https://docs.pnut.io/resources/messages/search
      * @param string $query The search query. Supports
      * normal search terms. Searches common channel raw.
-     * @return array An array of associative arrays, each representing one channel.
+     * @return string|array|false An array of associative arrays, each representing one channel.
      * or false on error
      */
     public function searchMessages(array $params=[], string $query='', string $order='default')
@@ -1802,16 +1815,16 @@ class phpnut
     public function createFile($file, array $data, array $params=[])
     {
         if (!$file) {
-            throw new PhpnutException('You must specify a path to a file');
+            throw new phpnutException('You must specify a path to a file');
         }
         if (!file_exists($file)) {
-            throw new PhpnutException('File path specified does not exist');
+            throw new phpnutException('File path specified does not exist');
         }
         if (!is_readable($file)) {
-            throw new PhpnutException('File path specified is not readable');
+            throw new phpnutException('File path specified is not readable');
         }
         if (!array_key_exists('type', $data) || !$data['type']) {
-            throw new PhpnutException('Type is required when creating a file');
+            throw new phpnutException('Type is required when creating a file');
         }
         if (!array_key_exists('name', $data)) {
             $data['name'] = basename($file);
@@ -1823,7 +1836,7 @@ class phpnut
             $mimeType = null;
         }
         if (!array_key_exists('kind', $data)) {
-            $test = @getimagesize($path);
+            $test = @getimagesize($file);
             if ($test && array_key_exists('mime', $test)) {
                 $data['kind'] = 'image';
                 if (!$mimeType) {
@@ -1840,7 +1853,7 @@ class phpnut
             finfo_close($finfo);
         }
         if (!$mimeType) {
-            throw new PhpnutException('Unable to determine mime type of file, try specifying it explicitly');
+            throw new phpnutException('Unable to determine mime type of file, try specifying it explicitly');
         }
         $data['content'] = new \CurlFile($file, $mimeType);
         return $this->httpReq(
@@ -2001,7 +2014,7 @@ class phpnut
         $json = json_encode($data);
         return $this->httpReq(
             'post',
-            $this->_baseUrl.'polls?'.$this->buildQueryString($params), 
+            $this->_baseUrl.'polls?'.$this->buildQueryString($params),
             $json,
             'application/json'
         );
@@ -2010,7 +2023,7 @@ class phpnut
     /**
      * Responds to a poll.
      * @param integer $poll_id The ID of the poll to respond to
-     * @param array list of positions for the poll response
+     * @param array $positions list of positions for the poll response
      * @param array $params An associative array of optional general parameters.
      */
     public function respondToPoll(int $poll_id, array $positions, array $params=[])
@@ -2019,7 +2032,7 @@ class phpnut
         return $this->httpReq(
             'put',
             $this->_baseUrl.'polls/'.urlencode($poll_id).'/response?'.$this->buildQueryString($params),
-            $json, 
+            $json,
             'application/json'
         );
     }
@@ -2085,8 +2098,6 @@ class phpnut
      * List the polls that match a specific search term
      * @param array $params a list of filter, search query, and general Poll parameters
      * see: https://docs.pnut.io/resources/channels/search
-     * @param string $query The search query. Supports
-     * normal search terms.
      * @return array An array of associative arrays, each representing one poll.
      * or false on error
      */
@@ -2118,7 +2129,7 @@ class phpnut
             $params
         );
     }
-    
+
     /**
      * Get User Information
      */
@@ -2129,7 +2140,7 @@ class phpnut
             "{$this->_baseUrl}token"
         );
     }
-    
+
     /**
      * Get Application Authorized User IDs
      */
@@ -2147,7 +2158,7 @@ class phpnut
             $params
         );
     }
-    
+
     /**
      * Get Application Authorized User Tokens
      */
@@ -2166,14 +2177,12 @@ class phpnut
         );
     }
 
-
-
     /**
      * Registers your function (or an array of object and method) to be called
      * whenever an event is received via an open pnut.io stream. Your function
      * will receive a single parameter, which is the object wrapper containing
      * the meta and data.
-     * @param mixed A PHP callback (either a string containing the function name,
+     * @param mixed $function A PHP callback (either a string containing the function name,
      * or an array where the first element is the class/object and the second
      * is the method).
      */
@@ -2181,7 +2190,7 @@ class phpnut
     {
         $this->_streamCallback = $function;
     }
-    
+
     /**
      * Opens a stream that's been created for this user/app and starts sending
      * events/objects to your defined callback functions. You must define at
@@ -2231,10 +2240,9 @@ class phpnut
         );
         return true;
     }
-    
+
     /**
      * Close the currently open stream.
-     * @return true;
      */
     public function closeStream(): void
     {
@@ -2251,7 +2259,7 @@ class phpnut
         $this->_currentStream = null;
         $this->_multiStream = null;
     }
-    
+
     /**
      * Retrieve all streams for the current access token.
      * @return array An array of stream definitions.
@@ -2263,7 +2271,7 @@ class phpnut
             "{$this->_baseUrl}streams"
         );
     }
-    
+
     /**
      * Returns a single stream specified by a stream ID. The stream must have been
      * created with the current access token.
@@ -2276,7 +2284,7 @@ class phpnut
             $this->_baseUrl.'streams/'.urlencode($streamId)
         );
     }
-    
+
     /**
      * Creates a stream for the current app access token.
      *
@@ -2307,7 +2315,7 @@ class phpnut
         );
         return $response;
     }
-    
+
     /**
      * Update stream for the current app access token
      *
@@ -2338,7 +2346,7 @@ class phpnut
         );
         return $response;
     }
-     
+
     /**
      * Deletes a stream if you no longer need it.
      *
@@ -2352,7 +2360,7 @@ class phpnut
             $this->_baseUrl.'streams/'.urlencode($streamId)
         );
     }
-    
+
     /**
      * Deletes all streams created by the current access token.
      */
@@ -2363,7 +2371,7 @@ class phpnut
             "{$this->_baseUrl}streams"
         );
     }
-    
+
     /**
      * Internal function used to process incoming chunks from the stream. This is only
      * public because it needs to be accessed by CURL. Do not call or use this function
@@ -2394,7 +2402,7 @@ class phpnut
         }
         return strlen($data);
     }
-    
+
     /**
      * Opens a long lived HTTP connection to the pnut.io servers, and sends data
      * received to the httpStreamReceive function. As a general rule you should not
@@ -2426,7 +2434,7 @@ class phpnut
         $this->_lastStreamActivity = time();
         curl_multi_add_handle($this->_multiStream, $this->_currentStream);
     }
-    
+
     public function reconnectStream(): void
     {
         $this->closeStream();
@@ -2442,12 +2450,12 @@ class phpnut
         }
         $this->httpStream('get', $this->_streamUrl);
     }
-    
+
     /**
      * Process an open stream for x microseconds, then return. This is useful if you want
      * to be doing other things while processing the stream. If you just want to
      * consume the stream without other actions, you can call processForever() instead.
-     * @param float @microseconds The number of microseconds to process for before
+     * @param null|float $microseconds The number of microseconds to process for before
      * returning. There are 1,000,000 microseconds in a second.
      *
      * @return void
@@ -2487,7 +2495,7 @@ class phpnut
             }
         } while ($timeSoFar+$sleepFor < $microseconds);
     }
-    
+
     /**
      * Process an open stream forever. This function will never return, if you
      * want to perform other actions while consuming the stream, you should use

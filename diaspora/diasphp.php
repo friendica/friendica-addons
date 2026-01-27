@@ -9,6 +9,8 @@ use Friendica\Core\System;
 
 class Diasphp {
 	private $cookiejar;
+	private $token_regex;
+	private $pod;
 
 	function __construct($pod) {
 		$this->token_regex = '/content="(.*?)" name="csrf-token/';

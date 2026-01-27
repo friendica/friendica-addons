@@ -7,7 +7,6 @@
  */
 
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\DI;
 
 function cld_install()
@@ -18,7 +17,17 @@ function cld_install()
 function cld_detect_languages(array &$data)
 {
 	if (!in_array('cld2', get_loaded_extensions())) {
-		Logger::warning('CLD2 is not installed.');
+		DI::logger()->warning('CLD2 is not installed.');
+		return;
+	}
+
+	if (!class_exists('CLD2Detector')) {
+		DI::logger()->warning('CLD2Detector class does not exist.');
+		return;
+	}
+
+	if (!class_exists('CLD2Encoding')) {
+		DI::logger()->warning('CLD2Encoding class does not exist.');
 		return;
 	}
 
@@ -43,7 +52,7 @@ function cld_detect_languages(array &$data)
 	}
 
 	if (!$result['is_reliable']) {
-		Logger::debug('Unreliable detection', ['uri-id' => $data['uri-id'], 'original' => $original, 'detected' => $detected, 'name' => $result['language_name'], 'probability' => $result['language_probability'], 'text' => $data['text']]);
+		DI::logger()->debug('Unreliable detection', ['uri-id' => $data['uri-id'], 'original' => $original, 'detected' => $detected, 'name' => $result['language_name'], 'probability' => $result['language_probability'], 'text' => $data['text']]);
 		if (($original == $detected) && ($data['detected'][$original] < $result['language_probability'] / 100)) {
 			$data['detected'][$original] = $result['language_probability'] / 100;
 		}
@@ -53,12 +62,12 @@ function cld_detect_languages(array &$data)
 	$available = array_keys(DI::l10n()->getLanguageCodes());
 
 	if (!in_array($detected, $available)) {
-		Logger::debug('Unsupported language', ['uri-id' => $data['uri-id'], 'original' => $original, 'detected' => $detected, 'name' => $result['language_name'], 'probability' => $result['language_probability'], 'text' => $data['text']]);
+		DI::logger()->debug('Unsupported language', ['uri-id' => $data['uri-id'], 'original' => $original, 'detected' => $detected, 'name' => $result['language_name'], 'probability' => $result['language_probability'], 'text' => $data['text']]);
 		return;
 	}
 
 	if ($original != $detected) {
-		Logger::debug('Detected different language', ['uri-id' => $data['uri-id'], 'original' => $original, 'detected' => $detected, 'name' => $result['language_name'], 'probability' => $result['language_probability'], 'text' => $data['text']]);
+		DI::logger()->debug('Detected different language', ['uri-id' => $data['uri-id'], 'original' => $original, 'detected' => $detected, 'name' => $result['language_name'], 'probability' => $result['language_probability'], 'text' => $data['text']]);
 	}
 
 	$length = count($data['detected']);

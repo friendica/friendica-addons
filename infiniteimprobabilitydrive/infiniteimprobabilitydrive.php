@@ -6,7 +6,6 @@
 * Author: Thomas Willingham <https://kakste.com/profile/beardyunixer>
 */
 
-use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\DI;
 

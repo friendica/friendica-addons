@@ -7,7 +7,6 @@
  * Maintainer: Hypolite Petovan <hypolite@friendica.mrpetovan.com>
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\DI;
 use Friendica\Object\EMail\IEmail;
@@ -25,14 +24,18 @@ function phpmailer_install()
 
 function phpmailer_load_config(ConfigFileManager $loader)
 {
-	DI::app()->getConfigCache()->load($loader->loadAddonConfig('phpmailer'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	DI::appHelper()->getConfigCache()->load($loader->loadAddonConfig('phpmailer'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 /**
- * @param IEmail $email
+ * @param null|IEmail $email
  */
-function phpmailer_emailer_send_prepare(IEmail &$email)
+function phpmailer_emailer_send_prepare(?IEmail &$email)
 {
+	if ($email === null) {
+		return;
+	}
+
 	// Passing `true` enables exceptions
 	$mailer = new PHPMailer(true);
 	try {

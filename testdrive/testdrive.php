@@ -6,7 +6,6 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Search;
 use Friendica\Database\DBA;
@@ -27,7 +26,7 @@ function testdrive_install()
 
 function testdrive_load_config(ConfigFileManager $loader)
 {
-	DI::app()->getConfigCache()->load($loader->loadAddonConfig('testdrive'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	DI::appHelper()->getConfigCache()->load($loader->loadAddonConfig('testdrive'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 function testdrive_globaldir_update(array &$b)

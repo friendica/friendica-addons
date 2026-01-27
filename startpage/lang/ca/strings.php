@@ -1,6 +1,7 @@
 <?php
 
-$a->strings["Startpage Settings"] = "Ajustos de la pàgina d'inici";
-$a->strings["Home page to load after login  - leave blank for profile wall"] = "Pàgina personal a carregar després d'accedir  - deixar buit pel perfil del mur";
-$a->strings["Examples: &quot;network&quot; or &quot;notifications/system&quot;"] = "Exemples: \"xarxa\" o \"notificacions/sistema\"";
-$a->strings["Submit"] = "Enviar";
+if(! function_exists("string_plural_select_ca")) {
+function string_plural_select_ca($n){
+	$n = intval($n);
+	return intval($n != 1);
+}}

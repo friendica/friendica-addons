@@ -6,12 +6,9 @@
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  */
 
-use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\HTML;
-use Friendica\Core\Addon;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Protocol;
 use Friendica\Core\Renderer;
 use Friendica\Core\Worker;
@@ -108,7 +105,7 @@ function pumpio_registerclient($host)
 	$params['logo_url'] = DI::baseUrl() . '/images/friendica-256.png';
 	$params['redirect_uris'] = DI::baseUrl() . '/pumpio/connect';
 
-	Logger::info('pumpio_registerclient: ' . $url . ' parameters', $params);
+	DI::logger()->info('pumpio_registerclient: ' . $url . ' parameters', $params);
 
 	// @TODO Rewrite this to our own HTTP client
 	$ch = curl_init($url);
@@ -123,10 +120,10 @@ function pumpio_registerclient($host)
 
 	if ($curl_info['http_code'] == '200') {
 		$values = json_decode($s);
-		Logger::info('pumpio_registerclient: success ', (array)$values);
+		DI::logger()->info('pumpio_registerclient: success ', (array)$values);
 		return $values;
 	}
-	Logger::info('pumpio_registerclient: failed: ', $curl_info);
+	DI::logger()->info('pumpio_registerclient: failed: ', $curl_info);
 	return false;
 
 }
@@ -139,7 +136,7 @@ function pumpio_connect()
 	$hostname        = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'pumpio', 'host');
 
 	if ((($consumer_key == '') || ($consumer_secret == '')) && ($hostname != '')) {
-		Logger::notice('pumpio_connect: register client');
+		DI::logger()->notice('pumpio_connect: register client');
 		$clientdata = pumpio_registerclient($hostname);
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'pumpio', 'consumer_key', $clientdata->client_id);
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'pumpio', 'consumer_secret', $clientdata->client_secret);
@@ -147,11 +144,11 @@ function pumpio_connect()
 		$consumer_key    = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'pumpio', 'consumer_key');
 		$consumer_secret = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'pumpio', 'consumer_secret');
 
-		Logger::info('pumpio_connect: ckey: ' . $consumer_key . ' csecrect: ' . $consumer_secret);
+		DI::logger()->info('pumpio_connect: ckey: ' . $consumer_key . ' csecrect: ' . $consumer_secret);
 	}
 
 	if (($consumer_key == '') || ($consumer_secret == '')) {
-		Logger::notice('pumpio_connect: '.sprintf('Unable to register the client at the pump.io server "%s".', $hostname));
+		DI::logger()->notice('pumpio_connect: '.sprintf('Unable to register the client at the pump.io server "%s".', $hostname));
 
 		return DI::l10n()->t("Unable to register the client at the pump.io server '%s'.", $hostname);
 	}
@@ -180,7 +177,7 @@ function pumpio_connect()
 	if (($success = $client->Initialize())) {
 		if (($success = $client->Process())) {
 			if (strlen($client->access_token)) {
-				Logger::info('pumpio_connect: otoken: ' . $client->access_token . ', osecrect: ' . $client->access_token_secret);
+				DI::logger()->info('pumpio_connect: otoken: ' . $client->access_token . ', osecrect: ' . $client->access_token_secret);
 				DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'pumpio', 'oauth_token', $client->access_token);
 				DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'pumpio', 'oauth_token_secret', $client->access_token_secret);
 			}
@@ -192,11 +189,11 @@ function pumpio_connect()
 	}
 
 	if ($success) {
-		Logger::notice('pumpio_connect: authenticated');
+		DI::logger()->notice('pumpio_connect: authenticated');
 		$o = DI::l10n()->t('You are now authenticated to pumpio.');
 		$o .= '<br /><a href="' . DI::baseUrl() . '/settings/connectors">' . DI::l10n()->t('return to the connector page') . '</a>';
 	} else {
-		Logger::notice('pumpio_connect: could not connect');
+		DI::logger()->notice('pumpio_connect: could not connect');
 		$o = 'Could not connect to pumpio. Refresh the page or try again later.';
 	}
 
@@ -320,7 +317,7 @@ function pumpio_settings_post(array &$b)
 
 function pumpio_load_config(ConfigFileManager $loader)
 {
-	DI::app()->getConfigCache()->load($loader->loadAddonConfig('pumpio'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	DI::appHelper()->getConfigCache()->load($loader->loadAddonConfig('pumpio'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 function pumpio_hook_fork(array &$b)
@@ -346,7 +343,7 @@ function pumpio_hook_fork(array &$b)
 	if (DI::pConfig()->get($post['uid'], 'pumpio', 'import')) {
 		// Don't fork if it isn't a reply to a pump.io post
 		if (($post['gravity'] != Item::GRAVITY_PARENT) && !Post::exists(['id' => $post['parent'], 'network' => Protocol::PUMPIO])) {
-			Logger::notice('No pump.io parent found for item ' . $post['id']);
+			DI::logger()->notice('No pump.io parent found for item ' . $post['id']);
 			$b['execute'] = false;
 			return;
 		}
@@ -390,7 +387,11 @@ function pumpio_send(array &$b)
 		return;
 	}
 
-	Logger::debug('pumpio_send: parameter ', $b);
+	if (Item::isGroupPost($b['uri-id'])) {
+		return;
+	}
+
+	DI::logger()->debug('pumpio_send: parameter ', $b);
 
 	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], DI::contentItem()->addSharedPost($b));
 
@@ -400,7 +401,7 @@ function pumpio_send(array &$b)
 		$orig_post = Post::selectFirst([], $condition);
 
 		if (!DBA::isResult($orig_post)) {
-			Logger::notice('pumpio_send: no pumpio post ' . $b['parent']);
+			DI::logger()->notice('pumpio_send: no pumpio post ' . $b['parent']);
 			return;
 		} else {
 			$iscomment = true;
@@ -410,7 +411,7 @@ function pumpio_send(array &$b)
 
 		$receiver = pumpio_getreceiver($b);
 
-		Logger::notice('pumpio_send: receiver ', $receiver);
+		DI::logger()->notice('pumpio_send: receiver ', $receiver);
 
 		if (!count($receiver) && ($b['private'] == Item::PRIVATE) || !strstr($b['postopts'], 'pumpio')) {
 			return;
@@ -544,13 +545,13 @@ function pumpio_send(array &$b)
 			}
 
 			$post_id = $user->object->id;
-			Logger::notice('pumpio_send ' . $username . ': success ' . $post_id);
+			DI::logger()->notice('pumpio_send ' . $username . ': success ' . $post_id);
 			if ($post_id && $iscomment) {
-				Logger::notice('pumpio_send ' . $username . ': Update extid ' . $post_id . ' for post id ' . $b['id']);
+				DI::logger()->notice('pumpio_send ' . $username . ': Update extid ' . $post_id . ' for post id ' . $b['id']);
 				Item::update(['extid' => $post_id], ['id' => $b['id']]);
 			}
 		} else {
-			Logger::notice('pumpio_send '.$username.': '.$url.' general error: ' . print_r($user, true));
+			DI::logger()->notice('pumpio_send '.$username.': '.$url.' general error: ' . print_r($user, true));
 			Worker::defer();
 		}
 	}
@@ -581,6 +582,8 @@ function pumpio_action(int $uid, string $uri, string $action, string $content = 
 	} else {
 		$uri = $orig_post['uri'];
 	}
+
+	$objectType = '';
 
 	if (($orig_post['object-type'] != '') && (strstr($orig_post['object-type'], ActivityNamespace::ACTIVITY_SCHEMA))) {
 		$objectType = str_replace(ActivityNamespace::ACTIVITY_SCHEMA, '', $orig_post['object-type']);
@@ -618,16 +621,18 @@ function pumpio_action(int $uid, string $uri, string $action, string $content = 
 	}
 
 	if ($success) {
-		Logger::notice('pumpio_action '.$username.' '.$action.': success '.$uri);
+		DI::logger()->notice('pumpio_action '.$username.' '.$action.': success '.$uri);
 	} else {
-		Logger::notice('pumpio_action '.$username.' '.$action.': general error: '.$uri);
+		DI::logger()->notice('pumpio_action '.$username.' '.$action.': general error: '.$uri);
 		Worker::defer();
 	}
 }
 
 function pumpio_sync()
 {
-	if (!Addon::isEnabled('pumpio')) {
+	$addonHelper = DI::addonHelper();
+
+	if (!$addonHelper->isAddonEnabled('pumpio')) {
 		return;
 	}
 
@@ -638,15 +643,15 @@ function pumpio_sync()
 	if ($last) {
 		$next = $last + ($poll_interval * 60);
 		if ($next > time()) {
-			Logger::notice('pumpio: poll intervall not reached');
+			DI::logger()->notice('pumpio: poll intervall not reached');
 			return;
 		}
 	}
-	Logger::notice('pumpio: cron_start');
+	DI::logger()->notice('pumpio: cron_start');
 
 	$pconfigs = DBA::selectToArray('pconfig', ['uid'], ['cat' => 'pumpio', 'k' => 'mirror', 'v' => '1']);
 	foreach ($pconfigs as $rr) {
-		Logger::notice('pumpio: mirroring user '.$rr['uid']);
+		DI::logger()->notice('pumpio: mirroring user '.$rr['uid']);
 		pumpio_fetchtimeline($rr['uid']);
 	}
 
@@ -661,12 +666,12 @@ function pumpio_sync()
 	foreach ($pconfigs as $rr) {
 		if ($abandon_days != 0) {
 			if (DBA::exists('user', ["uid = ? AND `login_date` >= ?", $rr['uid'], $abandon_limit])) {
-				Logger::notice('abandoned account: timeline from user '.$rr['uid'].' will not be imported');
+				DI::logger()->notice('abandoned account: timeline from user '.$rr['uid'].' will not be imported');
 				continue;
 			}
 		}
 
-		Logger::notice('pumpio: importing timeline from user '.$rr['uid']);
+		DI::logger()->notice('pumpio: importing timeline from user '.$rr['uid']);
 		pumpio_fetchinbox($rr['uid']);
 
 		// check for new contacts once a day
@@ -683,7 +688,7 @@ function pumpio_sync()
 		}
 	}
 
-	Logger::notice('pumpio: cron_end');
+	DI::logger()->notice('pumpio: cron_end');
 
 	DI::keyValue()->set('pumpio_last_poll', time());
 }
@@ -728,7 +733,7 @@ function pumpio_fetchtimeline(int $uid)
 
 	$url = 'https://'.$hostname.'/api/user/'.$username.'/feed/major';
 
-	Logger::notice('pumpio: fetching for user ' . $uid . ' ' . $url . ' C:' . $client->client_id . ' CS:' . $client->client_secret . ' T:' . $client->access_token . ' TS:' . $client->access_token_secret);
+	DI::logger()->notice('pumpio: fetching for user ' . $uid . ' ' . $url . ' C:' . $client->client_id . ' CS:' . $client->client_secret . ' T:' . $client->access_token . ' TS:' . $client->access_token_secret);
 
 	$useraddr = $username.'@'.$hostname;
 
@@ -740,7 +745,7 @@ function pumpio_fetchtimeline(int $uid)
 	}
 
 	if (!$success) {
-		Logger::notice('pumpio: error fetching posts for user ' . $uid . ' ' . $useraddr . ' ', $user);
+		DI::logger()->notice('pumpio: error fetching posts for user ' . $uid . ' ' . $useraddr . ' ', $user);
 		return;
 	}
 
@@ -800,11 +805,11 @@ function pumpio_fetchtimeline(int $uid)
 					}
 				}
 
-				Logger::notice('pumpio: posting for user ' . $uid);
+				DI::logger()->notice('pumpio: posting for user ' . $uid);
 
 				Item::insert($postarray, true);
 
-				Logger::notice('pumpio: posting done - user ' . $uid);
+				DI::logger()->notice('pumpio: posting done - user ' . $uid);
 			}
 		}
 	}
@@ -827,6 +832,7 @@ function pumpio_dounlike(int $uid, array $self, $post, string $own_id)
 	}
 
 	$contactid = 0;
+	$contact   = [];
 
 	if (Strings::compareLink($post->actor->url, $own_id)) {
 		$contactid = $self['id'];
@@ -844,16 +850,16 @@ function pumpio_dounlike(int $uid, array $self, $post, string $own_id)
 	Item::markForDeletion(['verb' => Activity::LIKE, 'uid' => $uid, 'contact-id' => $contactid, 'thr-parent' => $orig_post['uri']]);
 
 	if (DBA::isResult($contact)) {
-		Logger::notice('pumpio_dounlike: unliked existing like. User ' . $own_id . ' ' . $uid . ' Contact: ' . $contactid . ' URI ' . $orig_post['uri']);
+		DI::logger()->notice('pumpio_dounlike: unliked existing like. User ' . $own_id . ' ' . $uid . ' Contact: ' . $contactid . ' URI ' . $orig_post['uri']);
 	} else {
-		Logger::notice('pumpio_dounlike: not found. User ' . $own_id . ' ' . $uid . ' Contact: ' . $contactid . ' Url ' . $orig_post['uri']);
+		DI::logger()->notice('pumpio_dounlike: not found. User ' . $own_id . ' ' . $uid . ' Contact: ' . $contactid . ' Url ' . $orig_post['uri']);
 	}
 }
 
 function pumpio_dolike(int $uid, array $self, $post, string $own_id, $threadcompletion = true)
 {
 	if (empty($post->object->id)) {
-		Logger::info('Got empty like: '.print_r($post, true));
+		DI::logger()->info('Got empty like: '.print_r($post, true));
 		return;
 	}
 
@@ -898,7 +904,7 @@ function pumpio_dolike(int $uid, array $self, $post, string $own_id, $threadcomp
 	];
 
 	if (Post::exists($condition)) {
-		Logger::notice('pumpio_dolike: found existing like. User ' . $own_id . ' ' . $uid . ' Contact: ' . $contactid . ' URI ' . $orig_post['uri']);
+		DI::logger()->notice('pumpio_dolike: found existing like. User ' . $own_id . ' ' . $uid . ' Contact: ' . $contactid . ' URI ' . $orig_post['uri']);
 		return;
 	}
 
@@ -932,7 +938,7 @@ function pumpio_dolike(int $uid, array $self, $post, string $own_id, $threadcomp
 
 	$ret = Item::insert($likedata);
 
-	Logger::notice('pumpio_dolike: ' . $ret . ' User ' . $own_id . ' ' . $uid . ' Contact: ' . $contactid . ' URI ' . $orig_post['uri']);
+	DI::logger()->notice('pumpio_dolike: ' . $ret . ' User ' . $own_id . ' ' . $uid . ' Contact: ' . $contactid . ' URI ' . $orig_post['uri']);
 }
 
 function pumpio_get_contact($uid, $contact, $no_insert = false)
@@ -1403,7 +1409,7 @@ function pumpio_fetchallcomments($uid, $id)
 	$hostname = DI::pConfig()->get($uid, 'pumpio', 'host');
 	$username = DI::pConfig()->get($uid, 'pumpio', 'user');
 
-	Logger::notice('pumpio_fetchallcomments: completing comment for user ' . $uid . ' post id ' . $id);
+	DI::logger()->notice('pumpio_fetchallcomments: completing comment for user ' . $uid . ' post id ' . $id);
 
 	$own_id = 'https://' . $hostname . '/' . $username;
 
@@ -1428,7 +1434,9 @@ function pumpio_fetchallcomments($uid, $id)
 	$client->access_token = $otoken;
 	$client->access_token_secret = $osecret;
 
-	Logger::notice('pumpio_fetchallcomments: fetching comment for user ' . $uid . ', URL ' . $url);
+	DI::logger()->notice('pumpio_fetchallcomments: fetching comment for user ' . $uid . ', URL ' . $url);
+
+	$item = new \stdClass();
 
 	if (pumpio_reachable($url)) {
 		$success = $client->CallAPI($url, 'GET', [], ['FailOnAccessError' => true], $item);
@@ -1491,7 +1499,7 @@ function pumpio_fetchallcomments($uid, $id)
 
 		$post->object = $item;
 
-		Logger::notice('pumpio_fetchallcomments: posting comment ' . $post->object->id . ' ', json_decode(json_encode($post), true));
+		DI::logger()->notice('pumpio_fetchallcomments: posting comment ' . $post->object->id . ' ', json_decode(json_encode($post), true));
 		pumpio_dopost($client, $uid, $self, $post, $own_id, false);
 	}
 }

@@ -8,10 +8,8 @@
  *
  */
 
-use Friendica\App;
 use Friendica\Content\Text\Markdown;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Protocol;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
@@ -80,13 +78,13 @@ function discourse_email_getmessage(&$message)
 	// We do assume that all Discourse servers are running with SSL
 	if (preg_match('=topic/(.*\d)/(.*\d)@(.*)=', $message['item']['uri'], $matches) &&
 		discourse_fetch_post_from_api($message, $matches[2], $matches[3])) {
-		Logger::info('Fetched comment via API (message-id mode)', ['host' => $matches[3], 'topic' => $matches[1], 'post' => $matches[2]]);
+		DI::logger()->info('Fetched comment via API (message-id mode)', ['host' => $matches[3], 'topic' => $matches[1], 'post' => $matches[2]]);
 		return;
 	}
 
 	if (preg_match('=topic/(.*\d)@(.*)=', $message['item']['uri'], $matches) &&
 		discourse_fetch_topic_from_api($message, 'https://' . $matches[2], $matches[1], 1)) {
-		Logger::info('Fetched starting post via API (message-id mode)', ['host' => $matches[2], 'topic' => $matches[1]]);
+		DI::logger()->info('Fetched starting post via API (message-id mode)', ['host' => $matches[2], 'topic' => $matches[1]]);
 		return;
 	}
 
@@ -96,16 +94,16 @@ function discourse_email_getmessage(&$message)
 	}
 
 	if (empty($message['item']['plink']) || !preg_match('=(http.*)/t/.*/(.*\d)/(.*\d)=', $message['item']['plink'], $matches)) {
-		Logger::info('This is no Discourse post');
+		DI::logger()->info('This is no Discourse post');
 		return;
 	}
 
 	if (discourse_fetch_topic_from_api($message, $matches[1], $matches[2], $matches[3])) {
-		Logger::info('Fetched post via API (plink mode)', ['host' => $matches[1], 'topic' => $matches[2], 'id' => $matches[3]]);
+		DI::logger()->info('Fetched post via API (plink mode)', ['host' => $matches[1], 'topic' => $matches[2], 'id' => $matches[3]]);
 		return;
 	}
 
-	Logger::info('Fallback mode', ['plink' => $message['item']['plink']]);
+	DI::logger()->info('Fallback mode', ['plink' => $message['item']['plink']]);
 	// Search in the HTML part for the discourse entry and the author profile
 	if (!empty($message['html'])) {
 		$message = discourse_get_html($message);
@@ -122,7 +120,7 @@ function discourse_fetch_post($host, $topic, $pid)
 	$url = $host . '/t/' . $topic . '/' . $pid . '.json';
 	$curlResult = DI::httpClient()->get($url);
 	if (!$curlResult->isSuccess()) {
-		Logger::info('No success', ['url' => $url]);
+		DI::logger()->info('No success', ['url' => $url]);
 		return false;
 	}
 
@@ -134,11 +132,11 @@ function discourse_fetch_post($host, $topic, $pid)
 			/// @todo Possibly fetch missing posts here
 			continue;
 		}
-		Logger::info('Got post data from topic', $post);
+		DI::logger()->info('Got post data from topic', $post);
 		return $post;
 	}
 
-	Logger::info('Post not found', ['host' => $host, 'topic' => $topic, 'pid' => $pid]);
+	DI::logger()->info('Post not found', ['host' => $host, 'topic' => $topic, 'pid' => $pid]);
 	return false;
 }
 
@@ -170,7 +168,7 @@ function discourse_fetch_post_from_api(&$message, $post, $host)
 
 	$message = discourse_process_post($message, $data, $hostaddr);
 
-	Logger::info('Got API data', $message);
+	DI::logger()->info('Got API data', $message);
 	return true;
 }
 
@@ -203,7 +201,7 @@ function discourse_get_user($post, $hostaddr)
 	$contact['url'] = $hostaddr . '/u/' . $contact['nick'];
 	$contact['nurl'] = Strings::normaliseLink($contact['url']);
 	$contact['baseurl'] = $hostaddr;
-	Logger::info('Contact', $contact);
+	DI::logger()->info('Contact', $contact);
 	$contact['id'] = Contact::getIdForURL($contact['url'], 0, false, $contact);
         if (!empty($contact['id'])) {
 		$avatar = $contact['photo'];
@@ -269,11 +267,11 @@ function discourse_get_html($message)
 	$div = $doc2->importNode($result->item(0), true);
 	$doc2->appendChild($div);
 	$message['html'] = $doc2->saveHTML();
-	Logger::info('Found html body', ['html' => $message['html']]);
+	DI::logger()->info('Found html body', ['html' => $message['html']]);
 
 	$profile = discourse_get_profile($xpath);
 	if (!empty($profile['url'])) {
-		Logger::info('Found profile', $profile);
+		DI::logger()->info('Found profile', $profile);
 		$message['item']['author-id'] = Contact::getIdForURL($profile['url'], 0, false, $profile);
 		$message['item']['author-link'] = $profile['url'];
 		$message['item']['author-name'] = $profile['name'];
@@ -289,21 +287,21 @@ function discourse_get_text($message)
 	$text = str_replace("\r", '', $text);
 	$pos = strpos($text, "\n---\n");
 	if ($pos == 0) {
-		Logger::info('No separator found', ['text' => $text]);
+		DI::logger()->info('No separator found', ['text' => $text]);
 		return $message;
 	}
 
 	$message['text'] = trim(substr($text, 0, $pos));
 
-	Logger::info('Found text body', ['text' => $message['text']]);
+	DI::logger()->info('Found text body', ['text' => $message['text']]);
 
 	$message['text'] = Markdown::toBBCode($message['text']);
 
 	$text = substr($text, $pos);
-	Logger::info('Found footer', ['text' => $text]);
+	DI::logger()->info('Found footer', ['text' => $text]);
 	if (preg_match('=\((http.*/t/.*/.*\d/.*\d)\)=', $text, $link)) {
 		$message['item']['plink'] = $link[1];
-		Logger::info('Found plink', ['plink' => $message['item']['plink']]);
+		DI::logger()->info('Found plink', ['plink' => $message['item']['plink']]);
 	}
 	return $message;
 }

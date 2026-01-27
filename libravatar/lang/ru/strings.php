@@ -1,17 +1,8 @@
 <?php
 
-$a->strings["Could NOT install Libravatar successfully.<br>It requires PHP >= 5.3"] = "";
-$a->strings["generic profile image"] = "";
-$a->strings["random geometric pattern"] = "";
-$a->strings["monster face"] = "";
-$a->strings["computer generated face"] = "";
-$a->strings["retro arcade style face"] = "";
-$a->strings["Warning"] = "";
-$a->strings["Your PHP version %s is lower than the required PHP >= 5.3."] = "";
-$a->strings["This addon is not functional on your server."] = "";
-$a->strings["Information"] = "";
-$a->strings["Gravatar addon is installed. Please disable the Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if nothing was found at Libravatar."] = "";
-$a->strings["Submit"] = "Подтвердить";
-$a->strings["Default avatar image"] = "";
-$a->strings["Select default avatar image if none was found. See README"] = "";
-$a->strings["Libravatar settings updated."] = "";
+if(! function_exists("string_plural_select_ru")) {
+function string_plural_select_ru($n){
+	$n = intval($n);
+	if ($n%10==1 && $n%100!=11) { return 0; } else if ($n%10>=2 && $n%10<=4 && ($n%100<12 || $n%100>14)) { return 1; } else if ($n%10==0 || ($n%10>=5 && $n%10<=9) || ($n%100>=11 && $n%100<=14)) { return 2; } else  { return 3; }
+}}
+$a->strings['Information'] = 'Информация';

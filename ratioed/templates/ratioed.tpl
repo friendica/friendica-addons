@@ -2,26 +2,21 @@
 <link rel="stylesheet" href="view/theme/frio/css/mod_admin.css?v={{constant('\Friendica\App::VERSION')}}" type="text/css" media="screen"/>
 
 <div id="admin-users" class="adminpage generic-page-wrapper">
-	<h1>{{$title}} - {{$page}} ({{$count}})</h1>
-	<p>
-		<a href="{{$base_url}}/moderation/users/create" class="btn btn-primary"><i class="fa fa-user-plus"></i> {{$h_newuser}}</a>
-	</p>
+	<h1>
+		{{$title}} - {{$page}} ({{$count}})
+		<a href="{{$base_url}}/ratioed/help"><i style="float: right; font-size: 60%" class="fa fa-question-circle fa-fw" aria-hidden="true"></i></a>
+	</h1>
 	<form action="{{$baseurl}}/{{$query_string}}" method="post">
 		<input type="hidden" name="form_security_token" value="{{$form_security_token}}">
 		<table id="users" class="table table-hover">
 			<thead>
 				<tr>
-					<th>
-						<div class="checkbox">
-							<input type="checkbox" id="admin-settings-users-select" class="selecttoggle" data-select-class="users_ckbx"/>
-							<label for="admin-settings-users-select"></label>
-						</div>
-					</th>
+					<th></th>
 					<th></th>
 					{{foreach $th_users as $k=>$th}}
-						{{if $k < 2 || $order_users == $th.1 || ($k==5 && !in_array($order_users,[$th_users.2.1, $th_users.3.1, $th_users.4.1])) }}
+						{{if $k < 2 || $order_users == $th.1 || ($k==4 && !in_array($order_users,[$th_users.2.1, $th_users.3.1, $th_users.5.1])) }}
 						<th class="th-{{$k}}">
-							<a href="{{$baseurl}}/moderation/users/active?o={{if $order_direction_users == "+"}}-{{/if}}{{$th.1}}" class="table-order">
+							<a href="{{$baseurl}}/ratioed?o={{if $order_direction_users == "+"}}-{{/if}}{{$th.1}}" class="table-order">
 								{{if $order_users == $th.1}}
 									{{if $order_direction_users == "+"}}
 									&#8595;
@@ -41,17 +36,8 @@
 			</thead>
 			<tbody>
 			{{foreach $users as $u}}
-				<tr id="user-{{$u.uid}}" class="{{if $u.ratioed}}blocked{{/if}}">
-					<td>
-						{{if $u.is_deletable}}
-						<div class="checkbox">
-							<input type="checkbox" class="users_ckbx" id="id_user_{{$u.uid}}" name="user[]" value="{{$u.uid}}"/>
-							<label for="id_user_{{$u.uid}}"></label>
-						</div>
-						{{else}}
-						&nbsp;
-						{{/if}}
-					</td>
+				<tr id="user-{{$u.uid}}" class="{{if $u.ratioed || $u.reply_guy}}blocked{{/if}}">
+					<td></td>
 					<td><img class="avatar-nano" src="{{$u.micro}}" title="{{$u.nickname}}"></td>
 					<td><a href="{{$u.url}}" title="{{$u.nickname}}"> {{$u.name}}</a></td>
 					<td>{{$u.email}}</td>
@@ -63,11 +49,7 @@
 					<td>{{$u.login_date}}</td>
 				{{/if}}
 
-				{{if $order_users == $th_users.4.1}}
-					<td>{{$u.lastitem_date}}</td>
-				{{/if}}
-
-				{{if !in_array($order_users,[$th_users.2.1, $th_users.3.1, $th_users.4.1]) }}
+				{{if $order_users == $th_users.5.1}}
 					<td>
 						<i class="fa
 							{{if $u.page_flags_raw==0}}fa-user{{/if}}		{{* PAGE_NORMAL *}}
@@ -89,6 +71,10 @@
 						{{if $u.is_admin}}<i class="fa fa-user-secret text-primary" title="{{$siteadmin}}"></i>{{/if}}
 						{{if $u.account_expired}}<i class="fa fa-clock-o text-warning" title="{{$accountexpired}}"></i>{{/if}}
 					</td>
+				{{/if}}
+
+				{{if !in_array($order_users,[$th_users.2.1, $th_users.3.1, $th_users.5.1]) }}
+					<td>{{$u.lastitem_date}}</td>
 				{{/if}}
 
 					<td class="text-right">
@@ -135,30 +121,11 @@
 					{{/foreach}}
 
 					</td>
-					<td class="text-right">
-				{{if $u.is_deletable}}
-						<a href="{{$baseurl}}/moderation/users/active/block/{{$u.uid}}?t={{$form_security_token}}" class="admin-settings-action-link" title="{{$block}}">
-							<i class="fa fa-ban" aria-hidden="true"></i>
-						</a>
-						<a href="{{$baseurl}}/moderation/users/active/delete/{{$u.uid}}?t={{$form_security_token}}" class="admin-settings-action-link" title="{{$delete}}" onclick="return confirm_delete('{{$confirm_delete}}','{{$u.name}}')">
-							<i class="fa fa-trash" aria-hidden="true"></i>
-						</a>
-				{{else}}
-						&nbsp;
-				{{/if}}
-					</td>
+					<td class="text-right"></td>
 				</tr>
 			{{/foreach}}
 			</tbody>
 		</table>
-		<div class="panel-footer">
-			<button type="submit" name="page_users_block" value="1" class="btn btn-warning">
-				<i class="fa fa-ban" aria-hidden="true"></i> {{$block}}
-			</button>
-			<button type="submit" name="page_users_delete" value="1" class="btn btn-danger" onclick="return confirm_delete('{{$confirm_delete_multi}}')">
-				<i class="fa fa-trash" aria-hidden="true"></i> {{$delete}}
-			</button>
-		</div>
 		{{$pager nofilter}}
 	</form>
 </div>

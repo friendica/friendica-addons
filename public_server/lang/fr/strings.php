@@ -13,5 +13,5 @@ $a->strings['Hi %1$s,
 Your account on %2$s will expire in less than five days. You may keep your account by logging in at least once every 30 days'] = '%1$s,
 
 Votre compte sur %2$s va expirer dans moins de 5 jours. Vous pouvez conserver votre compte en vous identifiant au moins une fois tous les 30 jours';
-$a->strings['Save Settings'] = 'Enregistrer les paramètres';
+$a->strings['Save Settings'] = 'Sauvegarder les paramètres';
 $a->strings['Set any of these options to 0 to deactivate it.'] = 'Entrez 0 comme valeur pour n\'importe quelle de ces options pour la désactiver.';

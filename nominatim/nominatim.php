@@ -6,9 +6,7 @@
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
@@ -46,19 +44,19 @@ function nominatim_resolve_item(array &$item)
 
 	$s = DI::httpClient()->fetch('https://nominatim.openstreetmap.org/reverse?lat=' . $coords[0] . '&lon=' . $coords[1] . '&format=json&addressdetails=0&accept-language=' . $language);
 	if (empty($s)) {
-		Logger::info('API could not be queried');
+		DI::logger()->info('API could not be queried');
 		return;
 	}
 
 	$data = json_decode($s, true);
 	if (empty($data['display_name'])) {
-		Logger::info('No results found for coordinates', ['coordinates' => $item['coord'], 'data' => $data]);
+		DI::logger()->info('No results found for coordinates', ['coordinates' => $item['coord'], 'data' => $data]);
 		return;
 	}
 
 	$item['location'] = $data['display_name'];
 
-	Logger::info('Got location', ['lat' => $coords[0], 'long' => $coords[1], 'location' => $item['location']]);
+	DI::logger()->info('Got location', ['lat' => $coords[0], 'long' => $coords[1], 'location' => $item['location']]);
 
 	if (!empty($item['location'])) {
 		DI::cache()->set('nominatim:' . $language . ':' . $coords[0] . '-' . $coords[1], $item['location']);

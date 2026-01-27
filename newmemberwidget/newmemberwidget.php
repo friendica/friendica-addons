@@ -6,10 +6,8 @@
  * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  ***/
 
-use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Model\User;
@@ -17,7 +15,7 @@ use Friendica\Model\User;
 function newmemberwidget_install()
 {
 	Hook::register( 'network_mod_init', 'addon/newmemberwidget/newmemberwidget.php', 'newmemberwidget_network_mod_init');
-	Logger::notice('newmemberwidget installed');
+	DI::logger()->notice('newmemberwidget installed');
 }
 
 function newmemberwidget_network_mod_init ($b)

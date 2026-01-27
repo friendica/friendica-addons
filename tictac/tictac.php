@@ -7,7 +7,6 @@
  * Status: unsupported
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\DI;
 
@@ -30,7 +29,12 @@ function tictac_module() {}
 
 function tictac_content() {
 
-	$o = '';
+  $o        = '';
+  $dimen    = 3;
+  $handicap = 0;
+  $mefirst  = 0;
+  $yours    = '';
+  $mine     = '';
 
   if($_POST['move']) {
     $handicap = DI::args()->get(1);
@@ -44,9 +48,6 @@ function tictac_content() {
   elseif(DI::args()->getArgc() > 1) {
     $handicap = DI::args()->get(1);
     $dimen = 3;
-  }
-  else {
-   $dimen = 3;
   }
 
   $o .=  '<h3>' . DI::l10n()->t('3D Tic-Tac-Toe') . '</h3><br />';
@@ -70,6 +71,7 @@ class tictac {
   private $dimen;
   private $first_move = true;
   private $handicap = 0;
+  private $mefirst;
   private $yours;
   private $mine;
   private $winning_play;
@@ -161,10 +163,10 @@ class tictac {
 
   ];
 
-  function __construct($dimen,$handicap,$mefirst,$yours,$mine) {
-    $this->dimen = 3;
-    $this->handicap = (($handicap) ? 1 : 0);
-    $this->mefirst = (($mefirst) ? 1 : 0);
+  function __construct($dimen, $handicap, $mefirst, $yours, $mine) {
+    $this->dimen = $dimen;
+    $this->handicap = $handicap ? 1 : 0;
+    $this->mefirst = $mefirst ? 1 : 0;
     $this->yours = str_replace('XXX','',$yours);
     $this->mine  = $mine;
     $this->you = $this->parse_moves('you');
@@ -175,6 +177,7 @@ class tictac {
   }
 
   function play() {
+     $o = '';
 
      if($this->first_move) {
        if(rand(0,1) == 1) {
@@ -226,6 +229,8 @@ class tictac {
   }
 
   function parse_moves($player) {
+    $str = '';
+
     if($player == 'me')
       $str = $this->mine;
     if($player == 'you')
@@ -629,7 +634,7 @@ function winning_move() {
   function draw_board() {
     if(! strlen($this->yours))
       $this->yours = 'XXX';
-    $o .=  "<form action=\"tictac/{$this->handicap}/{$this->mefirst}/{$this->dimen}/{$this->yours}/{$this->mine}\" method=\"post\" />";
+    $o =  "<form action=\"tictac/{$this->handicap}/{$this->mefirst}/{$this->dimen}/{$this->yours}/{$this->mine}\" method=\"post\" />";
     for($x = 0; $x < $this->dimen; $x ++) {
       $o .=  '<table>';
       for($y = 0; $y < $this->dimen; $y ++) {

@@ -8,7 +8,6 @@
 
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
@@ -63,7 +62,7 @@ function saml_metadata()
 			);
 		}
 	} catch (Exception $e) {
-		Logger::error($e->getMessage());
+		DI::logger()->error($e->getMessage());
 	}
 }
 
@@ -75,18 +74,38 @@ function saml_install()
 	Hook::register('footer', __FILE__, 'saml_footer');
 }
 
-function saml_head(string &$body)
-{
-	DI::page()->registerStylesheet(__DIR__ . '/saml.css');
-}
-
 function saml_footer(string &$body)
 {
 	$fragment = addslashes(BBCode::convertForUriId(User::getSystemUriId(), DI::config()->get('saml', 'settings_statement')));
+	$samlhint = DI::l10n()->t('managed via SAML authentication');
 	$body .= <<<EOL
 <script>
 var target=$("#settings-nickname-desc");
 if (target.length) { target.append("<p>$fragment</p>"); }
+var saml_hint = document.createElement("span");
+var saml_hint_text = document.createTextNode('$samlhint');
+saml_hint.appendChild(saml_hint_text);
+if ( document.getElementById('id_email') != null ) {
+	document.getElementById('id_email').setAttribute('readonly', 'readonly');
+	document.getElementById('id_email').parentNode.insertBefore(saml_hint, document.getElementById('id_email').nextSibling);
+}
+// Frio theme
+if ( document.getElementById('password-settings-collapse') != null ) {
+	document.getElementById('password-settings-collapse').replaceChildren(saml_hint.cloneNode(true));
+}
+if ( document.getElementById('id_mpassword_wrapper') != null ) {
+	document.getElementById('id_mpassword_wrapper').parentNode.appendChild(saml_hint.cloneNode(true));
+	document.getElementById('id_mpassword_wrapper').remove();
+	document.getElementById('id_email').nextElementSibling.classList.add('help-block');
+}
+// Vier theme
+if ( document.getElementById('wrapper_mpassword') != null ) {
+	document.getElementById('wrapper_mpassword').remove();
+	document.getElementById('id_email').nextElementSibling.classList.add('field_help');
+}
+if ( document.getElementById('wrapper_password') != null ) {
+	document.getElementById('wrapper_password').parentNode.replaceChildren(saml_hint.cloneNode(true));
+}
 </script>
 EOL;
 }
@@ -107,7 +126,7 @@ function saml_is_configured()
 function saml_sso_initiate(string &$body)
 {
 	if (!saml_is_configured()) {
-		Logger::warning('SAML SSO tried to trigger, but the SAML addon is not configured yet!');
+		DI::logger()->warning('SAML SSO tried to trigger, but the SAML addon is not configured yet!');
 		return;
 	}
 
@@ -136,7 +155,7 @@ function saml_sso_reply()
 
 	if (!empty($errors)) {
 		echo 'Errors encountered.';
-		Logger::error(implode(', ', $errors));
+		DI::logger()->error(implode(', ', $errors));
 		exit();
 	}
 
@@ -161,7 +180,7 @@ function saml_sso_reply()
 	}
 
 	if (!empty($user['uid'])) {
-		DI::auth()->setForUser(DI::app(), $user);
+		DI::auth()->setForUser($user);
 	}
 
 	if (isset($_POST['RelayState']) && Utils::getSelfURL() != $_POST['RelayState']) {
@@ -172,7 +191,7 @@ function saml_sso_reply()
 function saml_slo_initiate()
 {
 	if (!saml_is_configured()) {
-		Logger::warning('SAML SLO tried to trigger, but the SAML addon is not configured yet!');
+		DI::logger()->warning('SAML SLO tried to trigger, but the SAML addon is not configured yet!');
 		return;
 	}
 
@@ -203,7 +222,7 @@ function saml_slo_reply()
 	if (empty($errors)) {
 		$auth->redirectTo(DI::baseUrl());
 	} else {
-		Logger::error(implode(', ', $errors));
+		DI::logger()->error(implode(', ', $errors));
 	}
 }
 
@@ -296,7 +315,7 @@ function saml_addon_admin_post()
 function saml_create_user($username, $email, $name)
 {
 	if (!strlen($email) || !strlen($name)) {
-		Logger::error('Could not create user: no email or username given.');
+		DI::logger()->error('Could not create user: no email or username given.');
 		return false;
 	}
 
@@ -318,7 +337,7 @@ function saml_create_user($username, $email, $name)
 
 		return $user;
 	} catch (Exception $e) {
-		Logger::error(
+		DI::logger()->error(
 			'Exception while creating user',
 			[
 				'username'  => $username,

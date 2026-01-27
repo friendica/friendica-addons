@@ -2,7 +2,7 @@
   <div class="panel-body">
     <h2>Ratioed Plugin Help</h2>
     <p>
-      This plugin provides administrators with additional statistics about
+      This plugin provides moderators with additional statistics about
       the behaviour of users.  These may be useful as early warning signs
       that warrant more carefully watching the behaviour of a user.  They
       are <em>not</em> suitable as a trigger for instantly blocking,
@@ -28,7 +28,7 @@
     <p>
       This plugin allows viewing of an actual ratio, calculated over the
       last 24 hours.  This is a useful timeframe for sudden dogpiling
-      events that administrators might not otherwise notice.  The plugin
+      events that moderators might not otherwise notice.  The plugin
       also calculates other statistics.
     </p>
     <h3>Explanation of Statistics</h3>
@@ -68,10 +68,63 @@
       24h".  It is intended to approximate the traditional ratio as
       understood on Twitter.
     </p>
+    <h4>Replies last month</h4>
+    <p>
+      This is the number of times the user posted a reply to someone
+      else, on a thread the user did not start, any time in the last
+      month.
+    </p>
+    <h4>Reply likes</h4>
+    <p>
+      This is the number of likes received by the user on their
+      replies to other people's posts in the last month.  Replies that
+      receive likes can be assumed to be more of a valuable
+      contribution than replies that do not.
+    </p>
+    <h4>Respondee likes</h4>
+    <p>
+      The number of times in the last month the user replied to
+      someone else's comment and that person then liked the reply.
+      Likes to replies are not necessarily a positive thing, but if
+      the person you're replying to approves the reply, that's a very
+      good sign.  Of course it's also common in a debate for neither
+      side to like the other side's comments without that indicating
+      an unhealthy interaction, so interpret this statistic cautiously.
+    </p>
+    <h4>OP likes</h4>
+    <p>
+      The number of times in the last month the user replied on a
+      thread and the original poster that started the thread liked the
+      reply.  While there is no formal concept of "ownership" of a
+      thread, conventionally the original poster is assumed to have
+      started the thread for a reason, and making replies that do not
+      fulfil that purpose are bad etiquette.  Getting approval from
+      the original poster therefore is a good sign that the user is
+      posting replies that are wanted.
+    </p>
+    <h4>Reply guy score</h4>
+    <p>
+      A <a href="https://en.wikipedia.org/wiki/Reply_guy">"reply
+      guy"</a> is a common Internet phenomenon of people
+      (disproportionately male) posting unwanted comments on other
+      (disproportionately female) people's threads, derailing the
+      conversation.  This score loosely quantifies this phenomenon,
+      as the ratio betwen the number of replies and the sum of likes,
+      respondee likes, and OP likes.  This formula gives extra weight
+      to particularly relevant likes: a reply to a top-level post that
+      is liked by the original poster scores the maximum of 3
+      "points".  A score above 1.0 might indicate cause for concern
+      for moderators.
+    </p>
+    <p>
+      Since this is indicative of long-term behaviour, the score is
+      calculated over a month instead of 24 hours.
+    </p>
+    </p>
     <h3>Performance</h3>
     <p>
       The statistics are computed from scratch each time the page loads.
-      It's possible that this might put a heavy load on the database. and
+      It's possible that this might put a heavy load on the database, and
       the page may take a long time to load.
     </p>
     <h3>Extending</h3>

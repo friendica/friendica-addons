@@ -29,10 +29,10 @@ function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cacheti
 	$now = new DateTime();
 
 	if (!is_null($cached)) {
-		$cdate = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'curweather', 'last');
+		$cdate = (int) DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'curweather', 'last');
 		$cached = unserialize($cached);
 
-		if ($cdate + $cachetime > $now->getTimestamp()) {
+		if ($cdate + (int) $cachetime > $now->getTimestamp()) {
 			return $cached;
 		}
 	}

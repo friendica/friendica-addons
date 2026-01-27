@@ -6,7 +6,6 @@
  * Author: Hypolite Petovan <hypolite@mrpetovan.com>
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\DI;
 
@@ -18,7 +17,7 @@ function highlightjs_install()
 
 function highlightjs_head(string &$str)
 {
-	if (DI::app()->getCurrentTheme() == 'frio') {
+	if (DI::appHelper()->getCurrentTheme() == 'frio') {
 		$style = 'bootstrap';
 	} else {
 		$style = 'default';

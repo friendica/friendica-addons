@@ -8,7 +8,6 @@
  *
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\DI;
@@ -105,12 +104,13 @@ function nsfw_addon_settings_post(array &$b)
 function nsfw_prepare_body_content_filter(&$hook_data)
 {
 	$words = null;
-	if (DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'nsfw', 'disable')) {
+	$uid = $hook_data['uid'] ?? DI::userSession()->getLocalUserId();
+	if (DI::pConfig()->get($uid, 'nsfw', 'disable')) {
 		return;
 	}
 
-	if (DI::userSession()->getLocalUserId()) {
-		$words = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'nsfw', 'words');
+	if ($uid) {
+		$words = DI::pConfig()->get($uid, 'nsfw', 'words');
 	}
 
 	if ($words) {
@@ -119,7 +119,9 @@ function nsfw_prepare_body_content_filter(&$hook_data)
 		$word_list = ['nsfw'];
 	}
 
-	$found = false;
+	$found      = false;
+	$tag_search = false;
+
 	if (count($word_list)) {
 		$body = $hook_data['item']['title'] . "\n" . nsfw_extract_photos($hook_data['item']['body']);
 
@@ -129,17 +131,16 @@ function nsfw_prepare_body_content_filter(&$hook_data)
 				continue;
 			}
 
-			$tag_search = false;
 			switch ($word[0]) {
 				case '/'; // Regular expression
 					$found = @preg_match($word, $body);
 					break;
 				case '#': // Hashtag-only search
 					$tag_search = true;
-					$found = nsfw_find_word_in_item_tags($hook_data['item']['hashtags'], substr($word, 1));
+					$found = nsfw_find_word_in_item_tags($hook_data['item']['hashtags'] ?? [], substr($word, 1));
 					break;
 				default:
-					$found = strpos($body, $word) !== false || nsfw_find_word_in_item_tags($hook_data['item']['tags'], $word);
+					$found = strpos($body, $word) !== false || nsfw_find_word_in_item_tags($hook_data['item']['tags'] ?? [], $word);
 					break;
 			}
 

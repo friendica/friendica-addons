@@ -8,11 +8,10 @@
 
 use Friendica\Addon\webdav_storage\src\WebDav;
 use Friendica\Addon\webdav_storage\src\WebDavConfig;
-use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\DI;
 
-function webdav_storage_install($a)
+function webdav_storage_install()
 {
 	Hook::register('storage_instance' , __FILE__, 'webdav_storage_instance');
 	Hook::register('storage_config' , __FILE__, 'webdav_storage_config');

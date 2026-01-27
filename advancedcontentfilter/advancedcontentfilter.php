@@ -33,16 +33,13 @@
  *
  */
 
-use Friendica\App;
 use Friendica\BaseModule;
 use Friendica\Content\Text\Markdown;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\Database\DBStructure;
 use Friendica\DI;
-use Friendica\Model\Item;
 use Friendica\Model\Post;
 use Friendica\Model\Tag;
 use Friendica\Model\User;
@@ -64,7 +61,7 @@ function advancedcontentfilter_install()
 	Hook::add('dbstructure_definition'          , __FILE__, 'advancedcontentfilter_dbstructure_definition');
 	DBStructure::performUpdate();
 
-	Logger::notice('installed advancedcontentfilter');
+	DI::logger()->notice('installed advancedcontentfilter');
 }
 
 /*
@@ -123,21 +120,22 @@ function advancedcontentfilter_prepare_body_content_filter(&$hook_data)
 		$expressionLanguage = new ExpressionLanguage\ExpressionLanguage();
 	}
 
-	if (!DI::userSession()->getLocalUserId()) {
+	$uid = $hook_data['uid'] ?? DI::userSession()->getLocalUserId();
+	if (!$uid) {
 		return;
 	}
 
 	$vars = advancedcontentfilter_get_filter_fields($hook_data['item']);
 
-	$rules = DI::cache()->get('rules_' . DI::userSession()->getLocalUserId());
+	$rules = DI::cache()->get('rules_' . $uid);
 	if (!isset($rules)) {
 		$rules = DBA::toArray(DBA::select(
 			'advancedcontentfilter_rules',
 			['name', 'expression', 'serialized'],
-			['uid' => DI::userSession()->getLocalUserId(), 'active' => true]
+			['uid' => $uid, 'active' => true]
 		));
 
-		DI::cache()->set('rules_' . DI::userSession()->getLocalUserId(), $rules);
+		DI::cache()->set('rules_' . $uid, $rules);
 	}
 
 	if ($rules) {
@@ -192,9 +190,30 @@ function advancedcontentfilter_init()
 	if (DI::args()->getArgc() > 1 && DI::args()->getArgv()[1] == 'api') {
 		$slim = \Slim\Factory\AppFactory::create();
 
-		require __DIR__ . '/src/middlewares.php';
+		/**
+		 * The routing middleware should be added before the ErrorMiddleware
+		 * Otherwise exceptions thrown from it will not be handled
+		 */
+		$slim->addRoutingMiddleware();
 
-		require __DIR__ . '/src/routes.php';
+		$slim->addErrorMiddleware(true, true, true, DI::logger());
+
+		// register routes
+		$slim->group('/advancedcontentfilter/api', function (\Slim\Routing\RouteCollectorProxy $app) {
+			$app->group('/rules', function (\Slim\Routing\RouteCollectorProxy $app) {
+				$app->get('', 'advancedcontentfilter_get_rules');
+				$app->post('', 'advancedcontentfilter_post_rules');
+
+				$app->get('/{id}', 'advancedcontentfilter_get_rules_id');
+				$app->put('/{id}', 'advancedcontentfilter_put_rules_id');
+				$app->delete('/{id}', 'advancedcontentfilter_delete_rules_id');
+			});
+
+			$app->group('/variables', function (\Slim\Routing\RouteCollectorProxy $app) {
+				$app->get('/{guid}', 'advancedcontentfilter_get_variables_guid');
+			});
+		});
+
 		$slim->run();
 
 		exit;
@@ -252,7 +271,7 @@ function advancedcontentfilter_content()
 				'rule_expression'   => DI::l10n()->t('Rule Expression'),
 				'cancel'            => DI::l10n()->t('Cancel'),
 			],
-			'$current_theme' => DI::app()->getCurrentTheme(),
+			'$current_theme' => DI::appHelper()->getCurrentTheme(),
 			'$rules' => DBA::toArray(DBA::select('advancedcontentfilter_rules', [], ['uid' => DI::userSession()->getLocalUserId()])),
 			'$form_security_token' => BaseModule::getFormSecurityToken()
 		]);

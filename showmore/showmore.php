@@ -8,7 +8,6 @@
  *
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\DI;
@@ -79,6 +78,7 @@ function get_body_length($body)
 	 * Checking any possible syntax of the style attribute with xpath is impossible
 	 * So we just get any element with a style attribute, and check them with a regexp
 	 */
+	/** @var DOMNodeList $xr */
 	$xr = $xpath->query('//*[@style]');
 	foreach ($xr as $node) {
 		if (preg_match('/.*display: *none *;.*/',$node->getAttribute('style'))) {

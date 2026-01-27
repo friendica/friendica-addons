@@ -6,10 +6,8 @@
  * Author: Keith Fernie <http://friendika.me4.it/profile/keith>
  */
 
-use Friendica\App;
 use Friendica\BaseModule;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
@@ -29,7 +27,7 @@ function public_server_install()
 
 function public_server_load_config(ConfigFileManager $loader)
 {
-	DI::app()->getConfigCache()->load($loader->loadAddonConfig('public_server'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	DI::appHelper()->getConfigCache()->load($loader->loadAddonConfig('public_server'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 function public_server_register_account($b)
@@ -48,7 +46,7 @@ function public_server_register_account($b)
 
 function public_server_cron($b)
 {
-	Logger::notice("public_server: cron start");
+	DI::logger()->notice("public_server: cron start");
 
 	$users = DBA::selectToArray('user', [], ["`account_expires_on` > ? AND `account_expires_on` < ?
 		AND `expire_notification_sent` <= ?", DBA::NULL_DATETIME, DateTimeFormat::utc('now + 5 days'), DBA::NULL_DATETIME]);
@@ -97,7 +95,7 @@ function public_server_cron($b)
 		}
 	}
 
-	Logger::notice("public_server: cron end");
+	DI::logger()->notice("public_server: cron end");
 }
 
 function public_server_enotify(array &$b)

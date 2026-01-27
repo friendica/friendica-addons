@@ -8,7 +8,6 @@
 
 use Friendica\Addon\s3_storage\src\S3Client;
 use Friendica\Addon\s3_storage\src\S3Config;
-use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\DI;
 

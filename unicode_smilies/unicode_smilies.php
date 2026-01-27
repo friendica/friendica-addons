@@ -7,7 +7,6 @@
  * Author: Matthias Ebers <https://loma.ml/profile/one>
  */
 
-use Friendica\App;
 use Friendica\Content\Smilies;
 use Friendica\Core\Hook;
 

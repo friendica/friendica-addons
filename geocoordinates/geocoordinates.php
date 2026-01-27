@@ -6,9 +6,7 @@
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
@@ -52,25 +50,25 @@ function geocoordinates_resolve_item(array &$item)
 	$s = DI::httpClient()->fetch('https://api.opencagedata.com/geocode/v1/json?q=' . $coords[0] . ',' . $coords[1] . '&key=' . $key . '&language=' . $language);
 
 	if (!$s) {
-		Logger::info('API could not be queried');
+		DI::logger()->info('API could not be queried');
 		return;
 	}
 
 	$data = json_decode($s);
 
 	if ($data->status->code != '200') {
-		Logger::info('API returned error ' . $data->status->code . ' ' . $data->status->message);
+		DI::logger()->info('API returned error ' . $data->status->code . ' ' . $data->status->message);
 		return;
 	}
 
 	if (($data->total_results == 0) || (count($data->results) == 0)) {
-		Logger::info('No results found for coordinates ' . $item['coord']);
+		DI::logger()->info('No results found for coordinates ' . $item['coord']);
 		return;
 	}
 
 	$item['location'] = $data->results[0]->formatted;
 
-	Logger::info('Got location for coordinates ' . $coords[0] . '-' . $coords[1] . ': ' . $item['location']);
+	DI::logger()->info('Got location for coordinates ' . $coords[0] . '-' . $coords[1] . ': ' . $item['location']);
 
 	if ($item['location'] != '') {
 		DI::cache()->set('geocoordinates:' . $language.':' . $coords[0] . '-' . $coords[1], $item['location']);

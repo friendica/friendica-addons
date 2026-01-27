@@ -6,7 +6,6 @@
  * Author: Mike Macgirvin <mike@macgirvin.com>
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\DI;
 

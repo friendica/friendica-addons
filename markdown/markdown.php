@@ -5,7 +5,6 @@
  * Version: 0.1
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
-use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Content\Text\Markdown;
 use Friendica\Core\Renderer;
@@ -27,7 +26,7 @@ function markdown_addon_settings(array &$data)
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/markdown/');
 	$html = Renderer::replaceMacros($t, [
-		'$enabled' => ['enabled', DI::l10n()->t('Enable Markdown parsing'), $enabled, DI::l10n()->t('If enabled, adds Markdown support to the Compose Post form.')],
+		'$enabled' => ['markdown-enabled', DI::l10n()->t('Enable Markdown parsing'), $enabled, DI::l10n()->t('If enabled, adds Markdown support to the Compose Post form.')],
 	]);
 
 	$data = [
@@ -43,7 +42,7 @@ function markdown_addon_settings_post(array &$b)
 		return;
 	}
 
-	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'markdown', 'enabled', intval($_POST['enabled']));
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'markdown', 'enabled', intval($_POST['markdown-enabled']));
 }
 
 function markdown_post_local_start(&$request) {

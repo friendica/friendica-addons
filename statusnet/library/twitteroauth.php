@@ -45,11 +45,11 @@ class TwitterOAuth
 	public $http_header;
 	/**
 	 * Contains the last HTTP request info
-	 * @var string
+	 * @var array
 	 */
 	public $http_info;
 
-	/** @var OAuthToken */
+	/** @var OAuthToken|null */
 	private $token;
 	/** @var OAuthConsumer */
 	private $consumer;
@@ -59,27 +59,27 @@ class TwitterOAuth
 	/**
 	 * Set API URLS
 	 */
-	function accessTokenURL()
+	public function accessTokenURL()
 	{
 		return 'https://api.twitter.com/oauth/access_token';
 	}
 
-	function authenticateURL()
+	public function authenticateURL()
 	{
 		return 'https://twitter.com/oauth/authenticate';
 	}
 
-	function authorizeURL()
+	public function authorizeURL()
 	{
 		return 'https://twitter.com/oauth/authorize';
 	}
 
-	function requestTokenURL()
+	public function requestTokenURL()
 	{
 		return 'https://api.twitter.com/oauth/request_token';
 	}
 
-	function __construct($consumer_key, $consumer_secret, $oauth_token = null, $oauth_token_secret = null)
+	public function __construct($consumer_key, $consumer_secret, $oauth_token = null, $oauth_token_secret = null)
 	{
 		$this->sha1_method = new OAuthSignatureMethod_HMAC_SHA1();
 		$this->consumer = new OAuthConsumer($consumer_key, $consumer_secret);
@@ -93,10 +93,10 @@ class TwitterOAuth
 	/**
 	 * Get a request_token
 	 *
-	 * @param callback $oauth_callback
+	 * @param callable $oauth_callback
 	 * @return array
 	 */
-	function getRequestToken($oauth_callback = null)
+	public function getRequestToken($oauth_callback = null)
 	{
 		$parameters = [];
 		if (!empty($oauth_callback)) {
@@ -112,11 +112,9 @@ class TwitterOAuth
 	/**
 	 * Get the authorize URL
 	 *
-	 * @param array $token
-	 * @param bool $sign_in_with_tumblr
 	 * @return string
 	 */
-	function getAuthorizeURL($token, $sign_in_with_twitter = TRUE)
+	public function getAuthorizeURL($token, $sign_in_with_twitter = TRUE)
 	{
 		if (is_array($token)) {
 			$token = $token['oauth_token'];
@@ -139,7 +137,7 @@ class TwitterOAuth
 	 *                "user_id" => "9436992",
 	 *                "screen_name" => "abraham")
 	 */
-	function getAccessToken($oauth_verifier = FALSE)
+	public function getAccessToken($oauth_verifier = FALSE)
 	{
 		$parameters = [];
 		if (!empty($oauth_verifier)) {
@@ -164,7 +162,7 @@ class TwitterOAuth
 	 *                "screen_name" => "abraham",
 	 *                "x_auth_expires" => "0")
 	 */
-	function getXAuthToken($username, $password)
+	public function getXAuthToken($username, $password)
 	{
 		$parameters = [];
 		$parameters['x_auth_username'] = $username;
@@ -184,7 +182,7 @@ class TwitterOAuth
 	 * @param array $parameters
 	 * @return mixed|string
 	 */
-	function get($url, $parameters = [])
+	public function get($url, $parameters = [])
 	{
 		$response = $this->oAuthRequest($url, 'GET', $parameters);
 		if ($this->format === 'json' && $this->decode_json) {
@@ -201,7 +199,7 @@ class TwitterOAuth
 	 * @param array $parameters
 	 * @return mixed|string
 	 */
-	function post($url, $parameters = [])
+	public function post($url, $parameters = [])
 	{
 		$response = $this->oAuthRequest($url, 'POST', $parameters);
 		if ($this->format === 'json' && $this->decode_json) {
@@ -218,7 +216,7 @@ class TwitterOAuth
 	 * @param array $parameters
 	 * @return mixed|string
 	 */
-	function delete($url, $parameters = [])
+	public function delete($url, $parameters = [])
 	{
 		$response = $this->oAuthRequest($url, 'DELETE', $parameters);
 		if ($this->format === 'json' && $this->decode_json) {
@@ -236,7 +234,7 @@ class TwitterOAuth
 	 * @param array $parameters
 	 * @return mixed|string
 	 */
-	function oAuthRequest($url, $method, $parameters)
+	public function oAuthRequest($url, $method, $parameters)
 	{
 		if (strrpos($url, 'https://') !== 0 && strrpos($url, 'http://') !== 0) {
 			$url = "{$this->host}{$url}.{$this->format}";
@@ -260,9 +258,9 @@ class TwitterOAuth
 	 * @param string $url
 	 * @param string $method
 	 * @param mixed  $postfields
-	 * @return string API results
+	 * @return string|bool|mixed API results
 	 */
-	function http($url, $method, $postfields = null)
+	public function http($url, $method, $postfields = null)
 	{
 		$this->http_info = [];
 		$ci = curl_init();
@@ -307,7 +305,7 @@ class TwitterOAuth
 	 * @param string $header
 	 * @return int
 	 */
-	function getHeader($ch, $header)
+	public function getHeader($ch, $header)
 	{
 		$i = strpos($header, ':');
 		if (!empty($i)) {

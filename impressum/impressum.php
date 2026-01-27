@@ -7,10 +7,8 @@
  * License: 3-clause BSD license
  */
 
-use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Core\Config\Util\ConfigFileManager;
@@ -21,7 +19,7 @@ function impressum_install()
 	Hook::register('load_config', 'addon/impressum/impressum.php', 'impressum_load_config');
 	Hook::register('about_hook', 'addon/impressum/impressum.php', 'impressum_show');
 	Hook::register('page_end', 'addon/impressum/impressum.php', 'impressum_footer');
-	Logger::notice("installed impressum Addon");
+	DI::logger()->notice("installed impressum Addon");
 }
 
 /**
@@ -56,7 +54,7 @@ function impressum_footer(string &$body)
 
 function impressum_load_config(ConfigFileManager $loader)
 {
-	DI::app()->getConfigCache()->load($loader->loadAddonConfig('impressum'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	DI::appHelper()->getConfigCache()->load($loader->loadAddonConfig('impressum'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
 
 function impressum_show(string &$body)

@@ -6,7 +6,6 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
 
 function convert_install() {
@@ -26,7 +25,7 @@ function convert_content() {
 	// @TODO Let's one day rewrite this to a modern composer package
 	include 'UnitConvertor.php';
 
-	class TP_Converter extends UnitConvertor
+	$conv = new class('en') extends UnitConvertor
 	{
 		public function __construct(string $lang = 'en')
 		{
@@ -43,7 +42,7 @@ function convert_content() {
 
 		private function findBaseUnit($from, $to)
 		{
-			while (list($skey, $sval) = each($this->bases)) {
+			foreach ($this->bases as $skey => $sval) {
 				if ($skey == $from || $to == $skey || in_array($to, $sval) || in_array($from, $sval)) {
 					return $skey;
 				}
@@ -63,7 +62,7 @@ function convert_content() {
 				$cells[] = $cell;
 
 				// We now have the base unit and value now lets produce the table;
-				while (list($key, $val) = each($this->bases[$base_unit])) {
+				foreach ($this->bases[$base_unit] as $val) {
 					$cell ['value'] = $this->convert($value, $from_unit, $val, $precision) . ' ' . $val;
 					$cell ['class']	= ($val == $from_unit || $val == $to_unit) ? 'framedred' : '';
 					$cells[] = $cell;
@@ -86,9 +85,7 @@ function convert_content() {
 
 			return $string;
 		}
-	}
-
-	$conv = new TP_Converter('en');
+	};
 
 	$conversions = [
 		'Temperature' => ['base'  => 'Celsius',
@@ -176,15 +173,15 @@ function convert_content() {
 		]
 	];
 
-	while (list($key, $val) = each($conversions)) {
+	foreach ($conversions as $key => $val) {
 		$conv->addConversion($val['base'], $val['conv']);
 		$list[$key][] = $val['base'];
-		while (list($ukey, $uval) = each($val['conv'])) {
+		foreach ($val['conv'] as $ukey => $uval) {
 			$list[$key][] = $ukey;
 		}
 	}
 
-	$o .= '<h3>Unit Conversions</h3>';
+	$o = '<h3>Unit Conversions</h3>';
 
 	if (isset($_POST['from_unit']) && isset($_POST['value'])) {
 		$o .= ($conv->getTable(intval($_POST['value']), $_POST['from_unit'], $_POST['to_unit'], 5)) . '</p>';
@@ -202,10 +199,9 @@ function convert_content() {
 	$o .= '<input name="value" type="text" id="value" value="' . $value . '" size="10" maxlength="10" />';
 	$o .= '<select name="from_unit" size="12">';
 
-	reset($list);
-	while(list($key, $val) = each($list)) {
+	foreach ($list as $key => $val) {
 		$o .=  "\n\t<optgroup label=\"$key\">";
-		while(list($ukey, $uval) = each($val)) {
+		foreach ($val as $ukey => $uval) {
 			$selected = (($uval == $_POST['from_unit']) ? ' selected="selected" ' : '');
 			$o .=  "\n\t\t<option value=\"$uval\" $selected >$uval</option>";
 		}

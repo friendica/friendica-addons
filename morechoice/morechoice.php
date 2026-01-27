@@ -8,7 +8,6 @@
  * Status: Deprecated
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\DI;
 

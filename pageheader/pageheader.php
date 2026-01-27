@@ -5,10 +5,9 @@
  * Version: 1.1
  * Author: Keith Fernie <http://friendika.me4.it/profile/keith>
  *         Hauke Altmann <https://snarl.de/profile/tugelblend>
- * 
+ *
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\DI;

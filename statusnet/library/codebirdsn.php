@@ -31,11 +31,10 @@ use Friendica\Core\System;
 /**
  * Define constants
  */
-$constants = explode(' ', 'OBJECT ARRAY JSON');
-foreach ($constants as $i => $id) {
-    $id = 'CODEBIRD_RETURNFORMAT_' . $id;
-    defined($id) or define($id, $i);
-}
+defined('CODEBIRD_RETURNFORMAT_ARRAY') or define('CODEBIRD_RETURNFORMAT_ARRAY', 0);
+defined('CODEBIRD_RETURNFORMAT_JSON') or define('CODEBIRD_RETURNFORMAT_JSON', 1);
+defined('CODEBIRD_RETURNFORMAT_OBJECT') or define('CODEBIRD_RETURNFORMAT_OBJECT', 2);
+
 $constants = array(
     'CURLE_SSL_CERTPROBLEM' => 58,
     'CURLE_SSL_CACERT' => 60,
@@ -55,6 +54,8 @@ unset($id);
  *
  * @package codebird
  * @subpackage codebird-php
+ *
+ * @method object statuses_update(array $postdata)
  */
 class CodebirdSN
 {
@@ -117,7 +118,7 @@ class CodebirdSN
      * Returns singleton class instance
      * Always use this method unless you're working with multiple authenticated users at once
      *
-     * @return Codebird The instance
+     * @return CodebirdSN The instance
      */
     public static function getInstance()
     {
@@ -421,6 +422,7 @@ class CodebirdSN
                 }
                 break;
             case CODEBIRD_RETURNFORMAT_OBJECT:
+                /** @var object $reply */
                 $reply->httpstatus = $httpstatus;
                 if ($httpstatus == 200) {
                     self::setBearerToken($reply->access_token);
@@ -491,7 +493,7 @@ class CodebirdSN
     /**
      * Generates a (hopefully) unique random string
      *
-     * @param int optional $length The length of the string to generate
+     * @param int $length The optional length of the string to generate
      *
      * @return string The random string
      */
@@ -506,9 +508,9 @@ class CodebirdSN
     /**
      * Generates an OAuth signature
      *
-     * @param string          $httpmethod Usually either 'GET' or 'POST' or 'DELETE'
-     * @param string          $method     The API method to call
-     * @param array  optional $params     The API call parameters, associative
+     * @param string $httpmethod Usually either 'GET' or 'POST' or 'DELETE'
+     * @param string $method     The API method to call
+     * @param array  $params     optional The API call parameters, associative
      *
      * @return string Authorization HTTP header
      */
@@ -762,13 +764,13 @@ class CodebirdSN
      * @param string $method  The API method to call
      * @param array  $params  The parameters to send along
      *
-     * @return void
+     * @return string
      */
     protected function _buildMultipart($method, $params)
     {
         // well, files will only work in multipart methods
         if (! $this->_detectMultipart($method)) {
-            return;
+            return '';
         }
 
         // only check specific parameters
@@ -783,10 +785,12 @@ class CodebirdSN
         );
         // method might have files?
         if (! in_array($method, array_keys($possible_files))) {
-            return;
+            return '';
         }
 
         $possible_files = explode(' ', $possible_files[$method]);
+
+        $data = '';
 
         $multipart_border = '--------------------' . $this->_nonce();
         $multipart_request = '';
@@ -794,7 +798,6 @@ class CodebirdSN
             // is it an array?
             if (is_array($value)) {
                 throw new \Exception('Using URL-encoded parameters is not supported for uploading media.');
-                continue;
             }
 
             // check for filenames
@@ -871,12 +874,12 @@ class CodebirdSN
     /**
      * Calls the API using cURL
      *
-     * @param string          $httpmethod      The HTTP method to use for making the request
-     * @param string          $method          The API method to call
-     * @param string          $method_template The templated API method to call
-     * @param array  optional $params          The parameters to send along
-     * @param bool   optional $multipart       Whether to use multipart/form-data
-     * @param bool   optional $app_only_auth   Whether to use app-only bearer authentication
+     * @param string $httpmethod      The HTTP method to use for making the request
+     * @param string $method          The API method to call
+     * @param string $method_template The templated API method to call
+     * @param array  $params          optional The parameters to send along
+     * @param bool   $multipart       optional Whether to use multipart/form-data
+     * @param bool   $app_only_auth   optional Whether to use app-only bearer authentication
      *
      * @return mixed The API reply, encoded in the set return_format
      */
@@ -918,7 +921,7 @@ class CodebirdSN
             $authorization = 'Authorization: Bearer ' . self::$_oauth_bearer_token;
         }
         $request_headers = array();
-        if (isset($authorization)) {
+        if ($authorization !== '') {
             $request_headers[] = $authorization;
             $request_headers[] = 'Expect:';
         }
@@ -959,6 +962,7 @@ class CodebirdSN
         $httpstatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $reply = $this->_parseApiReply($method_template, $reply);
         if ($this->_return_format == CODEBIRD_RETURNFORMAT_OBJECT) {
+            /** @var object $reply */
             $reply->httpstatus = $httpstatus;
         } elseif ($this->_return_format == CODEBIRD_RETURNFORMAT_ARRAY) {
             $reply['httpstatus'] = $httpstatus;
@@ -972,7 +976,7 @@ class CodebirdSN
      * @param string $method The method that has been called
      * @param string $reply  The actual reply, JSON-encoded or URL-encoded
      *
-     * @return array|object The parsed reply
+     * @return string|array|object The parsed reply
      */
     protected function _parseApiReply($method, $reply)
     {

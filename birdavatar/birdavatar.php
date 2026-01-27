@@ -6,9 +6,7 @@
  * Author: Fabio <https://kirgroup.com/profile/fabrixxm>
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
@@ -28,7 +26,7 @@ function birdavatar_install()
 	Hook::register('addon_settings', __FILE__, 'birdavatar_addon_settings');
 	Hook::register('addon_settings_post', __FILE__, 'birdavatar_addon_settings_post');
 
-	Logger::info('registered birdavatar');
+	DI::logger()->info('registered birdavatar');
 }
 
 /**

@@ -7,9 +7,7 @@
  * Author: Tony Baldwin <https://free-haven.org/profile/tony>
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
@@ -29,7 +27,7 @@ function planets_install()
 	Hook::register('addon_settings', 'addon/planets/planets.php', 'planets_settings');
 	Hook::register('addon_settings_post', 'addon/planets/planets.php', 'planets_settings_post');
 
-	Logger::notice("installed planets");
+	DI::logger()->notice("installed planets");
 }
 
 /**
@@ -40,7 +38,7 @@ function planets_install()
  */
 function planets_post_hook(&$item)
 {
-	Logger::notice('planets invoked');
+	DI::logger()->notice('planets invoked');
 
 	if (!DI::userSession()->getLocalUserId()) {
 		/* non-zero if this is a logged in user of this system */

@@ -2690,10 +2690,10 @@ class PHPMailer
             if (!is_readable($path)) {
                 throw new phpmailerException($this->lang('file_open') . $path, self::STOP_CONTINUE);
             }
-            $magic_quotes = get_magic_quotes_runtime();
+            $magic_quotes = false;
             if ($magic_quotes) {
                 if (version_compare(PHP_VERSION, '5.3.0', '<')) {
-                    set_magic_quotes_runtime(false);
+                    //set_magic_quotes_runtime(false);
                 } else {
                     //Doesn't exist in PHP 5.4, but we don't need to check because
                     //get_magic_quotes_runtime always returns false in 5.4+
@@ -2705,7 +2705,7 @@ class PHPMailer
             $file_buffer = $this->encodeString($file_buffer, $encoding);
             if ($magic_quotes) {
                 if (version_compare(PHP_VERSION, '5.3.0', '<')) {
-                    set_magic_quotes_runtime($magic_quotes);
+                    //set_magic_quotes_runtime($magic_quotes);
                 } else {
                     ini_set('magic_quotes_runtime', $magic_quotes);
                 }
@@ -3286,7 +3286,7 @@ class PHPMailer
         $result = 'localhost.localdomain';
         if (!empty($this->Hostname)) {
             $result = $this->Hostname;
-        } elseif (isset($_SERVER) and array_key_exists('SERVER_NAME', $_SERVER) and !empty($_SERVER['SERVER_NAME'])) {
+        } elseif (!empty($_SERVER['SERVER_NAME'])) {
             $result = $_SERVER['SERVER_NAME'];
         } elseif (function_exists('gethostname') && gethostname() !== false) {
             $result = gethostname();

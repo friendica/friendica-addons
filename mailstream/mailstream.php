@@ -8,7 +8,6 @@
 
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Core\System;
 use Friendica\Core\Worker;
@@ -32,7 +31,7 @@ function mailstream_install()
 	Hook::register('post_remote_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
 	Hook::register('mailstream_send_hook', 'addon/mailstream/mailstream.php', 'mailstream_send_hook');
 
-	Logger::info("installed mailstream");
+	DI::logger()->info("installed mailstream");
 }
 
 /**
@@ -74,6 +73,68 @@ function mailstream_addon_admin_post()
 }
 
 /**
+ * Creates content for the "References" header.  When the message is
+ * part of a thread, this contains a handful of message IDs of other
+ * messages in the thread.  This should provide enough clues for mail
+ * agents to thread messages together, even if some messages or
+ * references are missing.  See https://www.jwz.org/doc/threading.html
+ *
+ * According to RFC 1036, these references should be in forwards
+ * chronological order separated by spaces.  That is, the first
+ * message ID is the top-level post, then the first-level reply, then
+ * the second-level reply, and so on, ending in the direct parent.
+ * The RFC allows for message IDs to be omitted for length.  To save
+ * database queries we only include the three nearest replies in the
+ * chain, plus the top-level post.
+ *
+ * @param array $item content of the item
+ *
+ * @return string the set of references as a space-separated string
+ */
+function mailstream_generate_references(array $item): string
+{
+	$ancestor_message_ids = [];
+
+	$top_level_post_uri = "";
+	if (array_key_exists("parent-uri", $item)) {
+		$top_level_post_uri = $item["parent-uri"];
+	}
+
+	$ancestor_uri = "";
+	if (array_key_exists("thr-parent", $item)) {
+		$ancestor_uri = $item["thr-parent"];
+	}
+	while ($ancestor_uri && count($ancestor_message_ids) < 3) {
+		if ($ancestor_uri == $top_level_post_uri) {
+			break;
+		}
+		$ancestor_message_id = mailstream_generate_id($ancestor_uri);
+		array_unshift($ancestor_message_ids, $ancestor_message_id);
+
+		$ancestor = Post::selectFirst([], array("uid" => $item["uid"], "uri" => $ancestor_uri));
+		if (empty($ancestor)) {
+			DI::logger()->error("Could not retrieve ancestor post", ["uri" => $item["uri"], "uid" => $item["uid"], "ancestor-uri" => $ancestor_uri]);
+			break;
+		}
+		if (!array_key_exists("thr-parent", $ancestor)) {
+			break;
+		}
+		$ancestor_uri = $ancestor["thr-parent"];
+	}
+
+	if ($top_level_post_uri) {
+		$top_level_post_message_id = mailstream_generate_id($top_level_post_uri);
+		array_unshift($ancestor_message_ids, $top_level_post_message_id);
+	}
+
+	if (empty($ancestor_message_ids)) {
+		DI::logger()->error('cannot generate references for item with no parent', ["uri" => $item['uri']]);
+		return "";
+	}
+	return implode(" ", $ancestor_message_ids);
+}
+
+/**
  * Creates a message ID for a post URI in accordance with RFC 1036
  * See also http://www.jwz.org/doc/mid.html
  *
@@ -86,7 +147,7 @@ function mailstream_generate_id(string $uri): string
 	$host = DI::baseUrl()->getHost();
 	$resource = hash('md5', $uri);
 	$message_id = "<" . $resource . "@" . $host . ">";
-	Logger::debug('generated message ID', ['id' => $message_id, 'uri' => $uri]);
+	DI::logger()->debug('generated message ID', ['id' => $message_id, 'uri' => $uri]);
 	return $message_id;
 }
 
@@ -95,20 +156,20 @@ function mailstream_send_hook(array $data)
 	$criteria = array('uid' => $data['uid'], 'contact-id' => $data['contact-id'], 'uri' => $data['uri']);
 	$item = Post::selectFirst([], $criteria);
 	if (empty($item)) {
-		Logger::error('could not find item');
+		DI::logger()->error('could not find item');
 		return;
 	}
 
 	$user = User::getById($item['uid']);
 	if (empty($user)) {
-		Logger::error('could not find user', ['uid' => $item['uid']]);
+		DI::logger()->error('could not find user', ['uid' => $item['uid']]);
 		return;
 	}
 
 	if (!mailstream_send($data['message_id'], $item, $user)) {
-		Logger::debug('send failed, will retry', $data);
+		DI::logger()->debug('send failed, will retry', $data);
 		if (!Worker::defer()) {
-			Logger::error('failed and could not defer', $data);
+			DI::logger()->error('failed and could not defer', $data);
 		}
 	}
 }
@@ -124,32 +185,32 @@ function mailstream_send_hook(array $data)
 function mailstream_post_hook(array &$item)
 {
 	if ($item['uid'] === 0) {
-		Logger::debug('mailstream: root user, skipping item ' . $item['id']);
+		DI::logger()->debug('mailstream: root user, skipping item ' . $item['id']);
 		return;
 	}
 	if (!DI::pConfig()->get($item['uid'], 'mailstream', 'enabled')) {
-		Logger::debug('mailstream: not enabled.', ['item' => $item['id'], ' uid ' => $item['uid']]);
+		DI::logger()->debug('mailstream: not enabled.', ['item' => $item['id'], ' uid ' => $item['uid']]);
 		return;
 	}
 	if (!$item['contact-id']) {
-		Logger::debug('no contact-id', ['item' => $item['id']]);
+		DI::logger()->debug('no contact-id', ['item' => $item['id']]);
 		return;
 	}
 	if (!$item['uri']) {
-		Logger::debug('no uri', ['item' => $item['id']]);
+		DI::logger()->debug('no uri', ['item' => $item['id']]);
 		return;
 	}
 	if ($item['verb'] == Activity::ANNOUNCE) {
-		Logger::debug('ignoring announce', ['item' => $item['id']]);
+		DI::logger()->debug('ignoring announce', ['item' => $item['id']]);
 		return;
 	}
 	if (DI::pConfig()->get($item['uid'], 'mailstream', 'nolikes')) {
 		if ($item['verb'] == Activity::LIKE) {
-			Logger::debug('ignoring like', ['item' => $item['id']]);
+			DI::logger()->debug('ignoring like', ['item' => $item['id']]);
 			return;
 		}
 		if ($item['verb'] == Activity::DISLIKE) {
-			Logger::debug('ignoring dislike', ['item' => $item['id']]);
+			DI::logger()->debug('ignoring dislike', ['item' => $item['id']]);
 			return;
 		}
 	}
@@ -180,7 +241,7 @@ function mailstream_post_hook(array &$item)
 function mailstream_do_images(array &$item, array &$attachments)
 {
 	if (!DI::pConfig()->get($item['uid'], 'mailstream', 'attachimg')) {
-		return;
+		return $attachments;
 	}
 
 	$attachments = [];
@@ -200,7 +261,7 @@ function mailstream_do_images(array &$item, array &$attachments)
 		try {
 			$curlResult = DI::httpClient()->get($url, HttpClientAccept::DEFAULT, [HttpClientOptions::COOKIEJAR => $cookiejar]);
 			if (!$curlResult->isSuccess()) {
-				Logger::debug('mailstream: fetch image url failed', [
+				DI::logger()->debug('mailstream: fetch image url failed', [
 					'url' => $url,
 					'item_id' => $item['id'],
 					'return_code' => $curlResult->getReturnCode()
@@ -208,7 +269,7 @@ function mailstream_do_images(array &$item, array &$attachments)
 				continue;
 			}
 		} catch (InvalidArgumentException $e) {
-			Logger::error('exception fetching url', ['url' => $url, 'item_id' => $item['id']]);
+			DI::logger()->error('exception fetching url', ['url' => $url, 'item_id' => $item['id']]);
 			continue;
 		}
 		$attachments[$url] = [
@@ -309,7 +370,7 @@ function mailstream_subject(array $item): string
 	}
 	$contact = Contact::selectFirst([], ['id' => $item['contact-id'], 'uid' => $item['uid']]);
 	if (!DBA::isResult($contact)) {
-		Logger::error('no contact', [
+		DI::logger()->error('no contact', [
 			'item' => $item['id'],
 			'plink' => $item['plink'],
 			'contact id' => $item['contact-id'],
@@ -351,16 +412,16 @@ function mailstream_subject(array $item): string
 function mailstream_send(string $message_id, array $item, array $user): bool
 {
 	if (!is_array($item)) {
-		Logger::error('item is empty', ['message_id' => $message_id]);
+		DI::logger()->error('item is empty', ['message_id' => $message_id]);
 		return false;
 	}
 
 	if (!$item['visible']) {
-		Logger::debug('item not yet visible', ['item uri' => $item['uri']]);
+		DI::logger()->debug('item not yet visible', ['item uri' => $item['uri']]);
 		return false;
 	}
 	if (!$message_id) {
-		Logger::error('no message ID supplied', ['item uri' => $item['uri'], 'user email' => $user['email']]);
+		DI::logger()->error('no message ID supplied', ['item uri' => $item['uri'], 'user email' => $user['email']]);
 		return true;
 	}
 
@@ -378,7 +439,7 @@ function mailstream_send(string $message_id, array $item, array $user): bool
 	if (!$address) {
 		$address = $user['email'];
 	}
-	$mail = new PHPmailer();
+	$mail = new PHPMailer();
 	try {
 		$mail->XMailer = 'Friendica Mailstream Addon';
 		$mail->SetFrom($frommail, mailstream_sender($item));
@@ -387,6 +448,7 @@ function mailstream_send(string $message_id, array $item, array $user): bool
 		$mail->Subject = mailstream_subject($item);
 		if ($item['thr-parent'] != $item['uri']) {
 			$mail->addCustomHeader('In-Reply-To: ' . mailstream_generate_id($item['thr-parent']));
+			$mail->addCustomHeader('References: ' . mailstream_generate_references($item));
 		}
 		$mail->addCustomHeader('X-Friendica-Mailstream-URI: ' . $item['uri']);
 		if ($item['plink']) {
@@ -418,15 +480,15 @@ function mailstream_send(string $message_id, array $item, array $user): bool
 		if (!$mail->Send()) {
 			throw new Exception($mail->ErrorInfo);
 		}
-		Logger::debug('sent message', [
+		DI::logger()->debug('sent message', [
 			'message ID' => $mail->MessageID,
 			'subject' => $mail->Subject,
 			'address' => $address
 		]);
 	} catch (phpmailerException $e) {
-		Logger::debug('PHPMailer exception sending message', ['id' => $message_id, 'error' => $e->errorMessage()]);
+		DI::logger()->debug('PHPMailer exception sending message', ['id' => $message_id, 'error' => $e->errorMessage()]);
 	} catch (Exception $e) {
-		Logger::debug('exception sending message', ['id' => $message_id, 'error' => $e->getMessage()]);
+		DI::logger()->debug('exception sending message', ['id' => $message_id, 'error' => $e->getMessage()]);
 	}
 
 	return true;

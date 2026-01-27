@@ -217,7 +217,7 @@ class Services_Libravatar
      *
      * @param array $options Array of options for getUrl()
      *
-     * @return void
+     * @return array
      * @throws Exception When an invalid option is used
      */
     protected function checkOptionsArray($options)
@@ -361,7 +361,7 @@ class Services_Libravatar
     protected function domainGet($identifier)
     {
         if ($identifier === null) {
-            return null;
+            return '';
         }
 
         // What are we, email or openid? Split ourself up and get the
@@ -401,9 +401,8 @@ class Services_Libravatar
      */
     protected function srvGet($domain, $https = false)
     {
-
         // Are we going secure? Set up a fallback too.
-        if (isset($https) && $https === true) {
+        if ($https === true) {
             $subdomain = '_avatars-sec._tcp.';
             $fallback  = 'seccdn.';
         } else {
@@ -426,6 +425,7 @@ class Services_Libravatar
 
         $top = $srv[0];
         $sum = 0;
+        $pri = [];
 
         // Try to adhere to RFC2782's weighting algorithm, page 3
         // "arrange all SRV RRs (that have not been ordered yet) in any order,
@@ -462,6 +462,8 @@ class Services_Libravatar
                 return $v['target'];
             }
         }
+
+        return '';
     }
 
     /**

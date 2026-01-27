@@ -19,9 +19,7 @@
  *
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
@@ -41,7 +39,7 @@ function randplace_install()
 	Hook::register('addon_settings', 'addon/randplace/randplace.php', 'randplace_settings');
 	Hook::register('addon_settings_post', 'addon/randplace/randplace.php', 'randplace_settings_post');
 
-	Logger::notice("installed randplace");
+	DI::logger()->notice("installed randplace");
 }
 
 function randplace_uninstall()
@@ -51,7 +49,7 @@ function randplace_uninstall()
 	 *
 	 * Except hooks, they are all unregistered automatically and don't need to be unregistered manually.
 	 */
-	Logger::notice("removed randplace");
+	DI::logger()->notice("removed randplace");
 }
 
 function randplace_post_hook(&$item)
@@ -62,7 +60,7 @@ function randplace_post_hook(&$item)
 	 *      - A status post by a profile owner
 	 *      - The profile owner must have allowed our addon
 	 */
-	Logger::notice('randplace invoked');
+	DI::logger()->notice('randplace invoked');
 
 	if (!DI::userSession()->getLocalUserId()) {
 		/* non-zero if this is a logged in user of this system */

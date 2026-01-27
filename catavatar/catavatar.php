@@ -6,11 +6,8 @@
  * Author: Fabio <https://kirgroup.com/profile/fabrixxm>
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
-use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Contact;
@@ -29,7 +26,7 @@ function catavatar_install()
 	Hook::register('addon_settings', __FILE__, 'catavatar_addon_settings');
 	Hook::register('addon_settings_post', __FILE__, 'catavatar_addon_settings_post');
 
-	Logger::notice('registered catavatar');
+	DI::logger()->notice('registered catavatar');
 }
 
 /**

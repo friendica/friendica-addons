@@ -6,9 +6,7 @@
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\DI;
 
 function leistungsschutzrecht_install()
@@ -149,7 +147,7 @@ function leistungsschutzrecht_is_member_site(string $url): bool
 	$cleanedurlpart = explode('%', $urldata['host']);
 
 	$hostname = explode('.', $cleanedurlpart[0]);
-	if (empty($hostname)) {
+	if ($hostname === false || $hostname === '') {
 		return false;
 	}
 
@@ -169,7 +167,7 @@ function leistungsschutzrecht_cron($b)
 	if ($last) {
 		$next = $last + 86400;
 		if ($next > time()) {
-			Logger::notice('poll intervall not reached');
+			DI::logger()->notice('poll intervall not reached');
 			return;
 		}
 	}

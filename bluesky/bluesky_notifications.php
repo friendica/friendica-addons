@@ -1,6 +1,6 @@
 <?php
 
-use Friendica\Core\Logger;
+use Friendica\DI;
 
 function bluesky_notifications_run($argv, $argc)
 {
@@ -10,7 +10,7 @@ function bluesky_notifications_run($argv, $argc)
 		return;
 	}
 
-	Logger::notice('importing notifications - start', ['user' => $argv[1]]);
+	DI::logger()->notice('importing notifications - start', ['user' => $argv[1]]);
 	bluesky_fetch_notifications($argv[1]);
-	Logger::notice('importing notifications - done', ['user' => $argv[1]]);
+	DI::logger()->notice('importing notifications - done', ['user' => $argv[1]]);
 }

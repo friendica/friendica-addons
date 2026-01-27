@@ -8,10 +8,8 @@
  * Author: Cat Gray <https://free-haven.org/profile/catness>
  */
 
-use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Model\Item;
@@ -123,6 +121,10 @@ function ljpost_send(array &$b)
 		return;
 	}
 
+	if (Item::isGroupPost($b['uri-id'])) {
+		return;
+	}
+
 	if ($b['parent'] != $b['id']) {
 		return;
 	}
@@ -201,12 +203,14 @@ function ljpost_send(array &$b)
 </methodCall>
 EOT;
 
-		Logger::debug('ljpost: data: ' . $xml);
+		DI::logger()->debug('ljpost: data: ' . $xml);
+
+		$x = '';
 
 		if ($lj_blog !== 'test') {
 			$x = DI::httpClient()->post($lj_blog, $xml, ['Content-Type' => 'text/xml'])->getBodyString();
 		}
 
-		Logger::info('posted to livejournal: ' . ($x) ? $x : '');
+		DI::logger()->info('posted to livejournal: ' . $x);
 	}
 }

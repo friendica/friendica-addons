@@ -6,10 +6,8 @@
  * Author: Tony Baldwin <https://free-haven.org/u/tony>
  */
 
-use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
@@ -131,13 +129,17 @@ function libertree_post_local(array &$b)
 
 function libertree_send(array &$b)
 {
-	Logger::notice('libertree_send: invoked');
+	DI::logger()->notice('libertree_send: invoked');
 
 	if ($b['deleted'] || ($b['private'] == Item::PRIVATE) || ($b['created'] !== $b['edited'])) {
 		return;
 	}
 
 	if (! strstr($b['postopts'], 'libertree')) {
+		return;
+	}
+
+	if (Item::isGroupPost($b['uri-id'])) {
 		return;
 	}
 
@@ -197,6 +199,6 @@ function libertree_send(array &$b)
 		];
 
 		$result = DI::httpClient()->post($ltree_blog, $params)->getBodyString();
-		Logger::notice('libertree: ' . $result);
+		DI::logger()->notice('libertree: ' . $result);
 	}
 }

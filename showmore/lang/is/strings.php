@@ -1,8 +1,7 @@
 <?php
 
-$a->strings["\"Show more\" Settings"] = "\"Show more\" stillingar";
-$a->strings["Enable Show More"] = "Kveikja á Show More";
-$a->strings["Cutting posts after how much characters"] = "";
-$a->strings["Submit"] = "Senda inn";
-$a->strings["Show More Settings saved."] = "Sýna ";
-$a->strings["show more"] = "sýna meira";
+if(! function_exists("string_plural_select_is")) {
+function string_plural_select_is($n){
+	$n = intval($n);
+	return intval($n % 10 != 1 || $n % 100 == 11);
+}}

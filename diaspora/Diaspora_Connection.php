@@ -33,7 +33,6 @@ class Diaspora_Connection {
 		}
 
 		$this->cookiejar = tempnam(System::getTempPath(), 'cookies');
-		return $this;
 	}
 
 	public function __destruct() {

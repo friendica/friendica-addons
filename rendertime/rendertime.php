@@ -7,7 +7,6 @@
  *
  */
 
-use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\DI;
@@ -60,7 +59,7 @@ function rendertime_page_end(string &$o)
 
 	if (DI::userSession()->isSiteAdmin() && (($_GET['mode'] ?? '') != 'minimal') && !DI::mode()->isMobile() && !DI::mode()->isMobile() && !$ignored) {
 
-		$o = $o . '<div class="renderinfo">' . DI::l10n()->t("Database: %s/%s, Network: %s, Rendering: %s, Session: %s, I/O: %s, Other: %s, Total: %s",
+		$o = $o . '<div class="renderinfo" aria-hidden="true">' . DI::l10n()->t("Database: %s/%s, Network: %s, Rendering: %s, Session: %s, I/O: %s, Other: %s, Total: %s",
 				round($profiler->get('database') - $profiler->get('database_write'), 3),
 				round($profiler->get('database_write'), 3),
 				round($profiler->get('network'), 2),
