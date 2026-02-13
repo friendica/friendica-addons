@@ -1,3 +1,15 @@
+/* fix positioning if more than one jot tool */
+.jotplugins > div,
+#profile-jot-plugin-wrapper > div {
+	float: left;
+}
+	.jotplugins::after,
+	#profile-jot-plugin-wrapper::after {
+		content: '';
+		display: block;
+		clear: both;
+	}
+
 #profile-smiley-wrapper {
 	float: left;
 	margin-left: 15px;
@@ -33,17 +45,37 @@
 	margin-right: 18px;
 }
 
-table.smiley-preview {
+div.smiley-preview {
 	background-color: #FFF;
 	box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.7);
+	max-height: 200px;
+	overflow: auto;
 }
 
-table.smiley-preview img.smiley {
+div.smiley-preview img.smiley {
 	max-height: 25px;
 	max-width: 25px;
 	cursor: pointer;
+	vertical-align: baseline;
 }
 
-table.smiley-preview td {
+div.smiley-preview > span {
 	cursor: pointer;
+	font-size: 24px;
+	padding: 5px;
+	text-align: center;
+	width: 45px;
+	height: 45px;
+	line-height: 45px;
+	float: left;
+	display: block;
 }
+	div.smiley-preview > span:hover,
+	div.smiley-preview > span:focus {
+		background-color: rgba(0,0,0,.1);
+	}
+	div.smiley-preview::after {
+		content: '';
+		display: block;
+		clear: both;
+	}
