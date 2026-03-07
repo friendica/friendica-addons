@@ -30,7 +30,7 @@
                 timestamp: Date.now()
             }));
 
-            let userDesc = existingDesc.trim() || "Bildbeschreibung";
+            let userDesc = existingDesc.trim() || "Description";
             return `[img]${fileName}|${userDesc}[/img]`;
         });
     };
@@ -41,7 +41,7 @@
             const data = localStorage.getItem(`qp_${fileName}`);
             if (data) {
                 const parsed = JSON.parse(data);
-                const finalDesc = (desc === "Bildbeschreibung") ? "" : desc;
+                const finalDesc = (desc === "Description") ? "" : desc;
                 return `[url=${parsed.url}][img=${parsed.img}]${finalDesc}[/img][/url]`;
             }
             return match;
