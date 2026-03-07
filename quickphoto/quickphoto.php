@@ -1,32 +1,29 @@
 <?php
 /**
  * Name: QuickPhoto
- * Description: Client- and server-side reconstruction for maximum compatibility.
- * Version: 1.1
+ * Description: Replaces the BBCode for inserted images and provides a placeholder for image descriptions.
+ * Version: 1.2
  * Author: Matthias Ebers <https://loma.ml/profile/feb>
  */
 
-use Friendica\Core\Hook;
-
 function quickphoto_install() {
-    Hook::register('page_header', 'addon/quickphoto/quickphoto.php', 'quickphoto_header');
-    // Emergency hook: If the JS fails during transmission
-    Hook::register('post_post', 'addon/quickphoto/quickphoto.php', 'quickphoto_post_hook');
+    Friendica\Core\Hook::register('page_header', 'addon/quickphoto/quickphoto.php', 'quickphoto_header');
+    Friendica\Core\Hook::register('post_post', 'addon/quickphoto/quickphoto.php', 'quickphoto_post_hook');
 }
 
 function quickphoto_header(&$header) {
-    $header .= '<script src="/addon/quickphoto/quickphoto.js?v=5.0"></script>' . "\n";
-}
+    $desc_label = 'Image description';
 
-/**
- * Processes the text directly upon receipt on the server
- */
-function quickphoto_post_hook(&$item) {
-    if (!isset($item['body'])) {
-        return;
+    if (function_exists('t')) {
+        $desc_label = t('Image description');
     }
 
-    // If the JS couldn't do the job, we have the problem here
-    // that we don't have LocalStorage. That's why the JS is primarily responsible here.
-    // We'll leave this hook as a placeholder for future server validations.
+    $js_label = addslashes($desc_label);
+
+    $header .= "\n" . '<script type="text/javascript">var qp_i18n = { imageDesc: "' . $js_label . '" };</script>';
+    $header .= "\n" . '<script type="text/javascript" src="/addon/quickphoto/quickphoto.js?v=5.1"></script>' . "\n";
+}
+
+function quickphoto_post_hook(&$item) {
+    // Placeholder
 }
