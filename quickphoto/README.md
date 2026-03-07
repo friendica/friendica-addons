@@ -6,7 +6,7 @@ QuickPhoto is a Friendica addon that simplifies working with images in the edito
 
 ## Features
 
-- **Automatic Simplification:** Converts "monster BBCodes" like `[url=...][img=...]...[/img][/url]` instantly into the handy format `[img]filename description[/img]`.
+- **Automatic Simplification:** Converts "monster BBCodes" like `[url=...][img=...]...[/img][/url]` instantly into the handy format `[img]|filename description[/img]`.
 - **Intelligent Reconstruction:** Before submitting or previewing, the shorthand code is quickly converted back into the original, valid Friendica BBCode.
 - **Real-Time Processing:** Responds immediately to drag & drop, copy & paste, and inserting images via editor buttons.
 - **Focus Safety:** Cursor management ensures the focus remains stable during automatic conversion while typing.
