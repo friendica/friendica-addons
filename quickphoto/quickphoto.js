@@ -2,6 +2,8 @@
     const monsterPattern = /\[url=(.*?)\]\[img=(.*?)\](.*?)\[\/img\]\[\/url\]/gi;
     let throttleTimer;
 
+    const i18nDesc = (window.qp_i18n && window.qp_i18n.imageDesc) ? window.qp_i18n.imageDesc : "Image description";
+
     const cleanupOldEntries = () => {
         const now = Date.now();
         const twelveHours = 12 * 60 * 60 * 1000;
@@ -30,7 +32,7 @@
                 timestamp: Date.now()
             }));
 
-            let userDesc = existingDesc.trim() || "Description";
+            let userDesc = existingDesc.trim() || i18nDesc;
             return `[img]${fileName}|${userDesc}[/img]`;
         });
     };
@@ -41,7 +43,7 @@
             const data = localStorage.getItem(`qp_${fileName}`);
             if (data) {
                 const parsed = JSON.parse(data);
-                const finalDesc = (desc === "Description") ? "" : desc;
+                const finalDesc = (desc === i18nDesc) ? "" : desc;
                 return `[url=${parsed.url}][img=${parsed.img}]${finalDesc}[/img][/url]`;
             }
             return match;
@@ -110,7 +112,6 @@
 
     setInterval(() => {
         if (document.hidden) return;
-
         const textareas = document.querySelectorAll('textarea');
         if (textareas.length === 0) return;
 
