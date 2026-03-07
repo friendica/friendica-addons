@@ -6,17 +6,16 @@
  * Author: Matthias Ebers <https://loma.ml/profile/feb>
  */
 
+use Friendica\Core\Hook;
+use Friendica\DI;
+
 function quickphoto_install() {
-    Friendica\Core\Hook::register('page_header', 'addon/quickphoto/quickphoto.php', 'quickphoto_header');
-    Friendica\Core\Hook::register('post_post', 'addon/quickphoto/quickphoto.php', 'quickphoto_post_hook');
+    Hook::register('page_header', 'addon/quickphoto/quickphoto.php', 'quickphoto_header');
+    Hook::register('post_post', 'addon/quickphoto/quickphoto.php', 'quickphoto_post_hook');
 }
 
 function quickphoto_header(&$header) {
-    $desc_label = 'Image description';
-
-    if (function_exists('t')) {
-        $desc_label = t('Image description');
-    }
+    $desc_label = DI::l10n()->t('Image description');
 
     $js_label = addslashes($desc_label);
 
