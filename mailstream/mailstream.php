@@ -166,7 +166,35 @@ function mailstream_send_hook(array $data)
 		return;
 	}
 
-	if (!mailstream_send($data['message_id'], $item, $user)) {
+	$author = DBA::selectFirst('contact', ['nick', 'blocked', 'uri-id'], ['id' => $data['author-id'], 'self' => false]);
+	if (!DBA::isResult($author)) {
+		DI::logger()->error('could not find author', ['guid' => $item['guid'], 'author-id' => $data['author-id']]);
+		return;
+	}
+	if ($author['blocked']) {
+		DI::logger()->info('author is blocked', ['guid' => $item['guid'], 'author-id' => $data['author-id']]);
+		return;
+	}
+	$collapsed = false;
+	$user_contact = DBA::selectFirst('user-contact', ['cid', 'blocked', 'ignored', 'collapsed'], ['uid' => $item['uid'], 'uri-id' => $item['author-uri-id']]);
+	if (!DBA::isResult($user_contact)) {
+		$user_contact = DBA::selectFirst('user-contact', ['cid', 'blocked', 'ignored', 'collapsed'], ['uid' => $item['uid'], 'cid' => $item['author-id']]);
+	}
+	if (DBA::isResult($user_contact)) {
+		if ($user_contact['blocked']) {
+			DI::logger()->info('author is blocked', ['guid' => $item['guid'], 'cid' => $user_contact['cid']]);
+			return;
+		}
+		if ($user_contact['ignored']) {
+			DI::logger()->info('author is ignored', ['guid' => $item['guid'], 'cid' => $user_contact['cid']]);
+			return;
+		}
+		if ($user_contact['collapsed']) {
+			$collapsed = true;
+		}
+	}
+
+	if (!mailstream_send($data['message_id'], $item, $user, $collapsed)) {
 		DI::logger()->debug('send failed, will retry', $data);
 		if (!Worker::defer()) {
 			DI::logger()->error('failed and could not defer', $data);
@@ -220,6 +248,7 @@ function mailstream_post_hook(array &$item)
 	$send_hook_data = [
 		'uid' => $item['uid'],
 		'contact-id' => $item['contact-id'],
+		'author-id' => $item['author-id'],
 		'uri' => $item['uri'],
 		'message_id' => $message_id,
 		'tries' => 0,
@@ -406,10 +435,11 @@ function mailstream_subject(array $item): string
  * @param string $message_id ID of the message (RFC 1036)
  * @param array  $item       content of the item
  * @param array  $user       results from the user table
+ * @param bool   $collapsed  true if the content should be hidden
  *
  * @return bool True if this message has been completed.  False if it should be retried.
  */
-function mailstream_send(string $message_id, array $item, array $user): bool
+function mailstream_send(string $message_id, array $item, array $user, bool $collapsed): bool
 {
 	if (!is_array($item)) {
 		DI::logger()->error('item is empty', ['message_id' => $message_id]);
@@ -427,10 +457,16 @@ function mailstream_send(string $message_id, array $item, array $user): bool
 
 	require_once(dirname(__file__) . '/phpmailer/class.phpmailer.php');
 
-	$item['body'] = Post\Media::addAttachmentsToBody($item['uri-id'], $item['body']);
+	if ($collapsed) {
+		$item['body'] = DI::l10n()->t('Content from %s is collapsed', $item['author-name']);
+	} else {
+		$item['body'] = Post\Media::addAttachmentsToBody($item['uri-id'], $item['body']);
+	}
 
 	$attachments = [];
-	mailstream_do_images($item, $attachments);
+	if (!$collapsed) {
+		mailstream_do_images($item, $attachments);
+	}
 	$frommail = DI::config()->get('mailstream', 'frommail');
 	if ($frommail == '') {
 		$frommail = 'friendica@localhost.local';
