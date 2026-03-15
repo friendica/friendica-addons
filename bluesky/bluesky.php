@@ -1,7 +1,7 @@
 <?php
 /**
- * Name: Bluesky Connector
- * Description: Post to Bluesky, import timelines and feeds
+ * Name: AT Protocol Connector (Bluesky, Eurosky, Blacksky, ...)
+ * Description: Post via AT Protocol, import timelines and feeds
  * Version: 1.1
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  *
@@ -46,6 +46,7 @@ use Friendica\Protocol\Activity;
 use Friendica\Protocol\ATProtocol;
 use Friendica\Protocol\Relay;
 use Friendica\Util\DateTimeFormat;
+use Friendica\Util\ParseUrl;
 use Friendica\Util\Strings;
 
 const BLUESKY_DEFAULT_POLL_INTERVAL = 10; // given in minutes
@@ -81,6 +82,8 @@ function bluesky_check_item_notification(array &$notification_data)
 		return;
 	}
 
+	DI::atProtocol()->setPublicApiForUser($notification_data['uid']);
+		
 	$did = DI::atProtocol()->getUserDid($notification_data['uid']);
 	if (empty($did)) {
 		return;
@@ -96,24 +99,16 @@ function bluesky_item_by_link(array &$hookData)
 		return;
 	}
 
-	if (substr($hookData['uri'], 0, 5) != 'at://') {
-		if (!preg_match('#^' . ATProtocol::WEB . '/profile/(.+)/post/(.+)#', $hookData['uri'], $matches)) {
-			return;
-		}
+	DI::atProtocol()->setPublicApiForUser($hookData['uid']);
 
-		$did = DI::atProtocol()->getDid($matches[1]);
-		if (empty($did)) {
-			return;
-		}
-
-		DI::logger()->debug('Found bluesky post', ['uri' => $hookData['uri'], 'did' => $did, 'cid' => $matches[2]]);
-
-		$uri = 'at://' . $did . '/app.bsky.feed.post/' . $matches[2];
+	if (!str_starts_with($hookData['uri'], 'at://')) {
+		$data = ParseUrl::getSiteinfoCached($hookData['uri']);
+		$uri = $data['atprotocol']['uri'] ?? '';
 	} else {
 		$uri = $hookData['uri'];
 	}
 
-	$uri = DI::atpProcessor()->fetchMissingPost($uri, $hookData['uid'], Item::PR_FETCHED, 0, 0);
+	$uri = DI::atpProcessor()->fetchMissingPost($uri, $hookData['uid'], Item::PR_FETCHED, 0, 0, '', false, Conversation::PARCEL_CONNECTOR);
 	DI::logger()->debug('Got post', ['uri' => $uri]);
 	if (!empty($uri)) {
 		$item = Post::selectFirst(['id'], ['uri' => $uri, 'uid' => $hookData['uid']]);
@@ -125,20 +120,22 @@ function bluesky_item_by_link(array &$hookData)
 
 function bluesky_support_follow(array &$data)
 {
-	if ($data['protocol'] == Protocol::BLUESKY) {
+	if ($data['protocol'] == Protocol::ATPROTO) {
 		$data['result'] = true;
 	}
 }
 
 function bluesky_follow(array &$hook_data)
 {
+	DI::atProtocol()->setPublicApiForUser($hook_data['uid']);
+
 	$token = DI::atProtocol()->getUserToken($hook_data['uid']);
 	if (empty($token)) {
 		return;
 	}
 
-	DI::logger()->debug('Check if contact is bluesky', ['data' => $hook_data]);
-	$contact = DBA::selectFirst('contact', [], ['network' => Protocol::BLUESKY, 'nurl' => Strings::normaliseLink($hook_data['url']), 'uid' => [0, $hook_data['uid']]]);
+	DI::logger()->debug('Check if contact is AT Protocol', ['data' => $hook_data]);
+	$contact = DBA::selectFirst('contact', [], ['network' => Protocol::ATPROTO, 'nurl' => Strings::normaliseLink($hook_data['url']), 'uid' => [0, $hook_data['uid']]]);
 	if (empty($contact)) {
 		return;
 	}
@@ -164,12 +161,14 @@ function bluesky_follow(array &$hook_data)
 
 function bluesky_unfollow(array &$hook_data)
 {
+	DI::atProtocol()->setPublicApiForUser($hook_data['uid']);
+
 	$token = DI::atProtocol()->getUserToken($hook_data['uid']);
 	if (empty($token)) {
 		return;
 	}
 
-	if ($hook_data['contact']['network'] != Protocol::BLUESKY) {
+	if ($hook_data['contact']['network'] != Protocol::ATPROTO) {
 		return;
 	}
 
@@ -185,12 +184,14 @@ function bluesky_unfollow(array &$hook_data)
 
 function bluesky_block(array &$hook_data)
 {
+	DI::atProtocol()->setPublicApiForUser($hook_data['uid']);
+
 	$token = DI::atProtocol()->getUserToken($hook_data['uid']);
 	if (empty($token)) {
 		return;
 	}
 
-	if ($hook_data['contact']['network'] != Protocol::BLUESKY) {
+	if ($hook_data['contact']['network'] != Protocol::ATPROTO) {
 		return;
 	}
 
@@ -218,12 +219,14 @@ function bluesky_block(array &$hook_data)
 
 function bluesky_unblock(array &$hook_data)
 {
+	DI::atProtocol()->setPublicApiForUser($hook_data['uid']);
+
 	$token = DI::atProtocol()->getUserToken($hook_data['uid']);
 	if (empty($token)) {
 		return;
 	}
 
-	if ($hook_data['contact']['network'] != Protocol::BLUESKY) {
+	if ($hook_data['contact']['network'] != Protocol::ATPROTO) {
 		return;
 	}
 
@@ -243,7 +246,7 @@ function bluesky_addon_admin(string &$o)
 
 	$o = Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
-		'$friendica_handles'    => ['friendica_handles', DI::l10n()->t('Allow your users to use your hostname for their Bluesky handles'), DI::config()->get('bluesky', 'friendica_handles'), DI::l10n()->t('Before enabling this option, you have to setup a wildcard domain configuration and you have to enable wildcard requests in your webserver configuration. On Apache this is done by adding "ServerAlias *.%s" to your HTTP configuration. You don\'t need to change the HTTPS configuration.', DI::baseUrl()->getHost())],
+		'$friendica_handles'    => ['friendica_handles', DI::l10n()->t('Allow your users to use your hostname for their AT Protocol handles'), DI::config()->get('bluesky', 'friendica_handles'), DI::l10n()->t('Before enabling this option, you have to setup a wildcard domain configuration and you have to enable wildcard requests in your webserver configuration. On Apache this is done by adding "ServerAlias *.%s" to your HTTP configuration. You don\'t need to change the HTTPS configuration.', DI::baseUrl()->getHost())],
 	]);
 }
 
@@ -257,6 +260,8 @@ function bluesky_settings(array &$data)
 	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
+
+	DI::atProtocol()->setPublicApiForUser(DI::userSession()->getLocalUserId());
 
 	$enabled          = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'post') ?? false;
 	$def_enabled      = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'post_by_default') ?? false;
@@ -272,7 +277,7 @@ function bluesky_settings(array &$data)
 	if (DI::config()->get('bluesky', 'friendica_handles')) {
 		$self = User::getById(DI::userSession()->getLocalUserId(), ['nickname']);
 		$host_handle = $self['nickname'] . '.' . DI::baseUrl()->getHost();
-		$friendica_handle = ['bluesky_friendica_handle', DI::l10n()->t('Allow to use %s as your Bluesky handle.', $host_handle), $custom_handle, DI::l10n()->t('When enabled, you can use %s as your Bluesky handle. After you enabled this option, please go to https://bsky.app/settings and select to change your handle. Select that you have got your own domain. Then enter %s and select "No DNS Panel". Then select "Verify Text File".', $host_handle, $host_handle)];
+		$friendica_handle = ['bluesky_friendica_handle', DI::l10n()->t('Allow to use %s as your AT Protocol handle.', $host_handle), $custom_handle, DI::l10n()->t('When enabled, you can use %s as your AT Protocol handle. After you enabled this option, please go to https://bsky.app/settings and select to change your handle. Select that you have got your own domain. Then enter %s and select "No DNS Panel". Then select "Verify Text File".', $host_handle, $host_handle)];
 		if ($custom_handle) {
 			$handle = $host_handle;
 		}
@@ -282,23 +287,23 @@ function bluesky_settings(array &$data)
 
 	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/bluesky/');
 	$html = Renderer::replaceMacros($t, [
-		'$enable'           => ['bluesky', DI::l10n()->t('Enable Bluesky Post Addon'), $enabled],
-		'$bydefault'        => ['bluesky_bydefault', DI::l10n()->t('Post to Bluesky by default'), $def_enabled],
+		'$enable'           => ['bluesky', DI::l10n()->t('Enable AT Protocol Addon'), $enabled],
+		'$bydefault'        => ['bluesky_bydefault', DI::l10n()->t('Post via AT Protocol by default'), $def_enabled],
 		'$import'           => ['bluesky_import', DI::l10n()->t('Import the remote timeline'), $import],
-		'$import_feeds'     => ['bluesky_import_feeds', DI::l10n()->t('Import the pinned feeds'), $import_feeds, DI::l10n()->t('When activated, Posts will be imported from all the feeds that you pinned in Bluesky.')],
+		'$import_feeds'     => ['bluesky_import_feeds', DI::l10n()->t('Import the pinned feeds'), $import_feeds, DI::l10n()->t('When activated, Posts will be imported from all the feeds that you pinned in AT Protocol.')],
 		'$complete_threads' => ['bluesky_complete_threads', DI::l10n()->t('Complete the threads'), $complete_threads, DI::l10n()->t('When activated, the system fetches additional replies for the posts in the timeline. This leads to more complete threads.')],
 		'$custom_handle'    => $friendica_handle,
 		'$pds'              => ['bluesky_pds', DI::l10n()->t('Personal Data Server'), $pds, DI::l10n()->t('The personal data server (PDS) is the system that hosts your profile.'), '', 'readonly'],
-		'$handle'           => ['bluesky_handle', DI::l10n()->t('Bluesky handle'), $handle, '', '', $custom_handle ? 'readonly' : ''],
-		'$did'              => ['bluesky_did', DI::l10n()->t('Bluesky DID'), $did, DI::l10n()->t('This is the unique identifier. It will be fetched automatically, when the handle is entered.'), '', 'readonly'],
-		'$password'         => ['bluesky_password', DI::l10n()->t('Bluesky app password'), '', DI::l10n()->t("Please don't add your real password here, but instead create a specific app password in the Bluesky settings.")],
+		'$handle'           => ['bluesky_handle', DI::l10n()->t('AT Protocol handle'), $handle, '', '', $custom_handle ? 'readonly' : ''],
+		'$did'              => ['bluesky_did', DI::l10n()->t('AT Protocol DID'), $did, DI::l10n()->t('This is the unique identifier. It will be fetched automatically, when the handle is entered.'), '', 'readonly'],
+		'$password'         => ['bluesky_password', DI::l10n()->t('AT Protocol app password'), '', DI::l10n()->t("Please don't add your real password here, but instead create a specific app password in the settings of your AT Protocol system.")],
 		'$status'           => bluesky_get_status($handle, $did, $pds, $token),
 	]);
 
 	$data = [
 		'connector' => 'bluesky',
-		'title'     => DI::l10n()->t('Bluesky Import/Export'),
-		'image'     => 'images/bluesky.jpg',
+		'title'     => DI::l10n()->t('AT Protocol (Bluesky, Eurosky, Blacksky, ...) Import/Export'),
+		'image'     => 'images/500px-AT_Protocol_logo.png',
 		'enabled'   => $enabled,
 		'html'      => $html,
 	];
@@ -328,7 +333,7 @@ function bluesky_get_status(string $handle = null, string $did = null, string $p
 
 	switch ($status) {
 		case ATProtocol::STATUS_TOKEN_OK:
-			return DI::l10n()->t("You are authenticated to Bluesky. For security reasons the password isn't stored.");
+			return DI::l10n()->t("You are authenticated to the AT Protocol PDS. For security reasons the password isn't stored.");
 		case ATProtocol::STATUS_SUCCESS:
 			return DI::l10n()->t('The communication with the personal data server service (PDS) is established.');
 		case ATProtocol::STATUS_API_FAIL;
@@ -349,6 +354,8 @@ function bluesky_settings_post(array &$b)
 	if (empty($_POST['bluesky-submit'])) {
 		return;
 	}
+
+	DI::atProtocol()->setPublicApiForUser(DI::userSession()->getLocalUserId());
 
 	$old_pds    = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'pds');
 	$old_handle = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'handle');
@@ -401,7 +408,7 @@ function bluesky_jot_nets(array &$jotnets_fields)
 			'type'  => 'checkbox',
 			'field' => [
 				'bluesky_enable',
-				DI::l10n()->t('Post to Bluesky'),
+				DI::l10n()->t('Post via the AT Protocol'),
 				DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'post_by_default')
 			]
 		];
@@ -435,6 +442,8 @@ function bluesky_cron()
 
 	$pconfigs = DBA::selectToArray('pconfig', [], ["`cat` = ? AND `k` IN (?, ?) AND `v`", 'bluesky', 'import', 'import_feeds']);
 	foreach ($pconfigs as $pconfig) {
+		DI::atProtocol()->setPublicApiForUser($pconfig['uid']);
+
 		if (empty(DI::atProtocol()->getUserDid($pconfig['uid']))) {
 			DI::logger()->debug('User has got no valid DID', ['uid' => $pconfig['uid']]);
 			continue;
@@ -478,7 +487,7 @@ function bluesky_cron()
 	$last_clean = DI::keyValue()->get('bluesky_last_clean');
 	if (empty($last_clean) || ($last_clean + 86400 < time())) {
 		DI::logger()->notice('Start contact cleanup');
-		$contacts = DBA::select('account-user-view', ['id', 'pid'], ["`network` = ? AND `uid` != ? AND `rel` = ?", Protocol::BLUESKY, 0, Contact::NOTHING]);
+		$contacts = DBA::select('account-user-view', ['id', 'pid'], ["`network` = ? AND `uid` != ? AND `rel` = ?", Protocol::ATPROTO, 0, Contact::NOTHING]);
 		while ($contact = DBA::fetch($contacts)) {
 			Worker::add(Worker::PRIORITY_LOW, 'MergeContact', $contact['pid'], $contact['id'], 0);
 		}
@@ -505,9 +514,9 @@ function bluesky_hook_fork(array &$b)
 	}
 
 	if (DI::pConfig()->get($post['uid'], 'bluesky', 'import')) {
-		// Don't post if it isn't a reply to a bluesky post
-		if (($post['gravity'] != Item::GRAVITY_PARENT) && !Post::exists(['id' => $post['parent'], 'network' => Protocol::BLUESKY])) {
-			DI::logger()->notice('No bluesky parent found', ['item' => $post['id']]);
+		// Don't post if it isn't a reply to an AT Protocol post
+		if (($post['gravity'] != Item::GRAVITY_PARENT) && !Post::exists(['id' => $post['parent'], 'network' => Protocol::ATPROTO])) {
+			DI::logger()->notice('No AT Protocol parent found', ['item' => $post['id']]);
 			$b['execute'] = false;
 			return;
 		}
@@ -549,6 +558,8 @@ function bluesky_post_local(array &$b)
 
 function bluesky_send(array &$b)
 {
+	DI::atProtocol()->setPublicApiForUser($b['uid']);
+
 	if (($b['created'] !== $b['edited']) && !$b['deleted']) {
 		return;
 	}
@@ -563,7 +574,7 @@ function bluesky_send(array &$b)
 		if ($b['deleted']) {
 			$uri = DI::atpProcessor()->getUriClass($b['uri']);
 			if (empty($uri)) {
-				DI::logger()->debug('Not a bluesky post', ['uri' => $b['uri']]);
+				DI::logger()->debug('Not an AT Protocol post', ['uri' => $b['uri']]);
 				return;
 			}
 			bluesky_delete_post($b['uri'], $b['uid']);
@@ -574,7 +585,7 @@ function bluesky_send(array &$b)
 		$parent = DI::atpProcessor()->getUriClass($b['thr-parent']);
 
 		if (empty($root) || empty($parent)) {
-			DI::logger()->debug('No bluesky post', ['parent' => $b['parent'], 'thr-parent' => $b['thr-parent']]);
+			DI::logger()->debug('No AT Protocol post', ['parent' => $b['parent'], 'thr-parent' => $b['thr-parent']]);
 			return;
 		}
 
@@ -593,9 +604,11 @@ function bluesky_send(array &$b)
 	bluesky_create_post($b);
 }
 
-function bluesky_create_activity(array $item, stdClass $parent = null)
+function bluesky_create_activity(array $item, ?stdClass $parent = null)
 {
 	$uid = $item['uid'];
+	DI::atProtocol()->setPublicApiForUser($uid);
+
 	$token = DI::atProtocol()->getUserToken($uid);
 	if (empty($token)) {
 		return;
@@ -647,6 +660,8 @@ function bluesky_create_activity(array $item, stdClass $parent = null)
 function bluesky_create_post(array $item, stdClass $root = null, stdClass $parent = null)
 {
 	$uid = $item['uid'];
+	DI::atProtocol()->setPublicApiForUser($uid);
+
 	$token = DI::atProtocol()->getUserToken($uid);
 	if (empty($token)) {
 		return;
@@ -681,7 +696,7 @@ function bluesky_create_post(array $item, stdClass $root = null, stdClass $paren
 	$urls = bluesky_get_urls($item['body']);
 	$item['body'] = $urls['body'];
 
-	$msg = Plaintext::getPost($item, 300, false, BBCode::BLUESKY);
+	$msg = Plaintext::getPost($item, 300, false, BBCode::ATPROTOCOL);
 	foreach ($msg['parts'] as $key => $part) {
 
 		$facets = bluesky_get_facets($part, $urls['urls']);
@@ -946,7 +961,7 @@ function bluesky_upload_blob(int $uid, array $photo): ?stdClass
 		return null;
 	}
 
-	Item::incrementOutbound(Protocol::BLUESKY);
+	Item::incrementOutbound(Protocol::ATPROTO);
 	DI::logger()->debug('Uploaded blob', ['return' => $data, 'uid' => $uid, 'retrial' => $retrial, 'height' => $new_height, 'width' => $new_width, 'size' => $new_size, 'orig-height' => $height, 'orig-width' => $width, 'orig-size' => $size]);
 	return $data->blob;
 }
@@ -964,6 +979,8 @@ function bluesky_delete_post(string $uri, int $uid)
 
 function bluesky_fetch_timeline(int $uid)
 {
+	DI::atProtocol()->setPublicApiForUser($uid);
+
 	$data = DI::atProtocol()->XRPCGet('app.bsky.feed.getTimeline', [], $uid);
 	if (empty($data)) {
 		return;
@@ -1020,7 +1037,7 @@ function bluesky_process_reason(stdClass $reason, string $uri, int $uid)
 	$contact = DI::atpActor()->getContactByDID($reason->by->did, $uid, 0);
 
 	$item = [
-		'network'       => Protocol::BLUESKY,
+		'network'       => Protocol::ATPROTO,
 		'protocol'      => Conversation::PARCEL_CONNECTOR,
 		'uid'           => $uid,
 		'wall'          => false,
@@ -1057,6 +1074,8 @@ function bluesky_process_reason(stdClass $reason, string $uri, int $uid)
 
 function bluesky_fetch_notifications(int $uid)
 {
+	DI::atProtocol()->setPublicApiForUser($uid);
+
 	$data = DI::atProtocol()->XRPCGet('app.bsky.notification.listNotifications', [], $uid);
 	if (empty($data->notifications)) {
 		return;
@@ -1130,6 +1149,8 @@ function bluesky_fetch_notifications(int $uid)
 
 function bluesky_fetch_feed(int $uid, string $feed)
 {
+	DI::atProtocol()->setPublicApiForUser($uid);
+
 	$data = DI::atProtocol()->XRPCGet('app.bsky.feed.getFeed', ['feed' => $feed], $uid);
 	if (empty($data)) {
 		return;
