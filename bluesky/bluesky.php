@@ -82,7 +82,7 @@ function bluesky_check_item_notification(array &$notification_data)
 		return;
 	}
 
-	DI::atProtocol()->setPublicApiForUser($notification_data['uid']);
+	DI::atProtocol()->setApiForUser($notification_data['uid']);
 		
 	$did = DI::atProtocol()->getUserDid($notification_data['uid']);
 	if (empty($did)) {
@@ -99,7 +99,7 @@ function bluesky_item_by_link(array &$hookData)
 		return;
 	}
 
-	DI::atProtocol()->setPublicApiForUser($hookData['uid']);
+	DI::atProtocol()->setApiForUser($hookData['uid']);
 
 	if (!str_starts_with($hookData['uri'], 'at://')) {
 		$data = ParseUrl::getSiteinfoCached($hookData['uri']);
@@ -127,7 +127,7 @@ function bluesky_support_follow(array &$data)
 
 function bluesky_follow(array &$hook_data)
 {
-	DI::atProtocol()->setPublicApiForUser($hook_data['uid']);
+	DI::atProtocol()->setApiForUser($hook_data['uid']);
 
 	$token = DI::atProtocol()->getUserToken($hook_data['uid']);
 	if (empty($token)) {
@@ -161,7 +161,7 @@ function bluesky_follow(array &$hook_data)
 
 function bluesky_unfollow(array &$hook_data)
 {
-	DI::atProtocol()->setPublicApiForUser($hook_data['uid']);
+	DI::atProtocol()->setApiForUser($hook_data['uid']);
 
 	$token = DI::atProtocol()->getUserToken($hook_data['uid']);
 	if (empty($token)) {
@@ -184,7 +184,7 @@ function bluesky_unfollow(array &$hook_data)
 
 function bluesky_block(array &$hook_data)
 {
-	DI::atProtocol()->setPublicApiForUser($hook_data['uid']);
+	DI::atProtocol()->setApiForUser($hook_data['uid']);
 
 	$token = DI::atProtocol()->getUserToken($hook_data['uid']);
 	if (empty($token)) {
@@ -219,7 +219,7 @@ function bluesky_block(array &$hook_data)
 
 function bluesky_unblock(array &$hook_data)
 {
-	DI::atProtocol()->setPublicApiForUser($hook_data['uid']);
+	DI::atProtocol()->setApiForUser($hook_data['uid']);
 
 	$token = DI::atProtocol()->getUserToken($hook_data['uid']);
 	if (empty($token)) {
@@ -261,7 +261,7 @@ function bluesky_settings(array &$data)
 		return;
 	}
 
-	DI::atProtocol()->setPublicApiForUser(DI::userSession()->getLocalUserId());
+	DI::atProtocol()->setApiForUser(DI::userSession()->getLocalUserId());
 
 	$enabled          = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'post') ?? false;
 	$def_enabled      = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'post_by_default') ?? false;
@@ -355,7 +355,7 @@ function bluesky_settings_post(array &$b)
 		return;
 	}
 
-	DI::atProtocol()->setPublicApiForUser(DI::userSession()->getLocalUserId());
+	DI::atProtocol()->setApiForUser(DI::userSession()->getLocalUserId());
 
 	$old_pds    = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'pds');
 	$old_handle = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'handle');
@@ -442,7 +442,7 @@ function bluesky_cron()
 
 	$pconfigs = DBA::selectToArray('pconfig', [], ["`cat` = ? AND `k` IN (?, ?) AND `v`", 'bluesky', 'import', 'import_feeds']);
 	foreach ($pconfigs as $pconfig) {
-		DI::atProtocol()->setPublicApiForUser($pconfig['uid']);
+		DI::atProtocol()->setApiForUser($pconfig['uid']);
 
 		if (empty(DI::atProtocol()->getUserDid($pconfig['uid']))) {
 			DI::logger()->debug('User has got no valid DID', ['uid' => $pconfig['uid']]);
@@ -558,7 +558,7 @@ function bluesky_post_local(array &$b)
 
 function bluesky_send(array &$b)
 {
-	DI::atProtocol()->setPublicApiForUser($b['uid']);
+	DI::atProtocol()->setApiForUser($b['uid']);
 
 	if (($b['created'] !== $b['edited']) && !$b['deleted']) {
 		return;
@@ -607,7 +607,7 @@ function bluesky_send(array &$b)
 function bluesky_create_activity(array $item, ?stdClass $parent = null)
 {
 	$uid = $item['uid'];
-	DI::atProtocol()->setPublicApiForUser($uid);
+	DI::atProtocol()->setApiForUser($uid);
 
 	$token = DI::atProtocol()->getUserToken($uid);
 	if (empty($token)) {
@@ -660,7 +660,7 @@ function bluesky_create_activity(array $item, ?stdClass $parent = null)
 function bluesky_create_post(array $item, stdClass $root = null, stdClass $parent = null)
 {
 	$uid = $item['uid'];
-	DI::atProtocol()->setPublicApiForUser($uid);
+	DI::atProtocol()->setApiForUser($uid);
 
 	$token = DI::atProtocol()->getUserToken($uid);
 	if (empty($token)) {
@@ -979,7 +979,7 @@ function bluesky_delete_post(string $uri, int $uid)
 
 function bluesky_fetch_timeline(int $uid)
 {
-	DI::atProtocol()->setPublicApiForUser($uid);
+	DI::atProtocol()->setApiForUser($uid);
 
 	$data = DI::atProtocol()->XRPCGet('app.bsky.feed.getTimeline', [], $uid);
 	if (empty($data)) {
@@ -1074,7 +1074,7 @@ function bluesky_process_reason(stdClass $reason, string $uri, int $uid)
 
 function bluesky_fetch_notifications(int $uid)
 {
-	DI::atProtocol()->setPublicApiForUser($uid);
+	DI::atProtocol()->setApiForUser($uid);
 
 	$data = DI::atProtocol()->XRPCGet('app.bsky.notification.listNotifications', [], $uid);
 	if (empty($data->notifications)) {
@@ -1149,7 +1149,7 @@ function bluesky_fetch_notifications(int $uid)
 
 function bluesky_fetch_feed(int $uid, string $feed)
 {
-	DI::atProtocol()->setPublicApiForUser($uid);
+	DI::atProtocol()->setApiForUser($uid);
 
 	$data = DI::atProtocol()->XRPCGet('app.bsky.feed.getFeed', ['feed' => $feed], $uid);
 	if (empty($data)) {
