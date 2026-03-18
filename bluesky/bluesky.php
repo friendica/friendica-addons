@@ -267,6 +267,7 @@ function bluesky_settings(array &$data)
 	$def_enabled      = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'post_by_default') ?? false;
 	$pds              = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'pds');
 	$handle           = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'handle');
+	$web              = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'web');
 	$did              = DI::atProtocol()->getUserDid(DI::userSession()->getLocalUserId());
 	$token            = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'access_token');
 	$import           = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'import') ?? false;
@@ -285,6 +286,13 @@ function bluesky_settings(array &$data)
 		$friendica_handle = [];
 	}
 
+	$web_frontend = [
+		'' => 'System Default',
+		ATProtocol::WEB => 'Bluesky',
+		'https://blacksky.community' => 'Blacksky',
+		'https://reddwarf.app' => 'Red Dwarf',
+	];
+
 	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/bluesky/');
 	$html = Renderer::replaceMacros($t, [
 		'$enable'           => ['bluesky', DI::l10n()->t('Enable AT Protocol Addon'), $enabled],
@@ -297,6 +305,7 @@ function bluesky_settings(array &$data)
 		'$handle'           => ['bluesky_handle', DI::l10n()->t('AT Protocol handle'), $handle, '', '', $custom_handle ? 'readonly' : ''],
 		'$did'              => ['bluesky_did', DI::l10n()->t('AT Protocol DID'), $did, DI::l10n()->t('This is the unique identifier. It will be fetched automatically, when the handle is entered.'), '', 'readonly'],
 		'$password'         => ['bluesky_password', DI::l10n()->t('AT Protocol app password'), '', DI::l10n()->t("Please don't add your real password here, but instead create a specific app password in the settings of your AT Protocol system.")],
+		'$web'              => ['bluesky_web', DI::l10n()->t('Web front end'), $web, DI::l10n()->t('Choose your preferred external web front end for displaying posts and profiles.'), $web_frontend, ''],
 		'$status'           => bluesky_get_status($handle, $did, $pds, $token),
 	]);
 
@@ -370,6 +379,11 @@ function bluesky_settings_post(array &$b)
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'import_feeds',     intval($_POST['bluesky_import_feeds']));
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'complete_threads', intval($_POST['bluesky_complete_threads']));
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'friendica_handle', intval($_POST['bluesky_friendica_handle'] ?? false));
+	if ($_POST['bluesky_web'] <> '') {
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'bluesky', 'web', $_POST['bluesky_web']);
+	} else {
+		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'bluesky', 'web');
+	}
 
 	if (!empty($handle)) {
 		$did = DI::atProtocol()->getUserDid(DI::userSession()->getLocalUserId(), empty($old_did) || $old_handle != $handle);
