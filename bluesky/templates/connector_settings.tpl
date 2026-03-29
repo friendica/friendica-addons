@@ -11,3 +11,4 @@
 {{include file="field_input.tpl" field=$handle}}
 {{include file="field_input.tpl" field=$did}}
 {{include file="field_input.tpl" field=$password}}
+{{include file="field_select.tpl" field=$web}}
