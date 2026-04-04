@@ -286,12 +286,10 @@ function bluesky_settings(array &$data)
 		$friendica_handle = [];
 	}
 
-	$web_frontend = [
-		'' => 'System Default',
-		ATProtocol::WEB => 'Bluesky',
-		'https://blacksky.community' => 'Blacksky',
-		'https://reddwarf.app' => 'Red Dwarf',
-	];
+	$web_frontend = ['' => 'System Default'];
+	foreach (DI::config()->get('atprotocol', 'frontends') as $key => $frontend) {
+		$web_frontend[$key] = $frontend[0];
+	}
 
 	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/bluesky/');
 	$html = Renderer::replaceMacros($t, [
