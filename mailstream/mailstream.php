@@ -289,6 +289,7 @@ function mailstream_do_images(array &$item, array &$attachments)
 		$cookiejar = tempnam(System::getTempPath(), 'cookiejar-mailstream-');
 		try {
 			$curlResult = DI::httpClient()->get($url, HttpClientAccept::DEFAULT, [HttpClientOptions::COOKIEJAR => $cookiejar]);
+			unlink($cookiejar);
 			if (!$curlResult->isSuccess()) {
 				DI::logger()->debug('mailstream: fetch image url failed', [
 					'url' => $url,
