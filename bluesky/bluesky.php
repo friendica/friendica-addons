@@ -1031,7 +1031,7 @@ function bluesky_complete_post(stdClass $post, int $uid, int $post_reason, int $
 	}
 
 	if ($complete) {
-		$uri = DI::atpProcessor()->fetchMissingPost(DI::atpProcessor()->getUri($post), $uid, $post_reason, $causer, 0, '', true, $protocol);
+		$uri = DI::atpProcessor()->fetchMissingPost(DI::atpProcessor()->getUri($post), $uid, $post_reason, $causer, 0, '', false, $protocol);
 		$uri_id = DI::atpProcessor()->fetchUriId($uri, $uid);
 	} else {
 		$uri_id = DI::atpProcessor()->processPost($post, $uid, $post_reason, $causer, 0, $protocol);
@@ -1106,7 +1106,7 @@ function bluesky_fetch_notifications(int $uid)
 				$item['gravity'] = Item::GRAVITY_ACTIVITY;
 				$item['body'] = $item['verb'] = Activity::LIKE;
 				$item['thr-parent'] = DI::atpProcessor()->getUri($notification->record->subject);
-				$item['thr-parent'] = DI::atpProcessor()->fetchMissingPost($item['thr-parent'], $uid, Item::PR_FETCHED, $item['contact-id'], 0);
+				$item['thr-parent'] = DI::atpProcessor()->fetchMissingPost($item['thr-parent'], $uid, Item::PR_FETCHED, $item['contact-id'], 0, '', false, Conversation::PARCEL_CONNECTOR);
 				if (!empty($item['thr-parent'])) {
 					$data = Item::insert($item);
 					DI::logger()->debug('Got like', ['uid' => $uid, 'result' => $data, 'uri' => $uri]);
@@ -1120,7 +1120,7 @@ function bluesky_fetch_notifications(int $uid)
 				$item['gravity'] = Item::GRAVITY_ACTIVITY;
 				$item['body'] = $item['verb'] = Activity::ANNOUNCE;
 				$item['thr-parent'] = DI::atpProcessor()->getUri($notification->record->subject);
-				$item['thr-parent'] = DI::atpProcessor()->fetchMissingPost($item['thr-parent'], $uid, Item::PR_FETCHED, $item['contact-id'], 0);
+				$item['thr-parent'] = DI::atpProcessor()->fetchMissingPost($item['thr-parent'], $uid, Item::PR_FETCHED, $item['contact-id'], 0, '', false, Conversation::PARCEL_CONNECTOR);
 				if (!empty($item['thr-parent'])) {
 					$data = Item::insert($item);
 					DI::logger()->debug('Got repost', ['uid' => $uid, 'result' => $data, 'uri' => $uri]);
@@ -1136,19 +1136,19 @@ function bluesky_fetch_notifications(int $uid)
 
 			case 'mention':
 				$contact = DI::atpActor()->getContactByDID($notification->author->did, $uid, 0);
-				$result  = DI::atpProcessor()->fetchMissingPost($uri, $uid, Item::PR_TO, $contact['id'], 0);
+				$result  = DI::atpProcessor()->fetchMissingPost($uri, $uid, Item::PR_TO, $contact['id'], 0, '', false, Conversation::PARCEL_CONNECTOR);
 				DI::logger()->debug('Got mention', ['uid' => $uid, 'nick' => $contact['nick'], 'result' => $result, 'uri' => $uri]);
 				break;
 
 			case 'reply':
 				$contact = DI::atpActor()->getContactByDID($notification->author->did, $uid, 0);
-				$result  = DI::atpProcessor()->fetchMissingPost($uri, $uid, Item::PR_COMMENT, $contact['id'], 0);
+				$result  = DI::atpProcessor()->fetchMissingPost($uri, $uid, Item::PR_COMMENT, $contact['id'], 0, '', false, Conversation::PARCEL_CONNECTOR);
 				DI::logger()->debug('Got reply', ['uid' => $uid, 'nick' => $contact['nick'], 'result' => $result, 'uri' => $uri]);
 				break;
 
 			case 'quote':
 				$contact = DI::atpActor()->getContactByDID($notification->author->did, $uid, 0);
-				$result  = DI::atpProcessor()->fetchMissingPost($uri, $uid, Item::PR_PUSHED, $contact['id'], 0);
+				$result  = DI::atpProcessor()->fetchMissingPost($uri, $uid, Item::PR_PUSHED, $contact['id'], 0, '', false, Conversation::PARCEL_CONNECTOR);
 				DI::logger()->debug('Got quote', ['uid' => $uid, 'nick' => $contact['nick'], 'result' => $result, 'uri' => $uri]);
 				break;
 
