@@ -146,13 +146,7 @@ function bluesky_follow(array &$hook_data)
 		'$type'     => 'app.bsky.graph.follow'
 	];
 
-	$post = [
-		'collection' => 'app.bsky.graph.follow',
-		'repo'       => DI::atProtocol()->getUserDid($hook_data['uid']),
-		'record'     => $record
-	];
-
-	$activity = DI::atProtocol()->XRPCPost($hook_data['uid'], 'com.atproto.repo.createRecord', $post);
+	$activity = DI::atProtocol()->createRecord($hook_data['uid'], 'app.bsky.graph.follow', $record);
 	if (!empty($activity->uri)) {
 		$hook_data['contact'] = $contact;
 		DI::logger()->debug('Successfully start following', ['url' => $contact['url'], 'uri' => $activity->uri]);
@@ -177,7 +171,7 @@ function bluesky_unfollow(array &$hook_data)
 		return;
 	}
 
-	bluesky_delete_post($data->viewer->following, $hook_data['uid']);
+	DI::atProtocol()->deleteRecord($hook_data['uid'], $data->viewer->following);
 
 	$hook_data['result'] = true;
 }
@@ -201,13 +195,7 @@ function bluesky_block(array &$hook_data)
 		'$type'     => 'app.bsky.graph.block'
 	];
 
-	$post = [
-		'collection' => 'app.bsky.graph.block',
-		'repo'       => DI::atProtocol()->getUserDid($hook_data['uid']),
-		'record'     => $record
-	];
-
-	$activity = DI::atProtocol()->XRPCPost($hook_data['uid'], 'com.atproto.repo.createRecord', $post);
+	$activity = DI::atProtocol()->createRecord($hook_data['uid'], 'app.bsky.graph.block', $record);
 	if (!empty($activity->uri)) {
 		$ucid = Contact::getUserContactId($hook_data['contact']['id'], $hook_data['uid']);
 		if ($ucid) {
@@ -235,7 +223,7 @@ function bluesky_unblock(array &$hook_data)
 		return;
 	}
 
-	bluesky_delete_post($data->viewer->blocking, $hook_data['uid']);
+	DI::atProtocol()->deleteRecord($hook_data['uid'], $data->viewer->blocking);
 
 	$hook_data['result'] = true;
 }
@@ -589,7 +577,7 @@ function bluesky_send(array &$b)
 				DI::logger()->debug('Not an AT Protocol post', ['uri' => $b['uri']]);
 				return;
 			}
-			bluesky_delete_post($b['uri'], $b['uid']);
+			DI::atProtocol()->deleteRecord($b['uid'], $uri->uri);
 			return;
 		}
 
@@ -626,40 +614,21 @@ function bluesky_create_activity(array $item, ?stdClass $parent = null)
 		return;
 	}
 
-	$did = DI::atProtocol()->getUserDid($uid);
-	if (empty($did)) {
+	if ($item['verb'] == Activity::LIKE) {
+		$collection = 'app.bsky.feed.like';
+	} elseif ($item['verb'] == Activity::ANNOUNCE) {
+		$collection = 'app.bsky.feed.repost';
+	} else {
 		return;
 	}
 
-	$post = [];
+	$record = [
+		'subject'   => $parent,
+		'createdAt' => DateTimeFormat::utcNow(DateTimeFormat::ATOM),
+		'$type'     => $collection,
+	];
 
-	if ($item['verb'] == Activity::LIKE) {
-		$record = [
-			'subject'   => $parent,
-			'createdAt' => DateTimeFormat::utcNow(DateTimeFormat::ATOM),
-			'$type'     => 'app.bsky.feed.like'
-		];
-
-		$post = [
-			'collection' => 'app.bsky.feed.like',
-			'repo'       => $did,
-			'record'     => $record
-		];
-	} elseif ($item['verb'] == Activity::ANNOUNCE) {
-		$record = [
-			'subject'   => $parent,
-			'createdAt' => DateTimeFormat::utcNow(DateTimeFormat::ATOM),
-			'$type'     => 'app.bsky.feed.repost'
-		];
-
-		$post = [
-			'collection' => 'app.bsky.feed.repost',
-			'repo'       => $did,
-			'record'     => $record
-		];
-	}
-
-	$activity = DI::atProtocol()->XRPCPost($uid, 'com.atproto.repo.createRecord', $post);
+	$activity = DI::atProtocol()->createRecord($uid, $collection, $record);
 	if (empty($activity->uri)) {
 		return;
 	}
@@ -741,13 +710,7 @@ function bluesky_create_post(array $item, stdClass $root = null, stdClass $paren
 			}
 		}
 
-		$post = [
-			'collection' => 'app.bsky.feed.post',
-			'repo'       => DI::atProtocol()->getUserDid($uid),
-			'record'     => $record
-		];
-
-		$parent = DI::atProtocol()->XRPCPost($uid, 'com.atproto.repo.createRecord', $post);
+		$parent = DI::atProtocol()->createRecord($uid, 'app.bsky.feed.post', $record);
 		if (empty($parent->uri)) {
 			if ($part == 0) {
 				Worker::defer();
@@ -976,17 +939,6 @@ function bluesky_upload_blob(int $uid, array $photo): ?stdClass
 	Item::incrementOutbound(Protocol::ATPROTO);
 	DI::logger()->debug('Uploaded blob', ['return' => $data, 'uid' => $uid, 'retrial' => $retrial, 'height' => $new_height, 'width' => $new_width, 'size' => $new_size, 'orig-height' => $height, 'orig-width' => $width, 'orig-size' => $size]);
 	return $data->blob;
-}
-
-function bluesky_delete_post(string $uri, int $uid)
-{
-	$parts = DI::atpProcessor()->getUriParts($uri);
-	if (empty($parts)) {
-		DI::logger()->debug('No uri delected', ['uri' => $uri]);
-		return;
-	}
-	DI::atProtocol()->XRPCPost($uid, 'com.atproto.repo.deleteRecord', $parts);
-	DI::logger()->debug('Deleted', ['parts' => $parts]);
 }
 
 function bluesky_fetch_timeline(int $uid)
