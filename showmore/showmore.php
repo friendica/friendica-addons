@@ -81,7 +81,7 @@ function get_body_length($body)
 	/** @var DOMNodeList $xr */
 	$xr = $xpath->query('//*[@style]');
 	foreach ($xr as $node) {
-		if (preg_match('/.*display: *none *;.*/',$node->getAttribute('style'))) {
+		if ($node instanceof DOMElement && preg_match('/.*display: *none *;.*/',$node->getAttribute('style'))) {
 			// Hidden, remove it from its parent
 			$node->parentNode->removeChild($node);
 		}

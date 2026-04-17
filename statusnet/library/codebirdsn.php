@@ -223,16 +223,6 @@ class CodebirdSN
                 $apiparams = $params[0];
             } else {
                 parse_str($params[0], $apiparams);
-                // remove auto-added slashes if on magic quotes steroids
-                if (get_magic_quotes_gpc()) {
-                    foreach($apiparams as $key => $value) {
-                        if (is_array($value)) {
-                            $apiparams[$key] = array_map('stripslashes', $value);
-                        } else {
-                            $apiparams[$key] = stripslashes($value);
-                        }
-                    }
-                }
             }
         }
 

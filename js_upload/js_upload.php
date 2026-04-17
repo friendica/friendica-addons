@@ -192,7 +192,7 @@ class js_upload_qqFileUploader
 	 */
 	private $file;
 
-	function __construct(array $allowedExtensions = [], $sizeLimit)
+	function __construct(array $allowedExtensions, $sizeLimit)
 	{
 		$allowedExtensions = array_map('strtolower', $allowedExtensions);
 
