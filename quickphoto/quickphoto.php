@@ -16,7 +16,7 @@ function quickphoto_install() {
 }
 
 function quickphoto_header(&$header) {
-    $desc_label = DI::l10n()->t('Bildbeschreibung');
+    $desc_label = DI::l10n()->t('Image description');
 
     $js_label = json_encode($desc_label);
 
