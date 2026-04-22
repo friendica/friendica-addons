@@ -1,38 +1,38 @@
 # QuickPhoto Addon for Friendica
 
-QuickPhoto is a Friendica addon that simplifies working with images in the editor. It automatically replaces long, cumbersome BBCode structures with a compact shorthand notation, without affecting functionality or compatibility.
+**QuickPhoto** is a Friendica addon designed to streamline the post editor by converting lengthy image BBCode structures into a compact, readable shorthand. It ensures a clutter-free writing experience without compromising data integrity or platform compatibility.
 
 ---
 
 ## Features
 
-- **Automatic Simplification:** Converts "monster BBCodes" like `[url=...][img=...]...[/img][/url]` instantly into the handy format `[img]|filename description[/img]`.
-- **Intelligent Reconstruction:** Before submitting or previewing, the shorthand code is quickly converted back into the original, valid Friendica BBCode.
-- **Real-Time Processing:** Responds immediately to drag & drop, copy & paste, and inserting images via editor buttons.
-- **Focus Safety:** Cursor management ensures the focus remains stable during automatic conversion while typing.
-- **Maximum Compatibility:** Supports both the standard Jot editor and the Compose module, as well as reply fields.
-- **Local Cache:** Image data is securely stored in the browser's localStorage and automatically cleared after 12 hours.
+- **Automatic Simplification**: Instantly converts cumbersome "monster BBCodes" like `[url=...][img=...]...[/img][/url]` into the clean format `[img]filename|description[/img]`.
+- **Hardened Reconstruction**: Uses a high-priority submit listener and jQuery overrides to ensure shorthand code is converted back to valid Friendica BBCode before submission.
+- **Context-Aware Metadata**: Unlike previous versions, image data is now stored directly within the editor's DOM (as `data-` attributes), preventing data loss during device switches, private browsing, or cache clearing.
+- **Server-Side Safety Net**: Includes a PHP fallback hook (`post_post`) to resolve shorthand codes server-side if JavaScript fails, ensuring images are never lost.
+- **Real-Time Processing**: Responds seamlessly to drag-and-drop, copy-paste, and editor button inserts with zero flicker and stable cursor focus.
+- **Internationalization Ready**: Fully compatible with all languages and special characters using secure JSON encoding for translation strings.
 
 ---
 
 ## How It Works
 
-The addon operates in a hybrid manner:
+The addon employs a multi-layered **"Fail-Safe" architecture**:
 
-- **Frontend:** A JavaScript watcher scans textareas and simplifies complex image links for better readability while writing.
-- **Interface:** It integrates deeply with Friendica's jQuery functions to ensure that preview and save functions always receive the correct original data.
-- **Events:** By intercepting submit and preview clicks, it guarantees that shorthand codes are never sent to the server in a format it cannot interpret.
+1. **Frontend (UI)**: A JavaScript watcher simplifies complex image links as you type, making long posts easier to navigate.
+2. **Storage**: Metadata (URLs and Resource-IDs) is attached directly to the `textarea` element, ensuring each browser tab maintains its own "source of truth."
+3. **The Handshake**: When clicking "Submit" or "Preview," the script interceptor replaces all shorthand codes with the original URLs.
+4. **The Safety Anchor**: If frontend reconstruction fails, the `quickphoto_post_hook` in PHP attempts a database lookup to restore the link before saving.
 
 ---
 
 ## Installation
 
-1. Create a folder named `quickphoto` in the `addon/` directory of your Friendica installation.
-2. Place the file `quickphoto.php` in this folder.
-3. Place the file `quickphoto.js` in the same folder.
-4. Enable the addon in the Friendica administration area under **Addons**.
- 
- ---
+1. **Download the Addon**: Copy the `quickphoto` folder to the `addon/` directory of your Friendica installation.
+2. **Enable the Addon**: Go to the **Addons** section in your Friendica admin panel and enable **QuickPhoto**.
+3. The addon works immediately and requires no additional configuration.
+
+---
 
 MIT License
 
