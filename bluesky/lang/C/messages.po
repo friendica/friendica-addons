@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-18 13:20+0000\n"
+"POT-Creation-Date: 2026-04-25 10:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,126 +17,126 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bluesky.php:248
+#: bluesky.php:236
 msgid "Save Settings"
 msgstr ""
 
-#: bluesky.php:249
-msgid "Allow your users to use your hostname for their AT Protocol handles"
+#: bluesky.php:237
+msgid "Allow your users to use your hostname for their Atmosphere handles"
 msgstr ""
 
-#: bluesky.php:249
+#: bluesky.php:237
 #, php-format
 msgid "Before enabling this option, you have to setup a wildcard domain configuration and you have to enable wildcard requests in your webserver configuration. On Apache this is done by adding \"ServerAlias *.%s\" to your HTTP configuration. You don't need to change the HTTPS configuration."
 msgstr ""
 
-#: bluesky.php:281
+#: bluesky.php:269
 #, php-format
-msgid "Allow to use %s as your AT Protocol handle."
+msgid "Allow to use %s as your Atmosphere handle."
 msgstr ""
 
-#: bluesky.php:281
+#: bluesky.php:269
 #, php-format
-msgid "When enabled, you can use %s as your AT Protocol handle. After you enabled this option, please go to https://bsky.app/settings and select to change your handle. Select that you have got your own domain. Then enter %s and select \"No DNS Panel\". Then select \"Verify Text File\"."
+msgid "When enabled, you can use %s as your Atmosphere handle. After you enabled this option, please go to https://bsky.app/settings and select to change your handle. Select that you have got your own domain. Then enter %s and select \"No DNS Panel\". Then select \"Verify Text File\"."
 msgstr ""
 
-#: bluesky.php:298
-msgid "Enable AT Protocol Addon"
+#: bluesky.php:284
+msgid "Enable Atmosphere Addon"
 msgstr ""
 
-#: bluesky.php:299
-msgid "Post via AT Protocol by default"
+#: bluesky.php:285
+msgid "Post to the Atmosphere by default"
 msgstr ""
 
-#: bluesky.php:300
+#: bluesky.php:286
 msgid "Import the remote timeline"
 msgstr ""
 
-#: bluesky.php:301
+#: bluesky.php:287
 msgid "Import the pinned feeds"
 msgstr ""
 
-#: bluesky.php:301
-msgid "When activated, Posts will be imported from all the feeds that you pinned in AT Protocol."
+#: bluesky.php:287
+msgid "When activated, Posts will be imported from all the feeds that you pinned in your Atmosphere client."
 msgstr ""
 
-#: bluesky.php:302
+#: bluesky.php:288
 msgid "Complete the threads"
 msgstr ""
 
-#: bluesky.php:302
+#: bluesky.php:288
 msgid "When activated, the system fetches additional replies for the posts in the timeline. This leads to more complete threads."
 msgstr ""
 
-#: bluesky.php:304
+#: bluesky.php:290
 msgid "Personal Data Server"
 msgstr ""
 
-#: bluesky.php:304
+#: bluesky.php:290
 msgid "The personal data server (PDS) is the system that hosts your profile."
 msgstr ""
 
-#: bluesky.php:305
-msgid "AT Protocol handle"
+#: bluesky.php:291
+msgid "Atmosphere handle"
 msgstr ""
 
-#: bluesky.php:306
-msgid "AT Protocol DID"
+#: bluesky.php:292
+msgid "Atmosphere DID"
 msgstr ""
 
-#: bluesky.php:306
+#: bluesky.php:292
 msgid "This is the unique identifier. It will be fetched automatically, when the handle is entered."
 msgstr ""
 
-#: bluesky.php:307
-msgid "AT Protocol app password"
+#: bluesky.php:293
+msgid "Atmosphere app password"
 msgstr ""
 
-#: bluesky.php:307
-msgid "Please don't add your real password here, but instead create a specific app password in the settings of your AT Protocol system."
+#: bluesky.php:293
+msgid "Please don't add your real password here, but instead create a specific app password in the settings of your Atmosphere client."
 msgstr ""
 
-#: bluesky.php:308
+#: bluesky.php:294
 msgid "Web front end"
 msgstr ""
 
-#: bluesky.php:308
+#: bluesky.php:294
 msgid "Choose your preferred external web front end for displaying posts and profiles."
 msgstr ""
 
-#: bluesky.php:314
-msgid "AT Protocol (Bluesky, Eurosky, Blacksky, ...) Import/Export"
+#: bluesky.php:300
+msgid "Atmosphere (Bluesky, Eurosky, Blacksky, ...) Import/Export"
 msgstr ""
 
-#: bluesky.php:324
+#: bluesky.php:310
 msgid "You are not authenticated. Please enter your handle and the app password."
 msgstr ""
 
-#: bluesky.php:345
-msgid "You are authenticated to the AT Protocol PDS. For security reasons the password isn't stored."
+#: bluesky.php:331
+msgid "You are authenticated to the Atmosphere PDS. For security reasons the password isn't stored."
 msgstr ""
 
-#: bluesky.php:347
+#: bluesky.php:333
 msgid "The communication with the personal data server service (PDS) is established."
 msgstr ""
 
-#: bluesky.php:349
+#: bluesky.php:335
 #, php-format
 msgid "Communication issues with the personal data server service (PDS): %s"
 msgstr ""
 
-#: bluesky.php:351
+#: bluesky.php:337
 msgid "The DID for the provided handle could not be detected. Please check if you entered the correct handle."
 msgstr ""
 
-#: bluesky.php:353
+#: bluesky.php:339
 msgid "The personal data server service (PDS) could not be detected."
 msgstr ""
 
-#: bluesky.php:355
+#: bluesky.php:341
 msgid "The authentication with the provided handle and password failed. Please check if you entered the correct password."
 msgstr ""
 
-#: bluesky.php:425
-msgid "Post via the AT Protocol"
+#: bluesky.php:411
+msgid "Post via the Atmosphere"
 msgstr ""

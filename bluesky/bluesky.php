@@ -1,7 +1,7 @@
 <?php
 /**
- * Name: AT Protocol Connector (Bluesky, Eurosky, Blacksky, ...)
- * Description: Post via AT Protocol, import timelines and feeds
+ * Name: AT Protocol Atmosphere Connector (Bluesky, Eurosky, Blacksky, ...)
+ * Description: Post to the Atmosphere via the AT Protocol, import timelines and feeds
  * Version: 1.1
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  *
@@ -234,7 +234,7 @@ function bluesky_addon_admin(string &$o)
 
 	$o = Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
-		'$friendica_handles'    => ['friendica_handles', DI::l10n()->t('Allow your users to use your hostname for their AT Protocol handles'), DI::config()->get('bluesky', 'friendica_handles'), DI::l10n()->t('Before enabling this option, you have to setup a wildcard domain configuration and you have to enable wildcard requests in your webserver configuration. On Apache this is done by adding "ServerAlias *.%s" to your HTTP configuration. You don\'t need to change the HTTPS configuration.', DI::baseUrl()->getHost())],
+		'$friendica_handles'    => ['friendica_handles', DI::l10n()->t('Allow your users to use your hostname for their Atmosphere handles'), DI::config()->get('bluesky', 'friendica_handles'), DI::l10n()->t('Before enabling this option, you have to setup a wildcard domain configuration and you have to enable wildcard requests in your webserver configuration. On Apache this is done by adding "ServerAlias *.%s" to your HTTP configuration. You don\'t need to change the HTTPS configuration.', DI::baseUrl()->getHost())],
 	]);
 }
 
@@ -266,7 +266,7 @@ function bluesky_settings(array &$data)
 	if (DI::config()->get('bluesky', 'friendica_handles')) {
 		$self = User::getById(DI::userSession()->getLocalUserId(), ['nickname']);
 		$host_handle = $self['nickname'] . '.' . DI::baseUrl()->getHost();
-		$friendica_handle = ['bluesky_friendica_handle', DI::l10n()->t('Allow to use %s as your AT Protocol handle.', $host_handle), $custom_handle, DI::l10n()->t('When enabled, you can use %s as your AT Protocol handle. After you enabled this option, please go to https://bsky.app/settings and select to change your handle. Select that you have got your own domain. Then enter %s and select "No DNS Panel". Then select "Verify Text File".', $host_handle, $host_handle)];
+		$friendica_handle = ['bluesky_friendica_handle', DI::l10n()->t('Allow to use %s as your Atmosphere handle.', $host_handle), $custom_handle, DI::l10n()->t('When enabled, you can use %s as your Atmosphere handle. After you enabled this option, please go to https://bsky.app/settings and select to change your handle. Select that you have got your own domain. Then enter %s and select "No DNS Panel". Then select "Verify Text File".', $host_handle, $host_handle)];
 		if ($custom_handle) {
 			$handle = $host_handle;
 		}
@@ -281,23 +281,23 @@ function bluesky_settings(array &$data)
 
 	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/bluesky/');
 	$html = Renderer::replaceMacros($t, [
-		'$enable'           => ['bluesky', DI::l10n()->t('Enable AT Protocol Addon'), $enabled],
-		'$bydefault'        => ['bluesky_bydefault', DI::l10n()->t('Post via AT Protocol by default'), $def_enabled],
+		'$enable'           => ['bluesky', DI::l10n()->t('Enable Atmosphere Addon'), $enabled],
+		'$bydefault'        => ['bluesky_bydefault', DI::l10n()->t('Post to the Atmosphere by default'), $def_enabled],
 		'$import'           => ['bluesky_import', DI::l10n()->t('Import the remote timeline'), $import],
-		'$import_feeds'     => ['bluesky_import_feeds', DI::l10n()->t('Import the pinned feeds'), $import_feeds, DI::l10n()->t('When activated, Posts will be imported from all the feeds that you pinned in AT Protocol.')],
+		'$import_feeds'     => ['bluesky_import_feeds', DI::l10n()->t('Import the pinned feeds'), $import_feeds, DI::l10n()->t('When activated, Posts will be imported from all the feeds that you pinned in your Atmosphere client.')],
 		'$complete_threads' => ['bluesky_complete_threads', DI::l10n()->t('Complete the threads'), $complete_threads, DI::l10n()->t('When activated, the system fetches additional replies for the posts in the timeline. This leads to more complete threads.')],
 		'$custom_handle'    => $friendica_handle,
 		'$pds'              => ['bluesky_pds', DI::l10n()->t('Personal Data Server'), $pds, DI::l10n()->t('The personal data server (PDS) is the system that hosts your profile.'), '', 'readonly'],
-		'$handle'           => ['bluesky_handle', DI::l10n()->t('AT Protocol handle'), $handle, '', '', $custom_handle ? 'readonly' : ''],
-		'$did'              => ['bluesky_did', DI::l10n()->t('AT Protocol DID'), $did, DI::l10n()->t('This is the unique identifier. It will be fetched automatically, when the handle is entered.'), '', 'readonly'],
-		'$password'         => ['bluesky_password', DI::l10n()->t('AT Protocol app password'), '', DI::l10n()->t("Please don't add your real password here, but instead create a specific app password in the settings of your AT Protocol system.")],
+		'$handle'           => ['bluesky_handle', DI::l10n()->t('Atmosphere handle'), $handle, '', '', $custom_handle ? 'readonly' : ''],
+		'$did'              => ['bluesky_did', DI::l10n()->t('Atmosphere DID'), $did, DI::l10n()->t('This is the unique identifier. It will be fetched automatically, when the handle is entered.'), '', 'readonly'],
+		'$password'         => ['bluesky_password', DI::l10n()->t('Atmosphere app password'), '', DI::l10n()->t("Please don't add your real password here, but instead create a specific app password in the settings of your Atmosphere client.")],
 		'$web'              => ['bluesky_web', DI::l10n()->t('Web front end'), $web, DI::l10n()->t('Choose your preferred external web front end for displaying posts and profiles.'), $web_frontend, ''],
 		'$status'           => bluesky_get_status($handle, $did, $pds, $token),
 	]);
 
 	$data = [
 		'connector' => 'bluesky',
-		'title'     => DI::l10n()->t('AT Protocol (Bluesky, Eurosky, Blacksky, ...) Import/Export'),
+		'title'     => DI::l10n()->t('Atmosphere (Bluesky, Eurosky, Blacksky, ...) Import/Export'),
 		'image'     => 'images/500px-AT_Protocol_logo.png',
 		'enabled'   => $enabled,
 		'html'      => $html,
@@ -328,7 +328,7 @@ function bluesky_get_status(string $handle = null, string $did = null, string $p
 
 	switch ($status) {
 		case ATProtocol::STATUS_TOKEN_OK:
-			return DI::l10n()->t("You are authenticated to the AT Protocol PDS. For security reasons the password isn't stored.");
+			return DI::l10n()->t("You are authenticated to the Atmosphere PDS. For security reasons the password isn't stored.");
 		case ATProtocol::STATUS_SUCCESS:
 			return DI::l10n()->t('The communication with the personal data server service (PDS) is established.');
 		case ATProtocol::STATUS_API_FAIL;
@@ -408,7 +408,7 @@ function bluesky_jot_nets(array &$jotnets_fields)
 			'type'  => 'checkbox',
 			'field' => [
 				'bluesky_enable',
-				DI::l10n()->t('Post via the AT Protocol'),
+				DI::l10n()->t('Post via the Atmosphere'),
 				DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'bluesky', 'post_by_default')
 			]
 		];
@@ -514,9 +514,9 @@ function bluesky_hook_fork(array &$b)
 	}
 
 	if (DI::pConfig()->get($post['uid'], 'bluesky', 'import')) {
-		// Don't post if it isn't a reply to an AT Protocol post
+		// Don't post if it isn't a reply to an Atmosphere post
 		if (($post['gravity'] != Item::GRAVITY_PARENT) && !Post::exists(['id' => $post['parent'], 'network' => Protocol::ATPROTO])) {
-			DI::logger()->notice('No AT Protocol parent found', ['item' => $post['id']]);
+			DI::logger()->notice('No Atmosphere parent found', ['item' => $post['id']]);
 			$b['execute'] = false;
 			return;
 		}
@@ -574,7 +574,7 @@ function bluesky_send(array &$b)
 		if ($b['deleted']) {
 			$uri = DI::atpProcessor()->getUriClass($b['uri']);
 			if (empty($uri)) {
-				DI::logger()->debug('Not an AT Protocol post', ['uri' => $b['uri']]);
+				DI::logger()->debug('Not an Atmosphere post', ['uri' => $b['uri']]);
 				return;
 			}
 			DI::atProtocol()->deleteRecord($b['uid'], $uri->uri);
@@ -585,7 +585,7 @@ function bluesky_send(array &$b)
 		$parent = DI::atpProcessor()->getUriClass($b['thr-parent']);
 
 		if (empty($root) || empty($parent)) {
-			DI::logger()->debug('No AT Protocol post', ['parent' => $b['parent'], 'thr-parent' => $b['thr-parent']]);
+			DI::logger()->debug('No Atmosphere post', ['parent' => $b['parent'], 'thr-parent' => $b['thr-parent']]);
 			return;
 		}
 
@@ -1046,6 +1046,10 @@ function bluesky_fetch_notifications(int $uid)
 	}
 
 	foreach ($data->notifications as $notification) {
+		if (DI::contentItem()->isTooOld($notification->indexedAt)) {
+			continue;
+		}
+
 		$uri = DI::atpProcessor()->getUri($notification);
 		if (Post::exists(['uri' => $uri, 'uid' => $uid]) || Post::exists(['extid' => $uri, 'uid' => $uid])) {
 			DI::logger()->debug('Notification already processed', ['uid' => $uid, 'reason' => $notification->reason, 'uri' => $uri, 'indexedAt' => $notification->indexedAt]);
