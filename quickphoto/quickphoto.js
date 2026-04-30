@@ -1,88 +1,98 @@
 (function() {
     const monsterPattern = /\[url=(.*?)\]\[img=(.*?)\](.*?)\[\/img\]\[\/url\]/gi;
     let throttleTimer;
+    let isSubmitting = false;
 
     const i18nDesc = (window.qp_i18n && window.qp_i18n.imageDesc) ? window.qp_i18n.imageDesc : "Image description";
 
-    const cleanupOldEntries = () => {
-        const now = Date.now();
-        const twelveHours = 12 * 60 * 60 * 1000;
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key && key.startsWith('qp_')) {
-                try {
-                    const data = JSON.parse(localStorage.getItem(key));
-                    if (data && data.timestamp && (now - data.timestamp > twelveHours)) {
-                        localStorage.removeItem(key);
-                    }
-                } catch (e) { localStorage.removeItem(key); }
-            }
-        }
+    const storeMetadata = (textarea, fileName, data) => {
+        let metadata = {};
+        try {
+            const raw = textarea.getAttribute('data-qp-metadata');
+            if (raw) metadata = JSON.parse(raw);
+        } catch (e) { metadata = {}; }
+
+        metadata[fileName] = data;
+        textarea.setAttribute('data-qp-metadata', JSON.stringify(metadata));
     };
 
-    const simplify = (text) => {
-        if (!text || !text.includes('[url=')) return text;
-        return text.replace(monsterPattern, (match, urlPart, imgPart, existingDesc) => {
-            const fileName = imgPart.split('/').pop();
-            const storageKey = `qp_${fileName}`;
+    const getMetadata = (textarea, fileName) => {
+        try {
+            const raw = textarea.getAttribute('data-qp-metadata');
+            if (!raw) return null;
+            const metadata = JSON.parse(raw);
+            return metadata[fileName] || null;
+        } catch (e) { return null; }
+    };
 
-            localStorage.setItem(storageKey, JSON.stringify({
+    const simplify = (textarea) => {
+        if (!textarea || !textarea.value.includes('[url=')) return;
+
+        const current = textarea.value;
+        const simple = current.replace(monsterPattern, (match, urlPart, imgPart, existingDesc) => {
+            const fileName = imgPart.split('/').pop();
+
+            storeMetadata(textarea, fileName, {
                 url: urlPart,
-                img: imgPart,
-                timestamp: Date.now()
-            }));
+                img: imgPart
+            });
 
             let userDesc = existingDesc.trim() || i18nDesc;
             return `[img]${fileName}|${userDesc}[/img]`;
         });
+
+        if (current !== simple) {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            textarea.value = simple;
+            textarea.setSelectionRange(start, end);
+        }
     };
 
-    const reconstruct = (text) => {
-        if (!text || !text.includes('[img]')) return text;
-        return text.replace(/\[img\](.*?)\|(.*?)\[\/img\]/g, (match, fileName, desc) => {
-            const data = localStorage.getItem(`qp_${fileName}`);
+    const reconstruct = (textarea) => {
+        if (!textarea || !textarea.value.includes('[img]')) return textarea.value;
+
+        return textarea.value.replace(/\[img\](.*?)\|(.*?)\[\/img\]/g, (match, fileName, desc) => {
+            const data = getMetadata(textarea, fileName);
             if (data) {
-                const parsed = JSON.parse(data);
+                // Falls die Beschreibung dem Standard-Platzhalter entspricht, leeren wir sie für den Server
                 const finalDesc = (desc === i18nDesc) ? "" : desc;
-                return `[url=${parsed.url}][img=${parsed.img}]${finalDesc}[/img][/url]`;
+                return `[url=${data.url}][img=${data.img}]${finalDesc}[/img][/url]`;
             }
             return match;
         });
     };
 
     const applySimplify = (textarea) => {
-        if (!textarea || !textarea.value || !textarea.value.includes('[/img]')) return;
+        if (isSubmitting || !textarea || !textarea.value || !textarea.value.includes('[/img]')) return;
 
         (window.requestIdleCallback || function(cb) { return setTimeout(cb, 1); })(() => {
-            const current = textarea.value;
-            const simple = simplify(current);
-            if (current !== simple) {
-                const start = textarea.selectionStart;
-                const end = textarea.selectionEnd;
-                textarea.value = simple;
-                textarea.setSelectionRange(start, end);
-            }
+            if (!isSubmitting) simplify(textarea);
         });
     };
+
+    document.addEventListener('submit', function(e) {
+        isSubmitting = true;
+        const textareas = e.target.querySelectorAll('textarea');
+        textareas.forEach(textarea => {
+            textarea.value = reconstruct(textarea);
+        });
+    }, true);
 
     if (typeof jQuery !== 'undefined') {
         const originalVal = jQuery.fn.val;
         jQuery.fn.val = function(value) {
             if (arguments.length === 0 && this.is('textarea')) {
-                return reconstruct(originalVal.call(this));
+                return reconstruct(this[0]);
             }
             if (arguments.length > 0 && this.is('textarea')) {
-                return originalVal.call(this, simplify(value));
+                const result = originalVal.call(this, value);
+                simplify(this[0]);
+                return result;
             }
             return originalVal.apply(this, arguments);
         };
     }
-
-    document.addEventListener('drop', (e) => {
-        if (e.target.tagName === 'TEXTAREA') {
-            setTimeout(() => applySimplify(e.target), 150);
-        }
-    }, true);
 
     document.addEventListener('input', (e) => {
         if (e.target.tagName === 'TEXTAREA') {
@@ -92,35 +102,22 @@
     });
 
     document.addEventListener('click', (e) => {
-        const btn = e.target.closest(
-            '#wall-submit-preview, #profile-jot-submit, #wall-submit-submit, #jot-submit, ' +
-            '[id^="comment-edit-submit-"], [id^="comment-edit-preview-link-"]'
-        );
-
+        const btn = e.target.closest('#wall-submit-preview, [id^="comment-edit-preview-link-"]');
         if (btn) {
-            const textareas = document.querySelectorAll('textarea');
-            if (textareas.length > 0) {
-                textareas.forEach(textarea => {
-                    textarea.value = reconstruct(textarea.value);
-                    if (btn.id.includes('preview')) {
-                        setTimeout(() => applySimplify(textarea), 1000);
-                    }
-                });
-            }
+            document.querySelectorAll('textarea').forEach(textarea => {
+                setTimeout(() => {
+                    isSubmitting = false;
+                    applySimplify(textarea);
+                }, 1000);
+            });
         }
     }, true);
 
     setInterval(() => {
-        if (document.hidden) return;
-        const textareas = document.querySelectorAll('textarea');
-        if (textareas.length === 0) return;
-
-        textareas.forEach(textarea => {
-            if (textarea.offsetParent !== null) {
-                applySimplify(textarea);
-            }
+        if (document.hidden || isSubmitting) return;
+        document.querySelectorAll('textarea').forEach(textarea => {
+            if (textarea.offsetParent !== null) applySimplify(textarea);
         });
     }, 2500);
 
-    cleanupOldEntries();
 })();
