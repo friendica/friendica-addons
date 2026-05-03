@@ -37,10 +37,10 @@ function quickphoto_post_hook(&$item) {
 
         $condition = [
             'resource-id' => $filename,
-            'uid' => local_user()
+            'uid' => DI::userSession()->getLocalUserId(),
         ];
 
-        $photo = DI::pStore()->selectFirst('photo', ['url'], $condition);
+        $photo = DI::dba()->selectFirst('photo', ['url'], $condition);
 
         if ($photo) {
             return '[url=' . $photo['url'] . '][img=' . $photo['url'] . ']' . $description . '[/img][/url]';
