@@ -42,7 +42,6 @@
 				uploader.setParams({
 					newalbum      : newalbumElm ? newalbumElm.value : '',
 					album         : albumElm ? albumElm.value : '',
-					not_visible   : document.getElementById('photos-upload-noshare').checked,
 					contact_allow : contact_allow ? contact_allow.value : '',
 					circle_allow  : circle_allow  ? circle_allow.value  : '',
 					contact_deny  : contact_deny  ? contact_deny.value  : '',
