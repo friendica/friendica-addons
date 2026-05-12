@@ -1,4 +1,5 @@
 <form action="/admin/addon/openidconnect" method="post">
+	<input type="hidden" name="form_security_token" value="{{$form_security_token}}" />
 	<h2>{{$title}}</h2>
 
 	<div class="form-group">

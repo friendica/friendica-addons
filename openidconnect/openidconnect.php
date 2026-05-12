@@ -702,24 +702,25 @@ function openidconnect_addon_admin(string &$o)
 			'sub' => DI::l10n()->t('OpenID Subject (sub)'),
 			'email' => DI::l10n()->t('Email'),
 		],
-'$auto_create_accounts' => [
+		'$auto_create_accounts' => [
 			'auto_create_accounts',
 			DI::l10n()->t('Auto-create accounts'),
 			(bool)DI::config()->get('openidconnect', 'auto_create_accounts'),
 			DI::l10n()->t('Automatically create local accounts for users authenticating via OIDC'),
 		],
+		'$form_security_token' => BaseModule::getFormSecurityToken('openidconnect'),
 		'$submit' => DI::l10n()->t('Save Settings'),
 	]);
 }
 
 function openidconnect_addon_admin_post(): void
 {
-	DI::logger()->debug('openidconnect POST all', ['POST' => $_POST]);
+	if (!BaseModule::checkFormSecurityTokenRedirectOnError('/admin/addons/openidconnect', 'openidconnect')) {
+		return;
+	}
 
 	$autoCreate = !empty($_POST['auto_create_accounts']);
 	DI::config()->set('openidconnect', 'auto_create_accounts', $autoCreate);
-
-	DI::logger()->debug('openidconnect saved', ['auto_create_accounts' => $autoCreate, 'config_get' => DI::config()->get('openidconnect', 'auto_create_accounts')]);
 
 	$keys = ['discovery_url', 'client_id', 'client_secret', 'scopes', 'button_text', 'oidc_mode'];
 	foreach ($keys as $key) {
