@@ -7,5 +7,4 @@ return [
 	'scopes' => 'openid email profile',
 	'auto_create_accounts' => true,
 	'button_text' => '',
-	'oidc_mode' => 'sub',
 ];

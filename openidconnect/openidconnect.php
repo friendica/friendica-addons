@@ -686,16 +686,6 @@ function openidconnect_addon_admin(string &$o)
 			DI::config()->get('openidconnect', 'button_text') ?: DI::l10n()->t('Sign in with OpenID Connect'),
 			DI::l10n()->t('Text for the SSO button on the login page'),
 		],
-		'$oidc_mode' => [
-			'oidc_mode',
-			DI::l10n()->t('OIDC Mode'),
-			DI::config()->get('openidconnect', 'oidc_mode', 'sub'),
-			DI::l10n()->t("'sub' = match by OpenID subject, 'email' = match by email only"),
-		],
-		'$oidc_mode_options' => [
-			'sub' => DI::l10n()->t('OpenID Subject (sub)'),
-			'email' => DI::l10n()->t('Email'),
-		],
 		'$auto_create_accounts' => [
 			'auto_create_accounts',
 			DI::l10n()->t('Auto-create accounts'),
@@ -716,7 +706,7 @@ function openidconnect_addon_admin_post(): void
 	$autoCreate = !empty($_POST['auto_create_accounts']);
 	DI::config()->set('openidconnect', 'auto_create_accounts', $autoCreate);
 
-	$keys = ['discovery_url', 'client_id', 'client_secret', 'scopes', 'button_text', 'oidc_mode'];
+	$keys = ['discovery_url', 'client_id', 'client_secret', 'scopes', 'button_text'];
 	foreach ($keys as $key) {
 		$value = $_POST[$key] ?? '';
 		DI::config()->set('openidconnect', $key, trim($value));

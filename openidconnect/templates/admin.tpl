@@ -33,15 +33,6 @@
 	</div>
 
 	<div class="form-group">
-		<label for="id_oidc_mode">{{$oidc_mode.1}}</label>
-		<select name="oidc_mode" id="id_oidc_mode" class="form-control">
-			<option value="sub" {{if $oidc_mode.2 === 'sub'}}selected{{/if}}>{{$oidc_mode_options.sub}}</option>
-			<option value="email" {{if $oidc_mode.2 === 'email'}}selected{{/if}}>{{$oidc_mode_options.email}}</option>
-		</select>
-		<span class="help-block">{{$oidc_mode.3}}</span>
-	</div>
-
-	<div class="form-group">
 		<input type="checkbox" name="auto_create_accounts" id="id_auto_create_accounts" value="1" {{if $auto_create_accounts.2}}checked{{/if}} />
 		<label for="id_auto_create_accounts">{{$auto_create_accounts.1}}</label>
 		<span class="help-block">{{$auto_create_accounts.3}}</span>
