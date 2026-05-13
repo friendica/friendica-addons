@@ -88,7 +88,7 @@ function openidconnect_get_provider_config(): array
 
 	$discoveryUrl = DI::config()->get('openidconnect', 'discovery_url');
 
-	$response = DI::httpClient()->fetch($discoveryUrl);
+	$response = DI::httpClient()->fetch($discoveryUrl, '', 30);
 	if (!$response) {
 		DI::logger()->error('Failed to fetch OIDC discovery document', ['url' => $discoveryUrl]);
 		return [];
