@@ -597,7 +597,7 @@ function openidconnect_page_end(string &$o): void
 <div class="panel panel-default">
 	<div class="panel-heading">OpenID Connect</div>
 	<div class="panel-body">
-		<p><strong>Subject:</strong> {$sub}</p>
+		<p><strong>OIDC ID:</strong> {$sub}</p>
 		<button type="button" class="btn btn-danger" onclick="if(confirm('{$confirmMsg}')){window.location.href='{$baseUrl}/openidconnect/unlink'}">{$unlinkLabel}</button>
 	</div>
 </div>
