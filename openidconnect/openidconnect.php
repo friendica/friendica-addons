@@ -656,7 +656,6 @@ function openidconnect_addon_admin(string &$o)
 
 	$o = Renderer::replaceMacros($t, [
 		'$title' => DI::l10n()->t('OpenID Connect (OAuth2) Configuration'),
-		'$form_security_token' => BaseModule::getFormSecurityToken('openidconnect_admin'),
 		'$discovery_url' => [
 			'discovery_url',
 			DI::l10n()->t('Discovery URL'),
