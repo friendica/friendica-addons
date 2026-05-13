@@ -612,7 +612,7 @@ function openidconnect_page_end(string &$o): void
 		$sub = htmlspecialchars($linkedAccount['sub'] ?? '');
 		$email = htmlspecialchars($linkedAccount['email'] ?? '');
 		$unlinkLabel = DI::l10n()->t('Unlink Account');
-		$confirmMsg = DI::l10n()->t('Are you sure you want to unlink your OpenID Connect account?');
+		$confirmMsg = addslashes(DI::l10n()->t('Are you sure you want to unlink your OpenID Connect account?'));
 		
 		$html = <<<HTML
 <div class="panel panel-default">
