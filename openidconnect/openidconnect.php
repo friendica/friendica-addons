@@ -458,7 +458,7 @@ function openidconnect_find_or_create_user(string $sub, string $email, string $n
 
 function openidconnect_create_user(string $sub, string $email, string $name, string $nickname, string $picture): ?array
 {
-	$nickname = DBA::escape(trim($nickname));
+	$nickname = trim($nickname);
 	if (DBA::exists('user', ['nickname' => $nickname])) {
 		$counter = 1;
 		$baseNickname = $nickname;
