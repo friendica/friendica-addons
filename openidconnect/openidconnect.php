@@ -378,6 +378,8 @@ function openidconnect_exchange_code(string $code): array
 	curl_setopt($ch, CURLOPT_POST, true);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData));
 	curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
 
 	$response = curl_exec($ch);
 	$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -406,6 +408,8 @@ function openidconnect_get_userinfo(string $accessToken): array
 	$ch = curl_init($config['userinfo_endpoint']);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_HTTPHEADER, ['Authorization: Bearer ' . $accessToken]);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
 
 	$response = curl_exec($ch);
 	$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -575,6 +579,8 @@ function openidconnect_revoke(): void
 		'client_secret' => $clientSecret,
 	]));
 	curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
 
 	curl_exec($ch);
 	curl_close($ch);
