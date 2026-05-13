@@ -414,6 +414,9 @@ function openidconnect_find_or_create_user(string $sub, string $email, string $n
 	$linkedBySub = DBA::selectFirst('user', ['uid', 'email', 'nickname', 'openid'], ['openid' => $sub]);
 	if ($linkedBySub) {
 		DI::logger()->debug('openidconnect: found user by sub (linked)', ['uid' => $linkedBySub['uid']]);
+		DI::pConfig()->set($linkedBySub['uid'], 'openidconnect', 'oidc_sub', $sub);
+		DI::pConfig()->set($linkedBySub['uid'], 'openidconnect', 'oidc_email', $email);
+		DI::pConfig()->set($linkedBySub['uid'], 'openidconnect', 'oidc_nickname', $nickname);
 		if (!empty($picture)) {
 			openidconnect_update_avatar($linkedBySub['uid'], $picture);
 		}
