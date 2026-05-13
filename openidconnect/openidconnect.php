@@ -576,7 +576,6 @@ function openidconnect_page_end(string &$o): void
 	}
 
 	$route = DI::args()->getCommand();
-	$o .= "\n<!-- openidconnect page_end: route=" . $route . " -->\n";
 
 	// Settings panel for linked accounts
 	$uid = DI::userSession()->getLocalUserId();
@@ -644,8 +643,6 @@ JS;
 			}
 		}
 		DBA::close($oidcFallback);
-
-		$o .= "\n<!-- openidconnect SSO UIDs: " . json_encode($uids) . " -->\n";
 
 		if (empty($uids)) {
 			return;
