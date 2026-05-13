@@ -16,6 +16,7 @@ use Friendica\DI;
 use Friendica\Model\User;
 use Friendica\Model\Contact;
 use Friendica\Core\Cache\Enum\Duration;
+use Friendica\Network\HTTPClient\Client\HttpClientOptions;
 
 define('OIDC_STATE_LENGTH', 32);
 define('OIDC_LINK_STATE', 'openidconnect_link_state');
@@ -373,24 +374,14 @@ function openidconnect_exchange_code(string $code): array
 		'client_secret' => $clientSecret,
 	];
 
-	$ch = curl_init($config['token_endpoint']);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_POST, true);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData));
-	curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
-	curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+	$response = DI::httpClient()->post($config['token_endpoint'], $postData, ['Content-Type: application/x-www-form-urlencoded'], 30);
 
-	$response = curl_exec($ch);
-	$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-	curl_close($ch);
-
-	if ($httpCode !== 200) {
-		DI::logger()->error('Token endpoint returned error', ['code' => $httpCode, 'response' => $response]);
+	if (!$response->isSuccess()) {
+		DI::logger()->error('Token endpoint returned error', ['code' => $response->getReturnCode(), 'response' => $response->getBodyString()]);
 		return [];
 	}
 
-	$tokens = json_decode($response, true);
+	$tokens = json_decode($response->getBodyString(), true);
 	if (!$tokens || !isset($tokens['access_token'])) {
 		return [];
 	}
@@ -405,22 +396,17 @@ function openidconnect_get_userinfo(string $accessToken): array
 		return [];
 	}
 
-	$ch = curl_init($config['userinfo_endpoint']);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, ['Authorization: Bearer ' . $accessToken]);
-	curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+	$response = DI::httpClient()->get($config['userinfo_endpoint'], '', [
+		HttpClientOptions::HEADERS => ['Authorization: Bearer ' . $accessToken],
+		HttpClientOptions::TIMEOUT => 30,
+	]);
 
-	$response = curl_exec($ch);
-	$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-	curl_close($ch);
-
-	if ($httpCode !== 200) {
-		DI::logger()->error('Userinfo endpoint returned error', ['code' => $httpCode]);
+	if (!$response->isSuccess()) {
+		DI::logger()->error('Userinfo endpoint returned error', ['code' => $response->getReturnCode()]);
 		return [];
 	}
 
-	return json_decode($response, true) ?: [];
+	return json_decode($response->getBodyString(), true) ?: [];
 }
 
 function openidconnect_find_or_create_user(string $sub, string $email, string $name, string $nickname, string $picture): ?array
@@ -570,20 +556,11 @@ function openidconnect_revoke(): void
 	$clientId = DI::config()->get('openidconnect', 'client_id');
 	$clientSecret = DI::config()->get('openidconnect', 'client_secret');
 
-	$ch = curl_init($revocationEndpoint);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_POST, true);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+	DI::httpClient()->post($revocationEndpoint, [
 		'token' => $tokens['access_token'],
 		'client_id' => $clientId,
 		'client_secret' => $clientSecret,
-	]));
-	curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
-	curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-
-	curl_exec($ch);
-	curl_close($ch);
+	], ['Content-Type: application/x-www-form-urlencoded'], 30);
 
 	DI::session()->remove('openidconnect_tokens');
 	DI::baseUrl()->redirect();
