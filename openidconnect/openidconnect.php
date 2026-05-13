@@ -14,6 +14,7 @@ use Friendica\Core\Config\Util\ConfigFileManager;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\User;
+use Friendica\Model\Contact;
 
 define('OIDC_STATE_LENGTH', 32);
 define('OIDC_LINK_STATE', 'openidconnect_link_state');
