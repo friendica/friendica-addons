@@ -510,8 +510,8 @@ function openidconnect_update_avatar(int $uid, string $pictureUrl): void
 		return;
 	}
 
-	$photoData = @file_get_contents($pictureUrl);
-	if (!$photoData) {
+	$photoData = DI::httpClient()->fetch($pictureUrl, '', 30);
+	if (empty($photoData)) {
 		return;
 	}
 
