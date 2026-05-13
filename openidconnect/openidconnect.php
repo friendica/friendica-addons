@@ -330,15 +330,6 @@ function openidconnect_get_linked_account(int $uid): ?array
 		];
 	}
 
-	$userOidc = DBA::selectFirst('user', ['openid'], ['uid' => $uid]);
-	if (!empty($userOidc['openid'])) {
-		return [
-			'sub' => $userOidc['openid'],
-			'email' => null,
-			'nickname' => null,
-		];
-	}
-
 	return null;
 }
 
