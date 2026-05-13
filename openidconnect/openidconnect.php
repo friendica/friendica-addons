@@ -542,12 +542,6 @@ function openidconnect_sso_initiate(string &$o)
 
 function openidconnect_logout(): void
 {
-	$uid = DI::userSession()->getLocalUserId();
-	if ($uid) {
-		DI::pConfig()->delete($uid, 'openidconnect', 'oidc_sub');
-		DI::pConfig()->delete($uid, 'openidconnect', 'oidc_email');
-		DI::pConfig()->delete($uid, 'openidconnect', 'oidc_nickname');
-	}
 	DI::session()->remove('openidconnect_tokens');
 }
 
