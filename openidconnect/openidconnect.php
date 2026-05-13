@@ -15,6 +15,7 @@ use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\User;
 use Friendica\Model\Contact;
+use Friendica\Core\Cache\Enum\Duration;
 
 define('OIDC_STATE_LENGTH', 32);
 define('OIDC_LINK_STATE', 'openidconnect_link_state');
@@ -79,7 +80,7 @@ function openidconnect_get_provider_config(): array
 {
 	$cacheKey = 'openidconnect:provider_config';
 
-	$cached = DI::session()->get($cacheKey);
+	$cached = DI::cache()->get($cacheKey);
 	if ($cached) {
 		return $cached;
 	}
@@ -98,7 +99,7 @@ function openidconnect_get_provider_config(): array
 		return [];
 	}
 
-	DI::session()->set($cacheKey, $config);
+	DI::cache()->set($cacheKey, $config, Duration::DAY);
 	return $config;
 }
 
@@ -708,7 +709,7 @@ function openidconnect_addon_admin_post(): void
 		DI::config()->set('openidconnect', $key, trim($value));
 	}
 
-	DI::session()->remove('openidconnect:provider_config');
+	DI::cache()->delete('openidconnect:provider_config');
 
 	DI::sysmsg()->addInfo(DI::l10n()->t('OpenID Connect settings saved.'));
 }
