@@ -33,7 +33,6 @@ The following options are available in the admin panel:
 | **Client Secret**        | Client secret from the identity provider                                          |
 | **Scopes**               | Space-separated list of requested scopes (default: `openid email profile`)        |
 | **Button Text**          | Text for the login button                                                         |
-| **OIDC Mode**            | `sub` = Match by OpenID Subject, `email` = Match by email only                    |
 | **Auto-create accounts** | Automatically create local accounts for users authenticating via OIDC             |
 
 ## Identity Provider Configuration
