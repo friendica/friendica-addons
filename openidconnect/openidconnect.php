@@ -374,7 +374,7 @@ function openidconnect_exchange_code(string $code): array
 		'client_secret' => $clientSecret,
 	];
 
-	$response = DI::httpClient()->post($config['token_endpoint'], $postData, ['Content-Type: application/x-www-form-urlencoded'], 30);
+	$response = DI::httpClient()->post($config['token_endpoint'], $postData, ['Content-Type' => 'application/x-www-form-urlencoded'], 30);
 
 	if (!$response->isSuccess()) {
 		DI::logger()->error('Token endpoint returned error', ['code' => $response->getReturnCode(), 'response' => $response->getBodyString()]);
@@ -397,7 +397,7 @@ function openidconnect_get_userinfo(string $accessToken): array
 	}
 
 	$response = DI::httpClient()->get($config['userinfo_endpoint'], '', [
-		HttpClientOptions::HEADERS => ['Authorization: Bearer ' . $accessToken],
+		HttpClientOptions::HEADERS => ['Authorization' => 'Bearer ' . $accessToken],
 		HttpClientOptions::TIMEOUT => 30,
 	]);
 
@@ -560,7 +560,7 @@ function openidconnect_revoke(): void
 		'token' => $tokens['access_token'],
 		'client_id' => $clientId,
 		'client_secret' => $clientSecret,
-	], ['Content-Type: application/x-www-form-urlencoded'], 30);
+	], ['Content-Type' => 'application/x-www-form-urlencoded'], 30);
 
 	DI::session()->remove('openidconnect_tokens');
 	DI::baseUrl()->redirect();
