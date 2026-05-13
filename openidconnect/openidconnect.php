@@ -646,10 +646,6 @@ document.addEventListener("DOMContentLoaded", function() {
 JS;
 }
 
-function openidconnect_account_settings_post(array &$data): void
-{
-}
-
 function openidconnect_addon_admin(string &$o)
 {
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/openidconnect/');
