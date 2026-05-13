@@ -523,7 +523,7 @@ function openidconnect_update_avatar(int $uid, string $pictureUrl): void
 		if ($contact) {
 			Contact::updateAvatar($contact['id'], $tempFile);
 		}
-	} catch (Exception $e) {
+	} catch (\Exception $e) {
 		DI::logger()->warning('Failed to update avatar', ['uid' => $uid, 'exception' => $e->getMessage()]);
 	} finally {
 		@unlink($tempFile);
