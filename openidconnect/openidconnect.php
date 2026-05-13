@@ -575,25 +575,21 @@ function openidconnect_page_end(string &$o): void
 		return;
 	}
 
-	$uid = DI::userSession()->getLocalUserId();
-	if (!$uid) {
-		return;
-	}
-
 	$route = DI::args()->getCommand();
-	if (!in_array($route, ['settings/account', 'settings', 'account'])) {
-		return;
-	}
+	$o .= "\n<!-- openidconnect page_end: route=" . $route . " -->\n";
 
-	$linkedAccount = openidconnect_get_linked_account($uid);
-	$baseUrl = DI::baseUrl();
+	// Settings panel for linked accounts
+	$uid = DI::userSession()->getLocalUserId();
+	if ($uid && in_array($route, ['settings/account', 'settings', 'account'])) {
+		$linkedAccount = openidconnect_get_linked_account($uid);
+		$baseUrl = DI::baseUrl();
 
-	if ($linkedAccount) {
-		$sub = htmlspecialchars($linkedAccount['sub'] ?? '');
-		$unlinkLabel = DI::l10n()->t('Unlink Account');
-		$confirmMsg = addslashes(DI::l10n()->t('Are you sure you want to unlink your OpenID Connect account?'));
-		
-		$html = <<<HTML
+		if ($linkedAccount) {
+			$sub = htmlspecialchars($linkedAccount['sub'] ?? '');
+			$unlinkLabel = DI::l10n()->t('Unlink Account');
+			$confirmMsg = addslashes(DI::l10n()->t('Are you sure you want to unlink your OpenID Connect account?'));
+			
+			$html = <<<HTML
 <div class="panel panel-default">
 	<div class="panel-heading">OpenID Connect</div>
 	<div class="panel-body">
@@ -602,10 +598,10 @@ function openidconnect_page_end(string &$o): void
 	</div>
 </div>
 HTML;
-	} else {
-		$linkLabel = DI::l10n()->t('Link OpenID Connect Account');
-		
-		$html = <<<HTML
+		} else {
+			$linkLabel = DI::l10n()->t('Link OpenID Connect Account');
+			
+			$html = <<<HTML
 <div class="panel panel-default">
 	<div class="panel-heading">OpenID Connect</div>
 	<div class="panel-body">
@@ -614,10 +610,10 @@ HTML;
 	</div>
 </div>
 HTML;
-	}
+		}
 
-	$jsonHtml = json_encode($html);
-	$o .= <<<JS
+		$jsonHtml = json_encode($html);
+		$o .= <<<JS
 <script>
 document.addEventListener("DOMContentLoaded", function() {
 	var container = document.querySelector("#settings-form");
@@ -629,6 +625,60 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 JS;
+	}
+
+	// SSO indicator in moderation/users table
+	if (strpos($route, 'moderation/users') === 0) {
+		$oidcUsers = DBA::p("SELECT DISTINCT `uid` FROM `pconfig` WHERE `cat` = ? AND `k` = ? AND `v` != ''", 'openidconnect', 'oidc_sub');
+		$uids = [];
+		while ($user = DBA::fetch($oidcUsers)) {
+			$uids[] = (int)$user['uid'];
+		}
+		DBA::close($oidcUsers);
+
+		$oidcFallback = DBA::p("SELECT DISTINCT `uid` FROM `user` WHERE `openid` != '' AND `openid` NOT LIKE 'http://%' AND `openid` NOT LIKE 'https://%'");
+		while ($user = DBA::fetch($oidcFallback)) {
+			$uid = (int)$user['uid'];
+			if (!in_array($uid, $uids)) {
+				$uids[] = $uid;
+			}
+		}
+		DBA::close($oidcFallback);
+
+		$o .= "\n<!-- openidconnect SSO UIDs: " . json_encode($uids) . " -->\n";
+
+		if (empty($uids)) {
+			return;
+		}
+
+		$jsonUids = json_encode($uids);
+		$o .= <<<JS
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+	var uids = {$jsonUids};
+	document.querySelectorAll("#users tbody tr").forEach(function(row) {
+		var uid = null;
+		var checkbox = row.querySelector('input[name="user[]"]');
+		if (checkbox) {
+			uid = parseInt(checkbox.value);
+		} else if (row.id) {
+			var m = row.id.match(/^user-(\d+)$/);
+			if (m) uid = parseInt(m[1]);
+		}
+		if (uid && uids.indexOf(uid) !== -1) {
+			var cell = row.querySelector('.name') || row.cells[2];
+			if (cell) {
+				var badge = document.createElement("span");
+				badge.textContent = "SSO";
+				badge.style.cssText = "background:#2d87c9;color:#fff;border-radius:3px;padding:1px 5px;font-size:11px;margin-left:4px;white-space:nowrap";
+				cell.appendChild(badge);
+			}
+		}
+	});
+});
+</script>
+JS;
+	}
 }
 
 function openidconnect_addon_admin(string &$o)
