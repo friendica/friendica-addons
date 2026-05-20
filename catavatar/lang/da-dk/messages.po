@@ -5,6 +5,7 @@
 # 
 # Translators:
 # Anton <dev@atjn.dk>, 2022
+# Snue Snue, 2025
 # 
 #, fuzzy
 msgid ""
@@ -13,8 +14,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-11-21 19:14-0500\n"
 "PO-Revision-Date: 2018-04-07 05:23+0000\n"
-"Last-Translator: Anton <dev@atjn.dk>, 2022\n"
-"Language-Team: Danish (Denmark) (https://www.transifex.com/Friendica/teams/12172/da_DK/)\n"
+"Last-Translator: Snue Snue, 2025\n"
+"Language-Team: Danish (Denmark) (https://app.transifex.com/Friendica/teams/12172/da_DK/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -23,23 +24,23 @@ msgstr ""
 
 #: catavatar.php:48
 msgid "Set default profile avatar or randomize the cat."
-msgstr ""
+msgstr "Sæt standard profil avatar eller tilfældiggør katten."
 
 #: catavatar.php:53
 msgid "Cat Avatar Settings"
-msgstr ""
+msgstr "Katteavatar Indstillinger"
 
 #: catavatar.php:56
 msgid "Use Cat as Avatar"
-msgstr ""
+msgstr "Brug Kat som Avatar"
 
 #: catavatar.php:57
 msgid "Another random Cat!"
-msgstr ""
+msgstr "Endnu en tilfældig Kat!"
 
 #: catavatar.php:58
 msgid "Reset to email Cat"
-msgstr ""
+msgstr "Nulstil til email-Kat"
 
 #: catavatar.php:77
 msgid "The cat hadn't found itself."
@@ -47,12 +48,12 @@ msgstr "Katten havde ikke fundet sig selv."
 
 #: catavatar.php:86
 msgid "There was an error, the cat ran away."
-msgstr ""
+msgstr "Der opstod en fejl, katten er løbet væk."
 
 #: catavatar.php:92
 msgid "Profile Photos"
-msgstr ""
+msgstr "Profil Billeder"
 
 #: catavatar.php:102
 msgid "Meow!"
-msgstr ""
+msgstr "Miav!"

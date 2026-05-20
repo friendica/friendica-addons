@@ -1,0 +1,58 @@
+# ADDON js_upload
+# Copyright (C)
+# This file is distributed under the same license as the Friendica js_upload addon package.
+# 
+# 
+# Translators:
+# Kris, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-03 15:49-0400\n"
+"PO-Revision-Date: 2014-06-23 08:46+0000\n"
+"Last-Translator: Kris, 2018\n"
+"Language-Team: English (United Kingdom) (http://app.transifex.com/Friendica/friendica/language/en_GB/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: js_upload.php:37
+msgid "Select files for upload"
+msgstr ""
+
+#: js_upload.php:38
+msgid "Drop files here to upload"
+msgstr "Drop files to be uploaded here"
+
+#: js_upload.php:39
+msgid "Cancel"
+msgstr "Cancel"
+
+#: js_upload.php:40
+msgid "Failed"
+msgstr "Failed"
+
+#: js_upload.php:209
+msgid "No files were uploaded."
+msgstr "No files were uploaded."
+
+#: js_upload.php:215
+msgid "Uploaded file is empty"
+msgstr "Uploaded file is empty"
+
+#: js_upload.php:227
+#, php-format
+msgid "Image exceeds size limit of %s"
+msgstr ""
+
+#: js_upload.php:239
+#, php-format
+msgid "File has an invalid extension, it should be one of %s."
+msgstr ""
+
+#: js_upload.php:250
+msgid "Upload was cancelled, or server error encountered"
+msgstr "Upload was cancelled, or a server error was encountered"

@@ -10,67 +10,63 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-18 15:02+0000\n"
-"Last-Translator: Kris\n"
-"Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2014-06-23 08:33+0000\n"
+"Last-Translator: Kris, 2018\n"
+"Language-Team: Finnish (Finland) (http://app.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fi_FI\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: gravatar.php:71
+#: gravatar.php:78
 msgid "generic profile image"
 msgstr "Yleinen profiilikuva"
 
-#: gravatar.php:72
+#: gravatar.php:79
 msgid "random geometric pattern"
 msgstr "satunnainen geometrinen kuvio"
 
-#: gravatar.php:73
+#: gravatar.php:80
 msgid "monster face"
 msgstr "hirviö"
 
-#: gravatar.php:74
+#: gravatar.php:81
 msgid "computer generated face"
 msgstr "tietokoneella tuotettut kasvot"
 
-#: gravatar.php:75
+#: gravatar.php:82
 msgid "retro arcade style face"
 msgstr "retro-videopeli kasvot"
 
-#: gravatar.php:89
+#: gravatar.php:96
 msgid "Information"
 msgstr "Tietoja"
 
-#: gravatar.php:89
+#: gravatar.php:96
 msgid ""
 "Libravatar addon is installed, too. Please disable Libravatar addon or this "
 "Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if "
 "nothing was found at Libravatar."
 msgstr ""
 
-#: gravatar.php:95
-msgid "Submit"
-msgstr "Lähetä"
+#: gravatar.php:102
+msgid "Save Settings"
+msgstr ""
 
-#: gravatar.php:96
+#: gravatar.php:103
 msgid "Default avatar image"
 msgstr "Avatarin oletuskuva"
 
-#: gravatar.php:96
+#: gravatar.php:103
 msgid "Select default avatar image if none was found at Gravatar. See README"
 msgstr ""
 
-#: gravatar.php:97
+#: gravatar.php:104
 msgid "Rating of images"
 msgstr ""
 
-#: gravatar.php:97
+#: gravatar.php:104
 msgid "Select the appropriate avatar rating for your site. See README"
 msgstr ""
-
-#: gravatar.php:111
-msgid "Gravatar settings updated."
-msgstr "Gravatar -asetukset päivitetty."

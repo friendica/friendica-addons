@@ -9,36 +9,28 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-01 11:11-0400\n"
-"PO-Revision-Date: 2018-08-14 07:58+0000\n"
-"Last-Translator: 朱陈锬 <tangenters@outlook.com>\n"
-"Language-Team: Chinese (China) (http://www.transifex.com/Friendica/friendica/language/zh_CN/)\n"
+"POT-Creation-Date: 2021-11-21 19:16-0500\n"
+"PO-Revision-Date: 2014-06-23 12:37+0000\n"
+"Last-Translator: 朱陈锬 <tangenters@outlook.com>, 2018\n"
+"Language-Team: Chinese (China) (http://app.transifex.com/Friendica/friendica/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: showmore.php:41 showmore.php:45
-msgid "\"Show more\" Settings"
-msgstr "“显示更多”设置"
-
-#: showmore.php:50
+#: showmore.php:37
 msgid "Enable Show More"
 msgstr "启用显示更多功能"
 
-#: showmore.php:53
-msgid "Cutting posts after how much characters"
-msgstr "在多少字之后切断原文"
+#: showmore.php:38
+msgid "Cutting posts after how many characters"
+msgstr ""
 
-#: showmore.php:57
-msgid "Save Settings"
-msgstr "保存设置"
+#: showmore.php:43
+msgid "\"Show more\" Settings"
+msgstr "“显示更多”设置"
 
-#: showmore.php:74
-msgid "Show More Settings saved."
-msgstr "显示更多功能设置已保存。"
-
-#: showmore.php:134
+#: showmore.php:119
 msgid "show more"
 msgstr "显示更多"

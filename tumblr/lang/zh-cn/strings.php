@@ -1,13 +1,19 @@
 <?php
 
-$a->strings["Permission denied."] = "权限不够。";
-$a->strings["You are now authenticated to tumblr."] = "现在tumblr证明您是真的";
-$a->strings["return to the connector page"] = "会连接器页";
-$a->strings["Post to Tumblr"] = "发送到Tumblr";
-$a->strings["Tumblr Post Settings"] = "Tumblr发送设置";
-$a->strings["(Re-)Authenticate your tumblr page"] = "再认证您的tumblr页";
-$a->strings["Enable Tumblr Post Addon"] = "使Tumblr发送插件能够";
-$a->strings["Post to Tumblr by default"] = "默认地给Tumblr发送";
-$a->strings["Post to page:"] = "放在页：";
-$a->strings["You are not authenticated to tumblr"] = "tumblr没证明您是真的";
-$a->strings["Submit"] = "提交";
+if(! function_exists("string_plural_select_zh_CN")) {
+function string_plural_select_zh_CN($n){
+	$n = intval($n);
+	return intval(0);
+}}
+$a->strings['Permission denied.'] = '权限不足。';
+$a->strings['Save Settings'] = '保存设置';
+$a->strings['Consumer Key'] = 'Consumer Key';
+$a->strings['Consumer Secret'] = 'Consumer Secret';
+$a->strings['Post to page:'] = '发布到页面：';
+$a->strings['(Re-)Authenticate your tumblr page'] = '重新验证您的 tumblr 页面';
+$a->strings['You are not authenticated to tumblr'] = '你没有通过 tumblr 的认证';
+$a->strings['Enable Tumblr Post Addon'] = '启用 Tumblr 同步插件';
+$a->strings['Post to Tumblr by default'] = '默认发布到 Tumblr';
+$a->strings['Import the remote timeline'] = '导入远程时间线';
+$a->strings['Tumblr Import/Export'] = 'Tumblr 导入/导出';
+$a->strings['Post to Tumblr'] = '发布到 Tumblr';

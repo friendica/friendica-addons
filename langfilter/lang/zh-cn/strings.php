@@ -1,7 +1,7 @@
 <?php
 
-if(! function_exists("string_plural_select_zh_cn")) {
-function string_plural_select_zh_cn($n){
+if(! function_exists("string_plural_select_zh_CN")) {
+function string_plural_select_zh_CN($n){
 	$n = intval($n);
 	return intval(0);
 }}

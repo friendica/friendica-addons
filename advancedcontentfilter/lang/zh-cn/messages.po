@@ -4,168 +4,163 @@
 # 
 # 
 # Translators:
-# Tom <hxxtom@gmail.com>, 2020
+# d707e1333793d9d495cbd7aeaea06d36_f5d6d2f <1ec5486c03f4e02ee87dfba3df520787_706997>, 2020
+# tslmuun, 2023
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-17 04:04+0200\n"
+"POT-Creation-Date: 2022-05-11 08:54-0400\n"
 "PO-Revision-Date: 2018-05-24 06:41+0000\n"
-"Last-Translator: Tom <hxxtom@gmail.com>, 2020\n"
-"Language-Team: Chinese (China) (https://www.transifex.com/Friendica/teams/12172/zh_CN/)\n"
+"Last-Translator: tslmuun, 2023\n"
+"Language-Team: Chinese (China) (https://app.transifex.com/Friendica/teams/12172/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: advancedcontentfilter.php:134
+#: advancedcontentfilter.php:154
 #, php-format
 msgid "Filtered by rule: %s"
 msgstr "通过规则过滤：%s"
 
-#: advancedcontentfilter.php:147 advancedcontentfilter.php:204
+#: advancedcontentfilter.php:170 advancedcontentfilter.php:225
 msgid "Advanced Content Filter"
 msgstr "高级内容过滤"
 
-#: advancedcontentfilter.php:203
+#: advancedcontentfilter.php:224
 msgid "Back to Addon Settings"
 msgstr "返回扩展设置"
 
-#: advancedcontentfilter.php:205
+#: advancedcontentfilter.php:226
 msgid "Add a Rule"
 msgstr "添加规则"
 
-#: advancedcontentfilter.php:206
+#: advancedcontentfilter.php:227
 msgid "Help"
 msgstr "帮助"
 
-#: advancedcontentfilter.php:207
+#: advancedcontentfilter.php:228
 msgid ""
 "Add and manage your personal content filter rules in this screen. Rules have"
 " a name and an arbitrary expression that will be matched against post data. "
 "For a complete reference of the available operations and variables, check "
-"the <a href=\"advancedcontentfilter/help\">help page</a>."
-msgstr ""
-"在此界面上添加和管理你的个人内容过滤规则。规则要有名称和能匹配帖子内容的任意表达式。完整可用的运算符和变量，请查看<a "
-"href=\"advancedcontentfilter/help\">帮助页面</a>。"
+"the help page."
+msgstr "在此添加和管理您的屏蔽关键词。有关过滤规则参考，请查看帮助页面。"
 
-#: advancedcontentfilter.php:208
+#: advancedcontentfilter.php:229
 msgid "Your rules"
 msgstr "你的规则"
 
-#: advancedcontentfilter.php:209
+#: advancedcontentfilter.php:230
 msgid ""
 "You have no rules yet! Start adding one by clicking on the button above next"
 " to the title."
 msgstr "你还没有规则！点击标题上方的按钮开始新增规则。"
 
-#: advancedcontentfilter.php:210
+#: advancedcontentfilter.php:231
 msgid "Disabled"
 msgstr "禁用"
 
-#: advancedcontentfilter.php:211
+#: advancedcontentfilter.php:232
 msgid "Enabled"
 msgstr "启用"
 
-#: advancedcontentfilter.php:212
+#: advancedcontentfilter.php:233
 msgid "Disable this rule"
 msgstr "禁用此规则"
 
-#: advancedcontentfilter.php:213
+#: advancedcontentfilter.php:234
 msgid "Enable this rule"
 msgstr "启用此规则"
 
-#: advancedcontentfilter.php:214
+#: advancedcontentfilter.php:235
 msgid "Edit this rule"
 msgstr "编辑此规则"
 
-#: advancedcontentfilter.php:215
+#: advancedcontentfilter.php:236
 msgid "Edit the rule"
 msgstr "编辑规则"
 
-#: advancedcontentfilter.php:216
+#: advancedcontentfilter.php:237
 msgid "Save this rule"
 msgstr "保存规则"
 
-#: advancedcontentfilter.php:217
+#: advancedcontentfilter.php:238
 msgid "Delete this rule"
 msgstr "删除此规则"
 
-#: advancedcontentfilter.php:218
+#: advancedcontentfilter.php:239
 msgid "Rule"
 msgstr "规则"
 
-#: advancedcontentfilter.php:219
+#: advancedcontentfilter.php:240
 msgid "Close"
 msgstr "关闭"
 
-#: advancedcontentfilter.php:220
+#: advancedcontentfilter.php:241
 msgid "Add new rule"
 msgstr "新增规则"
 
-#: advancedcontentfilter.php:221
+#: advancedcontentfilter.php:242
 msgid "Rule Name"
 msgstr "规则名"
 
-#: advancedcontentfilter.php:222
+#: advancedcontentfilter.php:243
 msgid "Rule Expression"
 msgstr "规则表达式"
 
-#: advancedcontentfilter.php:223
-msgid ""
-"<p>Examples:</p><ul><li><pre>author_link == "
-"'https://friendica.mrpetovan.com/profile/hypolite'</pre></li><li>tags</li></ul>"
-msgstr ""
-"<p>例子：</p><ul><li><pre>author_link == "
-"'https://friendica.mrpetovan.com/profile/hypolite</pre></li><li>tags</li></ul>"
-
-#: advancedcontentfilter.php:224
+#: advancedcontentfilter.php:244
 msgid "Cancel"
 msgstr "取消"
 
-#: advancedcontentfilter.php:290 advancedcontentfilter.php:301
-#: advancedcontentfilter.php:312 advancedcontentfilter.php:346
-#: advancedcontentfilter.php:375 advancedcontentfilter.php:396
+#: advancedcontentfilter.php:295
+msgid "This addon requires this node having at least one post"
+msgstr "此插件要求本站至少有一个帖子。"
+
+#: advancedcontentfilter.php:325 advancedcontentfilter.php:336
+#: advancedcontentfilter.php:347 advancedcontentfilter.php:383
+#: advancedcontentfilter.php:414 advancedcontentfilter.php:437
 msgid "You must be logged in to use this method"
 msgstr "使用此模式您必须先登录。"
 
-#: advancedcontentfilter.php:316 advancedcontentfilter.php:350
-#: advancedcontentfilter.php:379
+#: advancedcontentfilter.php:351 advancedcontentfilter.php:387
+#: advancedcontentfilter.php:418
 msgid "Invalid form security token, please refresh the page."
 msgstr "无效的安全令牌，请刷新页面。"
 
-#: advancedcontentfilter.php:328
+#: advancedcontentfilter.php:363
 msgid "The rule name and expression are required."
 msgstr "规则名和表达式必填。"
 
-#: advancedcontentfilter.php:340
+#: advancedcontentfilter.php:377
 msgid "Rule successfully added"
 msgstr "规则添加成功。"
 
-#: advancedcontentfilter.php:354 advancedcontentfilter.php:383
+#: advancedcontentfilter.php:391 advancedcontentfilter.php:422
 msgid "Rule doesn't exist or doesn't belong to you."
 msgstr "规则不存在或不属于你。"
 
-#: advancedcontentfilter.php:369
+#: advancedcontentfilter.php:408
 msgid "Rule successfully updated"
 msgstr "规则更新成功"
 
-#: advancedcontentfilter.php:390
+#: advancedcontentfilter.php:431
 msgid "Rule successfully deleted"
 msgstr "规则删除成功"
 
-#: advancedcontentfilter.php:400
+#: advancedcontentfilter.php:441
 msgid "Missing argument: guid."
 msgstr "缺少参数：guid。"
 
-#: advancedcontentfilter.php:406
+#: advancedcontentfilter.php:449
 #, php-format
 msgid "Unknown post with guid: %s"
 msgstr "未知帖子 guid：%s"
 
-#: src/middlewares.php:28
+#: src/middlewares.php:49
 msgid "Method not found"
 msgstr "未找到模式"
