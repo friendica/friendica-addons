@@ -1,8 +1,7 @@
 <?php
 
-$a->strings["Submit"] = "Lagre";
-$a->strings["Tile Server URL"] = "";
-$a->strings["A list of <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" target=\"_blank\">public tile servers</a>"] = "";
-$a->strings["Default zoom"] = "";
-$a->strings["The default zoom level. (1:world, 18:highest)"] = "";
-$a->strings["Settings updated."] = "Innstillinger oppdatert.";
+if(! function_exists("string_plural_select_nb_NO")) {
+function string_plural_select_nb_NO($n){
+	$n = intval($n);
+	return intval($n != 1);
+}}

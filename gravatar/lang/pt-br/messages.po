@@ -9,67 +9,63 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2016-08-16 11:51+0000\n"
-"Last-Translator: Beatriz Vital <vitalb@riseup.net>\n"
-"Language-Team: Portuguese (Brazil) (http://www.transifex.com/Friendica/friendica/language/pt_BR/)\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2014-06-23 08:33+0000\n"
+"Last-Translator: Beatriz Vital <vitalb@riseup.net>, 2016\n"
+"Language-Team: Portuguese (Brazil) (http://app.transifex.com/Friendica/friendica/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: pt_BR\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
-#: gravatar.php:71
+#: gravatar.php:78
 msgid "generic profile image"
 msgstr "imagem de perfil genérica"
 
-#: gravatar.php:72
+#: gravatar.php:79
 msgid "random geometric pattern"
 msgstr "estampa geométrica aleatória"
 
-#: gravatar.php:73
+#: gravatar.php:80
 msgid "monster face"
 msgstr "careta"
 
-#: gravatar.php:74
+#: gravatar.php:81
 msgid "computer generated face"
 msgstr "rosto gerado por computador"
 
-#: gravatar.php:75
+#: gravatar.php:82
 msgid "retro arcade style face"
 msgstr "rosto de personagem de fliperama"
 
-#: gravatar.php:89
+#: gravatar.php:96
 msgid "Information"
 msgstr "Informação"
 
-#: gravatar.php:89
+#: gravatar.php:96
 msgid ""
 "Libravatar addon is installed, too. Please disable Libravatar addon or this "
 "Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if "
 "nothing was found at Libravatar."
 msgstr "O complemento Libravatar também está instalado. Desabilite o  Libravatar ou este complemento, o Gravatar.<br>Se não encontrar nada, o Libravatar remeterá ao Gravatar."
 
-#: gravatar.php:95
-msgid "Submit"
-msgstr "Enviar"
+#: gravatar.php:102
+msgid "Save Settings"
+msgstr ""
 
-#: gravatar.php:96
+#: gravatar.php:103
 msgid "Default avatar image"
 msgstr "Avatar padrão"
 
-#: gravatar.php:96
+#: gravatar.php:103
 msgid "Select default avatar image if none was found at Gravatar. See README"
 msgstr "Selecione a imagem de avatar padrão que será usada se nenhuma for encontrada no Gravatar. Veja README."
 
-#: gravatar.php:97
+#: gravatar.php:104
 msgid "Rating of images"
 msgstr "Classificação de imagens"
 
-#: gravatar.php:97
+#: gravatar.php:104
 msgid "Select the appropriate avatar rating for your site. See README"
 msgstr "Selecione a classificação apropriada para os avatares que serão mostrados no seu site. Veja README."
-
-#: gravatar.php:111
-msgid "Gravatar settings updated."
-msgstr "As configurações do Gravatar foram atualizadas."

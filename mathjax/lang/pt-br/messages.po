@@ -1,0 +1,32 @@
+# ADDON mathjax
+# Copyright (C)
+# This file is distributed under the same license as the Friendica mathjax addon package.
+# 
+# 
+# Translators:
+# Beatriz Vital <vitalb@riseup.net>, 2016
+# Sérgio Lima <oigreslima@gmail.com>, 2023
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-21 19:15-0500\n"
+"PO-Revision-Date: 2014-06-23 09:55+0000\n"
+"Last-Translator: Sérgio Lima <oigreslima@gmail.com>, 2023\n"
+"Language-Team: Portuguese (Brazil) (http://app.transifex.com/Friendica/friendica/language/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+
+#: mathjax.php:42
+msgid ""
+"The MathJax addon renders mathematical formulae written using the LaTeX "
+"syntax surrounded by the usual $$ or an eqnarray block in the postings of "
+"your wall,network tab and private mail."
+msgstr "O addon MathJax renderiza fórmulas matemáticas escritas usando a sintaxe do LaTeX cercadas pelo usual $$ ou um bloco de equações na sua aba de publicações, na aba rede ou no e-mail privado."
+
+#: mathjax.php:43
+msgid "Use the MathJax renderer"
+msgstr "Use o rendenderizador MathJax"

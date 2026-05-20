@@ -1,9 +1,7 @@
 <?php
 
-$a->strings["Post to Dreamwidth"] = "";
-$a->strings["Dreamwidth Post Settings"] = "";
-$a->strings["Enable dreamwidth Post Addon"] = "";
-$a->strings["dreamwidth username"] = "";
-$a->strings["dreamwidth password"] = "";
-$a->strings["Post to dreamwidth by default"] = "";
-$a->strings["Submit"] = "Lagre";
+if(! function_exists("string_plural_select_nb_NO")) {
+function string_plural_select_nb_NO($n){
+	$n = intval($n);
+	return intval($n != 1);
+}}

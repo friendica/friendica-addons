@@ -1,5 +1,7 @@
 <?php
 
-$a->strings["Group Text"] = "";
-$a->strings["Use a text only (non-image) group selector in the \"group edit\" menu"] = "";
-$a->strings["Submit"] = "Lagre";
+if(! function_exists("string_plural_select_nb_NO")) {
+function string_plural_select_nb_NO($n){
+	$n = intval($n);
+	return intval($n != 1);
+}}

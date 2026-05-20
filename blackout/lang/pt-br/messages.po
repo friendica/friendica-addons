@@ -1,0 +1,69 @@
+# ADDON blackout
+# Copyright (C)
+# This file is distributed under the same license as the Friendica blackout addon package.
+# 
+# 
+# Translators:
+# Beatriz Vital <vitalb@riseup.net>, 2016
+# Frederico Gonçalves Guimarães <frederico@teia.bio.br>, 2024
+# Sérgio Lima <oigreslima@gmail.com>, 2026
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2014-06-22 11:19+0000\n"
+"Last-Translator: Sérgio Lima <oigreslima@gmail.com>, 2026\n"
+"Language-Team: Portuguese (Brazil) (http://app.transifex.com/Friendica/friendica/language/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+
+#: blackout.php:97
+msgid ""
+"The end-date is prior to the start-date of the blackout, you should fix "
+"this."
+msgstr "A data final é anterior à data inicial do blecaute, por favor, corrija isso."
+
+#: blackout.php:99
+#, php-format
+msgid ""
+"Please double check the current settings for the blackout. It will begin on "
+"<strong>%s</strong> and end on <strong>%s</strong>."
+msgstr "Por favor, confira as configurações atuais para o blecaute. Ele irá iniciar em<strong>%s</strong> e terminar em <strong>%s</strong>."
+
+#: blackout.php:102
+msgid "Save Settings"
+msgstr "Salvar configurações"
+
+#: blackout.php:103
+msgid "Redirect URL"
+msgstr "URL de redirecionamento"
+
+#: blackout.php:103
+msgid "All your visitors from the web will be redirected to this URL."
+msgstr "Todos os internautas visitantes serão redirecionados para essa URL"
+
+#: blackout.php:104
+msgid "Begin of the Blackout"
+msgstr "Início do Blecaute"
+
+#: blackout.php:104
+msgid ""
+"Format is <tt>YYYY-MM-DD hh:mm</tt>; <em>YYYY</em> year, <em>MM</em> month, "
+"<em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute."
+msgstr "O formato é <tt>YYYY-MM-DD hh:mm</tt>; <em>YYYY</em> ano <em>MM</em> mês, <em>DD</em> dia, <em>hh</em> hora e <em>mm</em> minuto."
+
+#: blackout.php:105
+msgid "End of the Blackout"
+msgstr "Término do Blecaute"
+
+#: blackout.php:107
+msgid ""
+"<strong>Note</strong>: The redirect will be active from the moment you press"
+" the submit button. Users currently logged in will <strong>not</strong> be "
+"thrown out but can't login again after logging out while the blackout is "
+"still in place."
+msgstr "<strong>Nota</strong>: O redirecionamento estará ativo desde o momento em que você pressionar o botão de submissão. Usuários logados <strong>não</strong> serão desconectados mas não conseguirão fazer login novamente após sair da conta enquanto o bloqueio ainda estiver em vigor."

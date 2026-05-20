@@ -10,10 +10,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-11 19:13+0100\n"
-"PO-Revision-Date: 2018-04-17 19:48+0000\n"
-"Last-Translator: Kris\n"
-"Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
+"POT-Creation-Date: 2021-11-21 19:15-0500\n"
+"PO-Revision-Date: 2014-06-23 09:54+0000\n"
+"Last-Translator: Kris, 2018\n"
+"Language-Team: Finnish (Finland) (http://app.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -28,72 +28,76 @@ msgstr "Lähettäjä"
 msgid "Email address that stream items will appear to be from."
 msgstr ""
 
-#: mailstream.php:82 mailstream.php:380
+#: mailstream.php:82
 msgid "Save Settings"
 msgstr "Tallenna asetukset"
 
-#: mailstream.php:223
+#: mailstream.php:311
 msgid "Re:"
 msgstr "Koskien"
 
-#: mailstream.php:231
+#: mailstream.php:324 mailstream.php:327
 msgid "Friendica post"
 msgstr "Friendica -julkaisu"
 
-#: mailstream.php:234
+#: mailstream.php:330
 msgid "Diaspora post"
 msgstr "Diaspora -julkaisu"
 
-#: mailstream.php:244
+#: mailstream.php:340
 msgid "Feed item"
 msgstr ""
 
-#: mailstream.php:247
+#: mailstream.php:343
 msgid "Email"
 msgstr "Sähköposti"
 
-#: mailstream.php:249
+#: mailstream.php:345
 msgid "Friendica Item"
 msgstr "Friendica -kohde"
 
-#: mailstream.php:293
+#: mailstream.php:419
 msgid "Upstream"
 msgstr ""
 
-#: mailstream.php:294
+#: mailstream.php:420
+msgid "URI"
+msgstr ""
+
+#: mailstream.php:421
 msgid "Local"
 msgstr "Paikallinen"
 
-#: mailstream.php:362
+#: mailstream.php:499
 msgid "Enabled"
 msgstr "Käytössä"
 
-#: mailstream.php:366
+#: mailstream.php:504
 msgid "Email Address"
 msgstr "Sähköpostiosoite"
 
-#: mailstream.php:368
+#: mailstream.php:506
 msgid "Leave blank to use your account email address"
 msgstr ""
 
-#: mailstream.php:371
+#: mailstream.php:510
 msgid "Exclude Likes"
 msgstr ""
 
-#: mailstream.php:373
+#: mailstream.php:512
 msgid "Check this to omit mailing \"Like\" notifications"
 msgstr ""
 
-#: mailstream.php:376
+#: mailstream.php:516
 msgid "Attach Images"
 msgstr "Liitä kuvia"
 
-#: mailstream.php:378
+#: mailstream.php:518
 msgid ""
 "Download images in posts and attach them to the email.  Useful for reading "
 "email while offline."
 msgstr ""
 
-#: mailstream.php:379
+#: mailstream.php:525
 msgid "Mail Stream Settings"
 msgstr "Mail Stream -asetukset"
