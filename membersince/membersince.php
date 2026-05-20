@@ -51,7 +51,7 @@ function membersince_display(&$b)
 		$hr->setAttribute('class','profile-separator');
 
 		// The label div.
-		$label = $doc->createElement('div', DI::l10n()->t('Member since:'));
+		$label = $doc->createElement('div', DI::l10n()->t('Joined:'));
 		$label->setAttribute('class', 'col-lg-4 col-md-4 col-sm-4 col-xs-12 profile-label-name text-muted');
 
 		// The div for the register date of the profile owner.
@@ -66,6 +66,6 @@ function membersince_display(&$b)
 		$b = (string) $doc->saveHTML();
 	} else {
 		// Works in Vier.
-		$b = preg_replace('/<\/dl>/', "</dl>\n\n\n<dl id=\"aprofile-membersince\" class=\"aprofile\">\n<dt>" . DI::l10n()->t('Member since:') . "</dt>\n<dd>" . DateTimeFormat::local($user['register_date']) . "</dd>\n</dl>", $b, 1);
+		$b = preg_replace('/<\/dl>/', "</dl>\n\n\n<dl id=\"aprofile-membersince\" class=\"aprofile\">\n<dt>" . DI::l10n()->t('Joined:') . "</dt>\n<dd>" . DateTimeFormat::local($user['register_date']) . "</dd>\n</dl>", $b, 1);
 	}
 }
