@@ -1,0 +1,125 @@
+# ADDON curweather
+# Copyright (C)
+# This file is distributed under the same license as the Friendica curweather addon package.
+# 
+# 
+# Translators:
+# Andy H3 <andy@hubup.pro>, 2018
+# Kris, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-21 19:14-0500\n"
+"PO-Revision-Date: 2014-06-22 11:34+0000\n"
+"Last-Translator: Andy H3 <andy@hubup.pro>, 2018\n"
+"Language-Team: English (United Kingdom) (http://app.transifex.com/Friendica/friendica/language/en_GB/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: curweather.php:47
+msgid "Error fetching weather data. Error was: "
+msgstr ""
+
+#: curweather.php:130
+msgid "Current Weather"
+msgstr "Current Weather"
+
+#: curweather.php:137
+msgid "Relative Humidity"
+msgstr "Relative Humidity"
+
+#: curweather.php:138
+msgid "Pressure"
+msgstr "Pressure"
+
+#: curweather.php:139
+msgid "Wind"
+msgstr "Wind"
+
+#: curweather.php:140
+msgid "Last Updated"
+msgstr "Last Updated"
+
+#: curweather.php:141
+msgid "Data by"
+msgstr "Data provided by"
+
+#: curweather.php:142
+msgid "Show on map"
+msgstr "Show on map"
+
+#: curweather.php:147
+msgid "There was a problem accessing the weather data. But have a look"
+msgstr "There was a problem accessing the weather data. However, you can have a look"
+
+#: curweather.php:149
+msgid "at OpenWeatherMap"
+msgstr "at OpenWeatherMap"
+
+#: curweather.php:178
+msgid "No APPID found, please contact your admin to obtain one."
+msgstr "No APPID found, please contact your admin to obtain one."
+
+#: curweather.php:188
+msgid "Enter either the name of your location or the zip code."
+msgstr "Enter the name or postcode of your location."
+
+#: curweather.php:189
+msgid "Your Location"
+msgstr "Your Location"
+
+#: curweather.php:189
+msgid ""
+"Identifier of your location (name or zip code), e.g. <em>Berlin,DE</em> or "
+"<em>14476,DE</em>."
+msgstr "Identifier of your location (name or postcode), e.g. <em>London,GB</em> or <em>SW1A 2AA</em>."
+
+#: curweather.php:190
+msgid "Units"
+msgstr "Units"
+
+#: curweather.php:190
+msgid "select if the temperature should be displayed in &deg;C or &deg;F"
+msgstr "Show temperature in &deg;C or &deg;F"
+
+#: curweather.php:191
+msgid "Show weather data"
+msgstr "Show weather data"
+
+#: curweather.php:196
+msgid "Current Weather Settings"
+msgstr ""
+
+#: curweather.php:227
+msgid "Save Settings"
+msgstr "Save Settings"
+
+#: curweather.php:230
+msgid "Caching Interval"
+msgstr "Caching Interval"
+
+#: curweather.php:232
+msgid ""
+"For how long should the weather data be cached? Choose according your "
+"OpenWeatherMap account type."
+msgstr "How long should the weather data be cached for? Choose according to your OpenWeatherMap account type."
+
+#: curweather.php:233
+msgid "no cache"
+msgstr "no cache"
+
+#: curweather.php:234 curweather.php:235 curweather.php:236 curweather.php:237
+msgid "minutes"
+msgstr "minutes"
+
+#: curweather.php:240
+msgid "Your APPID"
+msgstr "Your APPID"
+
+#: curweather.php:240
+msgid "Your API key provided by OpenWeatherMap"
+msgstr "Your API key provided by OpenWeatherMap"

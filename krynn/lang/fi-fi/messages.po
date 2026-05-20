@@ -10,24 +10,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-08 16:00+0000\n"
-"Last-Translator: Kris\n"
-"Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
+"POT-Creation-Date: 2021-11-21 19:14-0500\n"
+"PO-Revision-Date: 2015-07-07 15:14+0000\n"
+"Last-Translator: Kris, 2018\n"
+"Language-Team: Finnish (Finland) (http://app.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fi_FI\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: krynn.php:150
-msgid "Krynn Settings"
-msgstr "Krynn -asetukset"
-
-#: krynn.php:152
+#: krynn.php:127
 msgid "Enable Krynn Addon"
 msgstr "Ota Krynn -lisäosa käyttöön"
 
-#: krynn.php:158
-msgid "Submit"
-msgstr "Lähetä"
+#: krynn.php:132
+msgid "Krynn Settings"
+msgstr "Krynn -asetukset"

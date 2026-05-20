@@ -4,14 +4,15 @@
 # 
 # 
 # Translators:
+# Marcus Funch, 2025
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-11-21 19:14-0500\n"
 "PO-Revision-Date: 2014-06-22 11:34+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: Danish (Denmark) (http://www.transifex.com/Friendica/friendica/language/da_DK/)\n"
+"Last-Translator: Marcus Funch, 2025\n"
+"Language-Team: Danish (Denmark) (http://app.transifex.com/Friendica/friendica/language/da_DK/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,104 +21,104 @@ msgstr ""
 
 #: curweather.php:47
 msgid "Error fetching weather data. Error was: "
-msgstr ""
+msgstr "Fejl i indlæsning af vejrdata. Fejlen var: "
 
 #: curweather.php:130
 msgid "Current Weather"
-msgstr ""
+msgstr "Nuværende vejr"
 
 #: curweather.php:137
 msgid "Relative Humidity"
-msgstr ""
+msgstr "Relativ fugtighed"
 
 #: curweather.php:138
 msgid "Pressure"
-msgstr ""
+msgstr "Tryk"
 
 #: curweather.php:139
 msgid "Wind"
-msgstr ""
+msgstr "Vind"
 
 #: curweather.php:140
 msgid "Last Updated"
-msgstr ""
+msgstr "Senest opdateret"
 
 #: curweather.php:141
 msgid "Data by"
-msgstr ""
+msgstr "Data af"
 
 #: curweather.php:142
 msgid "Show on map"
-msgstr ""
+msgstr "Vis på kort"
 
 #: curweather.php:147
 msgid "There was a problem accessing the weather data. But have a look"
-msgstr ""
+msgstr "Der var et problem med at tilgå vejrdata. Men tag et kig."
 
 #: curweather.php:149
 msgid "at OpenWeatherMap"
-msgstr ""
+msgstr "Hos OpenWeatherMap"
 
 #: curweather.php:178
 msgid "No APPID found, please contact your admin to obtain one."
-msgstr ""
+msgstr "Intet APPID fundet, kontakt venligst din administrator for at få fat i ét."
 
 #: curweather.php:188
 msgid "Enter either the name of your location or the zip code."
-msgstr ""
+msgstr "Indtast enten navnet på din placering eller postnummeret."
 
 #: curweather.php:189
 msgid "Your Location"
-msgstr ""
+msgstr "Din placering"
 
 #: curweather.php:189
 msgid ""
 "Identifier of your location (name or zip code), e.g. <em>Berlin,DE</em> or "
 "<em>14476,DE</em>."
-msgstr ""
+msgstr "Identifikationer på din placering (navn eller postnummer), såsom. <em>Copenhagen,DK</em> eller <em>2025,DK</em>."
 
 #: curweather.php:190
 msgid "Units"
-msgstr ""
+msgstr "Enheder"
 
 #: curweather.php:190
 msgid "select if the temperature should be displayed in &deg;C or &deg;F"
-msgstr ""
+msgstr "Vælg om temperaturen skal vises i &deg;C eller &deg;F"
 
 #: curweather.php:191
 msgid "Show weather data"
-msgstr ""
+msgstr "Vis vejrdata"
 
 #: curweather.php:196
 msgid "Current Weather Settings"
-msgstr ""
+msgstr "Nuværende vejrindstillinger"
 
 #: curweather.php:227
 msgid "Save Settings"
-msgstr ""
+msgstr "Gem indstillinger"
 
 #: curweather.php:230
 msgid "Caching Interval"
-msgstr ""
+msgstr "Caching-interval"
 
 #: curweather.php:232
 msgid ""
 "For how long should the weather data be cached? Choose according your "
 "OpenWeatherMap account type."
-msgstr ""
+msgstr "Hvor længe skal vejrdata være cachet? Vælg baseret på din OpenWeatherMap-kontotype."
 
 #: curweather.php:233
 msgid "no cache"
-msgstr ""
+msgstr "ingen cache"
 
 #: curweather.php:234 curweather.php:235 curweather.php:236 curweather.php:237
 msgid "minutes"
-msgstr ""
+msgstr "minutter"
 
 #: curweather.php:240
 msgid "Your APPID"
-msgstr ""
+msgstr "Dit APPID"
 
 #: curweather.php:240
 msgid "Your API key provided by OpenWeatherMap"
-msgstr ""
+msgstr "Din API-nøgle tildelt fra OpenWeatherMap"

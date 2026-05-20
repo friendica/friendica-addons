@@ -10,56 +10,81 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-17 20:02+0000\n"
-"Last-Translator: Kris\n"
-"Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
+"POT-Creation-Date: 2023-04-29 06:56+0000\n"
+"PO-Revision-Date: 2014-06-23 12:58+0000\n"
+"Last-Translator: Kris, 2018\n"
+"Language-Team: Finnish (Finland) (http://app.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fi_FI\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: tumblr.php:34
+#: tumblr.php:243
 msgid "Permission denied."
 msgstr "Lupa kielletty."
 
-#: tumblr.php:144
-msgid "You are now authenticated to tumblr."
+#: tumblr.php:296
+msgid "Save Settings"
 msgstr ""
 
-#: tumblr.php:145
-msgid "return to the connector page"
+#: tumblr.php:297
+msgid "Consumer Key"
 msgstr ""
 
-#: tumblr.php:158
-msgid "Post to Tumblr"
-msgstr "Lähetä Tumblriin"
-
-#: tumblr.php:185
-msgid "Tumblr Post Settings"
-msgstr "Tumblr -viestin asetukset"
-
-#: tumblr.php:188
-msgid "(Re-)Authenticate your tumblr page"
+#: tumblr.php:298
+msgid "Consumer Secret"
 msgstr ""
 
-#: tumblr.php:192
-msgid "Enable Tumblr Post Addon"
-msgstr "Ota Tumblr -viestilisäosa käyttöön"
+#: tumblr.php:299
+msgid "Maximum tags"
+msgstr ""
 
-#: tumblr.php:197
-msgid "Post to Tumblr by default"
-msgstr "Lähetä Tumblriin oletuksena"
+#: tumblr.php:299
+msgid ""
+"Maximum number of tags that a user can follow. Enter 0 to deactivate the "
+"feature."
+msgstr ""
 
-#: tumblr.php:217
+#: tumblr.php:336
 msgid "Post to page:"
 msgstr "Julkaise sivulle:"
 
-#: tumblr.php:228
+#: tumblr.php:342
+msgid "(Re-)Authenticate your tumblr page"
+msgstr ""
+
+#: tumblr.php:343
 msgid "You are not authenticated to tumblr"
 msgstr ""
 
-#: tumblr.php:233
-msgid "Submit"
-msgstr "Lähetä"
+#: tumblr.php:348
+msgid "Enable Tumblr Post Addon"
+msgstr "Ota Tumblr -viestilisäosa käyttöön"
+
+#: tumblr.php:349
+msgid "Post to Tumblr by default"
+msgstr "Lähetä Tumblriin oletuksena"
+
+#: tumblr.php:350
+msgid "Import the remote timeline"
+msgstr ""
+
+#: tumblr.php:351
+msgid "Subscribed tags"
+msgstr ""
+
+#: tumblr.php:351
+#, php-format
+msgid ""
+"Comma separated list of up to %d tags that will be imported additionally to "
+"the timeline"
+msgstr ""
+
+#: tumblr.php:357
+msgid "Tumblr Import/Export"
+msgstr ""
+
+#: tumblr.php:375
+msgid "Post to Tumblr"
+msgstr "Lähetä Tumblriin"

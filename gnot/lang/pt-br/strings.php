@@ -1,8 +1,8 @@
 <?php
 
-$a->strings["Gnot settings updated."] = "As configurações do Gnot foram atualizadas.";
-$a->strings["Gnot Settings"] = "Configurações do Gnot";
-$a->strings["Allows threading of email comment notifications on Gmail and anonymising the subject line."] = "Permite o encadeamento das notificações por e-mail de comentário no GMail, tornando a a linha de assunto anônima.";
-$a->strings["Enable this addon?"] = "Habilitar este addon/complemento?";
-$a->strings["Submit"] = "Enviar";
-$a->strings["[Friendica:Notify] Comment to conversation #%d"] = "[Friendica:Notify] Comentário na conversa #%d";
+if(! function_exists("string_plural_select_pt_BR")) {
+function string_plural_select_pt_BR($n){
+	$n = intval($n);
+	if (($n == 0 || $n == 1)) { return 0; } else if ($n != 0 && $n % 1000000 == 0) { return 1; } else  { return 2; }
+}}
+$a->strings['Gnot Settings'] = 'Configurações do Gnot';

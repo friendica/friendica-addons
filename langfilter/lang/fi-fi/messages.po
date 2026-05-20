@@ -6,76 +6,73 @@
 # Translators:
 # Kris, 2018
 # Kris, 2018
+# Silja Ijas, 2025
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-01 11:11-0400\n"
-"PO-Revision-Date: 2018-04-08 16:02+0000\n"
-"Last-Translator: Kris\n"
-"Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
+"POT-Creation-Date: 2021-11-21 19:15-0500\n"
+"PO-Revision-Date: 2015-07-25 08:05+0000\n"
+"Last-Translator: Silja Ijas, 2025\n"
+"Language-Team: Finnish (Finland) (http://app.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fi_FI\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: langfilter.php:58
-msgid "Language Filter"
-msgstr "Kielisuodatin"
-
-#: langfilter.php:59
+#: langfilter.php:49
 msgid ""
 "This addon tries to identify the language posts are written in. If it does "
 "not match any language specified below, posts will be hidden by collapsing "
 "them."
-msgstr ""
+msgstr "Tämä lisäosa yrittää tunnistaa millä kielellä julkaisut on kirjoitettu. Jos julkaisut eivät vastaa mitään alla määritellyistä kielistä, ne piilotetaan kokoontaittamalla."
 
-#: langfilter.php:60
+#: langfilter.php:50
 msgid "Use the language filter"
 msgstr "Ota kielisuodatin käyttöön"
 
-#: langfilter.php:61
+#: langfilter.php:51
 msgid "Able to read"
-msgstr ""
+msgstr "Pystyy lukemaan"
 
-#: langfilter.php:61
+#: langfilter.php:51
 msgid ""
-"List of abbreviations (iso2 codes) for languages you speak, comma separated."
-" For example \"de,it\"."
-msgstr ""
+"List of abbreviations (ISO 639-1 codes) for languages you speak, comma "
+"separated. For example \"de,it\"."
+msgstr "Lista puhumiesi kielten lyhenteistä (ISO 639-1-koodit) pilkulla eroteltuna. Esimerkiksi \"de,it\"."
 
-#: langfilter.php:62
+#: langfilter.php:52
 msgid "Minimum confidence in language detection"
-msgstr ""
+msgstr "Kielentunnistuksen vähimmäisvarmuus"
 
-#: langfilter.php:62
+#: langfilter.php:52
 msgid ""
 "Minimum confidence in language detection being correct, from 0 to 100. Posts"
 " will not be filtered when the confidence of language detection is below "
 "this percent value."
-msgstr ""
+msgstr "Prosenttiarvo välillä 0–100 kielentunnistuksen oikeellisuuden vähimmäisvarmuudelle. Julkaisuja ei suodateta, kun kielentunnistuksen varmuus on alle tämän prosenttiarvon."
 
-#: langfilter.php:63
+#: langfilter.php:53
 msgid "Minimum length of message body"
-msgstr ""
+msgstr "Viestin sisällön vähimmäispituus"
 
-#: langfilter.php:63
+#: langfilter.php:53
 msgid ""
 "Minimum number of characters in message body for filter to be used. Posts "
 "shorter than this will not be filtered. Note: Language detection is "
 "unreliable for short content (<200 characters)."
-msgstr ""
+msgstr "Viestin sisältämien merkkien vähimmäismäärä, johon perustuen suodatinta käytetään. Viestejä, jotka ovat lyhyempiä kuin tämä arvo, ei suodateta. Huomaa: Kielentunnistus toimii epäluotettavasti lyhyissä sisällöissä (< 200 merkkiä)."
 
-#: langfilter.php:64
+#: langfilter.php:58
+msgid "Language Filter"
+msgstr "Kielisuodatin"
+
+#: langfilter.php:60
 msgid "Save Settings"
 msgstr "Tallenna asetukset"
 
-#: langfilter.php:105
-msgid "Language Filter Settings saved."
-msgstr "Kielisuodatinasetukset tallennettu"
-
-#: langfilter.php:182
+#: langfilter.php:193
 #, php-format
 msgid "Filtered language: %s"
 msgstr "Suodatettu kieli: %s"

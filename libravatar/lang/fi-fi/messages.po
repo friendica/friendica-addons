@@ -10,76 +10,63 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-05-12 13:04+0000\n"
-"Last-Translator: Kris\n"
-"Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2014-06-23 09:49+0000\n"
+"Last-Translator: Kris, 2018\n"
+"Language-Team: Finnish (Finland) (http://app.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fi_FI\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: libravatar.php:14
-msgid "Could NOT install Libravatar successfully.<br>It requires PHP >= 5.3"
-msgstr "Libravataria ei voitu asentaa.<br>Vaatii PHP-version >=5.3"
-
-#: libravatar.php:73
+#: libravatar.php:68
 msgid "generic profile image"
 msgstr "Yleinen profiilikuva"
 
-#: libravatar.php:74
+#: libravatar.php:69
 msgid "random geometric pattern"
 msgstr "satunnainen geometrinen kuvio"
 
-#: libravatar.php:75
+#: libravatar.php:70
 msgid "monster face"
 msgstr "hirviö"
 
-#: libravatar.php:76
+#: libravatar.php:71
 msgid "computer generated face"
 msgstr "tietokoneella tuotettut kasvot"
 
-#: libravatar.php:77
+#: libravatar.php:72
 msgid "retro arcade style face"
 msgstr "retro-videopeli kasvot"
 
-#: libravatar.php:82
-msgid "Warning"
-msgstr "Varoitus"
+#: libravatar.php:73
+msgid "roboter face"
+msgstr ""
 
-#: libravatar.php:83
-#, php-format
-msgid "Your PHP version %s is lower than the required PHP >= 5.3."
-msgstr "PHP-versiosi on %s. Friendica vaatii PHP >= 5.3."
+#: libravatar.php:74
+msgid "retro adventure game character"
+msgstr ""
 
-#: libravatar.php:84
-msgid "This addon is not functional on your server."
-msgstr "Tämä lisäosa ei toimi palvelimellasi."
-
-#: libravatar.php:93
+#: libravatar.php:78
 msgid "Information"
 msgstr "Tietoja"
 
-#: libravatar.php:93
+#: libravatar.php:78
 msgid ""
 "Gravatar addon is installed. Please disable the Gravatar addon.<br>The "
 "Libravatar addon will fall back to Gravatar if nothing was found at "
 "Libravatar."
 msgstr ""
 
-#: libravatar.php:99
-msgid "Submit"
-msgstr "Lähetä"
+#: libravatar.php:83
+msgid "Save Settings"
+msgstr ""
 
-#: libravatar.php:100
+#: libravatar.php:84
 msgid "Default avatar image"
 msgstr "Avatarin oletuskuva"
 
-#: libravatar.php:100
+#: libravatar.php:84
 msgid "Select default avatar image if none was found. See README"
 msgstr "Valitse oletusavatarikuva jos avatari puuttuu. Katso lisätietoja README:stä."
-
-#: libravatar.php:112
-msgid "Libravatar settings updated."
-msgstr "Libravatar -asetukset päivitetty"

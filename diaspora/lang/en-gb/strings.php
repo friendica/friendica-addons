@@ -1,7 +1,7 @@
 <?php
 
-if(! function_exists("string_plural_select_en_gb")) {
-function string_plural_select_en_gb($n){
+if(! function_exists("string_plural_select_en_GB")) {
+function string_plural_select_en_GB($n){
 	$n = intval($n);
 	return intval($n != 1);
 }}
@@ -14,14 +14,11 @@ $a->strings['Public'] = 'Public';
 $a->strings['Post to aspect:'] = 'Post to aspect:';
 $a->strings['Connected with your Diaspora account <strong>%s</strong>'] = 'Connected with your Diaspora account <strong>%s</strong>';
 $a->strings['Can\'t login to your Diaspora account. Please check handle (in the format user@domain.tld) and password.'] = 'Can\'t login to your Diaspora account. Please check handle (in the format user@domain.tld) and password.';
-$a->strings['Diaspora Export'] = 'Diaspora Export';
 $a->strings['Information'] = 'Information';
 $a->strings['Error'] = 'Error';
-$a->strings['Save Settings'] = 'Save settings';
 $a->strings['Enable Diaspora Post Addon'] = 'Enable Diaspora export';
 $a->strings['Diaspora handle'] = 'Diaspora handle';
 $a->strings['Diaspora password'] = 'Diaspora password';
 $a->strings['Privacy notice: Your Diaspora password will be stored unencrypted to authenticate you with your Diaspora pod. This means your Friendica node administrator can have access to it.'] = 'Privacy notice: Your Diaspora password will be stored unencrypted to authenticate you with your Diaspora pod. This means your Friendica node administrator can have access to it.';
 $a->strings['Post to Diaspora by default'] = 'Post to Diaspora by default';
-$a->strings['Diaspora settings updated.'] = 'Diaspora settings updated.';
-$a->strings['Diaspora connector disabled.'] = 'Diaspora connector disabled.';
+$a->strings['Diaspora Export'] = 'Diaspora Export';
