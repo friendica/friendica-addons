@@ -475,6 +475,7 @@ function blockbot_is_social_media(array $parts): bool
 		'ruby, mastodon', 'nextcloud social', 'camo asset proxy', 'smithereen', 'sorasns',
 		'cherrypick', 'bonfire activitypub federation', 'upub+0.1.0', 'plume', 'incestoma',
 		'gyptazyfedi', 'apogee', 'quolibet', 'magpie-crawler', 'redditbot', 'facebookplatform',
+		'activitypub.bot'
 	];
 
 	foreach ($parts as $part) {
