@@ -10,6 +10,13 @@ parameters:
     paths:
         - ../
 
+    scanDirectories:
+        - ../../mod
+        - ../../src
+        - ../../static
+        - ../../vendor
+        - ../../view
+
     excludePaths:
         analyse:
             - ../*/lang/*
@@ -17,13 +24,9 @@ parameters:
             - ../convert/UnitConvertor.php
             - ../pumpio/oauth/*
             - ../mailstream/phpmailer/*
-
-    scanDirectories:
-        - ../../mod
-        - ../../src
-        - ../../static
-        - ../../vendor
-        - ../../view
+        analyseAndScan:
+            - ../../vendor/rector/
+            - ../../vendor/phpstan/
 
     dynamicConstantNames:
         - DB_UPDATE_VERSION
