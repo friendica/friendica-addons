@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: 2010 - 2024 the Friendica project
+#
+# SPDX-License-Identifier: CC0-1.0
+
+parameters:
+    level: 3
+
+    phpVersion: 80200 # PHP 8.2
+
+    paths:
+        - ../
+
+    excludePaths:
+        analyse:
+            - ../*/lang/*
+            - ../*/vendor/*
+            - ../convert/UnitConvertor.php
+            - ../pumpio/oauth/*
+            - ../mailstream/phpmailer/*
+
+    scanDirectories:
+        - ../../mod
+        - ../../src
+        - ../../static
+        - ../../vendor
+        - ../../view
+
+    dynamicConstantNames:
+        - DB_UPDATE_VERSION
+
+    ignoreErrors: []
