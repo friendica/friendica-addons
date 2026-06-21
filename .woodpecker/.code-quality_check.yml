@@ -1,5 +1,20 @@
 skip_clone: true
 
+matrix:
+  include:
+    - PHP_MAJOR_VERSION: 8.5
+      PHP_VERSION: 8.5.5
+
+# The phpmd check is just triggered for PRs and pushes to non-stable branches of Friendica
+when:
+  branch:
+    exclude: [ stable ]
+  event: [ pull_request, push ]
+
+# This forces PHP Unit executions at the "opensocial" labeled location (because of access issues with git.friendi.ca)
+labels:
+  location: opensocial
+
 steps:
   clone_friendica_base:
     image: alpine/git
@@ -30,48 +45,34 @@ steps:
     settings:
       backend: "filesystem"
       restore: true
-      cache_key: '{{ .Repo.Name }}_phpcs_{{ arch }}_{{ os }}'
+      cache_key: "{{ .Repo.Name }}_php${PHP_MAJOR_VERSION}_{{ arch }}_{{ os }}"
       archive_format: "gzip"
       mount:
         - '.composer'
     volumes:
       - /tmp/drone-cache:/tmp/cache
-    when:
-      event: pull_request
 
   composer_install:
-    image: composer
+    image: friendicaci/php${PHP_MAJOR_VERSION}:php${PHP_VERSION}
     commands:
       - export COMPOSER_HOME=.composer
-      - ./bin/composer.phar run cs:install
-    when:
-      event: pull_request
+      - ./bin/composer.phar validate
+      - ./bin/composer.phar install --prefer-dist
 
   rebuild_cache:
     image: meltwater/drone-cache:dev
     settings:
       backend: "filesystem"
       rebuild: true
-      cache_key: '{{ .Repo.Name }}_phpcs_{{ arch }}_{{ os }}'
+      cache_key: "{{ .Repo.Name }}_php${PHP_MAJOR_VERSION}_{{ arch }}_{{ os }}"
       archive_format: "gzip"
       mount:
         - '.composer'
     volumes:
       - /tmp/drone-cache:/tmp/cache
-    when:
-      event: pull_request
 
-  check:
-    image: friendicaci/php-cs
+  phpstan:
+    image: friendicaci/php${PHP_MAJOR_VERSION}:php${PHP_VERSION}
     commands:
-      - cd addon/
-      - if [ ! -z "$${CI_COMMIT_PULL_REQUEST}" ]; then
-          git fetch --no-tags origin ${CI_COMMIT_TARGET_BRANCH};
-          export CHANGED_FILES="$(git diff --name-status $(git merge-base FETCH_HEAD origin/${CI_COMMIT_TARGET_BRANCH})..${CI_COMMIT_SHA} | grep ^A | cut -f2 | sed -e "s/^/addon\\//")";
-        else
-          export CHANGED_FILES="$(git diff --name-status ${CI_COMMIT_SHA} | grep ^A | cut -f2 | sed -e "s/^/addon\\//")";
-        fi
-      - cd ../
-      - /check-php-cs.sh
-    when:
-      event: pull_request
+      - phpstan analyze --memory-limit 1024M --configuration addon/.tests/.phpstan.neon;
+

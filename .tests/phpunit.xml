@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<phpunit
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd"
+		bootstrap="../../tests/bootstrap.php"
+		colors="true"
+		cacheDirectory="./.phpunit.result.cache"
+		executionOrder="depends,defects"
+		requireCoverageMetadata="false"
+		beStrictAboutCoverageMetadata="true"
+		beStrictAboutOutputDuringTests="true"
+		displayDetailsOnAllIssues="true"
+		displayDetailsOnPhpunitDeprecations="true"
+		failOnDeprecation="false"
+		failOnEmptyTestSuite="true"
+		failOnIncomplete="false"
+		failOnNotice="false"
+		failOnPhpunitDeprecation="false"
+		failOnRisky="true"
+		failOnSkipped="false"
+		failOnWarning="true"
+>
+
+	<testsuite name="friendica-addons">
+		<directory suffix="Test.php">../*/tests/</directory>
+	</testsuite>
+
+	<source restrictNotices="true" restrictWarnings="true" ignoreIndirectDeprecations="true">
+		<include>
+			<directory suffix=".php">../</directory>
+		</include>
+		<exclude>
+			<directory suffix=".php">../*/tests/</directory>
+			<directory suffix=".php">../*/view/</directory>
+			<directory suffix=".php">../*/vendor/</directory>
+		</exclude>
+	</source>
+</phpunit>

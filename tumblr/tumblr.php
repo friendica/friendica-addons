@@ -1400,7 +1400,7 @@ function tumblr_delete(int $uid, string $url, array $parameters): stdClass
 		HttpClientOptions::FORM_PARAMS => $parameters
 	];
 
-	$curlResult = DI::httpClient()->request('delete', $url, $opts);
+	$curlResult = DI::httpClient()->request('DELETE', $url, $opts);
 	return tumblr_format_result($curlResult);
 }
 
