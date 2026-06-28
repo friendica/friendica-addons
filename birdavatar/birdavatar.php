@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Bird Avatar Generator
  * Description: Generate a default avatar based on David Revoy's bird-avatar-generator https://www.peppercarrot.com/extras/html/2019_bird-generator/index.php
@@ -124,9 +125,12 @@ function birdavatar_lookup(array &$b)
 	}
 
 	switch ($b['size']) {
-		case 300: $url .= "/4"; break;
-		case 80: $url .= "/5"; break;
-		case 48: $url .= "/6"; break;
+		case 300: $url .= "/4";
+			break;
+		case 80: $url .= "/5";
+			break;
+		case 48: $url .= "/6";
+			break;
 	}
 
 	$b['url']     = $url;
@@ -206,13 +210,13 @@ function build_bird($seed = '', $size = 0)
 
 	// throw the dice for body parts
 	$parts = [
-		'tail'       => rand(1,9),
-		'hoop'       => rand(1,10),
-		'body'       => rand(1,9),
-		'wing'       => rand(1,9),
-		'eyes'       => rand(1,9),
-		'bec'        => rand(1,9),
-		'accessorie' => rand(1,20)
+		'tail'       => rand(1, 9),
+		'hoop'       => rand(1, 10),
+		'body'       => rand(1, 9),
+		'wing'       => rand(1, 9),
+		'eyes'       => rand(1, 9),
+		'bec'        => rand(1, 9),
+		'accessorie' => rand(1, 20),
 	];
 
 	// create backgound

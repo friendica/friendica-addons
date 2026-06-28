@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: MathJax
  * Description: Addon for Friendica to include MathJax (LaTeX math syntax)
@@ -14,8 +15,8 @@ use Friendica\DI;
 
 function mathjax_install()
 {
-	Hook::register('footer'             , __FILE__, 'mathjax_footer');
-	Hook::register('addon_settings'     , __FILE__, 'mathjax_settings');
+	Hook::register('footer', __FILE__, 'mathjax_footer');
+	Hook::register('addon_settings', __FILE__, 'mathjax_settings');
 	Hook::register('addon_settings_post', __FILE__, 'mathjax_settings_post');
 }
 
@@ -36,10 +37,10 @@ function mathjax_settings(array &$data)
 
 	$use = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'mathjax', 'use', false);
 
-	$tpl = Renderer::getMarkupTemplate('settings.tpl', 'addon/mathjax');
+	$tpl  = Renderer::getMarkupTemplate('settings.tpl', 'addon/mathjax');
 	$html = Renderer::replaceMacros($tpl, [
-		'$description'  => DI::l10n()->t('The MathJax addon renders mathematical formulae written using the LaTeX syntax surrounded by the usual $$ or an eqnarray block in the postings of your wall,network tab and private mail.'),
-		'$mathjax_use'  => ['mathjax_use', DI::l10n()->t('Use the MathJax renderer'), $use, ''],
+		'$description' => DI::l10n()->t('The MathJax addon renders mathematical formulae written using the LaTeX syntax surrounded by the usual $$ or an eqnarray block in the postings of your wall,network tab and private mail.'),
+		'$mathjax_use' => ['mathjax_use', DI::l10n()->t('Use the MathJax renderer'), $use, ''],
 	]);
 
 	$data = [

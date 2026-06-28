@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Name: Smiley Pack
  * Description: Pack of smileys that make master too AOLish.

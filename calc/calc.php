@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Calculator App
  * Description: Simple Calculator Application
@@ -9,7 +10,8 @@
 use Friendica\Core\Hook;
 use Friendica\DI;
 
-function calc_install() {
+function calc_install()
+{
 	Hook::register('app_menu', 'addon/calc/calc.php', 'calc_app_menu');
 }
 
@@ -283,14 +285,15 @@ id.value = ""
 </script>
 
 EOT;
-DI::page()['htmlhead'] .= $x;
+	DI::page()['htmlhead'] .= $x;
 }
 
-function calc_content($app) {
+function calc_content($app)
+{
 
-$o = '';
+	$o = '';
 
-$o .=  <<< EOT
+	$o .= <<< EOT
 
 <h3>Calculator</h3>
 <br /><br />

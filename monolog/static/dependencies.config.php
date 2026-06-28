@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (C) 2010-2023, the Friendica project
  *
@@ -22,6 +23,6 @@
 return [
 	\Friendica\Core\Logger\Factory\LoggerFactory::class => [
 		'instanceOf' => \Friendica\Addon\monolog\src\Factory\MonologFactory::class,
-		'call' => null,
+		'call'       => null,
 	],
 ];

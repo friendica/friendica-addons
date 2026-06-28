@@ -41,7 +41,7 @@ class StatusNetOAuth extends TwitterOAuth
 		return $this->host . 'oauth/request_token';
 	}
 
-	public function __construct($apipath, $consumer_key, $consumer_secret, $oauth_token = NULL, $oauth_token_secret = NULL)
+	public function __construct($apipath, $consumer_key, $consumer_secret, $oauth_token = null, $oauth_token_secret = null)
 	{
 		parent::__construct($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
 		$this->host = $apipath;
@@ -54,10 +54,10 @@ class StatusNetOAuth extends TwitterOAuth
 	 *
 	 * @return array|object|mixed API results
 	 */
-	public function http($url, $method, $postfields = NULL)
+	public function http($url, $method, $postfields = null)
 	{
 		$this->http_info = [];
-		$ci = curl_init();
+		$ci              = curl_init();
 		/* Curl settings */
 		$prx = DI::config()->get('system', 'proxy');
 		if (strlen($prx)) {
@@ -71,15 +71,15 @@ class StatusNetOAuth extends TwitterOAuth
 		curl_setopt($ci, CURLOPT_USERAGENT, $this->useragent);
 		curl_setopt($ci, CURLOPT_CONNECTTIMEOUT, $this->connecttimeout);
 		curl_setopt($ci, CURLOPT_TIMEOUT, $this->timeout);
-		curl_setopt($ci, CURLOPT_RETURNTRANSFER, TRUE);
+		curl_setopt($ci, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ci, CURLOPT_HTTPHEADER, ['Expect:']);
 		curl_setopt($ci, CURLOPT_SSL_VERIFYPEER, $this->ssl_verifypeer);
 		curl_setopt($ci, CURLOPT_HEADERFUNCTION, [$this, 'getHeader']);
-		curl_setopt($ci, CURLOPT_HEADER, FALSE);
+		curl_setopt($ci, CURLOPT_HEADER, false);
 
 		switch ($method) {
 			case 'POST':
-				curl_setopt($ci, CURLOPT_POST, TRUE);
+				curl_setopt($ci, CURLOPT_POST, true);
 				if (!empty($postfields)) {
 					curl_setopt($ci, CURLOPT_POSTFIELDS, $postfields);
 				}
@@ -92,10 +92,10 @@ class StatusNetOAuth extends TwitterOAuth
 		}
 
 		curl_setopt($ci, CURLOPT_URL, $url);
-		$response = curl_exec($ci);
+		$response        = curl_exec($ci);
 		$this->http_code = curl_getinfo($ci, CURLINFO_HTTP_CODE);
 		$this->http_info = array_merge($this->http_info, curl_getinfo($ci));
-		$this->url = $url;
+		$this->url       = $url;
 		curl_close($ci);
 		return $response;
 	}

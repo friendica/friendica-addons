@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Ratioed
  * Description: Additional moderation user table with statistics about user behaviour
@@ -32,15 +33,16 @@ function ratioed_module() {}
  *
  * @param array $arr Parameters, including "tabs" which is the list to modify, and "selectedTab", which is the currently selected tab ID
  */
-function ratioed_users_tabs(array &$arr) {
+function ratioed_users_tabs(array &$arr)
+{
 	DI::logger()->debug("ratioed: users tabs");
 
 	array_push($arr['tabs'], [
-		'label'	 => DI::l10n()->t('Behaviour'),
-		'url'	   => 'ratioed',
-		'sel'	   => $arr['selectedTab'] == 'ratioed' ? 'active' : '',
-		'title'	 => DI::l10n()->t('Statistics about users behaviour'),
-		'id'		=> 'admin-users-ratioed',
+		'label'     => DI::l10n()->t('Behaviour'),
+		'url'       => 'ratioed',
+		'sel'       => $arr['selectedTab'] == 'ratioed' ? 'active' : '',
+		'title'     => DI::l10n()->t('Statistics about users behaviour'),
+		'id'        => 'admin-users-ratioed',
 		'accesskey' => 'r',
 	]);
 }
@@ -48,10 +50,11 @@ function ratioed_users_tabs(array &$arr) {
 /**
  * @brief Displays the ratioed tab in the moderation panel
  */
-function ratioed_content() {
+function ratioed_content()
+{
 	DI::logger()->debug("ratioed: content");
 
-	$ratioed = DI::getDice()->create(RatioedPanel::class, [$_SERVER]);
+	$ratioed       = DI::getDice()->create(RatioedPanel::class, [$_SERVER]);
 	$httpException = DI::getDice()->create(Friendica\Module\Special\HTTPException::class);
 	$ratioed->run($httpException);
 }

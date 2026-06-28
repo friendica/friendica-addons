@@ -68,12 +68,12 @@ function statusnet_jot_nets(array &$jotnets_fields)
 
 	if (DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'statusnet', 'post')) {
 		$jotnets_fields[] = [
-			'type' => 'checkbox',
+			'type'  => 'checkbox',
 			'field' => [
 				'statusnet_enable',
 				DI::l10n()->t('Post to GNU Social'),
-				DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'statusnet', 'post_by_default')
-			]
+				DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'statusnet', 'post_by_default'),
+			],
 		];
 	}
 }
@@ -110,7 +110,7 @@ function statusnet_settings_post($post)
 			foreach ($globalsn as $asn) {
 				if ($asn['apiurl'] == $_POST['statusnet-preconf-apiurl']) {
 					$apibase = $asn['apiurl'];
-					$c = DI::httpClient()->fetch($apibase . 'statusnet/version.xml');
+					$c       = DI::httpClient()->fetch($apibase . 'statusnet/version.xml');
 					if (strlen($c) > 0) {
 						DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'statusnet', 'consumerkey', $asn['consumerkey']);
 						DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'statusnet', 'consumersecret', $asn['consumersecret']);
@@ -127,7 +127,7 @@ function statusnet_settings_post($post)
 				//  we'll check the API Version for that, if we don't get one we'll try to fix the path but will
 				//  resign quickly after this one try to fix the path ;-)
 				$apibase = $_POST['statusnet-baseapi'];
-				$c = DI::httpClient()->fetch($apibase . 'statusnet/version.xml');
+				$c       = DI::httpClient()->fetch($apibase . 'statusnet/version.xml');
 				if (strlen($c) > 0) {
 					//  ok the API path is correct, let's save the settings
 					DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'statusnet', 'consumerkey', $_POST['statusnet-consumerkey']);
@@ -137,7 +137,7 @@ function statusnet_settings_post($post)
 				} else {
 					//  the API path is not correct, maybe missing trailing / ?
 					$apibase = $apibase . '/';
-					$c = DI::httpClient()->fetch($apibase . 'statusnet/version.xml');
+					$c       = DI::httpClient()->fetch($apibase . 'statusnet/version.xml');
 					if (strlen($c) > 0) {
 						//  ok the API path is now correct, let's save the settings
 						DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'statusnet', 'consumerkey', $_POST['statusnet-consumerkey']);
@@ -151,14 +151,14 @@ function statusnet_settings_post($post)
 			} else {
 				if (isset($_POST['statusnet-pin'])) {
 					//  if the user supplied us with a PIN from GNU Social, let the magic of OAuth happen
-					$api = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'statusnet', 'baseapi');
-					$ckey = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'statusnet', 'consumerkey');
+					$api     = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'statusnet', 'baseapi');
+					$ckey    = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'statusnet', 'consumerkey');
 					$csecret = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'statusnet', 'consumersecret');
 					//  the token and secret for which the PIN was generated were hidden in the settings
 					//  form as token and token2, we need a new connection to GNU Social using these token
 					//  and secret to request a Access Token with the PIN
 					$connection = new StatusNetOAuth($api, $ckey, $csecret, $_POST['statusnet-token'], $_POST['statusnet-token2']);
-					$token = $connection->getAccessToken($_POST['statusnet-pin']);
+					$token      = $connection->getAccessToken($_POST['statusnet-pin']);
 					//  ok, now that we have the Access Token, save them in the user config
 					DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'statusnet', 'oauthtoken', $token['oauth_token']);
 					DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'statusnet', 'oauthsecret', $token['oauth_token_secret']);
@@ -251,7 +251,7 @@ function statusnet_settings(array &$data)
 			'oauth_cancel'      => DI::l10n()->t('Cancel Connection Process'),
 			'oauth_api'         => DI::l10n()->t('Current GNU Social API is: %s', $baseapi),
 			'connected_account' => $connected_account ?? '',
-			'privacy_warning'   => $privacy_warning ?? '',
+			'privacy_warning'   => $privacy_warning   ?? '',
 		],
 
 		'$ckey'    => $ckey,
@@ -262,7 +262,7 @@ function statusnet_settings(array &$data)
 
 		'$authorize_url' => $authorize_url ?? '',
 		'$request_token' => $request_token ?? null,
-		'$account'       => $account ?? null,
+		'$account'       => $account       ?? null,
 
 		'$authenticate_url' => DI::baseUrl() . '/statusnet/connect',
 
@@ -272,8 +272,8 @@ function statusnet_settings(array &$data)
 		'$baseapi' => ['statusnet-baseapi', DI::l10n()->t('Base API Path (remember the trailing /)'), '', '', false, ' size="35'],
 		'$pin'     => ['statusnet-pin', DI::l10n()->t('Copy the security code from GNU Social here')],
 
-		'$enable'      => ['statusnet-enabled', DI::l10n()->t('Allow posting to GNU Social'), $enabled, DI::l10n()->t('If enabled all your <strong>public</strong> postings can be posted to the associated GNU Social account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry.')],
-		'$default'     => ['statusnet-default', DI::l10n()->t('Post to GNU Social by default'), $def_enabled],
+		'$enable'  => ['statusnet-enabled', DI::l10n()->t('Allow posting to GNU Social'), $enabled, DI::l10n()->t('If enabled all your <strong>public</strong> postings can be posted to the associated GNU Social account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry.')],
+		'$default' => ['statusnet-default', DI::l10n()->t('Post to GNU Social by default'), $def_enabled],
 	]);
 
 	$data = [
@@ -310,7 +310,7 @@ function statusnet_post_local(array &$b)
 		return;
 	}
 
-	$statusnet_post = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'statusnet', 'post');
+	$statusnet_post   = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'statusnet', 'post');
 	$statusnet_enable = (($statusnet_post && !empty($_REQUEST['statusnet_enable'])) ? intval($_REQUEST['statusnet_enable']) : 0);
 
 	// if API is used, default to the chosen settings
@@ -344,7 +344,7 @@ function statusnet_post_hook(array &$b)
 
 	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], DI::contentItem()->addSharedPost($b));
 
-	$api = DI::pConfig()->get($b['uid'], 'statusnet', 'baseapi');
+	$api      = DI::pConfig()->get($b['uid'], 'statusnet', 'baseapi');
 	$hostname = preg_replace("=https?://([\w\.]*)/.*=ism", "$1", $api);
 
 	if ($b['private'] || !strstr($b['postopts'], 'statusnet')) {
@@ -371,17 +371,18 @@ function statusnet_post_hook(array &$b)
 	$iscomment = null;
 
 	if ($ckey && $csecret && $otoken && $osecret) {
-		$dent = new StatusNetOAuth($api, $ckey, $csecret, $otoken, $osecret);
+		$dent     = new StatusNetOAuth($api, $ckey, $csecret, $otoken, $osecret);
 		$max_char = $dent->get_maxlength(); // max. length for a dent
 
 		DI::pConfig()->set($b['uid'], 'statusnet', 'max_char', $max_char);
 
 		$tempfile = '';
-		$msgarr = Plaintext::getPost($b, $max_char, true, 7);
-		$msg = $msgarr['text'];
+		$msgarr   = Plaintext::getPost($b, $max_char, true, 7);
+		$msg      = $msgarr['text'];
 
-		if (($msg == '') && isset($msgarr['title']))
+		if (($msg == '') && isset($msgarr['title'])) {
 			$msg = Plaintext::shorten($msgarr['title'], $max_char - 50, $b['uid']);
+		}
 
 		$image = '';
 
@@ -392,7 +393,7 @@ function statusnet_post_hook(array &$b)
 		}
 
 		if ($image != '') {
-			$img_str = DI::httpClient()->fetch($image);
+			$img_str  = DI::httpClient()->fetch($image);
 			$tempfile = tempnam(System::getTempPath(), 'cache');
 			file_put_contents($tempfile, $img_str);
 			$postdata = ['status' => $msg, 'media[]' => $tempfile];
@@ -410,8 +411,8 @@ function statusnet_post_hook(array &$b)
 			$cb->setToken($otoken, $osecret);
 			$result = $cb->statuses_update($postdata);
 			//$result = $dent->post('statuses/update', $postdata);
-			DI::logger()->info('statusnet_post send, result: ' . print_r($result, true) .
-				"\nmessage: " . $msg . "\nOriginal post: " . print_r($b, true) . "\nPost Data: " . print_r($postdata, true));
+			DI::logger()->info('statusnet_post send, result: ' . print_r($result, true)
+				. "\nmessage: " . $msg . "\nOriginal post: " . print_r($b, true) . "\nPost Data: " . print_r($postdata, true));
 
 			if (!empty($result->source)) {
 				DI::pConfig()->set($b['uid'], 'statusnet', 'application_name', strip_tags($result->source));
@@ -436,26 +437,26 @@ function statusnet_addon_admin_post()
 
 	foreach ($_POST['sitename'] as $id => $sitename) {
 		$sitename = trim($sitename);
-		$apiurl = trim($_POST['apiurl'][$id]);
+		$apiurl   = trim($_POST['apiurl'][$id]);
 		if (!(substr($apiurl, -1) == '/')) {
 			$apiurl = $apiurl . '/';
 		}
 		$secret = trim($_POST['secret'][$id]);
-		$key = trim($_POST['key'][$id]);
+		$key    = trim($_POST['key'][$id]);
 		//$applicationname = (!empty($_POST['applicationname']) ? Strings::escapeTags(trim($_POST['applicationname'][$id])):'');
 		if (
-			$sitename != '' &&
-			$apiurl != '' &&
-			$secret != '' &&
-			$key != '' &&
-			empty($_POST['delete'][$id])
+			$sitename != ''
+			&& $apiurl != ''
+			&& $secret != ''
+			&& $key != ''
+			&& empty($_POST['delete'][$id])
 		) {
 
 			$sites[] = [
-				'sitename' => $sitename,
-				'apiurl' => $apiurl,
+				'sitename'       => $sitename,
+				'apiurl'         => $apiurl,
 				'consumersecret' => $secret,
-				'consumerkey' => $key,
+				'consumerkey'    => $key,
 				//'applicationname' => $applicationname
 			];
 		}
@@ -466,33 +467,33 @@ function statusnet_addon_admin_post()
 
 function statusnet_addon_admin(string &$o)
 {
-	$sites = DI::config()->get('statusnet', 'sites');
+	$sites     = DI::config()->get('statusnet', 'sites');
 	$sitesform = [];
 	if (is_array($sites)) {
 		foreach ($sites as $id => $s) {
 			$sitesform[] = [
 				'sitename' => ["sitename[$id]", "Site name", $s['sitename'], ""],
-				'apiurl' => ["apiurl[$id]", "Api url", $s['apiurl'], DI::l10n()->t("Base API Path \x28remember the trailing /\x29")],
-				'secret' => ["secret[$id]", "Secret", $s['consumersecret'], ""],
-				'key' => ["key[$id]", "Key", $s['consumerkey'], ""],
+				'apiurl'   => ["apiurl[$id]", "Api url", $s['apiurl'], DI::l10n()->t("Base API Path \x28remember the trailing /\x29")],
+				'secret'   => ["secret[$id]", "Secret", $s['consumersecret'], ""],
+				'key'      => ["key[$id]", "Key", $s['consumerkey'], ""],
 				//'applicationname' => Array("applicationname[$id]", "Application name", $s['applicationname'], ""),
-				'delete' => ["delete[$id]", "Delete", False, "Check to delete this preset"],
+				'delete' => ["delete[$id]", "Delete", false, "Check to delete this preset"],
 			];
 		}
 	}
 	/* empty form to add new site */
-	$id = count($sitesform);
+	$id          = count($sitesform);
 	$sitesform[] = [
 		'sitename' => ["sitename[$id]", DI::l10n()->t("Site name"), "", ""],
-		'apiurl' => ["apiurl[$id]", "Api url", "", DI::l10n()->t("Base API Path \x28remember the trailing /\x29")],
-		'secret' => ["secret[$id]", DI::l10n()->t("Consumer Secret"), "", ""],
-		'key' => ["key[$id]", DI::l10n()->t("Consumer Key"), "", ""],
+		'apiurl'   => ["apiurl[$id]", "Api url", "", DI::l10n()->t("Base API Path \x28remember the trailing /\x29")],
+		'secret'   => ["secret[$id]", DI::l10n()->t("Consumer Secret"), "", ""],
+		'key'      => ["key[$id]", DI::l10n()->t("Consumer Key"), "", ""],
 		//'applicationname' => Array("applicationname[$id]", DI::l10n()->t("Application name"), "", ""),
 	];
 
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/statusnet/');
 	$o = Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
-		'$sites' => $sitesform,
+		'$sites'  => $sitesform,
 	]);
 }

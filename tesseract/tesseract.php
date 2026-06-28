@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Tesseract OCR
  * Description: Use OCR to extract text from images (with timeout, resource limits, alt-text & format checks)

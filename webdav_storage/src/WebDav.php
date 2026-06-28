@@ -16,7 +16,7 @@ use Psr\Log\LoggerInterface;
  */
 class WebDav implements ICanWriteToStorage
 {
-	const NAME = 'WebDav';
+	public const NAME = 'WebDav';
 
 	/** @var string */
 	private $url;

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Matomo / Piwik Analytics
  * Description: Matomo / Piwik Analytics Addon for Friendica
@@ -40,7 +41,8 @@ use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Core\Config\Util\ConfigFileManager;
 
-function piwik_install() {
+function piwik_install()
+{
 	Hook::register('load_config', 'addon/piwik/piwik.php', 'piwik_load_config');
 	Hook::register('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
 
@@ -64,10 +66,10 @@ function piwik_analytics(string &$b)
 	/*
 	 *   Get the configuration values.
 	 */
-	$baseurl = DI::config()->get('piwik', 'baseurl');
-	$siteid  = DI::config()->get('piwik', 'siteid');
-	$optout  = DI::config()->get('piwik', 'optout');
-	$async   = DI::config()->get('piwik', 'async');
+	$baseurl       = DI::config()->get('piwik', 'baseurl');
+	$siteid        = DI::config()->get('piwik', 'siteid');
+	$optout        = DI::config()->get('piwik', 'optout');
+	$async         = DI::config()->get('piwik', 'async');
 	$shortendpoint = DI::config()->get('piwik', 'shortendpoint');
 
 	/*
@@ -75,9 +77,9 @@ function piwik_analytics(string &$b)
 	 *   If async is set to true use asynchronous tracking
 	 */
 
-	$scriptAsyncValue = $async ? 'true' : 'false';
+	$scriptAsyncValue  = $async ? 'true' : 'false';
 	$scriptPhpEndpoint = $shortendpoint ? 'js/' : 'piwik.php';
-	$scriptJsEndpoint = $shortendpoint ? 'js/' : 'piwik.js';
+	$scriptJsEndpoint  = $shortendpoint ? 'js/' : 'piwik.js';
 
 	$b .= "<!-- Piwik --> <script type=\"text/javascript\"> var _paq = _paq || []; _paq.push(['trackPageView']); _paq.push(['enableLinkTracking']); (function() { var u=((\"https:\" == document.location.protocol) ? \"https\" : \"http\") + \"://$baseurl\"; _paq.push(['setTrackerUrl', u+'$scriptPhpEndpoint']); _paq.push(['setSiteId', $siteid]); var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript'; g.defer=true; g.async=$scriptAsyncValue; g.src=u+'$scriptJsEndpoint'; s.parentNode.insertBefore(g,s); })(); </script> <!-- End Piwik Code -->\r\n";
 
@@ -93,22 +95,22 @@ function piwik_analytics(string &$b)
 		$b .= "<div id='piwik-optout-link'>";
 		$b .= DI::l10n()->t("This website is tracked using the <a href='http://www.matomo.org'>Matomo</a> analytics tool.");
 		$b .= " ";
-		$the_url =  "http://{$baseurl}index.php?module=CoreAdminHome&action=optOut";
+		$the_url = "http://{$baseurl}index.php?module=CoreAdminHome&action=optOut";
 		$b .= DI::l10n()->t("If you do not want that your visits are logged in this way you <a href='%s'>can set a cookie to prevent Matomo / Piwik from tracking further visits of the site</a> (opt-out).", $the_url);
 		$b .= "</div>";
 	}
 }
-function piwik_addon_admin (string &$o)
+function piwik_addon_admin(string &$o)
 {
-	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/piwik/" );
+	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/piwik/");
 
-	$o = Renderer::replaceMacros( $t, [
-		'$submit' => DI::l10n()->t('Save Settings'),
-		'$piwikbaseurl' => ['baseurl', DI::l10n()->t('Matomo (Piwik) Base URL'), DI::config()->get('piwik','baseurl' ), DI::l10n()->t('Absolute path to your Matomo (Piwik) installation. (without protocol (http/s), with trailing slash)')],
-		'$siteid' => ['siteid', DI::l10n()->t('Site ID'), DI::config()->get('piwik','siteid' ), ''],
-		'$optout' => ['optout', DI::l10n()->t('Show opt-out cookie link?'), DI::config()->get('piwik','optout' ), ''],
-		'$async' => ['async', DI::l10n()->t('Asynchronous tracking'), DI::config()->get('piwik','async' ), ''],
-		'$shortendpoint' => ['shortendpoint', DI::l10n()->t("Shortcut path to the script ('/js/' instead of '/piwik.js')"), DI::config()->get('piwik','shortendpoint' ), ''],
+	$o = Renderer::replaceMacros($t, [
+		'$submit'        => DI::l10n()->t('Save Settings'),
+		'$piwikbaseurl'  => ['baseurl', DI::l10n()->t('Matomo (Piwik) Base URL'), DI::config()->get('piwik', 'baseurl'), DI::l10n()->t('Absolute path to your Matomo (Piwik) installation. (without protocol (http/s), with trailing slash)')],
+		'$siteid'        => ['siteid', DI::l10n()->t('Site ID'), DI::config()->get('piwik', 'siteid'), ''],
+		'$optout'        => ['optout', DI::l10n()->t('Show opt-out cookie link?'), DI::config()->get('piwik', 'optout'), ''],
+		'$async'         => ['async', DI::l10n()->t('Asynchronous tracking'), DI::config()->get('piwik', 'async'), ''],
+		'$shortendpoint' => ['shortendpoint', DI::l10n()->t("Shortcut path to the script ('/js/' instead of '/piwik.js')"), DI::config()->get('piwik', 'shortendpoint'), ''],
 	]);
 }
 

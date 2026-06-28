@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: XMPP Chat
  * Description: Embeds Converse.js XMPP webchat client into Friendica

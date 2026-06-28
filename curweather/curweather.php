@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Current Weather
  * Description: Shows current weather conditions for user's location on their network page.
@@ -16,20 +17,20 @@ use Friendica\DI;
 
 function curweather_install()
 {
-	Hook::register('network_mod_init'   , 'addon/curweather/curweather.php', 'curweather_network_mod_init');
-	Hook::register('addon_settings'     , 'addon/curweather/curweather.php', 'curweather_addon_settings');
+	Hook::register('network_mod_init', 'addon/curweather/curweather.php', 'curweather_network_mod_init');
+	Hook::register('addon_settings', 'addon/curweather/curweather.php', 'curweather_addon_settings');
 	Hook::register('addon_settings_post', 'addon/curweather/curweather.php', 'curweather_addon_settings_post');
 }
 
 //  get the weather data from OpenWeatherMap
 function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cachetime = 0)
 {
-	$url = "http://api.openweathermap.org/data/2.5/weather?q=" . $loc . "&appid=" . $appid . "&lang=" . $lang . "&units=" . $units . "&mode=xml";
-	$cached = DI::cache()->get('curweather'.md5($url));
-	$now = new DateTime();
+	$url    = "http://api.openweathermap.org/data/2.5/weather?q=" . $loc . "&appid=" . $appid . "&lang=" . $lang . "&units=" . $units . "&mode=xml";
+	$cached = DI::cache()->get('curweather' . md5($url));
+	$now    = new DateTime();
 
 	if (!is_null($cached)) {
-		$cdate = (int) DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'curweather', 'last');
+		$cdate  = (int) DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'curweather', 'last');
 		$cached = unserialize($cached);
 
 		if ($cdate + (int) $cachetime > $now->getTimestamp()) {
@@ -69,7 +70,7 @@ function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cacheti
 		'country'     => (string) $res->city->country[0],
 		'lat'         => (string) $res->city->coord['lat'],
 		'lon'         => (string) $res->city->coord['lon'],
-		'temperature' => (string) $res->temperature['value'][0].$tunit,
+		'temperature' => (string) $res->temperature['value'][0] . $tunit,
 		'pressure'    => (string) $res->pressure['value'] . (string) $res->pressure['unit'],
 		'humidity'    => (string) $res->humidity['value'] . (string) $res->humidity['unit'],
 		'descripion'  => $desc,
@@ -79,7 +80,7 @@ function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cacheti
 	];
 
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'curweather', 'last', $now->getTimestamp());
-	DI::cache()->set('curweather'.md5($url), serialize($r), Duration::HOUR);
+	DI::cache()->set('curweather' . md5($url), serialize($r), Duration::HOUR);
 
 	return $r;
 }
@@ -104,9 +105,9 @@ function curweather_network_mod_init(string &$body)
 	$rpt = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'curweather', 'curweather_loc');
 
 	// Set the language to the browsers language or default and use metric units
-	$lang  = DI::session()->get('language', DI::config()->get('system', 'language'));
-	$units = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'curweather', 'curweather_units');
-	$appid = DI::config()->get('curweather', 'appid');
+	$lang      = DI::session()->get('language', DI::config()->get('system', 'language'));
+	$units     = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'curweather', 'curweather_units');
+	$appid     = DI::config()->get('curweather', 'appid');
 	$cachetime = intval(DI::config()->get('curweather', 'cachetime'));
 
 	if ($units === '') {
@@ -122,28 +123,28 @@ function curweather_network_mod_init(string &$body)
 	}
 
 	if ($ok) {
-		$t = Renderer::getMarkupTemplate("widget.tpl", "addon/curweather/" );
+		$t          = Renderer::getMarkupTemplate("widget.tpl", "addon/curweather/");
 		$curweather = Renderer::replaceMacros($t, [
-			'$title' => DI::l10n()->t("Current Weather"),
-			'$icon' => 'http://openweathermap.org/img/w/'.$res['icon'].'.png',
-			'$city' => $res['city'],
-			'$lon' => $res['lon'],
-			'$lat' => $res['lat'],
+			'$title'       => DI::l10n()->t("Current Weather"),
+			'$icon'        => 'http://openweathermap.org/img/w/' . $res['icon'] . '.png',
+			'$city'        => $res['city'],
+			'$lon'         => $res['lon'],
+			'$lat'         => $res['lat'],
 			'$description' => $res['descripion'],
-			'$temp' => $res['temperature'],
-			'$relhumidity' => ['caption'=>DI::l10n()->t('Relative Humidity'), 'val'=>$res['humidity']],
-			'$pressure' => ['caption'=>DI::l10n()->t('Pressure'), 'val'=>$res['pressure']],
-			'$wind' => ['caption'=>DI::l10n()->t('Wind'), 'val'=> $res['wind']],
-			'$lastupdate' => DI::l10n()->t('Last Updated').': '.$res['update'].'UTC',
-			'$databy' =>  DI::l10n()->t('Data by'),
-			'$showonmap' => DI::l10n()->t('Show on map')
+			'$temp'        => $res['temperature'],
+			'$relhumidity' => ['caption' => DI::l10n()->t('Relative Humidity'), 'val' => $res['humidity']],
+			'$pressure'    => ['caption' => DI::l10n()->t('Pressure'), 'val' => $res['pressure']],
+			'$wind'        => ['caption' => DI::l10n()->t('Wind'), 'val' => $res['wind']],
+			'$lastupdate'  => DI::l10n()->t('Last Updated') . ': ' . $res['update'] . 'UTC',
+			'$databy'      => DI::l10n()->t('Data by'),
+			'$showonmap'   => DI::l10n()->t('Show on map'),
 		]);
 	} else {
-		$t = Renderer::getMarkupTemplate('widget-error.tpl', 'addon/curweather/');
-		$curweather = Renderer::replaceMacros( $t, [
+		$t          = Renderer::getMarkupTemplate('widget-error.tpl', 'addon/curweather/');
+		$curweather = Renderer::replaceMacros($t, [
 			'$problem' => DI::l10n()->t('There was a problem accessing the weather data. But have a look'),
-			'$rpt' => $rpt,
-			'$atOWM' => DI::l10n()->t('at OpenWeatherMap')
+			'$rpt'     => $rpt,
+			'$atOWM'   => DI::l10n()->t('at OpenWeatherMap'),
 		]);
 	}
 
@@ -156,9 +157,9 @@ function curweather_addon_settings_post($post)
 		return;
 	}
 
-	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'curweather', 'curweather_loc'   , trim($_POST['curweather_loc']));
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'curweather', 'curweather_loc', trim($_POST['curweather_loc']));
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'curweather', 'curweather_enable', intval($_POST['curweather_enable']));
-	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'curweather', 'curweather_units' , trim($_POST['curweather_units']));
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'curweather', 'curweather_units', trim($_POST['curweather_units']));
 }
 
 function curweather_addon_settings(array &$data)
@@ -204,7 +205,7 @@ function curweather_addon_admin_post()
 	}
 
 	if (!empty($_POST['curweather-submit'])) {
-		DI::config()->set('curweather', 'appid',     trim($_POST['appid']));
+		DI::config()->set('curweather', 'appid', trim($_POST['appid']));
 		DI::config()->set('curweather', 'cachetime', trim($_POST['cachetime']));
 	}
 }
@@ -215,25 +216,25 @@ function curweather_addon_admin(string &$o)
 		return;
 	}
 
-	$appid = DI::config()->get('curweather', 'appid');
+	$appid     = DI::config()->get('curweather', 'appid');
 	$cachetime = DI::config()->get('curweather', 'cachetime');
 
-	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/curweather/' );
+	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/curweather/');
 
 	$o = Renderer::replaceMacros($t, [
-		'$submit' => DI::l10n()->t('Save Settings'),
+		'$submit'    => DI::l10n()->t('Save Settings'),
 		'$cachetime' => [
 			'cachetime',
 			DI::l10n()->t('Caching Interval'),
 			$cachetime,
 			DI::l10n()->t('For how long should the weather data be cached? Choose according your OpenWeatherMap account type.'), [
 				'0'    => DI::l10n()->t('no cache'),
-				'300'  => '5 '  . DI::l10n()->t('minutes'),
+				'300'  => '5 ' . DI::l10n()->t('minutes'),
 				'900'  => '15 ' . DI::l10n()->t('minutes'),
 				'1800' => '30 ' . DI::l10n()->t('minutes'),
-				'3600' => '60 ' . DI::l10n()->t('minutes')
-			]
+				'3600' => '60 ' . DI::l10n()->t('minutes'),
+			],
 		],
-		'$appid' => ['appid', DI::l10n()->t('Your APPID'), $appid, DI::l10n()->t('Your API key provided by OpenWeatherMap')]
+		'$appid' => ['appid', DI::l10n()->t('Your APPID'), $appid, DI::l10n()->t('Your API key provided by OpenWeatherMap')],
 	]);
 }

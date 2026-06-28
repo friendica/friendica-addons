@@ -1,10 +1,11 @@
 <?php
+
 /**
-* Name: Infinite Improbability Drive
-* Description: Infinitely Improbably Find A Random User
-* Version: 1.0
-* Author: Thomas Willingham <https://kakste.com/profile/beardyunixer>
-*/
+ * Name: Infinite Improbability Drive
+ * Description: Infinitely Improbably Find A Random User
+ * Version: 1.0
+ * Author: Thomas Willingham <https://kakste.com/profile/beardyunixer>
+ */
 
 use Friendica\Core\Hook;
 use Friendica\DI;
@@ -31,10 +32,10 @@ function infiniteimprobabilitydrive_content()
 {
 	$o = '';
 
-	DI::page()['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.DI::baseUrl().'/addon/infiniteimprobabilitydrive/infiniteimprobabilitydrive.css"/>';
+	DI::page()['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="' . DI::baseUrl() . '/addon/infiniteimprobabilitydrive/infiniteimprobabilitydrive.css"/>';
 
 
-	$baseurl = (string)DI::baseUrl();
+	$baseurl = (string) DI::baseUrl();
 
 	$o .= <<< EOT
 

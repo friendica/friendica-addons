@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Circle Text
  * Description: Disable images in circle edit menu
@@ -48,8 +49,8 @@ function circle_text_settings(array &$data)
 		return;
 	}
 
-	$enabled = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'system', 'circle_edit_image_limit') ??
-		DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'system', 'groupedit_image_limit');
+	$enabled = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'system', 'circle_edit_image_limit')
+		?? DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'system', 'groupedit_image_limit');
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/circle_text/');
 	$html = Renderer::replaceMacros($t, [

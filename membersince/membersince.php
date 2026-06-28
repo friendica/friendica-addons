@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: MemberSince
  * Description: Display membership date in profile
@@ -43,12 +44,12 @@ function membersince_display(&$b)
 		$elm = $doc->getElementById('aprofile-fullname');
 
 		$div = $doc->createElement('div');
-		$div->setAttribute('id','aprofile-membersince');
-		$div->setAttribute('class','col-lg-12 col-md-12 col-sm-12 col-xs-12 aprofile');
+		$div->setAttribute('id', 'aprofile-membersince');
+		$div->setAttribute('class', 'col-lg-12 col-md-12 col-sm-12 col-xs-12 aprofile');
 
 		// The seperator line.
-		$hr = $doc->createElement('hr','');
-		$hr->setAttribute('class','profile-separator');
+		$hr = $doc->createElement('hr', '');
+		$hr->setAttribute('class', 'profile-separator');
 
 		// The label div.
 		$label = $doc->createElement('div', DI::l10n()->t('Joined:'));

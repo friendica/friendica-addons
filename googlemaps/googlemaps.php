@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Google Maps
  * Description: Use Google Maps for displaying locations. After activation the post location just beneath your avatar in your posts will link to Google Maps.

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: OpenStreetMap
  * Description: Use OpenStreetMap for displaying locations. After activation the post location just beneath your avatar in your posts will link to OpenStreetMap.
@@ -16,14 +17,14 @@ use Friendica\DI;
 use Friendica\Core\Config\Util\ConfigFileManager;
 use Friendica\Util\Strings;
 
-const OSM_TMS = 'https://www.openstreetmap.org';
-const OSM_NOM = 'https://nominatim.openstreetmap.org/search.php';
-const OSM_ZOOM = 16;
+const OSM_TMS    = 'https://www.openstreetmap.org';
+const OSM_NOM    = 'https://nominatim.openstreetmap.org/search.php';
+const OSM_ZOOM   = 16;
 const OSM_MARKER = 0;
 
 function openstreetmap_install()
 {
-	Hook::register('load_config',     'addon/openstreetmap/openstreetmap.php', 'openstreetmap_load_config');
+	Hook::register('load_config', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_load_config');
 	Hook::register('render_location', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_location');
 	Hook::register('generate_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_map');
 	Hook::register('generate_named_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_named_map');
@@ -68,8 +69,8 @@ function openstreetmap_location(array &$item)
 
 	$tmsserver = DI::config()->get('openstreetmap', 'tmsserver', OSM_TMS);
 	$nomserver = DI::config()->get('openstreetmap', 'nomserver', OSM_NOM);
-	$zoom = DI::config()->get('openstreetmap', 'zoom', OSM_ZOOM);
-	$marker = DI::config()->get('openstreetmap', 'marker', OSM_MARKER);
+	$zoom      = DI::config()->get('openstreetmap', 'zoom', OSM_ZOOM);
+	$marker    = DI::config()->get('openstreetmap', 'marker', OSM_MARKER);
 
 	// This is needed since we stored an empty string in the config in previous versions
 	if (empty($nomserver)) {
@@ -79,18 +80,18 @@ function openstreetmap_location(array &$item)
 	if ($item['coord'] != '') {
 		$coords = explode(' ', $item['coord']);
 		if ((count($coords) > 1) && is_numeric($coords[0]) && is_numeric($coords[1])) {
-			$lat = urlencode(round($coords[0], 5));
-			$lon = urlencode(round($coords[1], 5));
+			$lat    = urlencode(round($coords[0], 5));
+			$lon    = urlencode(round($coords[1], 5));
 			$target = $tmsserver;
 			if ($marker > 0) {
 				$target .= '?mlat=' . $lat . '&mlon=' . $lon;
 			}
-			$target .= '#map='.intval($zoom).'/'.$lat.'/'.$lon;
+			$target .= '#map=' . intval($zoom) . '/' . $lat . '/' . $lon;
 		}
 	}
 
 	if (empty($target)) {
-		$target = $nomserver.'?q='.urlencode($item['location']);
+		$target = $nomserver . '?q=' . urlencode($item['location']);
 	}
 
 	if ($item['location'] != '') {
@@ -114,7 +115,7 @@ function openstreetmap_get_coordinates(array &$b)
 	$args = '?q=' . urlencode($b['location']) . '&format=json';
 
 	$cachekey = 'openstreetmap:' . $b['location'];
-	$j = DI::cache()->get($cachekey);
+	$j        = DI::cache()->get($cachekey);
 
 	if (is_null($j)) {
 		$curlResult = DI::httpClient()->get($nomserver . $args);
@@ -144,10 +145,10 @@ function openstreetmap_generate_map(array &$b)
 	$tmsserver = DI::config()->get('openstreetmap', 'tmsserver', OSM_TMS);
 
 	if (strpos(DI::baseUrl(), 'https:') !== false) {
-		$tmsserver = str_replace('http:','https:',$tmsserver);
+		$tmsserver = str_replace('http:', 'https:', $tmsserver);
 	}
 
-	$zoom = DI::config()->get('openstreetmap', 'zoom', OSM_ZOOM);
+	$zoom   = DI::config()->get('openstreetmap', 'zoom', OSM_ZOOM);
 	$marker = DI::config()->get('openstreetmap', 'marker', OSM_MARKER);
 
 	$lat = $b['lat']; // round($b['lat'], 5);
@@ -162,12 +163,12 @@ function openstreetmap_generate_map(array &$b)
 		$cardlink .= '?mlat=' . $lat . '&mlon=' . $lon;
 	}
 
-	$cardlink .= '#map=' . $zoom . '/' . $lat . '/' . $lon . '">' . ($b['location'] ??0? Strings::escapeHtml($b['location']) : DI::l10n()->t('View Larger')) . '</a>';
+	$cardlink .= '#map=' . $zoom . '/' . $lat . '/' . $lon . '">' . ($b['location'] ?? 0? Strings::escapeHtml($b['location']) : DI::l10n()->t('View Larger')) . '</a>';
 	if (empty($b['mode'])) {
-		$b['html'] = '<iframe style="width:100%; height:300px; border:1px solid #ccc" src="' . $tmsserver .
-				'/export/embed.html?bbox=' . ($lon - 0.01) . '%2C' . ($lat - 0.01) . '%2C' . ($lon + 0.01) . '%2C' . ($lat + 0.01) .
-				'&amp;layer=mapnik&amp;marker=' . $lat . '%2C' . $lon . '" style="border: 1px solid black"></iframe>' .
-				'<br/><small>' . $cardlink . '</small>';
+		$b['html'] = '<iframe style="width:100%; height:300px; border:1px solid #ccc" src="' . $tmsserver
+				. '/export/embed.html?bbox=' . ($lon - 0.01) . '%2C' . ($lat - 0.01) . '%2C' . ($lon + 0.01) . '%2C' . ($lat + 0.01)
+				. '&amp;layer=mapnik&amp;marker=' . $lat . '%2C' . $lon . '" style="border: 1px solid black"></iframe>'
+				. '<br/><small>' . $cardlink . '</small>';
 	} else {
 		$b['html'] .= '<br/>' . $cardlink;
 	}
@@ -177,11 +178,11 @@ function openstreetmap_generate_map(array &$b)
 
 function openstreetmap_addon_admin(string &$o)
 {
-	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/openstreetmap/');
+	$t         = Renderer::getMarkupTemplate('admin.tpl', 'addon/openstreetmap/');
 	$tmsserver = DI::config()->get('openstreetmap', 'tmsserver', OSM_TMS);
 	$nomserver = DI::config()->get('openstreetmap', 'nomserver', OSM_NOM);
-	$zoom = DI::config()->get('openstreetmap', 'zoom', OSM_ZOOM);
-	$marker = DI::config()->get('openstreetmap', 'marker', OSM_MARKER);
+	$zoom      = DI::config()->get('openstreetmap', 'zoom', OSM_ZOOM);
+	$marker    = DI::config()->get('openstreetmap', 'marker', OSM_MARKER);
 
 	// This is needed since we stored an empty string in the config in previous versions
 	if (empty($nomserver)) {
@@ -189,11 +190,11 @@ function openstreetmap_addon_admin(string &$o)
 	}
 
 	$o = Renderer::replaceMacros($t, [
-			'$submit' => DI::l10n()->t('Submit'),
-			'$tmsserver' => ['tmsserver', DI::l10n()->t('Tile Server URL'), $tmsserver, DI::l10n()->t('A list of <a href="http://wiki.openstreetmap.org/wiki/TMS" target="_blank" rel="noopener noreferrer">public tile servers</a>')],
-			'$nomserver' => ['nomserver', DI::l10n()->t('Nominatim (reverse geocoding) Server URL'), $nomserver, DI::l10n()->t('A list of <a href="http://wiki.openstreetmap.org/wiki/Nominatim" target="_blank" rel="noopener noreferrer">Nominatim servers</a>')],
-			'$zoom' => ['zoom', DI::l10n()->t('Default zoom'), $zoom, DI::l10n()->t('The default zoom level. (1:world, 18:highest, also depends on tile server)')],
-			'$marker' => ['marker', DI::l10n()->t('Include marker on map'), $marker, DI::l10n()->t('Include a marker on the map.')],
+		'$submit'    => DI::l10n()->t('Submit'),
+		'$tmsserver' => ['tmsserver', DI::l10n()->t('Tile Server URL'), $tmsserver, DI::l10n()->t('A list of <a href="http://wiki.openstreetmap.org/wiki/TMS" target="_blank" rel="noopener noreferrer">public tile servers</a>')],
+		'$nomserver' => ['nomserver', DI::l10n()->t('Nominatim (reverse geocoding) Server URL'), $nomserver, DI::l10n()->t('A list of <a href="http://wiki.openstreetmap.org/wiki/Nominatim" target="_blank" rel="noopener noreferrer">Nominatim servers</a>')],
+		'$zoom'      => ['zoom', DI::l10n()->t('Default zoom'), $zoom, DI::l10n()->t('The default zoom level. (1:world, 18:highest, also depends on tile server)')],
+		'$marker'    => ['marker', DI::l10n()->t('Include marker on map'), $marker, DI::l10n()->t('Include a marker on the map.')],
 	]);
 }
 

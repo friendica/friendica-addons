@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (C) 2010-2023, the Friendica project
  *
@@ -54,7 +55,7 @@ class IntrospectionProcessor implements ProcessorInterface
 		// we should have the call source now
 		$record['extra'] = array_merge(
 			$record['extra'],
-			$this->introspection->getRecord()
+			$this->introspection->getRecord(),
 		);
 
 		return $record;

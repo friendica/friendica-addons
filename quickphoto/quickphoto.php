@@ -10,42 +10,45 @@
 use Friendica\Core\Hook;
 use Friendica\DI;
 
-function quickphoto_install() {
-    Hook::register('page_header', 'addon/quickphoto/quickphoto.php', 'quickphoto_header');
-    Hook::register('post_post', 'addon/quickphoto/quickphoto.php', 'quickphoto_post_hook');
+function quickphoto_install()
+{
+	Hook::register('page_header', 'addon/quickphoto/quickphoto.php', 'quickphoto_header');
+	Hook::register('post_post', 'addon/quickphoto/quickphoto.php', 'quickphoto_post_hook');
 }
 
-function quickphoto_header(&$header) {
-    $desc_label = DI::l10n()->t('Image description');
+function quickphoto_header(&$header)
+{
+	$desc_label = DI::l10n()->t('Image description');
 
-    $js_label = json_encode($desc_label);
+	$js_label = json_encode($desc_label);
 
-    $header .= "\n" . '<script type="text/javascript">var qp_i18n = { imageDesc: ' . $js_label . ' };</script>';
-    $header .= "\n" . '<script type="text/javascript" src="/addon/quickphoto/quickphoto.js?v=5.2"></script>' . "\n";
+	$header .= "\n" . '<script type="text/javascript">var qp_i18n = { imageDesc: ' . $js_label . ' };</script>';
+	$header .= "\n" . '<script type="text/javascript" src="/addon/quickphoto/quickphoto.js?v=5.2"></script>' . "\n";
 }
 
-function quickphoto_post_hook(&$item) {
-    if (strpos($item['body'], '[img]') === false || strpos($item['body'], '|') === false) {
-        return;
-    }
+function quickphoto_post_hook(&$item)
+{
+	if (strpos($item['body'], '[img]') === false || strpos($item['body'], '|') === false) {
+		return;
+	}
 
-    $pattern = '/\[img\](.*?)\|(.*?)\[\/img\]/i';
+	$pattern = '/\[img\](.*?)\|(.*?)\[\/img\]/i';
 
-    $item['body'] = preg_replace_callback($pattern, function($matches) {
-        $filename = $matches[1];
-        $description = $matches[2];
+	$item['body'] = preg_replace_callback($pattern, function ($matches) {
+		$filename    = $matches[1];
+		$description = $matches[2];
 
-        $condition = [
-            'resource-id' => $filename,
-            'uid' => DI::userSession()->getLocalUserId(),
-        ];
+		$condition = [
+			'resource-id' => $filename,
+			'uid'         => DI::userSession()->getLocalUserId(),
+		];
 
-        $photo = DI::dba()->selectFirst('photo', ['url'], $condition);
+		$photo = DI::dba()->selectFirst('photo', ['url'], $condition);
 
-        if ($photo) {
-            return '[url=' . $photo['url'] . '][img=' . $photo['url'] . ']' . $description . '[/img][/url]';
-        }
+		if ($photo) {
+			return '[url=' . $photo['url'] . '][img=' . $photo['url'] . ']' . $description . '[/img][/url]';
+		}
 
-        return $matches[0];
-    }, $item['body']);
+		return $matches[0];
+	}, $item['body']);
 }

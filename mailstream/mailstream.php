@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Mail Stream
  * Description: Mail all items coming into your network feed to an email address
@@ -50,15 +51,15 @@ function mailstream_addon_admin(string &$o)
 {
 	$frommail = DI::config()->get('mailstream', 'frommail');
 	$template = Renderer::getMarkupTemplate('admin.tpl', 'addon/mailstream/');
-	$config = [
+	$config   = [
 		'frommail',
 		DI::l10n()->t('From Address'),
 		$frommail,
-		DI::l10n()->t('Email address that stream items will appear to be from.')
+		DI::l10n()->t('Email address that stream items will appear to be from.'),
 	];
 	$o .= Renderer::replaceMacros($template, [
 		'$frommail' => $config,
-		'$submit' => DI::l10n()->t('Save Settings')
+		'$submit'   => DI::l10n()->t('Save Settings'),
 	]);
 }
 
@@ -111,7 +112,7 @@ function mailstream_generate_references(array $item): string
 		$ancestor_message_id = mailstream_generate_id($ancestor_uri);
 		array_unshift($ancestor_message_ids, $ancestor_message_id);
 
-		$ancestor = Post::selectFirst([], array("uid" => $item["uid"], "uri" => $ancestor_uri));
+		$ancestor = Post::selectFirst([], ["uid" => $item["uid"], "uri" => $ancestor_uri]);
 		if (empty($ancestor)) {
 			DI::logger()->error("Could not retrieve ancestor post", ["uri" => $item["uri"], "uid" => $item["uid"], "ancestor-uri" => $ancestor_uri]);
 			break;
@@ -144,8 +145,8 @@ function mailstream_generate_references(array $item): string
  */
 function mailstream_generate_id(string $uri): string
 {
-	$host = DI::baseUrl()->getHost();
-	$resource = hash('md5', $uri);
+	$host       = DI::baseUrl()->getHost();
+	$resource   = hash('md5', $uri);
 	$message_id = "<" . $resource . "@" . $host . ">";
 	DI::logger()->debug('generated message ID', ['id' => $message_id, 'uri' => $uri]);
 	return $message_id;
@@ -153,8 +154,8 @@ function mailstream_generate_id(string $uri): string
 
 function mailstream_send_hook(array $data)
 {
-	$criteria = array('uid' => $data['uid'], 'contact-id' => $data['contact-id'], 'uri' => $data['uri']);
-	$item = Post::selectFirst([], $criteria);
+	$criteria = ['uid' => $data['uid'], 'contact-id' => $data['contact-id'], 'uri' => $data['uri']];
+	$item     = Post::selectFirst([], $criteria);
 	if (empty($item)) {
 		DI::logger()->error('could not find item');
 		return;
@@ -175,7 +176,7 @@ function mailstream_send_hook(array $data)
 		DI::logger()->info('author is blocked', ['guid' => $item['guid'], 'author-id' => $data['author-id']]);
 		return;
 	}
-	$collapsed = false;
+	$collapsed    = false;
 	$user_contact = DBA::selectFirst('user-contact', ['cid', 'blocked', 'ignored', 'collapsed'], ['uid' => $item['uid'], 'uri-id' => $item['author-uri-id']]);
 	if (!DBA::isResult($user_contact)) {
 		$user_contact = DBA::selectFirst('user-contact', ['cid', 'blocked', 'ignored', 'collapsed'], ['uid' => $item['uid'], 'cid' => $item['author-id']]);
@@ -246,12 +247,12 @@ function mailstream_post_hook(array &$item)
 	$message_id = mailstream_generate_id($item['uri']);
 
 	$send_hook_data = [
-		'uid' => $item['uid'],
+		'uid'        => $item['uid'],
 		'contact-id' => $item['contact-id'],
-		'author-id' => $item['author-id'],
-		'uri' => $item['uri'],
+		'author-id'  => $item['author-id'],
+		'uri'        => $item['uri'],
 		'message_id' => $message_id,
-		'tries' => 0,
+		'tries'      => 0,
 	];
 	Hook::fork(Worker::PRIORITY_LOW, 'mailstream_send_hook', $send_hook_data);
 }
@@ -292,9 +293,9 @@ function mailstream_do_images(array &$item, array &$attachments)
 			unlink($cookiejar);
 			if (!$curlResult->isSuccess()) {
 				DI::logger()->debug('mailstream: fetch image url failed', [
-					'url' => $url,
-					'item_id' => $item['id'],
-					'return_code' => $curlResult->getReturnCode()
+					'url'         => $url,
+					'item_id'     => $item['id'],
+					'return_code' => $curlResult->getReturnCode(),
 				]);
 				continue;
 			}
@@ -303,10 +304,10 @@ function mailstream_do_images(array &$item, array &$attachments)
 			continue;
 		}
 		$attachments[$url] = [
-			'data' => $curlResult->getBodyString(),
-			'guid' => hash('crc32', $url),
+			'data'     => $curlResult->getBodyString(),
+			'guid'     => hash('crc32', $url),
 			'filename' => basename($components['path']),
-			'type' => $curlResult->getContentType()
+			'type'     => $curlResult->getContentType(),
 		];
 
 		if (strlen($attachments[$url]['data'])) {
@@ -401,10 +402,10 @@ function mailstream_subject(array $item): string
 	$contact = Contact::selectFirst([], ['id' => $item['contact-id'], 'uid' => $item['uid']]);
 	if (!DBA::isResult($contact)) {
 		DI::logger()->error('no contact', [
-			'item' => $item['id'],
-			'plink' => $item['plink'],
+			'item'       => $item['id'],
+			'plink'      => $item['plink'],
 			'contact id' => $item['contact-id'],
-			'uid' => $item['uid']
+			'uid'        => $item['uid'],
 		]);
 		return DI::l10n()->t("Friendica post");
 	}
@@ -417,7 +418,7 @@ function mailstream_subject(array $item): string
 	if ($contact['network'] === 'face') {
 		$text = mailstream_decode_subject($item['body'], $item['uri-id']);
 		// For some reason these do show up in Facebook
-		$text = preg_replace('/\xA0$/', '', $text);
+		$text    = preg_replace('/\xA0$/', '', $text);
 		$subject = (strlen($text) > 150) ? (substr($text, 0, 140) . '...') : $text;
 		return preg_replace('/\\s+/', ' ', $subject);
 	}
@@ -482,7 +483,7 @@ function mailstream_send(string $message_id, array $item, array $user, bool $col
 		$mail->SetFrom($frommail, mailstream_sender($item));
 		$mail->AddAddress($address, $user['username']);
 		$mail->MessageID = $message_id;
-		$mail->Subject = mailstream_subject($item);
+		$mail->Subject   = mailstream_subject($item);
 		if ($item['thr-parent'] != $item['uri']) {
 			$mail->addCustomHeader('In-Reply-To: ' . mailstream_generate_id($item['thr-parent']));
 			$mail->addCustomHeader('References: ' . mailstream_generate_references($item));
@@ -498,20 +499,20 @@ function mailstream_send(string $message_id, array $item, array $user, bool $col
 				$image['guid'],
 				$image['filename'],
 				$encoding,
-				$image['type']
+				$image['type'],
 			);
 		}
 		$mail->IsHTML(true);
 		$mail->CharSet = 'utf-8';
-		$template = Renderer::getMarkupTemplate('mail.tpl', 'addon/mailstream/');
+		$template      = Renderer::getMarkupTemplate('mail.tpl', 'addon/mailstream/');
 		$mail->AltBody = BBCode::toPlaintext($item['body']);
-		$item['body'] = BBCode::convertForUriId($item['uri-id'], $item['body'], BBCode::CONNECTORS);
-		$item['url'] = DI::baseUrl() . '/display/' . $item['guid'];
-		$mail->Body = Renderer::replaceMacros($template, [
+		$item['body']  = BBCode::convertForUriId($item['uri-id'], $item['body'], BBCode::CONNECTORS);
+		$item['url']   = DI::baseUrl() . '/display/' . $item['guid'];
+		$mail->Body    = Renderer::replaceMacros($template, [
 			'$upstream' => DI::l10n()->t('Upstream'),
-			'$uri' => DI::l10n()->t('URI'),
-			'$local' => DI::l10n()->t('Local'),
-			'$item' => $item
+			'$uri'      => DI::l10n()->t('URI'),
+			'$local'    => DI::l10n()->t('Local'),
+			'$item'     => $item,
 		]);
 		$mail->Body = mailstream_html_wrap($mail->Body);
 		if (!$mail->Send()) {
@@ -519,8 +520,8 @@ function mailstream_send(string $message_id, array $item, array $user, bool $col
 		}
 		DI::logger()->debug('sent message', [
 			'message ID' => $mail->MessageID,
-			'subject' => $mail->Subject,
-			'address' => $address
+			'subject'    => $mail->Subject,
+			'address'    => $address,
 		]);
 	} catch (phpmailerException $e) {
 		DI::logger()->debug('PHPMailer exception sending message', ['id' => $message_id, 'error' => $e->errorMessage()]);
@@ -562,31 +563,31 @@ function mailstream_addon_settings(array &$data)
 	$nolikes   = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'mailstream', 'nolikes');
 	$attachimg = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'mailstream', 'attachimg');
 
-	$template  = Renderer::getMarkupTemplate('settings.tpl', 'addon/mailstream/');
-	$html      = Renderer::replaceMacros($template, [
-		'$enabled'   => [
+	$template = Renderer::getMarkupTemplate('settings.tpl', 'addon/mailstream/');
+	$html     = Renderer::replaceMacros($template, [
+		'$enabled' => [
 			'mailstream_enabled',
 			DI::l10n()->t('Enabled'),
-			$enabled
+			$enabled,
 		],
-		'$address'   => [
+		'$address' => [
 			'mailstream_address',
 			DI::l10n()->t('Email Address'),
 			$address,
-			DI::l10n()->t('Leave blank to use your account email address')
+			DI::l10n()->t('Leave blank to use your account email address'),
 		],
-		'$nolikes'   => [
+		'$nolikes' => [
 			'mailstream_nolikes',
 			DI::l10n()->t('Exclude Likes'),
 			$nolikes,
-			DI::l10n()->t('Check this to omit mailing "Like" notifications')
+			DI::l10n()->t('Check this to omit mailing "Like" notifications'),
 		],
 		'$attachimg' => [
 			'mailstream_attachimg',
 			DI::l10n()->t('Attach Images'),
 			$attachimg,
-			DI::l10n()->t('Download images in posts and attach them to the email.  ' .
-				'Useful for reading email while offline.')
+			DI::l10n()->t('Download images in posts and attach them to the email.  '
+				. 'Useful for reading email while offline.'),
 		],
 	]);
 
