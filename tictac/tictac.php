@@ -729,10 +729,10 @@ class tictac
 						$o .= "<td style=\"width: 25px; height: 25px; $bordertop $borderleft\" align=\"center\">&nbsp;</td>";
 					} elseif ($this->marked_yours($x, $y, $z)) {
 						$o .= "<td style=\"width: 25px; height: 25px; $bordertop $borderleft $winner\" align=\"center\">X</td>";
-					} elseif ($this->marked_mine($x,$y,$z)) {
+					} elseif ($this->marked_mine($x, $y, $z)) {
 						$o .= "<td style=\"width: 25px; height: 25px; $bordertop $borderleft $winner\" align=\"center\">O</td>";
 					} else {
-						$val = sprintf("%d%d%d",$x,$y,$z);
+						$val = sprintf("%d%d%d", $x, $y, $z);
 						$o .= "<td style=\"width: 25px; height: 25px; $bordertop $borderleft\" align=\"center\"><input type=\"checkbox\" name=\"move\" value=\"$val\" onclick=\"this.form.submit();\" /></td>";
 					}
 				}
