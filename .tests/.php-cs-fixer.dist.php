@@ -14,6 +14,11 @@ $finder = PhpCsFixer\Finder::create()
 	->exclude(str_replace(__DIR__ . '/../', '', glob(__DIR__ . '/../**/lang/')))
 	->exclude([
 		'js_upload/file-uploader',
+		'libravatar/Services',
+		'mailstream/phpmailer',
+		'pnut/lib',
+		'pumpio/oauth',
+		'statusnet/library',
 	])
 ;
 
