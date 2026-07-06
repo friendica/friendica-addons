@@ -3,7 +3,7 @@
 /**
  * Name: OpenID Connect (OAuth2)
  * Description: Authenticate and register users via OpenID Connect (OAuth2)
- * Version: 0.1
+ * Version: 0.2
  * Author: Daniel Buck <https://friendica.rollenspiel.monster/profile/tealk>
  */
 
