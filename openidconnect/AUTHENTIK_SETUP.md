@@ -4,8 +4,6 @@ sidebar_label: Friendica
 support_level: community
 ---
 
-import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
-
 ## What is Friendica?
 
 > Friendica is a decentralized social network platform that focuses on privacy and federation.
@@ -26,8 +24,6 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
-
-<RedirectURI20265Note />
 
 To support the integration of Friendica with authentik, you need to create an application/provider pair in authentik.
 
