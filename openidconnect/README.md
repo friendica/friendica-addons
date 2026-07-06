@@ -6,8 +6,13 @@ This addon enables authentication and registration of users via OpenID Connect (
 
 - SSO login via OpenID Connect compatible providers (Keycloak, Auth0, etc.)
 - Automatic account creation on first login
+- Automatic account linking for pre-existing local accounts when the email matches and the account is not already linked
 - Avatar synchronization from identity provider
 - State-based CSRF protection
+- Nonce validation on ID tokens
+- PKCE (S256) for the authorization code flow
+- JWKS cache refresh on signature mismatch after provider key rotation
+- Provider-aware token endpoint auth method selection (`client_secret_basic` preferred)
 - Token revocation on logout
 - Account linking for existing local accounts
 
@@ -22,18 +27,21 @@ This addon enables authentication and registration of users via OpenID Connect (
 2. Enable the addon in the Friendica admin interface under `Admin -> Addons`
 3. Configure the addon under `Admin -> Addons -> OpenID Connect`
 
+For a canonical Authentik-specific setup guide, see `AUTHENTIK_SETUP.md`.
+
 ## Configuration
 
 The following options are available in the admin panel:
 
-| Option                   | Description                                                                       |
-| ------------------------ | --------------------------------------------------------------------------------- |
-| **Discovery URL**        | URL to the OpenID Connect discovery document (`.well-known/openid-configuration`) |
-| **Client ID**            | Client ID from the identity provider                                              |
-| **Client Secret**        | Client secret from the identity provider                                          |
-| **Scopes**               | Space-separated list of requested scopes (default: `openid email profile`)        |
-| **Button Text**          | Text for the login button                                                         |
-| **Auto-create accounts** | Automatically create local accounts for users authenticating via OIDC             |
+| Option                     | Description                                                                       |
+| -------------------------- | --------------------------------------------------------------------------------- |
+| **Discovery URL**          | URL to the OpenID Connect discovery document (`.well-known/openid-configuration`) |
+| **Client ID**              | Client ID from the identity provider                                              |
+| **Client Secret**          | Client secret from the identity provider                                          |
+| **Scopes**                 | Space-separated list of requested scopes (default: `openid email profile`)        |
+| **Button Text**            | Text for the login button                                                         |
+| **Auto-create accounts**   | Automatically create local accounts for users authenticating via OIDC             |
+| **Allow unverified email** | Allow login when the IdP marks the email as unverified (local dev only)           |
 
 ## Identity Provider Configuration
 
@@ -66,11 +74,12 @@ https://your-friendica.com/openidconnect/callback
 1. User clicks "Sign in with OpenID Connect" on the login page
 2. Redirect to identity provider
 3. After successful authentication: redirect back with authorization code
-4. Addon exchanges code for access token
-5. Fetches userinfo
-6. Finds existing user or creates new one
-7. Authenticates user in Friendica
-8. 2FA is automatically bypassed (since authentication already happened at the IdP)
+4. Addon exchanges code for tokens using PKCE and provider-supported client auth
+5. Validates ID token signature, issuer, audience, nonce, and expiry
+6. Fetches userinfo and verifies it matches the authenticated subject
+7. Finds existing user, auto-links an unlinked matching account, or creates a new one
+8. Authenticates user in Friendica
+9. Friendica local 2FA is only bypassed when the local account does not have 2FA enabled
 
 ## Account Linking
 
@@ -98,10 +107,30 @@ Existing registered users can link their local account with an OpenID Connect pr
 - After linking, you can log in both with local login and via OIDC-SSO
 - The link stores the OIDC Subject-ID (`sub`) in the user profile
 - The IdP email is stored in the personal configuration
+- Linking is one-to-one: an OIDC `sub` already linked to another local account is rejected
 
 ## Two-Factor Authentication
 
-When logging in via OpenID Connect, 2FA is automatically bypassed. This is because the authentication (including any 2FA configured at the identity provider) has already been completed at the IdP before returning to Friendica.
+When logging in via OpenID Connect, Friendica local 2FA is only bypassed if the local Friendica account does not have local 2FA enabled. If the local account has Friendica 2FA enabled, the normal local 2FA flow still runs after OIDC login.
+
+## Security Notes
+
+- Production deployments should use HTTPS for Friendica and the IdP.
+- `allow_unverified_email` should stay disabled in production.
+- The addon links accounts by immutable OIDC `sub`, not by email.
+- Nicknames are derived from OIDC claims but uniqueness is enforced locally.
+- The same-host avatar allowance exists to support self-hosted/private-network IdPs.
+
+## Unit Tests
+
+Run inside the addon directory:
+
+```bash
+composer install
+composer test
+```
+
+The test suite covers pure helper and security-critical functions such as return-path sanitization, PKCE helpers, nonce generation, provider auth-method selection, and safe URL handling.
 
 ## Troubleshooting
 
@@ -119,3 +148,14 @@ When logging in via OpenID Connect, 2FA is automatically bypassed. This is becau
 
 - Check if `auto_create_accounts` is enabled
 - Check Friendica logs under `admin -> logs`
+
+**Error: "This account is not linked to your identity provider"**
+
+- This now only happens when the email matches an account that is already linked to a different OIDC `sub`
+- If the account exists but was never linked, the addon auto-links it when `auto_create_accounts` is enabled
+
+**Phanpy or Ice Cubes cannot connect to `friendica.localhost:8080`**
+
+- Many Mastodon clients expect an HTTPS origin
+- `friendica.localhost:8080` is plain HTTP local dev
+- Use a local HTTPS reverse proxy or a Cloudflare tunnel for client-app testing

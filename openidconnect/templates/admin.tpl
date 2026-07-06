@@ -1,4 +1,4 @@
-<form action="/admin/addon/openidconnect" method="post">
+<form action="{$baseurl}/admin/addons/openidconnect" method="post">
 	<input type="hidden" name="form_security_token" value="{{$form_security_token}}" />
 	<h2>{{$title}}</h2>
 
@@ -36,6 +36,12 @@
 		<input type="checkbox" name="auto_create_accounts" id="id_auto_create_accounts" value="1" {{if $auto_create_accounts.2}}checked{{/if}} />
 		<label for="id_auto_create_accounts">{{$auto_create_accounts.1}}</label>
 		<span class="help-block">{{$auto_create_accounts.3}}</span>
+	</div>
+
+	<div class="form-group">
+		<input type="checkbox" name="allow_unverified_email" id="id_allow_unverified_email" value="1" {{if $allow_unverified_email.2}}checked{{/if}} />
+		<label for="id_allow_unverified_email">{{$allow_unverified_email.1}}</label>
+		<span class="help-block">{{$allow_unverified_email.3}}</span>
 	</div>
 
 	<div class="form-group">
