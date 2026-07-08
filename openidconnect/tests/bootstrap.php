@@ -7,5 +7,5 @@ if (!file_exists(__DIR__ . '/../vendor/autoload.php')) {
 }
 
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/stubs/DI.php';
+require_once __DIR__ . '/stubs/DI.php.stub';
 require_once __DIR__ . '/../openidconnect.php';
