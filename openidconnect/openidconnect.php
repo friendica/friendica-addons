@@ -5,12 +5,14 @@
  * Description: Authenticate and register users via OpenID Connect (OAuth2)
  * Version: 0.2
  * Author: Daniel Buck <https://friendica.rollenspiel.monster/profile/tealk>
+ * Author: Daniel de Kay <https://charlemos.club/profile/daniel>
  */
 
 use Friendica\BaseModule;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\Core\Config\Util\ConfigFileManager;
+use Friendica\Core\Config\ValueObject\Cache;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\User;
@@ -33,10 +35,12 @@ define('OIDC_PKCE_VERIFIER_BYTES', 48);
 define('OIDC_LINK_STATE', 'openidconnect_link_state');
 define('OIDC_LINK_ACTION', 'openidconnect_link_action');
 define('OIDC_LINK_RETURN', 'openidconnect_link_return');
+define('OIDC_LOGOUT_NO_AUTO_COOKIE', 'openidconnect_no_auto_logout');
+define('OIDC_LOGOUT_NO_AUTO_TTL', 120);
 
 function openidconnect_module() {}
 
-function openidconnect_init()
+function openidconnect_init(): void
 {
 	if (DI::args()->getArgc() < 2) {
 		return;
@@ -65,21 +69,50 @@ function openidconnect_init()
 	exit();
 }
 
-function openidconnect_install()
+function openidconnect_install(): void
 {
-	Hook::register('load_config', __FILE__, 'openidconnect_load_config');
-	Hook::register('login_hook', __FILE__, 'openidconnect_sso_initiate');
-	Hook::register('logging_out', __FILE__, 'openidconnect_logout');
-	Hook::register('page_end', __FILE__, 'openidconnect_page_end');
+	Hook::register('load_config',    __FILE__, 'openidconnect_load_config');
+	Hook::register('login_hook',     __FILE__, 'openidconnect_sso_initiate');
+	Hook::register('logging_out',    __FILE__, 'openidconnect_logout');
+	Hook::register('page_end',       __FILE__, 'openidconnect_page_end');
+	// Settings panel (link/unlink) in the user settings sidebar.
+	// Using the standard addon_settings hook avoids JS DOM injection and
+	// works in all themes and without JavaScript.
+	Hook::register('addon_settings', __FILE__, 'openidconnect_addon_settings');
 }
 
 function openidconnect_uninstall(): void
 {
+	// Symmetric unregistration — without this, stale hook rows remain in the
+	// database and fire against non-existent handler functions after the addon
+	// files are removed, causing fatal errors on every Friendica page load.
+	Hook::unregister('load_config',    __FILE__, 'openidconnect_load_config');
+	Hook::unregister('login_hook',     __FILE__, 'openidconnect_sso_initiate');
+	Hook::unregister('logging_out',    __FILE__, 'openidconnect_logout');
+	Hook::unregister('page_end',       __FILE__, 'openidconnect_page_end');
+	Hook::unregister('addon_settings', __FILE__, 'openidconnect_addon_settings');
+
+	// Per-user OIDC binding data (sub, email, nickname per uid)
 	DBA::delete('pconfig', ['cat' => 'openidconnect']);
-	DI::logger()->info('openidconnect: uninstall — cleared pconfig entries');
+
+	// Global configuration — credentials must not survive an uninstall
+	$configKeys = [
+		'discovery_url', 'client_id', 'client_secret', 'scopes', 'button_text',
+		'auto_create_accounts', 'allow_unverified_email', 'idp_signout',
+		'transparent_sso', 'transparent_sso_prompt_none',
+	];
+	foreach ($configKeys as $key) {
+		DI::config()->delete('openidconnect', $key);
+	}
+
+	// Flush cached IdP metadata so a fresh install always re-fetches
+	DI::cache()->delete('openidconnect:provider_config');
+	DI::cache()->delete('openidconnect:jwks');
+
+	DI::logger()->info('openidconnect: uninstall complete — hooks, pconfig, and global config cleared');
 }
 
-function openidconnect_load_config(ConfigFileManager $loader)
+function openidconnect_load_config(ConfigFileManager $loader): void
 {
 	DI::appHelper()->getConfigCache()->load($loader->loadAddonConfig('openidconnect'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
 }
@@ -112,8 +145,16 @@ function openidconnect_get_provider_config(): array
 		return [];
 	}
 
-	$config = json_decode($response, true);
-	if (!$config || !isset($config['authorization_endpoint'])) {
+	try {
+		$config = json_decode($response, true, 512, JSON_THROW_ON_ERROR);
+	} catch (\JsonException $e) {
+		DI::logger()->error('openidconnect: malformed JSON in OIDC discovery document', [
+			'url'   => $discoveryUrl,
+			'error' => $e->getMessage(),
+		]);
+		return [];
+	}
+	if (!isset($config['authorization_endpoint'])) {
 		DI::logger()->error('Invalid OIDC discovery document');
 		return [];
 	}
@@ -158,10 +199,6 @@ function openidconnect_get_client_auth_method(array $config, string $endpoint = 
 		return 'client_secret_basic';
 	}
 
-	if (in_array('client_secret_post', $methods, true)) {
-		return 'client_secret_post';
-	}
-
 	return 'client_secret_post';
 }
 
@@ -178,7 +215,125 @@ function openidconnect_sanitize_return_path(string $returnPath): string
 	return ltrim($returnPath, '/');
 }
 
-function openidconnect_redirect_to_provider(bool $linkMode = false, string $returnPath = '')
+function openidconnect_is_bearer_request(array $server): bool
+{
+	$authorization = $server['HTTP_AUTHORIZATION'] ?? '';
+
+	if (!is_string($authorization) || $authorization === '') {
+		return false;
+	}
+
+	return preg_match('/^Bearer\s+/i', $authorization) === 1;
+}
+
+function openidconnect_get_cookie_path(): string
+{
+	$path = trim(DI::baseUrl()->getPath(), '/');
+
+	if ($path === '') {
+		return '/';
+	}
+
+	return '/' . $path . '/';
+}
+
+function openidconnect_is_secure_request(): bool
+{
+	$https = $_SERVER['HTTPS'] ?? '';
+	$forwardedProto = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '';
+
+	if (is_string($https) && $https !== '' && strtolower($https) !== 'off') {
+		return true;
+	}
+
+	return is_string($forwardedProto) && strtolower($forwardedProto) === 'https';
+}
+
+function openidconnect_set_logout_no_auto_cookie(): void
+{
+	setcookie(OIDC_LOGOUT_NO_AUTO_COOKIE, '1', [
+		'expires' => time() + OIDC_LOGOUT_NO_AUTO_TTL,
+		'path' => openidconnect_get_cookie_path(),
+		'secure' => openidconnect_is_secure_request(),
+		'httponly' => true,
+		'samesite' => 'Lax',
+	]);
+}
+
+function openidconnect_should_auto_redirect_login(array $query = [], array $server = []): bool
+{
+	if (!DI::config()->get('openidconnect', 'transparent_sso')) {
+		return false;
+	}
+
+	if (strtoupper((string)($server['REQUEST_METHOD'] ?? 'GET')) !== 'GET') {
+		return false;
+	}
+
+	if (!empty($query['openidconnect_no_auto']) || !empty($query['error'])) {
+		return false;
+	}
+
+	// Suppress transparent SSO briefly after logout to avoid immediate re-login loops.
+	if (!empty($_COOKIE[OIDC_LOGOUT_NO_AUTO_COOKIE])) {
+		return false;
+	}
+
+	if (openidconnect_is_bearer_request($server)) {
+		return false;
+	}
+
+	return true;
+}
+
+function openidconnect_build_login_fallback_path(string $returnPath = ''): string
+{
+	$params = ['openidconnect_no_auto' => 1];
+	$returnPath = openidconnect_sanitize_return_path($returnPath);
+
+	if ($returnPath !== '') {
+		$params['return_path'] = $returnPath;
+	}
+
+	return 'login?' . http_build_query($params);
+}
+
+function openidconnect_get_authorization_error(array $query): string
+{
+	$error = $query['error'] ?? $query['err'] ?? '';
+
+	return is_string($error) ? $error : '';
+}
+
+function openidconnect_should_fallback_to_manual_login(string $error): bool
+{
+	return in_array($error, [
+		'login_required',
+		'interaction_required',
+		'consent_required',
+		'account_selection_required',
+	], true);
+}
+
+function openidconnect_normalize_nickname(string $nickname, string $name, string $email): string
+{
+	if (!empty($nickname)) {
+		return $nickname;
+	}
+
+	$normalized = preg_replace('/[^a-z0-9_-]/i', '', strtolower($name));
+	$normalized  = substr($normalized, 0, 64);
+
+	if (empty($normalized) || strlen($normalized) < 2) {
+		// strstr with before_needle=true is stateless; strtok() modifies global
+		// tokeniser state and should not be used for a simple prefix extract.
+		$normalized = strstr($email, '@', true) ?: '';
+	}
+
+	return $normalized;
+}
+
+function openidconnect_redirect_to_provider(bool $linkMode = false, string $returnPath = '', bool $promptNone = false): void
 {
 	if (!openidconnect_is_configured()) {
 		DI::logger()->warning('OpenID Connect SSO tried to trigger, but the addon is not configured!');
@@ -209,6 +364,7 @@ function openidconnect_redirect_to_provider(bool $linkMode = false, string $retu
 		$stateData = [
 			'return_path' => $returnPath,
 			'link_mode'   => false,
+			'silent_auth' => $promptNone,
 			'nonce'       => $nonce,
 			'pkce_verifier' => $pkceVerifier,
 			'created_at'  => time(),
@@ -234,6 +390,8 @@ function openidconnect_redirect_to_provider(bool $linkMode = false, string $retu
 
 	if ($linkMode) {
 		$params['prompt'] = 'consent';
+	} elseif ($promptNone) {
+		$params['prompt'] = 'none';
 	}
 
 	$authUrl = $config['authorization_endpoint'] . '?' . http_build_query($params);
@@ -242,10 +400,36 @@ function openidconnect_redirect_to_provider(bool $linkMode = false, string $retu
 	exit();
 }
 
-function openidconnect_callback()
+function openidconnect_callback(): void
 {
+	$error = openidconnect_get_authorization_error($_GET);
 	$code = $_GET['code'] ?? '';
 	$state = $_GET['state'] ?? '';
+
+	if ($error !== '') {
+		$stateData = $state !== '' ? DI::cache()->get('oidcstate:' . $state) : [];
+		if ($state !== '') {
+			DI::cache()->delete('oidcstate:' . $state);
+		}
+
+		$returnPath = openidconnect_sanitize_return_path($stateData['return_path'] ?? '');
+		$isSilentAuth = !empty($stateData['silent_auth']);
+
+		DI::logger()->warning('openidconnect: authorization endpoint returned an error', [
+			'error' => $error,
+			'state' => $state,
+			'silent_auth' => $isSilentAuth,
+		]);
+
+		if ($isSilentAuth && openidconnect_should_fallback_to_manual_login($error)) {
+			DI::baseUrl()->redirect(openidconnect_build_login_fallback_path($returnPath));
+			return;
+		}
+
+		DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect authentication failed: %s', $error));
+		DI::baseUrl()->redirect(openidconnect_build_login_fallback_path($returnPath));
+		return;
+	}
 
 	if (!$code || !$state) {
 		DI::logger()->error('Missing code or state parameter');
@@ -277,7 +461,13 @@ function openidconnect_callback()
 
 	$validatedIdToken = null;
 	if (!empty($tokens['id_token'])) {
-		$validatedIdToken = openidconnect_validate_id_token($tokens['id_token'], $expectedNonce);
+		// Pass the access token so the validator can verify the at_hash binding
+		// claim when the IdP includes it (OIDC Core §3.3.2.11).
+		$validatedIdToken = openidconnect_validate_id_token(
+			$tokens['id_token'],
+			$expectedNonce,
+			$tokens['access_token'] ?? ''
+		);
 	}
 	if (!empty($tokens['id_token']) && !$validatedIdToken) {
 		DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect authentication failed: invalid identity token.'));
@@ -322,13 +512,7 @@ function openidconnect_callback()
 		return;
 	}
 
-	if (empty($nickname)) {
-		$nickname = preg_replace('/[^a-z0-9_-]/i', '', strtolower($name));
-		$nickname = substr($nickname, 0, 64);
-		if (empty($nickname) || strlen($nickname) < 2) {
-			$nickname = strtok($email, '@');
-		}
-	}
+	$nickname = openidconnect_normalize_nickname($nickname, $name, $email);
 
 	if ($isLinkMode) {
 		$userId = DI::userSession()->getLocalUserId();
@@ -382,7 +566,7 @@ function openidconnect_callback()
 	DI::baseUrl()->redirect('login');
 }
 
-function openidconnect_link_account()
+function openidconnect_link_account(): void
 {
 	if (!openidconnect_is_configured()) {
 		DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect is not configured.'));
@@ -407,7 +591,7 @@ function openidconnect_link_account()
 	openidconnect_redirect_to_provider(true, 'settings/account');
 }
 
-function openidconnect_unlink_account()
+function openidconnect_unlink_account(): void
 {
 	if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 		DI::baseUrl()->redirect('settings/account');
@@ -517,15 +701,20 @@ function openidconnect_exchange_code(string $code, string $codeVerifier = ''): a
 		return [];
 	}
 
-	$tokens = json_decode($response->getBodyString(), true);
-	if (!$tokens || !isset($tokens['access_token'])) {
+	try {
+		$tokens = json_decode($response->getBodyString(), true, 512, JSON_THROW_ON_ERROR);
+	} catch (\JsonException $e) {
+		DI::logger()->error('openidconnect: malformed JSON in token response', ['error' => $e->getMessage()]);
+		return [];
+	}
+	if (!isset($tokens['access_token'])) {
 		return [];
 	}
 
 	return $tokens;
 }
 
-function openidconnect_validate_id_token(string $idToken, string $expectedNonce = ''): object|false
+function openidconnect_validate_id_token(string $idToken, string $expectedNonce = '', string $accessToken = ''): object|false
 {
 	if (empty($idToken)) {
 		DI::logger()->warning('openidconnect: id_token missing from token response');
@@ -549,9 +738,17 @@ function openidconnect_validate_id_token(string $idToken, string $expectedNonce 
 			DI::logger()->error('openidconnect: failed to fetch JWKS', ['uri' => $jwksUri]);
 			return false;
 		}
-		$jwksData = json_decode($response->getBodyString(), true);
+		try {
+			$jwksData = json_decode($response->getBodyString(), true, 512, JSON_THROW_ON_ERROR);
+		} catch (\JsonException $e) {
+			DI::logger()->error('openidconnect: malformed JSON in JWKS response', [
+				'uri'   => $jwksUri,
+				'error' => $e->getMessage(),
+			]);
+			return false;
+		}
 		if (empty($jwksData['keys'])) {
-			DI::logger()->error('openidconnect: invalid JWKS response');
+			DI::logger()->error('openidconnect: JWKS response missing keys array');
 			return false;
 		}
 		DI::cache()->set($cacheKey, $jwksData, Duration::DAY);
@@ -569,7 +766,7 @@ function openidconnect_validate_id_token(string $idToken, string $expectedNonce 
 			$jwksRetried = true;
 			DI::cache()->delete('openidconnect:jwks');
 			DI::logger()->warning('openidconnect: signature invalid — busting JWKS cache and retrying');
-			return openidconnect_validate_id_token($idToken);
+			return openidconnect_validate_id_token($idToken, $expectedNonce, $accessToken);
 		}
 		DI::logger()->warning('openidconnect: id_token signature invalid after JWKS refresh');
 		return false;
@@ -614,6 +811,29 @@ function openidconnect_validate_id_token(string $idToken, string $expectedNonce 
 		return false;
 	}
 
+	// Validate azp when multiple audiences are present (OIDC Core §2).
+	// A multi-audience token where azp does not match our client_id is a
+	// Confused Deputy attack vector and must be rejected.
+	$audList = is_array($decoded->aud ?? '') ? ($decoded->aud ?? []) : [$decoded->aud ?? ''];
+	if (count($audList) > 1 && isset($decoded->azp) && $decoded->azp !== $expectedAud) {
+		DI::logger()->warning('openidconnect: azp mismatch in multi-audience token', [
+			'expected' => $expectedAud,
+			'got'      => $decoded->azp,
+		]);
+		return false;
+	}
+
+	// Validate at_hash when present (OIDC Core §3.3.2.11).
+	// The at_hash claim binds the access token to the id_token; a mismatch
+	// indicates that the access token may have been substituted after issuance.
+	if ($accessToken !== '' && isset($decoded->at_hash)) {
+		$halfHash = substr(hash('sha256', $accessToken, true), 0, 16);
+		if (!hash_equals(openidconnect_base64url_encode($halfHash), $decoded->at_hash)) {
+			DI::logger()->warning('openidconnect: at_hash mismatch — possible access-token substitution attack');
+			return false;
+		}
+	}
+
 	return $decoded;
 }
 
@@ -634,24 +854,55 @@ function openidconnect_get_userinfo(string $accessToken): array
 		return [];
 	}
 
-	return json_decode($response->getBodyString(), true) ?: [];
+	try {
+		$userinfo = json_decode($response->getBodyString(), true, 512, JSON_THROW_ON_ERROR);
+		return $userinfo ?: [];
+	} catch (\JsonException $e) {
+		DI::logger()->error('openidconnect: malformed JSON in userinfo response', ['error' => $e->getMessage()]);
+		return [];
+	}
 }
 
 function openidconnect_find_or_create_user(string $sub, string $email, string $name, string $nickname, string $picture): ?array
 {
-	$linkedBySub = DBA::selectFirst('user', ['uid', 'email', 'nickname', 'openid'], ['openid' => $sub]);
+	$linkedBySub = DBA::selectFirst('user', [], ['openid' => $sub]);
 	if ($linkedBySub) {
-		DI::logger()->debug('openidconnect: found user by sub (linked)', ['uid' => $linkedBySub['uid']]);
-		DI::pConfig()->set($linkedBySub['uid'], 'openidconnect', 'oidc_sub', $sub);
-		DI::pConfig()->set($linkedBySub['uid'], 'openidconnect', 'oidc_email', $email);
-		DI::pConfig()->set($linkedBySub['uid'], 'openidconnect', 'oidc_nickname', $nickname);
+		$uid = (int)$linkedBySub['uid'];
+		DI::logger()->debug('openidconnect: found user by sub (linked)', ['uid' => $uid]);
+
+		// Propagate email change from IdP — the IdP is the authoritative source
+		// for email when a user is linked via OIDC.
+		if (!empty($email) && $linkedBySub['email'] !== $email) {
+			// Guard: refuse if the new email is already owned by another account.
+			if (DBA::exists('user', ['email' => $email])) {
+				DI::logger()->warning('openidconnect: cannot propagate email change — address already in use by another account', [
+					'uid'       => $uid,
+					'new_email' => $email,
+				]);
+			} else {
+				DI::logger()->info('openidconnect: propagating email change from IdP', [
+					'uid'       => $uid,
+					'old_email' => $linkedBySub['email'],
+					'new_email' => $email,
+				]);
+				DBA::update('user', ['email' => $email], ['uid' => $uid]);
+				$linkedBySub['email'] = $email;
+			}
+		}
+
+		DI::pConfig()->set($uid, 'openidconnect', 'oidc_sub', $sub);
+		DI::pConfig()->set($uid, 'openidconnect', 'oidc_email', $email);
+		DI::pConfig()->set($uid, 'openidconnect', 'oidc_nickname', $nickname);
 		if (!empty($picture)) {
-			openidconnect_update_avatar($linkedBySub['uid'], $picture);
+			openidconnect_update_avatar($uid, $picture);
 		}
 		return $linkedBySub;
 	}
 
-	$existingUser = DBA::selectFirst('user', ['uid', 'email', 'nickname', 'openid'], ['email' => $email]);
+	// Select only the columns needed for the email-match check.  Fetching the
+	// full row here would load the password hash and private key into scope
+	// unnecessarily.  The full row is re-fetched later when actually needed.
+	$existingUser = DBA::selectFirst('user', ['uid', 'openid'], ['email' => $email]);
 	if ($existingUser) {
 		// Auto-link when the existing account was never linked to any IdP and auto-create is on.
 		if (empty($existingUser['openid']) && DI::config()->get('openidconnect', 'auto_create_accounts')) {
@@ -741,8 +992,15 @@ function openidconnect_create_user(string $sub, string $email, string $name, str
 		$userData = DBA::selectFirst('user', [], ['uid' => $uid]);
 		return $userData;
 	} catch (\Throwable $e) {
-		DI::logger()->error('Failed to create user from OpenID Connect', ['exception' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
-		return null;
+		// Log the full trace here for diagnostic detail, then re-throw so the
+		// caller (openidconnect_find_or_create_user) can show the user a proper
+		// error notice and redirect — the inner catch must not swallow errors
+		// silently or the outer handler becomes dead code.
+		DI::logger()->error('openidconnect: User::create failed', [
+			'exception' => $e->getMessage(),
+			'trace'     => $e->getTraceAsString(),
+		]);
+		throw $e;
 	}
 }
 
@@ -808,11 +1066,15 @@ function openidconnect_update_avatar(int $uid, string $pictureUrl): void
 	} catch (\Exception $e) {
 		DI::logger()->warning('Failed to update avatar', ['uid' => $uid, 'exception' => $e->getMessage()]);
 	} finally {
-		@unlink($tempFile);
+		// Always remove the temp file; check existence first to avoid a PHP
+		// warning when tempnam() failed or the file was already cleaned up.
+		if (is_file($tempFile)) {
+			unlink($tempFile);
+		}
 	}
 }
 
-function openidconnect_sso_initiate(string &$o)
+function openidconnect_sso_initiate(string &$o): void
 {
 	if (!openidconnect_is_configured()) {
 		return;
@@ -826,6 +1088,14 @@ function openidconnect_sso_initiate(string &$o)
 		$returnPath = $_GET['return_path'];
 	}
 
+	if (openidconnect_should_auto_redirect_login($_GET, $_SERVER)) {
+		openidconnect_redirect_to_provider(
+			false,
+			$returnPath,
+			(bool)DI::config()->get('openidconnect', 'transparent_sso_prompt_none')
+		);
+	}
+
 	$authHref = DI::baseUrl() . '/openidconnect/auth';
 	if (!empty($returnPath)) {
 		$authHref .= '?return_path=' . urlencode($returnPath);
@@ -837,17 +1107,78 @@ function openidconnect_sso_initiate(string &$o)
 		'UTF-8'
 	);
 
-	$o .= '<div class="openidconnect-sso-button" style="margin-top: 20px; text-align: center;">'
-		. '<a href="' . $authHref . '" class="btn btn-primary" '
-		. 'style="display: inline-block; padding: 10px 20px; background: #2d87c9; color: white; '
-		. 'text-decoration: none; border-radius: 4px;">'
+	// Inline styles are forbidden by the Friendica frontend guidelines.
+	// The stylesheet is registered lazily here so it is only sent on pages
+	// that actually render the SSO button.
+	DI::page()->registerStylesheet(__DIR__ . '/static/addon.css');
+
+	$o .= '<div class="openidconnect-sso-button">'
+		. '<a href="' . htmlspecialchars($authHref, ENT_QUOTES, 'UTF-8') . '" class="btn btn-primary openidconnect-sso-link">'
 		. $buttonText
 		. '</a></div>';
 }
 
 function openidconnect_logout(): void
 {
+	$tokens = DI::session()->get('openidconnect_tokens');
 	DI::session()->remove('openidconnect_tokens');
+	openidconnect_set_logout_no_auto_cookie();
+
+	if (empty($tokens['id_token'])) {
+		return;
+	}
+
+	$config = openidconnect_get_provider_config();
+	$endSessionEndpoint = $config['end_session_endpoint'] ?? '';
+	if (empty($endSessionEndpoint)) {
+		return;
+	}
+
+	// Revoke access token silently before handing off to SLO
+	$revocationEndpoint = $config['revocation_endpoint'] ?? '';
+	if (!empty($tokens['access_token']) && $revocationEndpoint) {
+		try {
+			openidconnect_revoke_token($revocationEndpoint, $tokens['access_token'], $config, 10);
+		} catch (\Throwable $e) {
+			DI::logger()->warning('openidconnect: token revocation failed during logout', ['error' => $e->getMessage()]);
+		}
+	}
+
+	if (!DI::config()->get('openidconnect', 'idp_signout')) {
+		return;
+	}
+
+	// RP-Initiated Logout (RFC 8705): clear the Friendica session ourselves and
+	// hand the browser off to the IdP end_session endpoint so the IdP session
+	// is also terminated.  The IdP redirects back to post_logout_redirect_uri.
+	$params = [
+		'id_token_hint'            => $tokens['id_token'],
+		'post_logout_redirect_uri' => (string)DI::baseUrl(),
+	];
+	$sloUrl = $endSessionEndpoint . '?' . http_build_query($params);
+
+	DI::session()->clear();
+
+	header('Location: ' . $sloUrl);
+	exit();
+}
+
+function openidconnect_revoke_token(string $endpoint, string $token, array $providerConfig, int $timeout = 30): void
+{
+	$clientId     = DI::config()->get('openidconnect', 'client_id');
+	$clientSecret = DI::config()->get('openidconnect', 'client_secret');
+	$authMethod   = openidconnect_get_client_auth_method($providerConfig, 'revocation');
+	$headers      = ['Content-Type' => 'application/x-www-form-urlencoded'];
+	$postData     = ['token' => $token];
+
+	if ($authMethod === 'client_secret_basic') {
+		$headers['Authorization'] = 'Basic ' . base64_encode($clientId . ':' . $clientSecret);
+	} else {
+		$postData['client_id']     = $clientId;
+		$postData['client_secret'] = $clientSecret;
+	}
+
+	DI::httpClient()->post($endpoint, $postData, $headers, $timeout);
 }
 
 function openidconnect_revoke(): void
@@ -867,25 +1198,9 @@ function openidconnect_revoke(): void
 		return;
 	}
 
-	$clientId = DI::config()->get('openidconnect', 'client_id');
-	$clientSecret = DI::config()->get('openidconnect', 'client_secret');
-	$authMethod = openidconnect_get_client_auth_method($config, 'revocation');
-	$headers = ['Content-Type' => 'application/x-www-form-urlencoded'];
-	$postData = [
-		'token' => $tokens['access_token'],
-	];
-	if ($authMethod === 'client_secret_basic') {
-		$headers['Authorization'] = 'Basic ' . base64_encode($clientId . ':' . $clientSecret);
-	} else {
-		$postData['client_id'] = $clientId;
-		$postData['client_secret'] = $clientSecret;
-	}
-
-	DI::httpClient()->post($revocationEndpoint, $postData, $headers, 30);
+	openidconnect_revoke_token($revocationEndpoint, $tokens['access_token'], $config);
 	if (!empty($tokens['refresh_token'])) {
-		$refreshData = $postData;
-		$refreshData['token'] = $tokens['refresh_token'];
-		DI::httpClient()->post($revocationEndpoint, $refreshData, $headers, 30);
+		openidconnect_revoke_token($revocationEndpoint, $tokens['refresh_token'], $config);
 	}
 
 	DI::session()->remove('openidconnect_tokens');
@@ -898,85 +1213,49 @@ function openidconnect_page_end(string &$o): void
 		return;
 	}
 
+	// The settings panel (link/unlink OIDC) is now handled via the
+	// addon_settings hook (openidconnect_addon_settings) which works in all
+	// themes without JavaScript, so there is nothing to do on settings pages.
+
+	// SSO indicator badges in the moderation/users admin table.
 	$route = DI::args()->getCommand();
-
-	// Settings panel for linked accounts
-	$uid = DI::userSession()->getLocalUserId();
-	if ($uid && in_array($route, ['settings/account', 'settings', 'account'])) {
-		$linkedAccount = openidconnect_get_linked_account($uid);
-		$baseUrl = DI::baseUrl();
-
-		if ($linkedAccount) {
-			$sub = htmlspecialchars($linkedAccount['sub'] ?? '');
-			$unlinkLabel = DI::l10n()->t('Unlink Account');
-			$confirmMsg = json_encode(DI::l10n()->t('Are you sure you want to unlink your OpenID Connect account?'));
-			$unlinkToken = BaseModule::getFormSecurityToken('openidconnect_unlink');
-
-			$html = <<<HTML
-<div class="panel panel-default">
-	<div class="panel-heading">OpenID Connect</div>
-	<div class="panel-body">
-		<p><strong>OIDC ID:</strong> {$sub}</p>
-		<form method="post" action="{$baseUrl}/openidconnect/unlink" style="display:inline">
-			<input type="hidden" name="form_security_token" value="{$unlinkToken}" />
-			<button type="submit" class="btn btn-danger" onclick="return confirm({$confirmMsg})">{$unlinkLabel}</button>
-		</form>
-	</div>
-</div>
-HTML;
-		} else {
-			$linkLabel = DI::l10n()->t('Link OpenID Connect Account');
-
-			$html = <<<HTML
-<div class="panel panel-default">
-	<div class="panel-heading">OpenID Connect</div>
-	<div class="panel-body">
-		<p>Link your local account with an OpenID Connect provider to use SSO for login.</p>
-		<a href="{$baseUrl}/openidconnect/link" class="btn btn-primary">{$linkLabel}</a>
-	</div>
-</div>
-HTML;
-		}
-
-		$jsonHtml = json_encode($html);
-		$o .= <<<JS
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-	var container = document.querySelector("#settings-form");
-	if (container) {
-		var panel = document.createElement("div");
-		panel.innerHTML = {$jsonHtml};
-		container.appendChild(panel.firstElementChild);
-	}
-});
-</script>
-JS;
+	if (strpos($route, 'moderation/users') !== 0) {
+		return;
 	}
 
-	// SSO indicator in moderation/users table
-	if (strpos($route, 'moderation/users') === 0) {
-		$oidcUsers = DBA::p("SELECT DISTINCT `uid` FROM `pconfig` WHERE `cat` = ? AND `k` = ? AND `v` != ''", 'openidconnect', 'oidc_sub');
-		$uids = [];
-		while ($user = DBA::fetch($oidcUsers)) {
-			$uids[] = (int)$user['uid'];
-		}
-		DBA::close($oidcUsers);
+	// Single UNION query instead of two sequential queries to minimise
+	// database round-trips.  First leg: users with an explicit oidc_sub
+	// pconfig entry (primary identifier).  Second leg: users whose legacy
+	// `openid` column holds an OIDC sub that is NOT a full HTTP URL (legacy
+	// OpenID 2.0 identifiers always used http:// / https:// URIs).
+	$oidcUsers = DBA::p(
+		"SELECT DISTINCT `uid`
+		 FROM `pconfig`
+		 WHERE `cat` = ? AND `k` = ? AND `v` != ''
+		 UNION
+		 SELECT `uid`
+		 FROM `user`
+		 WHERE `openid` != ''
+		   AND `openid` NOT LIKE 'http://%'
+		   AND `openid` NOT LIKE 'https://%'",
+		'openidconnect',
+		'oidc_sub'
+	);
 
-		$oidcFallback = DBA::p("SELECT DISTINCT `uid` FROM `user` WHERE `openid` != '' AND `openid` NOT LIKE 'http://%' AND `openid` NOT LIKE 'https://%'");
-		while ($user = DBA::fetch($oidcFallback)) {
-			$uid = (int)$user['uid'];
-			if (!in_array($uid, $uids)) {
-				$uids[] = $uid;
-			}
-		}
-		DBA::close($oidcFallback);
+	$uids = [];
+	while ($user = DBA::fetch($oidcUsers)) {
+		$uids[] = (int)$user['uid'];
+	}
+	DBA::close($oidcUsers);
 
-		if (empty($uids)) {
-			return;
-		}
+	if (empty($uids)) {
+		return;
+	}
 
-		$jsonUids = json_encode($uids);
-		$o .= <<<JS
+	DI::page()->registerStylesheet(__DIR__ . '/static/addon.css');
+
+	$jsonUids = json_encode($uids, JSON_THROW_ON_ERROR);
+	$o .= <<<JS
 <script>
 document.addEventListener("DOMContentLoaded", function() {
 	var uids = {$jsonUids};
@@ -994,7 +1273,8 @@ document.addEventListener("DOMContentLoaded", function() {
 			if (cell) {
 				var badge = document.createElement("span");
 				badge.textContent = "SSO";
-				badge.style.cssText = "background:#2d87c9;color:#fff;border-radius:3px;padding:1px 5px;font-size:11px;margin-left:4px;white-space:nowrap";
+				// CSS class defined in static/addon.css — no inline styles.
+				badge.className = "openidconnect-sso-badge";
 				cell.appendChild(badge);
 			}
 		}
@@ -1002,76 +1282,174 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 JS;
-	}
 }
 
-function openidconnect_addon_admin(string &$o)
+/**
+ * Renders the OIDC link/unlink panel in the Friendica user-settings sidebar
+ * via the standard addon_settings hook.  Using this hook instead of JS DOM
+ * injection means the panel works in all themes and requires no JavaScript.
+ */
+function openidconnect_addon_settings(array &$data): void
+{
+	$uid = DI::userSession()->getLocalUserId();
+	if (!$uid) {
+		return;
+	}
+
+	$linkedAccount = openidconnect_get_linked_account($uid);
+	$baseUrl        = (string)DI::baseUrl();
+
+	$tpl = Renderer::getMarkupTemplate('settings.tpl', 'addon/openidconnect/');
+	$data['aside'] = Renderer::replaceMacros($tpl, [
+		'$linked'      => $linkedAccount,
+		'$sub_label'   => DI::l10n()->t('OIDC ID:'),
+		'$unlink_url'  => $baseUrl . '/openidconnect/unlink',
+		'$link_url'    => $baseUrl . '/openidconnect/link',
+		// CSRF token — action name must match openidconnect_unlink_account()
+		'$unlink_token'  => BaseModule::getFormSecurityToken('openidconnect_unlink'),
+		'$title'         => DI::l10n()->t('OpenID Connect'),
+		'$link_text'     => DI::l10n()->t('Link OpenID Connect Account'),
+		'$unlink_text'   => DI::l10n()->t('Unlink Account'),
+		// JSON_HEX_* flags make the value safe for a JS inline confirm() call.
+		'$confirm_json'  => json_encode(
+			DI::l10n()->t('Are you sure you want to unlink your OpenID Connect account?'),
+			JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_THROW_ON_ERROR
+		),
+		'$description' => DI::l10n()->t('Link your local account with an OpenID Connect provider to use SSO for login.'),
+	]);
+}
+
+function openidconnect_get_config_source_label(int $source): string
+{
+	return match ($source) {
+		Cache::SOURCE_DATA => DI::l10n()->t('stored in the database'),
+		Cache::SOURCE_FILE => DI::l10n()->t('provided by a local config file'),
+		Cache::SOURCE_ENV => DI::l10n()->t('provided by the server environment'),
+		Cache::SOURCE_FIX => DI::l10n()->t('fixed by the application'),
+		Cache::SOURCE_STATIC => DI::l10n()->t('provided by the addon defaults'),
+		default => DI::l10n()->t('not set'),
+	};
+}
+
+function openidconnect_is_config_value_read_only(string $key): bool
+{
+	// Button label should remain operator-editable from the admin UI, even when
+	// other defaults are loaded from static addon config.
+	if ($key === 'button_text') {
+		return false;
+	}
+
+	$source = DI::config()->getCache()->getSource('openidconnect', $key);
+	return $source !== Cache::SOURCE_DATA && $source !== -1;
+}
+
+function openidconnect_build_admin_field(string $key, string $label, $value, string $description): array
+{
+	$source = DI::config()->getCache()->getSource('openidconnect', $key);
+	$readOnly = openidconnect_is_config_value_read_only($key);
+	$sourceHelp = $readOnly
+		? DI::l10n()->t('This value is currently %s and cannot be changed from this page.', openidconnect_get_config_source_label($source))
+		: DI::l10n()->t('This value is currently stored in the database and can be changed from this page.');
+
+	return [
+		$key,
+		$label,
+		$value,
+		$description . ($readOnly ? ' ' . $sourceHelp : ''),
+		$sourceHelp,
+		$readOnly,
+	];
+}
+
+function openidconnect_addon_admin(string &$o): void
 {
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/openidconnect/');
 
 	$o = Renderer::replaceMacros($t, [
 		'$title' => DI::l10n()->t('OpenID Connect (OAuth2) Configuration'),
-		'$discovery_url' => [
+		'$discovery_url' => openidconnect_build_admin_field(
 			'discovery_url',
 			DI::l10n()->t('Discovery URL'),
 			DI::config()->get('openidconnect', 'discovery_url'),
-			DI::l10n()->t('URL to the OpenID Connect discovery document (e.g., https://example.com/.well-known/openid-configuration)'),
-		],
-		'$client_id' => [
+			DI::l10n()->t('URL to the OpenID Connect discovery document (e.g., https://example.com/.well-known/openid-configuration)')
+		),
+		'$client_id' => openidconnect_build_admin_field(
 			'client_id',
 			DI::l10n()->t('Client ID'),
 			DI::config()->get('openidconnect', 'client_id'),
-			DI::l10n()->t('The OAuth2 client ID from your identity provider'),
-		],
-		'$client_secret' => [
+			DI::l10n()->t('The OAuth2 client ID from your identity provider')
+		),
+		'$client_secret' => openidconnect_build_admin_field(
 			'client_secret',
 			DI::l10n()->t('Client Secret'),
 			DI::config()->get('openidconnect', 'client_secret'),
-			DI::l10n()->t('The OAuth2 client secret from your identity provider'),
-		],
-		'$scopes' => [
+			DI::l10n()->t('The OAuth2 client secret from your identity provider')
+		),
+		'$scopes' => openidconnect_build_admin_field(
 			'scopes',
 			DI::l10n()->t('Scopes'),
 			DI::config()->get('openidconnect', 'scopes') ?: 'openid email profile',
-			DI::l10n()->t('Space-separated list of scopes to request'),
-		],
-		'$button_text' => [
+			DI::l10n()->t('Space-separated list of scopes to request')
+		),
+		'$button_text' => openidconnect_build_admin_field(
 			'button_text',
 			DI::l10n()->t('Button Text'),
 			DI::config()->get('openidconnect', 'button_text') ?: DI::l10n()->t('Sign in with OpenID Connect'),
-			DI::l10n()->t('Text for the SSO button on the login page'),
-		],
-		'$auto_create_accounts' => [
+			DI::l10n()->t('Text for the SSO button on the login page. CSS override: target .openidconnect-sso-button and .openidconnect-sso-link in your theme or custom stylesheet to change layout/colors.')
+		),
+		'$auto_create_accounts' => openidconnect_build_admin_field(
 			'auto_create_accounts',
 			DI::l10n()->t('Auto-create accounts'),
 			(bool)DI::config()->get('openidconnect', 'auto_create_accounts'),
-			DI::l10n()->t('Automatically create local accounts for users authenticating via OIDC'),
-		],
-		'$allow_unverified_email' => [
+			DI::l10n()->t('Automatically create local accounts for users authenticating via OIDC')
+		),
+		'$allow_unverified_email' => openidconnect_build_admin_field(
 			'allow_unverified_email',
 			DI::l10n()->t('Allow unverified email'),
 			(bool)DI::config()->get('openidconnect', 'allow_unverified_email'),
-			DI::l10n()->t('Allow login even if the identity provider has not verified the user\'s email address'),
-		],
-		'$form_security_token' => BaseModule::getFormSecurityToken('openidconnect'),
+			DI::l10n()->t('Allow login even if the identity provider has not verified the user\'s email address')
+		),
+		'$idp_signout' => openidconnect_build_admin_field(
+			'idp_signout',
+			DI::l10n()->t('Sign out from identity provider'),
+			(bool)DI::config()->get('openidconnect', 'idp_signout'),
+			DI::l10n()->t('When signing out of this site, also end the session at the identity provider (RP-Initiated Logout). Requires the IdP to advertise an end_session_endpoint in its discovery document.')
+		),
+		'$transparent_sso' => openidconnect_build_admin_field(
+			'transparent_sso',
+			DI::l10n()->t('Transparent SSO (auto-redirect)'),
+			(bool)DI::config()->get('openidconnect', 'transparent_sso'),
+			DI::l10n()->t('Automatically redirect unauthenticated visitors to the identity provider for login')
+		),
+		'$transparent_sso_prompt_none' => openidconnect_build_admin_field(
+			'transparent_sso_prompt_none',
+			DI::l10n()->t('Silent authentication (prompt=none)'),
+			(bool)DI::config()->get('openidconnect', 'transparent_sso_prompt_none'),
+			DI::l10n()->t('Use prompt=none for transparent SSO — avoids a login page flash when the user already has an active IdP session')
+		),
+		// Addon admin POST is validated by Friendica core with this typename.
+		'$form_security_token' => BaseModule::getFormSecurityToken('admin_addons_details'),
 		'$submit' => DI::l10n()->t('Save Settings'),
 	]);
 }
 
 function openidconnect_addon_admin_post(): void
 {
-	if (!BaseModule::checkFormSecurityTokenRedirectOnError('/admin/addons/openidconnect', 'openidconnect')) {
-		return;
+	$booleanKeys = ['auto_create_accounts', 'allow_unverified_email', 'idp_signout', 'transparent_sso', 'transparent_sso_prompt_none'];
+	foreach ($booleanKeys as $key) {
+		if (openidconnect_is_config_value_read_only($key)) {
+			continue;
+		}
+
+		DI::config()->set('openidconnect', $key, !empty($_POST[$key]));
 	}
-
-	$autoCreate = !empty($_POST['auto_create_accounts']);
-	DI::config()->set('openidconnect', 'auto_create_accounts', $autoCreate);
-
-	$allowUnverifiedEmail = !empty($_POST['allow_unverified_email']);
-	DI::config()->set('openidconnect', 'allow_unverified_email', $allowUnverifiedEmail);
 
 	$keys = ['discovery_url', 'client_id', 'client_secret', 'scopes', 'button_text'];
 	foreach ($keys as $key) {
+		if (openidconnect_is_config_value_read_only($key)) {
+			continue;
+		}
+
 		$value = $_POST[$key] ?? '';
 		DI::config()->set('openidconnect', $key, trim($value));
 	}

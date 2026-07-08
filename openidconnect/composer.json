@@ -1,5 +1,6 @@
 {
     "name": "friendica/openidconnect",
+    "version": "0.2.0",
     "require": {
         "firebase/php-jwt": "^7.0"
     },

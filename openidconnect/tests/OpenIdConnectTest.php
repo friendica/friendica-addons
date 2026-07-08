@@ -73,4 +73,67 @@ final class OpenIdConnectTest extends TestCase
 
 		self::assertFalse(openidconnect_is_safe_url('http://cdn.example.com/avatar.png'));
 	}
+
+	public function testShouldAutoRedirectLoginRequiresTransparentSsoEnabled(): void
+	{
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+
+		self::assertFalse(openidconnect_should_auto_redirect_login([], $_SERVER));
+
+		DI::config()->set('openidconnect', 'transparent_sso', true);
+
+		self::assertTrue(openidconnect_should_auto_redirect_login([], $_SERVER));
+	}
+
+	public function testShouldAutoRedirectLoginRejectsBearerRequestsAndFallbackFlag(): void
+	{
+		DI::config()->set('openidconnect', 'transparent_sso', true);
+
+		self::assertFalse(openidconnect_should_auto_redirect_login(
+			['openidconnect_no_auto' => '1'],
+			['REQUEST_METHOD' => 'GET']
+		));
+
+		self::assertFalse(openidconnect_should_auto_redirect_login(
+			[],
+			[
+				'REQUEST_METHOD' => 'GET',
+				'HTTP_AUTHORIZATION' => 'Bearer test-token',
+			]
+		));
+
+		self::assertFalse(openidconnect_should_auto_redirect_login([], ['REQUEST_METHOD' => 'POST']));
+	}
+
+	public function testIsBearerRequestOnlyUsesCanonicalServerHeader(): void
+	{
+		self::assertTrue(openidconnect_is_bearer_request(['HTTP_AUTHORIZATION' => 'Bearer test-token']));
+		self::assertFalse(openidconnect_is_bearer_request(['Authorization' => 'Bearer test-token']));
+		self::assertFalse(openidconnect_is_bearer_request([]));
+	}
+
+	public function testBuildLoginFallbackPathDisablesAutoRedirectAndPreservesReturnPath(): void
+	{
+		self::assertSame('login?openidconnect_no_auto=1', openidconnect_build_login_fallback_path(''));
+		self::assertSame(
+			'login?openidconnect_no_auto=1&return_path=oauth%2Fauthorize%3Fclient_id%3Dtest',
+			openidconnect_build_login_fallback_path('oauth/authorize?client_id=test')
+		);
+	}
+
+	public function testGetAuthorizationErrorSupportsErrAlias(): void
+	{
+		self::assertSame('login_required', openidconnect_get_authorization_error(['err' => 'login_required']));
+		self::assertSame('access_denied', openidconnect_get_authorization_error(['error' => 'access_denied']));
+		self::assertSame('', openidconnect_get_authorization_error([]));
+	}
+
+	public function testShouldFallbackToManualLoginForSilentAuthErrors(): void
+	{
+		self::assertTrue(openidconnect_should_fallback_to_manual_login('login_required'));
+		self::assertTrue(openidconnect_should_fallback_to_manual_login('interaction_required'));
+		self::assertTrue(openidconnect_should_fallback_to_manual_login('consent_required'));
+		self::assertTrue(openidconnect_should_fallback_to_manual_login('account_selection_required'));
+		self::assertFalse(openidconnect_should_fallback_to_manual_login('access_denied'));
+	}
 }

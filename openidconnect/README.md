@@ -5,6 +5,7 @@ This addon enables authentication and registration of users via OpenID Connect (
 ## Features
 
 - SSO login via OpenID Connect compatible providers (Keycloak, Auth0, etc.)
+- Optional transparent browser SSO from the Friendica login page
 - Automatic account creation on first login
 - Automatic account linking for pre-existing local accounts when the email matches and the account is not already linked
 - Avatar synchronization from identity provider
@@ -33,15 +34,17 @@ For a canonical Authentik-specific setup guide, see `AUTHENTIK_SETUP.md`.
 
 The following options are available in the admin panel:
 
-| Option                     | Description                                                                       |
-| -------------------------- | --------------------------------------------------------------------------------- |
-| **Discovery URL**          | URL to the OpenID Connect discovery document (`.well-known/openid-configuration`) |
-| **Client ID**              | Client ID from the identity provider                                              |
-| **Client Secret**          | Client secret from the identity provider                                          |
-| **Scopes**                 | Space-separated list of requested scopes (default: `openid email profile`)        |
-| **Button Text**            | Text for the login button                                                         |
-| **Auto-create accounts**   | Automatically create local accounts for users authenticating via OIDC             |
-| **Allow unverified email** | Allow login when the IdP marks the email as unverified (local dev only)           |
+| Option                   | Description                                                                       |
+| ------------------------ | --------------------------------------------------------------------------------- |
+| **Discovery URL**        | URL to the OpenID Connect discovery document (`.well-known/openid-configuration`) |
+| **Client ID**            | Client ID from the identity provider                                              |
+| **Client Secret**        | Client secret from the identity provider                                          |
+| **Scopes**               | Space-separated list of requested scopes (default: `openid email profile`)        |
+| **Button Text**          | Text for the login button                                                         |
+| **Auto-create accounts** | Automatically create local accounts for users authenticating via OIDC             |
+| **Allow unverified email** | Allow login when the IdP marks the email as unverified (local dev only)         |
+| **Transparent SSO**      | Automatically start OIDC login from the Friendica login page for ordinary browser GET requests |
+| **Transparent SSO prompt=none** | Use silent auth (`prompt=none`) for transparent browser login and fall back cleanly when no IdP session exists |
 
 ## Identity Provider Configuration
 
@@ -60,6 +63,10 @@ The following options are available in the admin panel:
 2. Configure a new OAuth2 client:
    - Redirect URI: `https://your-friendica.com/openidconnect/callback`
 3. Set the Discovery URL to `https://nextcloud.example.com/.well-known/openid-configuration`
+
+### Authentik
+
+For a step-by-step guide to configuring Authentik as the identity provider, see [`AUTHENTIK_SETUP.md`](AUTHENTIK_SETUP.md).
 
 ## Callback URL
 
@@ -80,6 +87,19 @@ https://your-friendica.com/openidconnect/callback
 7. Finds existing user, auto-links an unlinked matching account, or creates a new one
 8. Authenticates user in Friendica
 9. Friendica local 2FA is only bypassed when the local account does not have 2FA enabled
+
+## Transparent Browser SSO
+
+The addon can optionally turn the Friendica login page into a transparent OIDC entry point for ordinary browser traffic.
+
+Behavior:
+
+- only ordinary browser `GET` requests on the login page are auto-redirected
+- requests that already carry a Bearer token are excluded
+- when `transparent_sso_prompt_none` is enabled, the addon asks the provider for silent auth with `prompt=none`
+- if the provider reports `login_required`, `interaction_required`, `consent_required`, or `account_selection_required`, the addon falls back to `login?openidconnect_no_auto=1` to avoid redirect loops and still shows the manual OIDC button
+
+This keeps browser sign-in low-friction without hijacking API and mobile token requests that should remain protocol-native.
 
 ## Account Linking
 
@@ -120,6 +140,7 @@ When logging in via OpenID Connect, Friendica local 2FA is only bypassed if the 
 - The addon links accounts by immutable OIDC `sub`, not by email.
 - Nicknames are derived from OIDC claims but uniqueness is enforced locally.
 - The same-host avatar allowance exists to support self-hosted/private-network IdPs.
+- Transparent SSO is intentionally constrained to ordinary browser login requests; Bearer-token traffic is excluded.
 
 ## Unit Tests
 
@@ -159,3 +180,9 @@ The test suite covers pure helper and security-critical functions such as return
 - Many Mastodon clients expect an HTTPS origin
 - `friendica.localhost:8080` is plain HTTP local dev
 - Use a local HTTPS reverse proxy or a Cloudflare tunnel for client-app testing
+
+**Transparent SSO loops back to login**
+
+- Check whether the provider returned `error=login_required`, `interaction_required`, `consent_required`, or `account_selection_required` (some providers may also map these via `err`)
+- Confirm `transparent_sso_prompt_none` is only enabled when the IdP supports silent auth for the current browser session
+- Confirm the fallback URL contains `openidconnect_no_auto=1`; that disables repeated auto-redirect attempts on the login page
