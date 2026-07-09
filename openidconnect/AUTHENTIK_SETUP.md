@@ -56,7 +56,7 @@ return [
         'client_secret' => '<client-secret>',
         'scopes' => 'openid email profile',
         'auto_create_accounts' => true,
-        'allow_unverified_email' => false,
+        'allow_unverified_email' => true,
         'button_text' => 'Sign in with authentik',
     ],
 ];
