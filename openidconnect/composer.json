@@ -1,6 +1,7 @@
 {
     "name": "friendica/openidconnect",
-    "version": "0.2.0",
+    "description": "Friendica OpenID Connect addon",
+    "license": "AGPL-3.0-or-later",
     "require": {
         "firebase/php-jwt": "^7.0"
     },
@@ -8,7 +9,15 @@
         "phpunit/phpunit": "^11.5"
     },
     "scripts": {
-        "test": "phpunit -c phpunit.xml"
+        "test:setup": "COMPOSER_VENDOR_DIR=vendor-dev composer install --no-interaction --no-progress",
+        "lint": "php -l openidconnect.php",
+        "test": "COMPOSER_VENDOR_DIR=vendor-dev vendor-dev/bin/phpunit -c phpunit.xml",
+        "deps:audit": "composer audit --no-interaction",
+        "qa": [
+            "@lint",
+            "@test",
+            "@deps:audit"
+        ]
     },
     "config": {
         "vendor-dir": "vendor"

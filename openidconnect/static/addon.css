@@ -22,12 +22,18 @@
 
 /* ── SSO badge in the moderation/users admin table ───────────────────────── */
 .openidconnect-sso-badge {
-	background: #2d87c9;
-	border-radius: 3px;
-	color: #fff;
-	font-size: 11px;
-	margin-left: 4px;
-	padding: 1px 5px;
+	background: rgba(45, 135, 201, 0.16);
+	border-radius: 8px;
+	color: #1e5f93;
+	display: inline-block;
+	font-size: 9px;
+	font-weight: 700;
+	letter-spacing: 0;
+	line-height: 1;
+	margin-left: 3px;
+	padding: 0 4px;
+	text-transform: uppercase;
+	vertical-align: middle;
 	white-space: nowrap;
 }
 

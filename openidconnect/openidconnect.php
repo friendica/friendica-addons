@@ -48,23 +48,36 @@ function openidconnect_init(): void
 
 	$route = DI::args()->get(1);
 
-	switch ($route) {
-		case 'auth':
-			$returnPath = $_GET['return_path'] ?? '';
-			openidconnect_redirect_to_provider(false, $returnPath);
-			break;
-		case 'callback':
-			openidconnect_callback();
-			break;
-		case 'revoke':
-			openidconnect_revoke();
-			break;
-		case 'link':
-			openidconnect_link_account();
-			break;
-		case 'unlink':
-			openidconnect_unlink_account();
-			break;
+	try {
+		switch ($route) {
+			case 'auth':
+				$returnPath = $_GET['return_path'] ?? '';
+				openidconnect_redirect_to_provider(false, $returnPath);
+				break;
+			case 'callback':
+				openidconnect_callback();
+				break;
+			case 'revoke':
+				openidconnect_revoke();
+				break;
+			case 'link':
+				openidconnect_link_account();
+				break;
+			case 'unlink':
+				openidconnect_unlink_account();
+				break;
+			default:
+				DI::logger()->warning('openidconnect: unknown route requested', ['route' => $route]);
+				break;
+		}
+	} catch (\Throwable $e) {
+		DI::logger()->error('openidconnect: unhandled exception in module init', [
+			'route' => $route,
+			'error' => $e->getMessage(),
+			'trace' => $e->getTraceAsString(),
+		]);
+		DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect encountered an unexpected error. Please try again.'));
+		DI::baseUrl()->redirect('login');
 	}
 	exit();
 }
@@ -114,14 +127,36 @@ function openidconnect_uninstall(): void
 
 function openidconnect_load_config(ConfigFileManager $loader): void
 {
-	DI::appHelper()->getConfigCache()->load($loader->loadAddonConfig('openidconnect'), \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	try {
+		$config = $loader->loadAddonConfig('openidconnect');
+		if (!is_array($config)) {
+			DI::logger()->warning('openidconnect: addon config loader returned non-array', ['type' => gettype($config)]);
+			return;
+		}
+
+		DI::appHelper()->getConfigCache()->load($config, \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
+	} catch (\Throwable $e) {
+		// Never let a malformed addon config hard-fail Friendica startup.
+		DI::logger()->error('openidconnect: failed to load addon config', [
+			'error' => $e->getMessage(),
+			'trace' => $e->getTraceAsString(),
+		]);
+	}
 }
 
 function openidconnect_is_configured(): bool
 {
 	$required = ['client_id', 'client_secret', 'discovery_url'];
 	foreach ($required as $key) {
-		if (!DI::config()->get('openidconnect', $key)) {
+		$value = DI::config()->get('openidconnect', $key);
+		if (!is_string($value)) {
+			if (empty($value)) {
+				return false;
+			}
+			continue;
+		}
+
+		if (trim($value) === '') {
 			return false;
 		}
 	}
@@ -133,13 +168,36 @@ function openidconnect_get_provider_config(): array
 	$cacheKey = 'openidconnect:provider_config';
 
 	$cached = DI::cache()->get($cacheKey);
-	if ($cached) {
+	if (is_array($cached) && !empty($cached)) {
 		return $cached;
 	}
 
-	$discoveryUrl = DI::config()->get('openidconnect', 'discovery_url');
+	if ($cached !== null && !is_array($cached)) {
+		DI::logger()->warning('openidconnect: provider config cache contained invalid type', ['type' => gettype($cached)]);
+		DI::cache()->delete($cacheKey);
+	}
 
-	$response = DI::httpClient()->fetch($discoveryUrl, '', 30);
+	$discoveryUrl = DI::config()->get('openidconnect', 'discovery_url');
+	if (empty($discoveryUrl)) {
+		DI::logger()->error('openidconnect: discovery_url is empty');
+		return [];
+	}
+
+	if (!filter_var($discoveryUrl, FILTER_VALIDATE_URL)) {
+		DI::logger()->error('openidconnect: discovery_url is invalid', ['url' => $discoveryUrl]);
+		return [];
+	}
+
+	try {
+		$response = DI::httpClient()->fetch($discoveryUrl, '', 30);
+	} catch (\Throwable $e) {
+		DI::logger()->error('openidconnect: exception while fetching discovery document', [
+			'url' => $discoveryUrl,
+			'error' => $e->getMessage(),
+		]);
+		return [];
+	}
+
 	if (!$response) {
 		DI::logger()->error('Failed to fetch OIDC discovery document', ['url' => $discoveryUrl]);
 		return [];
@@ -154,9 +212,22 @@ function openidconnect_get_provider_config(): array
 		]);
 		return [];
 	}
-	if (!isset($config['authorization_endpoint'])) {
-		DI::logger()->error('Invalid OIDC discovery document');
+	if (empty($config['authorization_endpoint']) || !is_string($config['authorization_endpoint'])) {
+		DI::logger()->error('openidconnect: invalid OIDC discovery document, missing authorization_endpoint', ['url' => $discoveryUrl]);
 		return [];
+	}
+
+	foreach (['token_endpoint', 'userinfo_endpoint', 'jwks_uri'] as $optionalEndpointKey) {
+		if (empty($config[$optionalEndpointKey]) || !is_string($config[$optionalEndpointKey])) {
+			DI::logger()->warning('openidconnect: discovery document missing optional endpoint used by later flow steps', [
+				'url' => $discoveryUrl,
+				'missing' => $optionalEndpointKey,
+			]);
+		}
+	}
+
+	if (!isset($config['issuer']) || !is_string($config['issuer']) || trim($config['issuer']) === '') {
+		DI::logger()->warning('openidconnect: discovery document has no issuer claim, proceeding with derived issuer validation from discovery_url', ['url' => $discoveryUrl]);
 	}
 
 	DI::cache()->set($cacheKey, $config, Duration::DAY);
@@ -346,10 +417,18 @@ function openidconnect_redirect_to_provider(bool $linkMode = false, string $retu
 		return;
 	}
 
-	$state = openidconnect_generate_state();
-	$nonce = openidconnect_generate_nonce();
-	$pkceVerifier = openidconnect_generate_pkce_verifier();
-	$pkceChallenge = openidconnect_generate_pkce_challenge($pkceVerifier);
+	try {
+		$state = openidconnect_generate_state();
+		$nonce = openidconnect_generate_nonce();
+		$pkceVerifier = openidconnect_generate_pkce_verifier();
+		$pkceChallenge = openidconnect_generate_pkce_challenge($pkceVerifier);
+	} catch (\Throwable $e) {
+		DI::logger()->error('openidconnect: failed to generate state/nonce/pkce values', [
+			'error' => $e->getMessage(),
+		]);
+		DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect authentication could not be started.'));
+		return;
+	}
 	$returnPath = openidconnect_sanitize_return_path($returnPath);
 
 	if ($linkMode) {
@@ -370,9 +449,23 @@ function openidconnect_redirect_to_provider(bool $linkMode = false, string $retu
 			'created_at'  => time(),
 		];
 	}
-	DI::cache()->set('oidcstate:' . $state, $stateData, 10 * 60);
+	try {
+		DI::cache()->set('oidcstate:' . $state, $stateData, 10 * 60);
+	} catch (\Throwable $e) {
+		DI::logger()->error('openidconnect: failed to persist state in cache', [
+			'state' => $state,
+			'error' => $e->getMessage(),
+		]);
+		DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect authentication could not be started.'));
+		return;
+	}
 
 	$clientId = DI::config()->get('openidconnect', 'client_id');
+	if (!is_string($clientId) || trim($clientId) === '') {
+		DI::logger()->error('openidconnect: missing client_id while trying to redirect to provider');
+		DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect is not fully configured.'));
+		return;
+	}
 	$redirectUri = DI::baseUrl() . '/openidconnect/callback';
 
 	$scopes = DI::config()->get('openidconnect', 'scopes') ?: 'openid email profile';
@@ -434,24 +527,47 @@ function openidconnect_callback(): void
 	if (!$code || !$state) {
 		DI::logger()->error('Missing code or state parameter');
 		DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect authentication failed: missing parameters.'));
+		DI::baseUrl()->redirect('login');
 		return;
 	}
 
-	$stateData = DI::cache()->get('oidcstate:' . $state);
+	try {
+		$stateData = DI::cache()->get('oidcstate:' . $state);
+	} catch (\Throwable $e) {
+		DI::logger()->error('openidconnect: failed to read callback state from cache', [
+			'state' => $state,
+			'error' => $e->getMessage(),
+		]);
+		$stateData = [];
+	}
 	if (empty($stateData)) {
 		DI::logger()->warning('openidconnect: state not found in cache (expired or replay attempt)');
 		DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect authentication failed: invalid or expired state.'));
 		DI::baseUrl()->redirect('login');
 		return;
 	}
-	DI::cache()->delete('oidcstate:' . $state);
+	try {
+		DI::cache()->delete('oidcstate:' . $state);
+	} catch (\Throwable $e) {
+		DI::logger()->warning('openidconnect: failed to delete callback state from cache', [
+			'state' => $state,
+			'error' => $e->getMessage(),
+		]);
+	}
 
 	$isLinkMode = !empty($stateData['link_mode']);
 	$returnPath = openidconnect_sanitize_return_path($stateData['return_path'] ?? '');
 	$expectedNonce = (string)($stateData['nonce'] ?? '');
 	$pkceVerifier = (string)($stateData['pkce_verifier'] ?? '');
 
-	$tokens = openidconnect_exchange_code($code, $pkceVerifier);
+	try {
+		$tokens = openidconnect_exchange_code($code, $pkceVerifier);
+	} catch (\Throwable $e) {
+		DI::logger()->error('openidconnect: exception during token exchange', [
+			'error' => $e->getMessage(),
+		]);
+		$tokens = [];
+	}
 	if (!$tokens) {
 		DI::logger()->error('Failed to exchange authorization code');
 		DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect authentication failed: token exchange error.'));
@@ -475,7 +591,24 @@ function openidconnect_callback(): void
 		return;
 	}
 
-	$userinfo = openidconnect_get_userinfo($tokens['access_token']);
+	$accessToken = (string)($tokens['access_token'] ?? '');
+	try {
+		$userinfo = openidconnect_get_userinfo($accessToken);
+	} catch (\Throwable $e) {
+		DI::logger()->error('openidconnect: exception while requesting userinfo', [
+			'error' => $e->getMessage(),
+		]);
+		$userinfo = [];
+	}
+
+	if (empty($userinfo) && !empty($validatedIdToken)) {
+		$userinfo = openidconnect_extract_userinfo_from_id_token($validatedIdToken);
+		DI::logger()->warning('openidconnect: userinfo endpoint unavailable or unusable, falling back to id_token claims', [
+			'has_email' => !empty($userinfo['email']),
+			'has_sub' => !empty($userinfo['sub']),
+		]);
+	}
+
 	if (!$userinfo) {
 		DI::logger()->error('Failed to fetch userinfo');
 		DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect authentication failed: could not retrieve user info.'));
@@ -485,8 +618,18 @@ function openidconnect_callback(): void
 
 	DI::logger()->debug('openidconnect userinfo', ['userinfo' => $userinfo]);
 
-	$emailVerified = $userinfo['email_verified'] ?? null;
-	if ($emailVerified !== null && !(bool)$emailVerified && !DI::config()->get('openidconnect', 'allow_unverified_email')) {
+	$emailVerifiedRaw = $userinfo['email_verified'] ?? null;
+	$emailVerified = null;
+	if ($emailVerifiedRaw !== null) {
+		if (is_bool($emailVerifiedRaw)) {
+			$emailVerified = $emailVerifiedRaw;
+		} else {
+			$normalized = filter_var($emailVerifiedRaw, FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE);
+			$emailVerified = $normalized !== null ? $normalized : (bool)$emailVerifiedRaw;
+		}
+	}
+
+	if ($emailVerified === false && !DI::config()->get('openidconnect', 'allow_unverified_email')) {
 		DI::logger()->warning('openidconnect: email not verified by IdP', ['email' => $userinfo['email'] ?? '']);
 		DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect: Your email address has not been verified by the identity provider.'));
 		DI::baseUrl()->redirect('login');
@@ -536,7 +679,12 @@ function openidconnect_callback(): void
 			return;
 		}
 
-		openidconnect_link_user($userId, $sub, $email, $nickname);
+			if (!openidconnect_link_user($userId, $sub, $email, $nickname)) {
+				DI::logger()->warning('openidconnect: link mode failed to store user link', ['uid' => $userId, 'sub' => $sub]);
+				DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect account link failed. Please try again or contact the administrator.'));
+				DI::baseUrl()->redirect('settings/account');
+				return;
+			}
 		DI::session()->set('openidconnect_tokens', $tokens);
 
 		DI::sysmsg()->addInfo(DI::l10n()->t('OpenID Connect account successfully linked.'));
@@ -694,7 +842,15 @@ function openidconnect_exchange_code(string $code, string $codeVerifier = ''): a
 		$postData['client_secret'] = $clientSecret;
 	}
 
-	$response = DI::httpClient()->post($config['token_endpoint'], $postData, $headers, 30);
+	try {
+		$response = DI::httpClient()->post($config['token_endpoint'], $postData, $headers, 30);
+	} catch (\Throwable $e) {
+		DI::logger()->error('openidconnect: token endpoint request threw exception', [
+			'endpoint' => $config['token_endpoint'],
+			'error' => $e->getMessage(),
+		]);
+		return [];
+	}
 
 	if (!$response->isSuccess()) {
 		DI::logger()->error('Token endpoint returned error', ['code' => $response->getReturnCode(), 'response' => $response->getBodyString()]);
@@ -708,6 +864,9 @@ function openidconnect_exchange_code(string $code, string $codeVerifier = ''): a
 		return [];
 	}
 	if (!isset($tokens['access_token'])) {
+		DI::logger()->error('openidconnect: token response missing access_token', [
+			'keys' => array_keys($tokens),
+		]);
 		return [];
 	}
 
@@ -837,17 +996,68 @@ function openidconnect_validate_id_token(string $idToken, string $expectedNonce 
 	return $decoded;
 }
 
+function openidconnect_extract_userinfo_from_id_token(object $claims): array
+{
+	$sub = isset($claims->sub) && is_scalar($claims->sub) ? (string)$claims->sub : '';
+	$email = isset($claims->email) && is_scalar($claims->email) ? (string)$claims->email : '';
+	$name = isset($claims->name) && is_scalar($claims->name) ? (string)$claims->name : '';
+	$preferredUsername = '';
+	if (isset($claims->preferred_username) && is_scalar($claims->preferred_username)) {
+		$preferredUsername = (string)$claims->preferred_username;
+	} elseif (isset($claims->nickname) && is_scalar($claims->nickname)) {
+		$preferredUsername = (string)$claims->nickname;
+	}
+
+	$picture = isset($claims->picture) && is_scalar($claims->picture) ? (string)$claims->picture : '';
+
+	$userinfo = [
+		'sub' => $sub,
+		'email' => $email,
+		'name' => $name,
+		'preferred_username' => $preferredUsername,
+		'picture' => $picture,
+	];
+
+	if (isset($claims->email_verified)) {
+		$raw = $claims->email_verified;
+		if (is_bool($raw)) {
+			$userinfo['email_verified'] = $raw;
+		} else {
+			$normalized = filter_var($raw, FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE);
+			if ($normalized !== null) {
+				$userinfo['email_verified'] = $normalized;
+			}
+		}
+	}
+
+	return $userinfo;
+}
+
 function openidconnect_get_userinfo(string $accessToken): array
 {
-	$config = openidconnect_get_provider_config();
-	if (empty($config['userinfo_endpoint'])) {
+	if ($accessToken === '') {
+		DI::logger()->error('openidconnect: empty access token passed to userinfo endpoint');
 		return [];
 	}
 
-	$response = DI::httpClient()->get($config['userinfo_endpoint'], '', [
-		HttpClientOptions::HEADERS => ['Authorization' => 'Bearer ' . $accessToken],
-		HttpClientOptions::TIMEOUT => 30,
-	]);
+	$config = openidconnect_get_provider_config();
+	if (empty($config['userinfo_endpoint'])) {
+		DI::logger()->error('openidconnect: userinfo_endpoint missing from provider configuration');
+		return [];
+	}
+
+	try {
+		$response = DI::httpClient()->get($config['userinfo_endpoint'], '', [
+			HttpClientOptions::HEADERS => ['Authorization' => 'Bearer ' . $accessToken],
+			HttpClientOptions::TIMEOUT => 30,
+		]);
+	} catch (\Throwable $e) {
+		DI::logger()->error('openidconnect: userinfo request threw exception', [
+			'endpoint' => $config['userinfo_endpoint'],
+			'error' => $e->getMessage(),
+		]);
+		return [];
+	}
 
 	if (!$response->isSuccess()) {
 		DI::logger()->error('Userinfo endpoint returned error', ['code' => $response->getReturnCode()]);
@@ -1039,6 +1249,44 @@ function openidconnect_is_safe_url(string $url): bool
 	return false;
 }
 
+function openidconnect_delete_temp_avatar_file(string $tempFile, int $uid): void
+{
+	if ($tempFile === '' || !is_file($tempFile)) {
+		return;
+	}
+
+	$realTempDir = realpath(sys_get_temp_dir());
+	$realTempFile = realpath($tempFile);
+	if ($realTempDir === false || $realTempFile === false) {
+		DI::logger()->warning('openidconnect: failed to resolve temp avatar path for cleanup', ['uid' => $uid, 'tmp' => $tempFile]);
+		return;
+	}
+
+	$tempDirPrefix = rtrim($realTempDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+	if (!str_starts_with($realTempFile, $tempDirPrefix)) {
+		DI::logger()->warning('openidconnect: refused to unlink avatar temp file outside temp dir', ['uid' => $uid, 'tmp' => $realTempFile]);
+		return;
+	}
+
+	if (strpos(basename($realTempFile), 'avatar_') !== 0) {
+		DI::logger()->warning('openidconnect: refused to unlink unexpected temp avatar filename', ['uid' => $uid, 'tmp' => $realTempFile]);
+		return;
+	}
+
+	try {
+		// nosemgrep: php.lang.security.unlink-use.unlink-use
+		if (!unlink($realTempFile)) {
+			DI::logger()->warning('openidconnect: failed to unlink avatar temp file', ['uid' => $uid, 'tmp' => $realTempFile]);
+		}
+	} catch (\Throwable $e) {
+		DI::logger()->warning('openidconnect: exception while unlinking avatar temp file', [
+			'uid' => $uid,
+			'tmp' => $realTempFile,
+			'error' => $e->getMessage(),
+		]);
+	}
+}
+
 function openidconnect_update_avatar(int $uid, string $pictureUrl): void
 {
 	if (empty($pictureUrl)) {
@@ -1050,13 +1298,34 @@ function openidconnect_update_avatar(int $uid, string $pictureUrl): void
 		return;
 	}
 
-	$photoData = DI::httpClient()->fetch($pictureUrl, '', 30);
+	try {
+		$photoData = DI::httpClient()->fetch($pictureUrl, '', 30);
+	} catch (\Throwable $e) {
+		DI::logger()->warning('openidconnect: failed to fetch avatar image', [
+			'uid' => $uid,
+			'url' => $pictureUrl,
+			'error' => $e->getMessage(),
+		]);
+		return;
+	}
+
 	if (empty($photoData)) {
+		DI::logger()->warning('openidconnect: avatar fetch returned empty payload', ['uid' => $uid, 'url' => $pictureUrl]);
 		return;
 	}
 
 	$tempFile = tempnam(sys_get_temp_dir(), 'avatar_');
-	file_put_contents($tempFile, $photoData);
+	if ($tempFile === false) {
+		DI::logger()->warning('openidconnect: failed to allocate temporary avatar file', ['uid' => $uid]);
+		return;
+	}
+
+	$written = @file_put_contents($tempFile, $photoData);
+	if ($written === false) {
+		DI::logger()->warning('openidconnect: failed to write avatar temp file', ['uid' => $uid, 'tmp' => $tempFile]);
+		openidconnect_delete_temp_avatar_file($tempFile, $uid);
+		return;
+	}
 
 	try {
 		$contact = DBA::selectFirst('contact', ['id'], ['uid' => $uid, 'self' => true]);
@@ -1068,9 +1337,7 @@ function openidconnect_update_avatar(int $uid, string $pictureUrl): void
 	} finally {
 		// Always remove the temp file; check existence first to avoid a PHP
 		// warning when tempnam() failed or the file was already cleaned up.
-		if (is_file($tempFile)) {
-			unlink($tempFile);
-		}
+		openidconnect_delete_temp_avatar_file($tempFile, $uid);
 	}
 }
 
@@ -1178,7 +1445,23 @@ function openidconnect_revoke_token(string $endpoint, string $token, array $prov
 		$postData['client_secret'] = $clientSecret;
 	}
 
-	DI::httpClient()->post($endpoint, $postData, $headers, $timeout);
+	try {
+		$response = DI::httpClient()->post($endpoint, $postData, $headers, $timeout);
+	} catch (\Throwable $e) {
+		DI::logger()->warning('openidconnect: revocation endpoint request threw exception', [
+			'endpoint' => $endpoint,
+			'error' => $e->getMessage(),
+		]);
+		return;
+	}
+
+	if (!$response->isSuccess()) {
+		DI::logger()->warning('openidconnect: revocation endpoint returned non-success', [
+			'endpoint' => $endpoint,
+			'code' => $response->getReturnCode(),
+			'body' => $response->getBodyString(),
+		]);
+	}
 }
 
 function openidconnect_revoke(): void
@@ -1198,9 +1481,17 @@ function openidconnect_revoke(): void
 		return;
 	}
 
-	openidconnect_revoke_token($revocationEndpoint, $tokens['access_token'], $config);
+	try {
+		openidconnect_revoke_token($revocationEndpoint, $tokens['access_token'], $config);
+	} catch (\Throwable $e) {
+		DI::logger()->warning('openidconnect: access token revocation failed', ['error' => $e->getMessage()]);
+	}
 	if (!empty($tokens['refresh_token'])) {
-		openidconnect_revoke_token($revocationEndpoint, $tokens['refresh_token'], $config);
+		try {
+			openidconnect_revoke_token($revocationEndpoint, $tokens['refresh_token'], $config);
+		} catch (\Throwable $e) {
+			DI::logger()->warning('openidconnect: refresh token revocation failed', ['error' => $e->getMessage()]);
+		}
 	}
 
 	DI::session()->remove('openidconnect_tokens');
@@ -1254,7 +1545,12 @@ function openidconnect_page_end(string &$o): void
 
 	DI::page()->registerStylesheet(__DIR__ . '/static/addon.css');
 
-	$jsonUids = json_encode($uids, JSON_THROW_ON_ERROR);
+	try {
+		$jsonUids = json_encode($uids, JSON_THROW_ON_ERROR);
+	} catch (\JsonException $e) {
+		DI::logger()->error('openidconnect: failed to encode SSO badge user ids for admin users table', ['error' => $e->getMessage()]);
+		return;
+	}
 	$o .= <<<JS
 <script>
 document.addEventListener("DOMContentLoaded", function() {
@@ -1269,13 +1565,26 @@ document.addEventListener("DOMContentLoaded", function() {
 			if (m) uid = parseInt(m[1]);
 		}
 		if (uid && uids.indexOf(uid) !== -1) {
-			var cell = row.querySelector('.name') || row.cells[2];
+			var cell = row.querySelector('td:nth-child(3), td.name, .name') || row.cells[1] || row.cells[2];
 			if (cell) {
+				if (cell.querySelector('.openidconnect-sso-badge')) {
+					return;
+				}
+
 				var badge = document.createElement("span");
-				badge.textContent = "SSO";
+				badge.textContent = "OIDC";
+				badge.title = "OpenID Connect SSO";
 				// CSS class defined in static/addon.css — no inline styles.
-				badge.className = "openidconnect-sso-badge";
-				cell.appendChild(badge);
+				badge.className = "badge openidconnect-sso-badge";
+
+				var anchors = cell.querySelectorAll('a');
+				var anchor = anchors.length ? anchors[anchors.length - 1] : null;
+				if (anchor) {
+					anchor.appendChild(document.createTextNode(' '));
+					anchor.appendChild(badge);
+				} else {
+					cell.appendChild(badge);
+				}
 			}
 		}
 	});
@@ -1300,6 +1609,16 @@ function openidconnect_addon_settings(array &$data): void
 	$baseUrl        = (string)DI::baseUrl();
 
 	$tpl = Renderer::getMarkupTemplate('settings.tpl', 'addon/openidconnect/');
+	try {
+		$confirmJson = json_encode(
+			DI::l10n()->t('Are you sure you want to unlink your OpenID Connect account?'),
+			JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_THROW_ON_ERROR
+		);
+	} catch (\JsonException $e) {
+		DI::logger()->error('openidconnect: failed to encode unlink confirmation text', ['error' => $e->getMessage()]);
+		$confirmJson = '""';
+	}
+
 	$data['aside'] = Renderer::replaceMacros($tpl, [
 		'$linked'      => $linkedAccount,
 		'$sub_label'   => DI::l10n()->t('OIDC ID:'),
@@ -1311,10 +1630,7 @@ function openidconnect_addon_settings(array &$data): void
 		'$link_text'     => DI::l10n()->t('Link OpenID Connect Account'),
 		'$unlink_text'   => DI::l10n()->t('Unlink Account'),
 		// JSON_HEX_* flags make the value safe for a JS inline confirm() call.
-		'$confirm_json'  => json_encode(
-			DI::l10n()->t('Are you sure you want to unlink your OpenID Connect account?'),
-			JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_THROW_ON_ERROR
-		),
+		'$confirm_json'  => $confirmJson,
 		'$description' => DI::l10n()->t('Link your local account with an OpenID Connect provider to use SSO for login.'),
 	]);
 }
@@ -1347,16 +1663,18 @@ function openidconnect_build_admin_field(string $key, string $label, $value, str
 {
 	$source = DI::config()->getCache()->getSource('openidconnect', $key);
 	$readOnly = openidconnect_is_config_value_read_only($key);
-	$sourceHelp = $readOnly
-		? DI::l10n()->t('This value is currently %s and cannot be changed from this page.', openidconnect_get_config_source_label($source))
-		: DI::l10n()->t('This value is currently stored in the database and can be changed from this page.');
+	$sourceHelp = DI::l10n()->t('Source: %s.', openidconnect_get_config_source_label($source));
+	$writeHelp = $readOnly
+		? DI::l10n()->t('This value cannot be changed from this page.')
+		: DI::l10n()->t('This value can be changed from this page.');
 
 	return [
 		$key,
 		$label,
 		$value,
-		$description . ($readOnly ? ' ' . $sourceHelp : ''),
+		$description,
 		$sourceHelp,
+		$writeHelp,
 		$readOnly,
 	];
 }

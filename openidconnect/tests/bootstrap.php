@@ -2,10 +2,23 @@
 
 declare(strict_types=1);
 
-if (!file_exists(__DIR__ . '/../vendor/autoload.php')) {
-	die('Vendor path not found. Please run "composer install" inside the openidconnect/ addon directory.');
+$autoloadPaths = [
+	__DIR__ . '/../vendor-dev/autoload.php',
+	__DIR__ . '/../vendor/autoload.php',
+];
+
+$autoloadFile = null;
+foreach ($autoloadPaths as $candidate) {
+	if (file_exists($candidate)) {
+		$autoloadFile = $candidate;
+		break;
+	}
 }
 
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/stubs/DI.php.stub';
+if ($autoloadFile === null) {
+	die('Autoload path not found. Run "composer run test:setup" in openidconnect/.');
+}
+
+require_once $autoloadFile;
+require_once __DIR__ . '/stubs/DI.php';
 require_once __DIR__ . '/../openidconnect.php';

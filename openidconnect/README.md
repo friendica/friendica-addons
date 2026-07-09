@@ -46,6 +46,21 @@ The following options are available in the admin panel:
 | **Transparent SSO**      | Automatically start OIDC login from the Friendica login page for ordinary browser GET requests |
 | **Transparent SSO prompt=none** | Use silent auth (`prompt=none`) for transparent browser login and fall back cleanly when no IdP session exists |
 
+### Configuration Sources And Precedence
+
+The addon can receive configuration from multiple sources:
+
+- static addon config file (`config/openidconnect.config.php`)
+- environment-driven config loaded by Friendica
+- database values saved in the addon admin backend
+
+In the addon admin page each field shows:
+
+- the current source (for example, database vs local config file vs environment)
+- whether the value is editable from the admin page
+
+This is informational context for operators so they know where to change a value.
+
 ## Identity Provider Configuration
 
 ### Keycloak (Example)
@@ -84,9 +99,10 @@ https://your-friendica.com/openidconnect/callback
 4. Addon exchanges code for tokens using PKCE and provider-supported client auth
 5. Validates ID token signature, issuer, audience, nonce, and expiry
 6. Fetches userinfo and verifies it matches the authenticated subject
-7. Finds existing user, auto-links an unlinked matching account, or creates a new one
-8. Authenticates user in Friendica
-9. Friendica local 2FA is only bypassed when the local account does not have 2FA enabled
+7. If userinfo is temporarily unavailable but a validated `id_token` exists, the addon can fall back to safe core identity claims from the `id_token`
+8. Finds existing user, auto-links an unlinked matching account, or creates a new one
+9. Authenticates user in Friendica
+10. Friendica local 2FA is only bypassed when the local account does not have 2FA enabled
 
 ## Transparent Browser SSO
 
@@ -142,16 +158,71 @@ When logging in via OpenID Connect, Friendica local 2FA is only bypassed if the 
 - The same-host avatar allowance exists to support self-hosted/private-network IdPs.
 - Transparent SSO is intentionally constrained to ordinary browser login requests; Bearer-token traffic is excluded.
 
+## Error Handling And Operational Behavior
+
+The addon is designed to avoid silent failures and avoid taking Friendica down due to addon-specific runtime issues.
+
+- startup/config loading errors are logged and handled defensively
+- OIDC endpoint request failures are logged with context
+- malformed provider responses are rejected with explicit user-facing notices
+- state/cache failures fail closed and redirect safely to login
+- temporary files used for avatar updates are validated and cleaned up safely
+
+For troubleshooting, always check Friendica logs after reproducing the issue with one clean login attempt.
+
+### Lenient Behavior For Real-World Provider Variance
+
+To support mixed installations and provider differences, the addon intentionally includes a few tolerant behaviors:
+
+- supports both `error` and `err` authorization error query keys
+- tolerates missing optional discovery metadata and logs warnings instead of crashing
+- can fall back to validated `id_token` claims when userinfo is unavailable
+- normalizes non-boolean `email_verified` values where possible
+
+This is meant to increase interoperability without weakening core token validation.
+
 ## Unit Tests
 
 Run inside the addon directory:
 
 ```bash
-composer install
+composer run test:setup
 composer test
 ```
 
+Why `test:setup` exists:
+
+- test dependencies are installed into `vendor-dev/` so runtime `vendor/` files used by Friendica stay clean and production-safe
+- this avoids having to commit PHPUnit-related vendor changes for local development
+
+Additional quality commands:
+
+```bash
+composer run lint
+composer run deps:audit
+composer run qa
+semgrep scan openidconnect
+```
+
 The test suite covers pure helper and security-critical functions such as return-path sanitization, PKCE helpers, nonce generation, provider auth-method selection, and safe URL handling.
+
+## Development And QA Workflow
+
+For addon contributors:
+
+```bash
+cd openidconnect
+composer run test:setup
+composer run qa
+cd ..
+semgrep scan openidconnect
+```
+
+Notes:
+
+- `vendor-dev/` is used for test tooling (PHPUnit and related packages)
+- runtime addon dependencies remain in `vendor/` and are kept clean for Friendica installs
+- this separation prevents accidental commits of local test tooling into runtime vendor files
 
 ## Troubleshooting
 
@@ -159,6 +230,7 @@ The test suite covers pure helper and security-critical functions such as return
 
 - Check if the `/userinfo` endpoint is available in the discovery document
 - Make sure the `profile` scope is requested
+- If your provider intermittently fails userinfo but returns a valid `id_token`, verify that `sub`, `email`, and related claims are present in the `id_token`
 
 **Error: "Email address not provided"**
 
@@ -169,6 +241,7 @@ The test suite covers pure helper and security-critical functions such as return
 
 - Check if `auto_create_accounts` is enabled
 - Check Friendica logs under `admin -> logs`
+- Verify `sub` and `email` claims are actually released by the provider
 
 **Error: "This account is not linked to your identity provider"**
 
