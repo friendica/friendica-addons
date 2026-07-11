@@ -14,7 +14,7 @@ class ComposerStaticInitAdvancedContentFilterAddon
     );
 
     public static $prefixLengthsPsr4 = array (
-        'S' => 
+        'S' =>
         array (
             'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Polyfill\\Php73\\' => 23,
@@ -25,7 +25,7 @@ class ComposerStaticInitAdvancedContentFilterAddon
             'Symfony\\Component\\Cache\\' => 24,
             'Slim\\' => 5,
         ),
-        'P' => 
+        'P' =>
         array (
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Server\\' => 16,
@@ -33,68 +33,68 @@ class ComposerStaticInitAdvancedContentFilterAddon
             'Psr\\Container\\' => 14,
             'Psr\\Cache\\' => 10,
         ),
-        'F' => 
+        'F' =>
         array (
             'FastRoute\\' => 10,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Symfony\\Polyfill\\Php80\\' => 
+        'Symfony\\Polyfill\\Php80\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
         ),
-        'Symfony\\Polyfill\\Php73\\' => 
+        'Symfony\\Polyfill\\Php73\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php73',
         ),
-        'Symfony\\Contracts\\Service\\' => 
+        'Symfony\\Contracts\\Service\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/service-contracts',
         ),
-        'Symfony\\Contracts\\Cache\\' => 
+        'Symfony\\Contracts\\Cache\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/cache-contracts',
         ),
-        'Symfony\\Component\\VarExporter\\' => 
+        'Symfony\\Component\\VarExporter\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/var-exporter',
         ),
-        'Symfony\\Component\\ExpressionLanguage\\' => 
+        'Symfony\\Component\\ExpressionLanguage\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/expression-language',
         ),
-        'Symfony\\Component\\Cache\\' => 
+        'Symfony\\Component\\Cache\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/cache',
         ),
-        'Slim\\' => 
+        'Slim\\' =>
         array (
             0 => __DIR__ . '/..' . '/slim/slim/Slim',
         ),
-        'Psr\\Log\\' => 
+        'Psr\\Log\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
         ),
-        'Psr\\Http\\Server\\' => 
+        'Psr\\Http\\Server\\' =>
         array (
-            0 => __DIR__ . '/..' . '/psr/http-server-handler/src',
-            1 => __DIR__ . '/..' . '/psr/http-server-middleware/src',
+            0 => __DIR__ . '/..' . '/psr/http-server-middleware/src',
+            1 => __DIR__ . '/..' . '/psr/http-server-handler/src',
         ),
-        'Psr\\Http\\Message\\' => 
+        'Psr\\Http\\Message\\' =>
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
-        'Psr\\Container\\' => 
+        'Psr\\Container\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
         ),
-        'Psr\\Cache\\' => 
+        'Psr\\Cache\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/cache/src',
         ),
-        'FastRoute\\' => 
+        'FastRoute\\' =>
         array (
             0 => __DIR__ . '/..' . '/nikic/fast-route/src',
         ),
@@ -318,9 +318,6 @@ class ComposerStaticInitAdvancedContentFilterAddon
         'Symfony\\Component\\ExpressionLanguage\\Node\\UnaryNode' => __DIR__ . '/..' . '/symfony/expression-language/Node/UnaryNode.php',
         'Symfony\\Component\\ExpressionLanguage\\ParsedExpression' => __DIR__ . '/..' . '/symfony/expression-language/ParsedExpression.php',
         'Symfony\\Component\\ExpressionLanguage\\Parser' => __DIR__ . '/..' . '/symfony/expression-language/Parser.php',
-        'Symfony\\Component\\ExpressionLanguage\\ParserCache\\ArrayParserCache' => __DIR__ . '/..' . '/symfony/expression-language/ParserCache/ArrayParserCache.php',
-        'Symfony\\Component\\ExpressionLanguage\\ParserCache\\ParserCacheAdapter' => __DIR__ . '/..' . '/symfony/expression-language/ParserCache/ParserCacheAdapter.php',
-        'Symfony\\Component\\ExpressionLanguage\\ParserCache\\ParserCacheInterface' => __DIR__ . '/..' . '/symfony/expression-language/ParserCache/ParserCacheInterface.php',
         'Symfony\\Component\\ExpressionLanguage\\SerializedParsedExpression' => __DIR__ . '/..' . '/symfony/expression-language/SerializedParsedExpression.php',
         'Symfony\\Component\\ExpressionLanguage\\SyntaxError' => __DIR__ . '/..' . '/symfony/expression-language/SyntaxError.php',
         'Symfony\\Component\\ExpressionLanguage\\Token' => __DIR__ . '/..' . '/symfony/expression-language/Token.php',

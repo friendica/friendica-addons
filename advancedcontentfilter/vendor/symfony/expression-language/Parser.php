@@ -23,8 +23,8 @@ namespace Symfony\Component\ExpressionLanguage;
  */
 class Parser
 {
-    const OPERATOR_LEFT = 1;
-    const OPERATOR_RIGHT = 2;
+    public const OPERATOR_LEFT = 1;
+    public const OPERATOR_RIGHT = 2;
 
     private $stream;
     private $unaryOperators;
@@ -85,8 +85,7 @@ class Parser
      * variable 'container' can be used in the expression
      * but the compiled code will use 'this'.
      *
-     * @param TokenStream $stream A token stream instance
-     * @param array       $names  An array of valid names
+     * @param array $names An array of valid names
      *
      * @return Node\Node A node tree
      *

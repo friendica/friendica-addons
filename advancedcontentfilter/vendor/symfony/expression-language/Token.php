@@ -22,19 +22,19 @@ class Token
     public $type;
     public $cursor;
 
-    const EOF_TYPE = 'end of expression';
-    const NAME_TYPE = 'name';
-    const NUMBER_TYPE = 'number';
-    const STRING_TYPE = 'string';
-    const OPERATOR_TYPE = 'operator';
-    const PUNCTUATION_TYPE = 'punctuation';
+    public const EOF_TYPE = 'end of expression';
+    public const NAME_TYPE = 'name';
+    public const NUMBER_TYPE = 'number';
+    public const STRING_TYPE = 'string';
+    public const OPERATOR_TYPE = 'operator';
+    public const PUNCTUATION_TYPE = 'punctuation';
 
     /**
      * @param string                $type   The type of the token (self::*_TYPE)
      * @param string|int|float|null $value  The token value
      * @param int                   $cursor The cursor position in the source
      */
-    public function __construct($type, $value, $cursor)
+    public function __construct(string $type, $value, ?int $cursor)
     {
         $this->type = $type;
         $this->value = $value;

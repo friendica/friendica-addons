@@ -20,11 +20,11 @@ use Symfony\Component\ExpressionLanguage\Compiler;
  */
 class GetAttrNode extends Node
 {
-    const PROPERTY_CALL = 1;
-    const METHOD_CALL = 2;
-    const ARRAY_CALL = 3;
+    public const PROPERTY_CALL = 1;
+    public const METHOD_CALL = 2;
+    public const ARRAY_CALL = 3;
 
-    public function __construct(Node $node, Node $attribute, ArrayNode $arguments, $type)
+    public function __construct(Node $node, Node $attribute, ArrayNode $arguments, int $type)
     {
         parent::__construct(
             ['node' => $node, 'attribute' => $attribute, 'arguments' => $arguments],
@@ -86,13 +86,7 @@ class GetAttrNode extends Node
                     throw new \RuntimeException(sprintf('Unable to call method "%s" of object "%s".', $this->nodes['attribute']->attributes['value'], \get_class($obj)));
                 }
 
-                $arguments = $this->nodes['arguments']->evaluate($functions, $values);
-
-                if (\PHP_VERSION_ID >= 80000) {
-                    $arguments = array_values($arguments);
-                }
-
-                return \call_user_func_array($toCall, $arguments);
+                return $toCall(...array_values($this->nodes['arguments']->evaluate($functions, $values)));
 
             case self::ARRAY_CALL:
                 $array = $this->nodes['node']->evaluate($functions, $values);

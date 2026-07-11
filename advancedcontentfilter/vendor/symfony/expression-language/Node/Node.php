@@ -33,6 +33,9 @@ class Node
         $this->attributes = $attributes;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         $attributes = [];
@@ -84,7 +87,7 @@ class Node
         $dump = '';
 
         foreach ($this->toArray() as $v) {
-            $dump .= is_scalar($v) ? $v : $v->dump();
+            $dump .= \is_scalar($v) ? $v : $v->dump();
         }
 
         return $dump;
