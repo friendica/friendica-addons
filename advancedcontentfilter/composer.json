@@ -18,7 +18,7 @@
     "minimum-stability": "stable",
     "config": {
         "platform": {
-            "php": "7.4"
+            "php": "8.2"
         },
         "optimize-autoloader": true,
         "autoloader-suffix": "AdvancedContentFilterAddon",
