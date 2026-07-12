@@ -84,7 +84,6 @@ function openidconnect_init(): void
 
 function openidconnect_install(): void
 {
-	Hook::register('load_config',    __FILE__, 'openidconnect_load_config');
 	Hook::register('login_hook',     __FILE__, 'openidconnect_sso_initiate');
 	Hook::register('logging_out',    __FILE__, 'openidconnect_logout');
 	Hook::register('page_end',       __FILE__, 'openidconnect_page_end');
@@ -125,24 +124,6 @@ function openidconnect_uninstall(): void
 	DI::logger()->info('openidconnect: uninstall complete — hooks, pconfig, and global config cleared');
 }
 
-function openidconnect_load_config(ConfigFileManager $loader): void
-{
-	try {
-		$config = $loader->loadAddonConfig('openidconnect');
-		if (!is_array($config)) {
-			DI::logger()->warning('openidconnect: addon config loader returned non-array', ['type' => gettype($config)]);
-			return;
-		}
-
-		DI::appHelper()->getConfigCache()->load($config, \Friendica\Core\Config\ValueObject\Cache::SOURCE_STATIC);
-	} catch (\Throwable $e) {
-		// Never let a malformed addon config hard-fail Friendica startup.
-		DI::logger()->error('openidconnect: failed to load addon config', [
-			'error' => $e->getMessage(),
-			'trace' => $e->getTraceAsString(),
-		]);
-	}
-}
 
 function openidconnect_is_configured(): bool
 {

@@ -46,21 +46,6 @@ The following options are available in the admin panel:
 | **Transparent SSO**      | Automatically start OIDC login from the Friendica login page for ordinary browser GET requests |
 | **Transparent SSO prompt=none** | Use silent auth (`prompt=none`) for transparent browser login and fall back cleanly when no IdP session exists |
 
-### Configuration Sources And Precedence
-
-The addon can receive configuration from multiple sources:
-
-- static addon config file (`config/openidconnect.config.php`)
-- environment-driven config loaded by Friendica
-- database values saved in the addon admin backend
-
-In the addon admin page each field shows:
-
-- the current source (for example, database vs local config file vs environment)
-- whether the value is editable from the admin page
-
-This is informational context for operators so they know where to change a value.
-
 ## Identity Provider Configuration
 
 ### Keycloak (Example)
