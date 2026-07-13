@@ -680,8 +680,12 @@ function openidconnect_callback(): void
 			DI::session()->set('2fa', true);
 		}
 
-		DI::auth()->setForUser($user);
+		DI::auth()->setForUser($user, true, true);
 		DI::session()->set('openidconnect_tokens', $tokens);
+
+		// Flush session state before redirecting so the next request sees the
+		// authenticated Friendica session instead of looping back into OIDC.
+		session_write_close();
 
 		if (!empty($returnPath)) {
 			DI::baseUrl()->redirect($returnPath);
