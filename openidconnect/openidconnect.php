@@ -29,6 +29,8 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require_once __DIR__ . '/vendor/autoload.php';
 }
 
+use Friendica\Addon\OpenIdConnect\Auth\LoginPolicy;
+
 define('OIDC_STATE_LENGTH', 32);
 define('OIDC_NONCE_LENGTH', 32);
 define('OIDC_PKCE_VERIFIER_BYTES', 48);
@@ -237,27 +239,27 @@ function openidconnect_get_provider_config(): array
 
 function openidconnect_generate_state(): string
 {
-	return bin2hex(random_bytes(OIDC_STATE_LENGTH));
+	return LoginPolicy::generateState();
 }
 
 function openidconnect_generate_nonce(): string
 {
-	return bin2hex(random_bytes(OIDC_NONCE_LENGTH));
+	return LoginPolicy::generateNonce();
 }
 
 function openidconnect_base64url_encode(string $value): string
 {
-	return rtrim(strtr(base64_encode($value), '+/', '-_'), '=');
+	return LoginPolicy::base64UrlEncode($value);
 }
 
 function openidconnect_generate_pkce_verifier(): string
 {
-	return openidconnect_base64url_encode(random_bytes(OIDC_PKCE_VERIFIER_BYTES));
+	return LoginPolicy::generatePkceVerifier();
 }
 
 function openidconnect_generate_pkce_challenge(string $verifier): string
 {
-	return openidconnect_base64url_encode(hash('sha256', $verifier, true));
+	return LoginPolicy::generatePkceChallenge($verifier);
 }
 
 function openidconnect_get_client_auth_method(array $config, string $endpoint = 'token'): string
@@ -276,26 +278,12 @@ function openidconnect_get_client_auth_method(array $config, string $endpoint = 
 
 function openidconnect_sanitize_return_path(string $returnPath): string
 {
-	if (empty($returnPath)) {
-		return '';
-	}
-	// Reject absolute URLs and URIs with a scheme (e.g. https://, mona://, //)
-	if (preg_match('#^(https?:)?//#i', $returnPath) || preg_match('#^[a-z][a-z0-9+.-]*:#i', $returnPath)) {
-		DI::logger()->warning('openidconnect: rejected absolute return_path', ['path' => $returnPath]);
-		return '';
-	}
-	return ltrim($returnPath, '/');
+	return LoginPolicy::sanitizeReturnPath($returnPath);
 }
 
 function openidconnect_is_bearer_request(array $server): bool
 {
-	$authorization = $server['HTTP_AUTHORIZATION'] ?? '';
-
-	if (!is_string($authorization) || $authorization === '') {
-		return false;
-	}
-
-	return preg_match('/^Bearer\s+/i', $authorization) === 1;
+	return LoginPolicy::isBearerRequest($server);
 }
 
 function openidconnect_get_cookie_path(): string
@@ -334,40 +322,12 @@ function openidconnect_set_logout_no_auto_cookie(): void
 
 function openidconnect_should_auto_redirect_login(array $query = [], array $server = []): bool
 {
-	if (!DI::config()->get('openidconnect', 'transparent_sso')) {
-		return false;
-	}
-
-	if (strtoupper((string)($server['REQUEST_METHOD'] ?? 'GET')) !== 'GET') {
-		return false;
-	}
-
-	if (!empty($query['openidconnect_no_auto']) || !empty($query['error'])) {
-		return false;
-	}
-
-	// Suppress transparent SSO briefly after logout to avoid immediate re-login loops.
-	if (!empty($_COOKIE[OIDC_LOGOUT_NO_AUTO_COOKIE])) {
-		return false;
-	}
-
-	if (openidconnect_is_bearer_request($server)) {
-		return false;
-	}
-
-	return true;
+	return LoginPolicy::shouldAutoRedirect($query, $server, (bool)DI::config()->get('openidconnect', 'transparent_sso'));
 }
 
 function openidconnect_build_login_fallback_path(string $returnPath = ''): string
 {
-	$params = ['openidconnect_no_auto' => 1];
-	$returnPath = openidconnect_sanitize_return_path($returnPath);
-
-	if ($returnPath !== '') {
-		$params['return_path'] = $returnPath;
-	}
-
-	return 'login?' . http_build_query($params);
+	return LoginPolicy::buildFallbackPath($returnPath);
 }
 
 function openidconnect_get_authorization_error(array $query): string
