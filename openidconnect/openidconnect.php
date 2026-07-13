@@ -147,94 +147,20 @@ function openidconnect_load_config(ConfigFileManager $loader): void
 }
 
 
+function openidconnect_provider_configuration(): \Friendica\Addon\OpenIdConnect\Provider\ProviderConfiguration
+{
+	static $configuration;
+	return $configuration ??= new \Friendica\Addon\OpenIdConnect\Provider\ProviderConfiguration();
+}
+
 function openidconnect_is_configured(): bool
 {
-	$required = ['client_id', 'client_secret', 'discovery_url'];
-	foreach ($required as $key) {
-		$value = DI::config()->get('openidconnect', $key);
-		if (!is_string($value)) {
-			if (empty($value)) {
-				return false;
-			}
-			continue;
-		}
-
-		if (trim($value) === '') {
-			return false;
-		}
-	}
-	return true;
+	return openidconnect_provider_configuration()->isConfigured();
 }
 
 function openidconnect_get_provider_config(): array
 {
-	$cacheKey = 'openidconnect:provider_config';
-
-	$cached = DI::cache()->get($cacheKey);
-	if (is_array($cached) && !empty($cached)) {
-		return $cached;
-	}
-
-	if ($cached !== null && !is_array($cached)) {
-		DI::logger()->warning('openidconnect: provider config cache contained invalid type', ['type' => gettype($cached)]);
-		DI::cache()->delete($cacheKey);
-	}
-
-	$discoveryUrl = DI::config()->get('openidconnect', 'discovery_url');
-	if (empty($discoveryUrl)) {
-		DI::logger()->error('openidconnect: discovery_url is empty');
-		return [];
-	}
-
-	if (!filter_var($discoveryUrl, FILTER_VALIDATE_URL)) {
-		DI::logger()->error('openidconnect: discovery_url is invalid', ['url' => $discoveryUrl]);
-		return [];
-	}
-
-	try {
-		$response = DI::httpClient()->fetch($discoveryUrl, '', 30);
-	} catch (\Throwable $e) {
-		DI::logger()->error('openidconnect: exception while fetching discovery document', [
-			'url' => $discoveryUrl,
-			'error' => $e->getMessage(),
-		]);
-		return [];
-	}
-
-	if (!$response) {
-		DI::logger()->error('Failed to fetch OIDC discovery document', ['url' => $discoveryUrl]);
-		return [];
-	}
-
-	try {
-		$config = json_decode($response, true, 512, JSON_THROW_ON_ERROR);
-	} catch (\JsonException $e) {
-		DI::logger()->error('openidconnect: malformed JSON in OIDC discovery document', [
-			'url'   => $discoveryUrl,
-			'error' => $e->getMessage(),
-		]);
-		return [];
-	}
-	if (empty($config['authorization_endpoint']) || !is_string($config['authorization_endpoint'])) {
-		DI::logger()->error('openidconnect: invalid OIDC discovery document, missing authorization_endpoint', ['url' => $discoveryUrl]);
-		return [];
-	}
-
-	foreach (['token_endpoint', 'userinfo_endpoint', 'jwks_uri'] as $optionalEndpointKey) {
-		if (empty($config[$optionalEndpointKey]) || !is_string($config[$optionalEndpointKey])) {
-			DI::logger()->warning('openidconnect: discovery document missing optional endpoint used by later flow steps', [
-				'url' => $discoveryUrl,
-				'missing' => $optionalEndpointKey,
-			]);
-		}
-	}
-
-	if (!isset($config['issuer']) || !is_string($config['issuer']) || trim($config['issuer']) === '') {
-		DI::logger()->warning('openidconnect: discovery document has no issuer claim, proceeding with derived issuer validation from discovery_url', ['url' => $discoveryUrl]);
-	}
-
-	DI::cache()->set($cacheKey, $config, Duration::DAY);
-	return $config;
+	return openidconnect_provider_configuration()->get();
 }
 
 function openidconnect_generate_state(): string
@@ -264,16 +190,7 @@ function openidconnect_generate_pkce_challenge(string $verifier): string
 
 function openidconnect_get_client_auth_method(array $config, string $endpoint = 'token'): string
 {
-	$metadataKey = $endpoint === 'revocation'
-		? 'revocation_endpoint_auth_methods_supported'
-		: 'token_endpoint_auth_methods_supported';
-	$methods = $config[$metadataKey] ?? [];
-
-	if (empty($methods) || in_array('client_secret_basic', $methods, true)) {
-		return 'client_secret_basic';
-	}
-
-	return 'client_secret_post';
+	return \Friendica\Addon\OpenIdConnect\Provider\ProviderConfiguration::clientAuthMethod($config, $endpoint);
 }
 
 function openidconnect_sanitize_return_path(string $returnPath): string
