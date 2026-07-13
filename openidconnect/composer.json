@@ -20,7 +20,7 @@
     },
     "scripts": {
         "test:setup": "COMPOSER_VENDOR_DIR=vendor-dev composer install --no-interaction --no-progress",
-        "lint": "php -l openidconnect.php",
+        "lint": "find . -path './vendor' -prune -o -path './vendor-dev' -prune -o -name '*.php' -print0 | xargs -0 -n1 php -l",
         "test": "COMPOSER_VENDOR_DIR=vendor-dev vendor-dev/bin/phpunit -c phpunit.xml",
         "deps:audit": "composer audit --no-interaction",
         "qa": [
