@@ -643,11 +643,8 @@ function openidconnect_unlink_account(): void
 	DI::logger()->debug('openidconnect_unlink_account linked', ['linkedAccount' => $linkedAccount]);
 
 	if ($linkedAccount) {
-		DBA::update('user', ['openid' => ''], ['uid' => $uid]);
-		DI::pConfig()->delete($uid, 'openidconnect', 'oidc_sub');
-		DI::pConfig()->delete($uid, 'openidconnect', 'oidc_email');
-		DI::pConfig()->delete($uid, 'openidconnect', 'oidc_nickname');
-		DI::session()->remove('openidconnect_tokens');
+		static $linker;
+		($linker ??= new \Friendica\Addon\OpenIdConnect\Account\AccountLinker())->unlink($uid);
 
 		DI::sysmsg()->addInfo(DI::l10n()->t('OpenID Connect account link removed.'));
 	} else {
@@ -659,40 +656,14 @@ function openidconnect_unlink_account(): void
 
 function openidconnect_get_linked_account(int $uid): ?array
 {
-	$oidcSub = DI::pConfig()->get($uid, 'openidconnect', 'oidc_sub');
-	if ($oidcSub) {
-		return [
-			'sub' => $oidcSub,
-			'email' => DI::pConfig()->get($uid, 'openidconnect', 'oidc_email'),
-			'nickname' => DI::pConfig()->get($uid, 'openidconnect', 'oidc_nickname'),
-		];
-	}
-
-	return null;
+	static $linker;
+	return ($linker ??= new \Friendica\Addon\OpenIdConnect\Account\AccountLinker())->get($uid);
 }
 
 function openidconnect_link_user(int $uid, string $sub, string $email, string $nickname): bool
 {
-	if (empty($sub)) {
-		DI::logger()->warning('openidconnect_link_user: refused empty sub', ['uid' => $uid]);
-		return false;
-	}
-
-	$existingOwner = DBA::selectFirst('user', ['uid'], ['openid' => $sub]);
-	if (!empty($existingOwner['uid']) && (int)$existingOwner['uid'] !== $uid) {
-		DI::logger()->warning('openidconnect_link_user: subject already linked to another uid', ['sub' => $sub, 'owner_uid' => $existingOwner['uid'], 'uid' => $uid]);
-		return false;
-	}
-
-	DBA::update('user', ['openid' => $sub], ['uid' => $uid]);
-
-	DI::pConfig()->set($uid, 'openidconnect', 'oidc_sub', $sub);
-	DI::pConfig()->set($uid, 'openidconnect', 'oidc_email', $email);
-	DI::pConfig()->set($uid, 'openidconnect', 'oidc_nickname', $nickname);
-
-	DI::logger()->info('OpenID Connect account linked', ['uid' => $uid, 'sub' => $sub]);
-
-	return true;
+	static $linker;
+	return ($linker ??= new \Friendica\Addon\OpenIdConnect\Account\AccountLinker())->link($uid, $sub, $email, $nickname);
 }
 
 function openidconnect_exchange_code(string $code, string $codeVerifier = ''): array
@@ -709,79 +680,14 @@ function openidconnect_validate_id_token(string $idToken, string $expectedNonce 
 
 function openidconnect_extract_userinfo_from_id_token(object $claims): array
 {
-	$sub = isset($claims->sub) && is_scalar($claims->sub) ? (string)$claims->sub : '';
-	$email = isset($claims->email) && is_scalar($claims->email) ? (string)$claims->email : '';
-	$name = isset($claims->name) && is_scalar($claims->name) ? (string)$claims->name : '';
-	$preferredUsername = '';
-	if (isset($claims->preferred_username) && is_scalar($claims->preferred_username)) {
-		$preferredUsername = (string)$claims->preferred_username;
-	} elseif (isset($claims->nickname) && is_scalar($claims->nickname)) {
-		$preferredUsername = (string)$claims->nickname;
-	}
-
-	$picture = isset($claims->picture) && is_scalar($claims->picture) ? (string)$claims->picture : '';
-
-	$userinfo = [
-		'sub' => $sub,
-		'email' => $email,
-		'name' => $name,
-		'preferred_username' => $preferredUsername,
-		'picture' => $picture,
-	];
-
-	if (isset($claims->email_verified)) {
-		$raw = $claims->email_verified;
-		if (is_bool($raw)) {
-			$userinfo['email_verified'] = $raw;
-		} else {
-			$normalized = filter_var($raw, FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE);
-			if ($normalized !== null) {
-				$userinfo['email_verified'] = $normalized;
-			}
-		}
-	}
-
-	return $userinfo;
+	static $userinfo;
+	return ($userinfo ??= new \Friendica\Addon\OpenIdConnect\Identity\UserInfo())->fromIdToken($claims);
 }
 
 function openidconnect_get_userinfo(string $accessToken): array
 {
-	if ($accessToken === '') {
-		DI::logger()->error('openidconnect: empty access token passed to userinfo endpoint');
-		return [];
-	}
-
-	$config = openidconnect_get_provider_config();
-	if (empty($config['userinfo_endpoint'])) {
-		DI::logger()->error('openidconnect: userinfo_endpoint missing from provider configuration');
-		return [];
-	}
-
-	try {
-		$response = DI::httpClient()->get($config['userinfo_endpoint'], '', [
-			HttpClientOptions::HEADERS => ['Authorization' => 'Bearer ' . $accessToken],
-			HttpClientOptions::TIMEOUT => 30,
-		]);
-	} catch (\Throwable $e) {
-		DI::logger()->error('openidconnect: userinfo request threw exception', [
-			'endpoint' => $config['userinfo_endpoint'],
-			'error' => $e->getMessage(),
-		]);
-		return [];
-	}
-
-	if (!$response->isSuccess()) {
-		DI::logger()->error('Userinfo endpoint returned error', ['code' => $response->getReturnCode()]);
-		return [];
-	}
-
-	try {
-		$userinfo = json_decode($response->getBodyString(), true, 512, JSON_THROW_ON_ERROR);
-		return $userinfo ?: [];
-	} catch (\JsonException $e) {
-		DI::logger()->error('openidconnect: malformed JSON in userinfo response', ['error' => $e->getMessage()]);
-		return [];
-	}
+	static $userinfo;
+	return ($userinfo ??= new \Friendica\Addon\OpenIdConnect\Identity\UserInfo())->fetch($accessToken);
 }
 
 function openidconnect_find_or_create_user(string $sub, string $email, string $name, string $nickname, string $picture): ?array
