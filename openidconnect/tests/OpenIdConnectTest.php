@@ -4,17 +4,11 @@ declare(strict_types=1);
 
 namespace Friendica\Addon\OpenIdConnect\Tests;
 
+use Friendica\Addon\OpenIdConnect\Tests\Support\AddonTestCase;
 use Friendica\DI;
-use PHPUnit\Framework\TestCase;
 
-final class OpenIdConnectTest extends TestCase
+final class OpenIdConnectTest extends AddonTestCase
 {
-	protected function setUp(): void
-	{
-		parent::setUp();
-		DI::resetTestState();
-	}
-
 	public function testSanitizeReturnPathKeepsRelativePath(): void
 	{
 		self::assertSame('settings/account', openidconnect_sanitize_return_path('settings/account'));
