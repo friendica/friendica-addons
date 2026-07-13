@@ -266,20 +266,8 @@ function openidconnect_should_fallback_to_manual_login(string $error): bool
 
 function openidconnect_normalize_nickname(string $nickname, string $name, string $email): string
 {
-	if (!empty($nickname)) {
-		return $nickname;
-	}
-
-	$normalized = preg_replace('/[^a-z0-9_-]/i', '', strtolower($name));
-	$normalized  = substr($normalized, 0, 64);
-
-	if (empty($normalized) || strlen($normalized) < 2) {
-		// strstr with before_needle=true is stateless; strtok() modifies global
-		// tokeniser state and should not be used for a simple prefix extract.
-		$normalized = strstr($email, '@', true) ?: '';
-	}
-
-	return $normalized;
+	static $provisioner;
+	return ($provisioner ??= new \Friendica\Addon\OpenIdConnect\Account\UserProvisioner())->normaliseNickname($nickname, $name, $email);
 }
 
 function openidconnect_redirect_to_provider(bool $linkMode = false, string $returnPath = '', bool $promptNone = false): void
@@ -692,270 +680,31 @@ function openidconnect_get_userinfo(string $accessToken): array
 
 function openidconnect_find_or_create_user(string $sub, string $email, string $name, string $nickname, string $picture): ?array
 {
-	$linkedBySub = DBA::selectFirst('user', [], ['openid' => $sub]);
-	if ($linkedBySub) {
-		$uid = (int)$linkedBySub['uid'];
-		DI::logger()->debug('openidconnect: found user by sub (linked)', ['uid' => $uid]);
-
-		// Propagate email change from IdP — the IdP is the authoritative source
-		// for email when a user is linked via OIDC.
-		if (!empty($email) && $linkedBySub['email'] !== $email) {
-			// Guard: refuse if the new email is already owned by another account.
-			if (DBA::exists('user', ['email' => $email])) {
-				DI::logger()->warning('openidconnect: cannot propagate email change — address already in use by another account', [
-					'uid'       => $uid,
-					'new_email' => $email,
-				]);
-			} else {
-				DI::logger()->info('openidconnect: propagating email change from IdP', [
-					'uid'       => $uid,
-					'old_email' => $linkedBySub['email'],
-					'new_email' => $email,
-				]);
-				DBA::update('user', ['email' => $email], ['uid' => $uid]);
-				$linkedBySub['email'] = $email;
-			}
-		}
-
-		DI::pConfig()->set($uid, 'openidconnect', 'oidc_sub', $sub);
-		DI::pConfig()->set($uid, 'openidconnect', 'oidc_email', $email);
-		DI::pConfig()->set($uid, 'openidconnect', 'oidc_nickname', $nickname);
-		if (!empty($picture)) {
-			openidconnect_update_avatar($uid, $picture);
-		}
-		return $linkedBySub;
-	}
-
-	// Select only the columns needed for the email-match check.  Fetching the
-	// full row here would load the password hash and private key into scope
-	// unnecessarily.  The full row is re-fetched later when actually needed.
-	$existingUser = DBA::selectFirst('user', ['uid', 'openid'], ['email' => $email]);
-	if ($existingUser) {
-		// Auto-link when the existing account was never linked to any IdP and auto-create is on.
-		if (empty($existingUser['openid']) && DI::config()->get('openidconnect', 'auto_create_accounts')) {
-			DI::logger()->info('openidconnect: auto-linking existing unlinked account by email', ['uid' => $existingUser['uid'], 'sub' => $sub]);
-			openidconnect_link_user($existingUser['uid'], $sub, $email, $nickname);
-			if (!empty($picture)) {
-				openidconnect_update_avatar($existingUser['uid'], $picture);
-			}
-			return DBA::selectFirst('user', [], ['uid' => $existingUser['uid']]);
-		}
-		// Account linked to a DIFFERENT sub — reject.
-		DI::logger()->warning('openidconnect: email matches account linked to different sub - REJECTED', ['email' => $email, 'existing_openid' => $existingUser['openid'], 'attempted_sub' => $sub]);
-		DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect: This account is not linked to your identity provider. Please link your account in the settings or contact the administrator.'));
-		return null;
-	}
-
-	if (DI::config()->get('openidconnect', 'auto_create_accounts')) {
-		DI::logger()->debug('openidconnect: auto_create is enabled, creating user', ['sub' => $sub, 'email' => $email, 'nickname' => $nickname]);
-		try {
-			$result = openidconnect_create_user($sub, $email, $name, $nickname, $picture);
-		} catch (\Throwable $e) {
-			$errorMsg = $e->getMessage();
-			DI::logger()->error('openidconnect: create_user exception', ['exception' => $errorMsg]);
-			DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect: Account creation failed: %s', $errorMsg));
-			DI::baseUrl()->redirect('login');
-			return null;
-		}
-		DI::logger()->debug('openidconnect: create_user result', ['result' => $result]);
-		return $result;
-	}
-
-	DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect: No matching account found and registration is not available. Please contact the administrator.'));
-	return null;
+	static $provisioner;
+	return ($provisioner ??= new \Friendica\Addon\OpenIdConnect\Account\UserProvisioner())->findOrCreate($sub, $email, $name, $nickname, $picture);
 }
 
 function openidconnect_create_user(string $sub, string $email, string $name, string $nickname, string $picture): ?array
 {
-	$nickname = trim($nickname);
-	if (DBA::exists('user', ['nickname' => $nickname])) {
-		$counter = 1;
-		$baseNickname = $nickname;
-		while (DBA::exists('user', ['nickname' => $nickname]) && $counter <= 9999) {
-			$nickname = $baseNickname . $counter;
-			$counter++;
-		}
-		if ($counter > 9999) {
-			throw new \RuntimeException('Could not generate a unique nickname for: ' . $baseNickname);
-		}
-	}
-
-	$bytes = random_bytes(32);
-	$password = base64_encode($bytes);
-
-	try {
-		DI::logger()->debug('openidconnect: calling User::create', ['email' => $email, 'nickname' => $nickname, 'name' => $name]);
-		$user = User::create([
-			'username' => $name ?: $nickname,
-			'nickname' => $nickname,
-			'email' => $email,
-			'password' => $password,
-			'verified' => true,
-			'openid' => $sub,
-		]);
-		DI::logger()->debug('openidconnect: User::create returned', ['uid' => $user['uid'] ?? 'MISSING', 'user_keys' => array_keys($user ?: [])]);
-
-		// Resolve uid before any use — User::create may not include it in the returned array.
-		$uid = $user['uid'] ?? DBA::lastInsertId();
-		DI::logger()->debug('openidconnect: resolved uid', ['uid' => $uid]);
-
-		if (!$uid) {
-			DI::logger()->error('openidconnect: uid=0 after User::create — aborting account creation');
-			return null;
-		}
-
-		// User::create does not honour the 'openid' key — set it explicitly.
-		DBA::update('user', ['openid' => $sub], ['uid' => $uid]);
-
-		if (!empty($picture)) {
-			openidconnect_update_avatar($uid, $picture);
-		}
-
-		DI::pConfig()->set($uid, 'openidconnect', 'oidc_sub', $sub);
-		DI::pConfig()->set($uid, 'openidconnect', 'oidc_email', $email);
-		DI::pConfig()->set($uid, 'openidconnect', 'oidc_nickname', $nickname);
-
-		DI::logger()->info('OpenID Connect user created', ['nickname' => $nickname, 'email' => $email, 'uid' => $uid]);
-		$userData = DBA::selectFirst('user', [], ['uid' => $uid]);
-		return $userData;
-	} catch (\Throwable $e) {
-		// Log the full trace here for diagnostic detail, then re-throw so the
-		// caller (openidconnect_find_or_create_user) can show the user a proper
-		// error notice and redirect — the inner catch must not swallow errors
-		// silently or the outer handler becomes dead code.
-		DI::logger()->error('openidconnect: User::create failed', [
-			'exception' => $e->getMessage(),
-			'trace'     => $e->getTraceAsString(),
-		]);
-		throw $e;
-	}
+	static $provisioner;
+	return ($provisioner ??= new \Friendica\Addon\OpenIdConnect\Account\UserProvisioner())->create($sub, $email, $name, $nickname, $picture);
 }
 
 function openidconnect_is_safe_url(string $url): bool
 {
-	if (!filter_var($url, FILTER_VALIDATE_URL)) {
-		return false;
-	}
-	$parsed = parse_url($url);
-	if (empty($parsed['scheme']) || empty($parsed['host'])) {
-		return false;
-	}
-	$host = $parsed['host'];
-
-	// Trust any URL on the same host as the configured IdP (covers self-hosted/private Authentik).
-	$idpHost = parse_url(DI::config()->get('openidconnect', 'discovery_url') ?? '', PHP_URL_HOST);
-	if ($idpHost && $host === $idpHost) {
-		return true;
-	}
-
-	if (($parsed['scheme'] ?? '') !== 'https') {
-		return false;
-	}
-
-	// Use dns_get_record to handle both A and AAAA; fall back to gethostbyname.
-	$records = @dns_get_record($host, DNS_A | DNS_AAAA) ?: [];
-	$ips = array_map(fn($r) => $r['ip'] ?? $r['ipv6'] ?? '', $records);
-	if (empty($ips)) {
-		$ips = [gethostbyname($host)];
-	}
-	foreach ($ips as $ip) {
-		if ($ip && filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false) {
-			return true; // at least one public IP — allow
-		}
-	}
-	return false;
+	return (new \Friendica\Addon\OpenIdConnect\Account\AvatarUpdater())->isSafeUrl($url);
 }
 
 function openidconnect_delete_temp_avatar_file(string $tempFile, int $uid): void
 {
-	if ($tempFile === '' || !is_file($tempFile)) {
-		return;
-	}
-
-	$realTempDir = realpath(sys_get_temp_dir());
-	$realTempFile = realpath($tempFile);
-	if ($realTempDir === false || $realTempFile === false) {
-		DI::logger()->warning('openidconnect: failed to resolve temp avatar path for cleanup', ['uid' => $uid, 'tmp' => $tempFile]);
-		return;
-	}
-
-	$tempDirPrefix = rtrim($realTempDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-	if (!str_starts_with($realTempFile, $tempDirPrefix)) {
-		DI::logger()->warning('openidconnect: refused to unlink avatar temp file outside temp dir', ['uid' => $uid, 'tmp' => $realTempFile]);
-		return;
-	}
-
-	if (strpos(basename($realTempFile), 'avatar_') !== 0) {
-		DI::logger()->warning('openidconnect: refused to unlink unexpected temp avatar filename', ['uid' => $uid, 'tmp' => $realTempFile]);
-		return;
-	}
-
-	try {
-		// nosemgrep: php.lang.security.unlink-use.unlink-use
-		if (!unlink($realTempFile)) {
-			DI::logger()->warning('openidconnect: failed to unlink avatar temp file', ['uid' => $uid, 'tmp' => $realTempFile]);
-		}
-	} catch (\Throwable $e) {
-		DI::logger()->warning('openidconnect: exception while unlinking avatar temp file', [
-			'uid' => $uid,
-			'tmp' => $realTempFile,
-			'error' => $e->getMessage(),
-		]);
-	}
+	static $updater;
+	($updater ??= new \Friendica\Addon\OpenIdConnect\Account\AvatarUpdater())->deleteTemporaryFile($tempFile, $uid);
 }
 
 function openidconnect_update_avatar(int $uid, string $pictureUrl): void
 {
-	if (empty($pictureUrl)) {
-		return;
-	}
-
-	if (!openidconnect_is_safe_url($pictureUrl)) {
-		DI::logger()->warning('openidconnect: rejected unsafe picture URL', ['url' => $pictureUrl]);
-		return;
-	}
-
-	try {
-		$photoData = DI::httpClient()->fetch($pictureUrl, '', 30);
-	} catch (\Throwable $e) {
-		DI::logger()->warning('openidconnect: failed to fetch avatar image', [
-			'uid' => $uid,
-			'url' => $pictureUrl,
-			'error' => $e->getMessage(),
-		]);
-		return;
-	}
-
-	if (empty($photoData)) {
-		DI::logger()->warning('openidconnect: avatar fetch returned empty payload', ['uid' => $uid, 'url' => $pictureUrl]);
-		return;
-	}
-
-	$tempFile = tempnam(sys_get_temp_dir(), 'avatar_');
-	if ($tempFile === false) {
-		DI::logger()->warning('openidconnect: failed to allocate temporary avatar file', ['uid' => $uid]);
-		return;
-	}
-
-	$written = @file_put_contents($tempFile, $photoData);
-	if ($written === false) {
-		DI::logger()->warning('openidconnect: failed to write avatar temp file', ['uid' => $uid, 'tmp' => $tempFile]);
-		openidconnect_delete_temp_avatar_file($tempFile, $uid);
-		return;
-	}
-
-	try {
-		$contact = DBA::selectFirst('contact', ['id'], ['uid' => $uid, 'self' => true]);
-		if ($contact) {
-			Contact::updateAvatar($contact['id'], $tempFile);
-		}
-	} catch (\Exception $e) {
-		DI::logger()->warning('Failed to update avatar', ['uid' => $uid, 'exception' => $e->getMessage()]);
-	} finally {
-		// Always remove the temp file; check existence first to avoid a PHP
-		// warning when tempnam() failed or the file was already cleaned up.
-		openidconnect_delete_temp_avatar_file($tempFile, $uid);
-	}
+	static $updater;
+	($updater ??= new \Friendica\Addon\OpenIdConnect\Account\AvatarUpdater())->update($uid, $pictureUrl);
 }
 
 function openidconnect_sso_initiate(string &$o): void
