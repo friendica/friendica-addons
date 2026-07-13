@@ -71,6 +71,7 @@ final class TestHttpClient
 final class TestConfig
 {
 	private array $values = [];
+	private ?TestConfigCache $cache = null;
 
 	public function set(string $cat, string $key, mixed $value): void
 	{
@@ -81,6 +82,140 @@ final class TestConfig
 	{
 		return $this->values[$cat][$key] ?? null;
 	}
+
+	public function getCache(): TestConfigCache
+	{
+		return $this->cache ??= new TestConfigCache();
+	}
+}
+
+final class TestConfigCache
+{
+	private array $sources = [];
+
+	public function setSource(string $cat, string $key, int $source): void
+	{
+		$this->sources[$cat][$key] = $source;
+	}
+
+	public function getSource(string $cat, string $key): int
+	{
+		return $this->sources[$cat][$key] ?? -1;
+	}
+}
+
+final class TestBaseUrl
+{
+	private ?string $lastRedirect = null;
+
+	public function redirect(string $url = ''): void
+	{
+		$this->lastRedirect = $url;
+	}
+
+	public function lastRedirect(): ?string
+	{
+		return $this->lastRedirect;
+	}
+
+	public function getPath(): string
+	{
+		return '';
+	}
+
+	public function __toString(): string
+	{
+		return 'https://example.test';
+	}
+}
+
+final class TestSysmsg
+{
+	public array $notices = [];
+	public array $infos = [];
+
+	public function addNotice(string $message): void
+	{
+		$this->notices[] = $message;
+	}
+
+	public function addInfo(string $message): void
+	{
+		$this->infos[] = $message;
+	}
+}
+
+final class TestL10n
+{
+	public function t(string $s, ...$args): string
+	{
+		return $args === [] ? $s : vsprintf($s, $args);
+	}
+}
+
+final class TestSession
+{
+	private array $values = [];
+
+	public function set(string $key, mixed $value): void
+	{
+		$this->values[$key] = $value;
+	}
+
+	public function get(string $key): mixed
+	{
+		return $this->values[$key] ?? null;
+	}
+
+	public function remove(string $key): void
+	{
+		unset($this->values[$key]);
+	}
+}
+
+final class TestAuth
+{
+	public ?array $authenticatedUser = null;
+
+	public function setForUser(array $user, bool $remember, bool $interactive): void
+	{
+		$this->authenticatedUser = $user;
+	}
+}
+
+final class TestPConfig
+{
+	private array $values = [];
+
+	public function get(int $uid, string $cat, string $key): mixed
+	{
+		return $this->values[$uid][$cat][$key] ?? null;
+	}
+
+	public function set(int $uid, string $cat, string $key, mixed $value): void
+	{
+		$this->values[$uid][$cat][$key] = $value;
+	}
+
+	public function delete(int $uid, string $cat, string $key): void
+	{
+		unset($this->values[$uid][$cat][$key]);
+	}
+}
+
+final class TestUserSession
+{
+	private ?int $localUserId = null;
+
+	public function setLocalUserId(?int $uid): void
+	{
+		$this->localUserId = $uid;
+	}
+
+	public function getLocalUserId(): int
+	{
+		return $this->localUserId ?? 0;
+	}
 }
 
 class DI
@@ -89,6 +224,13 @@ class DI
 	private static ?TestConfig $config = null;
 	private static ?TestCache $cache = null;
 	private static ?TestHttpClient $httpClient = null;
+	private static ?TestBaseUrl $baseUrl = null;
+	private static ?TestSysmsg $sysmsg = null;
+	private static ?TestL10n $l10n = null;
+	private static ?TestSession $session = null;
+	private static ?TestAuth $auth = null;
+	private static ?TestPConfig $pConfig = null;
+	private static ?TestUserSession $userSession = null;
 
 	public static function resetTestState(): void
 	{
@@ -96,6 +238,13 @@ class DI
 		self::$config = new TestConfig();
 		self::$cache = new TestCache();
 		self::$httpClient = new TestHttpClient();
+		self::$baseUrl = new TestBaseUrl();
+		self::$sysmsg = new TestSysmsg();
+		self::$l10n = new TestL10n();
+		self::$session = new TestSession();
+		self::$auth = new TestAuth();
+		self::$pConfig = new TestPConfig();
+		self::$userSession = new TestUserSession();
 	}
 
 	public static function logger(): TestLogger
@@ -116,6 +265,41 @@ class DI
 	public static function httpClient(): TestHttpClient
 	{
 		return self::$httpClient ??= new TestHttpClient();
+	}
+
+	public static function baseUrl(): TestBaseUrl
+	{
+		return self::$baseUrl ??= new TestBaseUrl();
+	}
+
+	public static function sysmsg(): TestSysmsg
+	{
+		return self::$sysmsg ??= new TestSysmsg();
+	}
+
+	public static function l10n(): TestL10n
+	{
+		return self::$l10n ??= new TestL10n();
+	}
+
+	public static function session(): TestSession
+	{
+		return self::$session ??= new TestSession();
+	}
+
+	public static function auth(): TestAuth
+	{
+		return self::$auth ??= new TestAuth();
+	}
+
+	public static function pConfig(): TestPConfig
+	{
+		return self::$pConfig ??= new TestPConfig();
+	}
+
+	public static function userSession(): TestUserSession
+	{
+		return self::$userSession ??= new TestUserSession();
 	}
 }
 
