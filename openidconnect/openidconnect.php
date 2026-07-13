@@ -40,6 +40,12 @@ define('OIDC_LINK_RETURN', 'openidconnect_link_return');
 define('OIDC_LOGOUT_NO_AUTO_COOKIE', 'openidconnect_no_auto_logout');
 define('OIDC_LOGOUT_NO_AUTO_TTL', 120);
 
+function openidconnect_addon(): \Friendica\Addon\OpenIdConnect\OpenIdConnectAddon
+{
+	static $addon;
+	return $addon ??= new \Friendica\Addon\OpenIdConnect\OpenIdConnectAddon();
+}
+
 function openidconnect_module() {}
 
 function openidconnect_init(): void
@@ -51,27 +57,7 @@ function openidconnect_init(): void
 	$route = DI::args()->get(1);
 
 	try {
-		switch ($route) {
-			case 'auth':
-				$returnPath = $_GET['return_path'] ?? '';
-				openidconnect_redirect_to_provider(false, $returnPath);
-				break;
-			case 'callback':
-				openidconnect_callback();
-				break;
-			case 'revoke':
-				openidconnect_revoke();
-				break;
-			case 'link':
-				openidconnect_link_account();
-				break;
-			case 'unlink':
-				openidconnect_unlink_account();
-				break;
-			default:
-				DI::logger()->warning('openidconnect: unknown route requested', ['route' => $route]);
-				break;
-		}
+		openidconnect_addon()->dispatch($route);
 	} catch (\Throwable $e) {
 		DI::logger()->error('openidconnect: unhandled exception in module init', [
 			'route' => $route,
@@ -86,64 +72,17 @@ function openidconnect_init(): void
 
 function openidconnect_install(): void
 {
-	Hook::register('load_config',     __FILE__, 'openidconnect_load_config');
-	Hook::register('login_hook',     __FILE__, 'openidconnect_sso_initiate');
-	Hook::register('logging_out',    __FILE__, 'openidconnect_logout');
-	Hook::register('page_end',       __FILE__, 'openidconnect_page_end');
-	// Settings panel (link/unlink) in the user settings sidebar.
-	// Using the standard addon_settings hook avoids JS DOM injection and
-	// works in all themes and without JavaScript.
-	Hook::register('addon_settings', __FILE__, 'openidconnect_addon_settings');
+	openidconnect_addon()->install();
 }
 
 function openidconnect_uninstall(): void
 {
-	// Symmetric unregistration — without this, stale hook rows remain in the
-	// database and fire against non-existent handler functions after the addon
-	// files are removed, causing fatal errors on every Friendica page load.
-	Hook::unregister('load_config',    __FILE__, 'openidconnect_load_config');
-	Hook::unregister('login_hook',     __FILE__, 'openidconnect_sso_initiate');
-	Hook::unregister('logging_out',    __FILE__, 'openidconnect_logout');
-	Hook::unregister('page_end',       __FILE__, 'openidconnect_page_end');
-	Hook::unregister('addon_settings', __FILE__, 'openidconnect_addon_settings');
-
-	// Per-user OIDC binding data (sub, email, nickname per uid)
-	DBA::delete('pconfig', ['cat' => 'openidconnect']);
-
-	// Global configuration — credentials must not survive an uninstall
-	$configKeys = [
-		'discovery_url', 'client_id', 'client_secret', 'scopes', 'button_text',
-		'auto_create_accounts', 'allow_unverified_email', 'idp_signout',
-		'transparent_sso', 'transparent_sso_prompt_none',
-	];
-	foreach ($configKeys as $key) {
-		DI::config()->delete('openidconnect', $key);
-	}
-
-	// Flush cached IdP metadata so a fresh install always re-fetches
-	DI::cache()->delete('openidconnect:provider_config');
-	DI::cache()->delete('openidconnect:jwks');
-
-	DI::logger()->info('openidconnect: uninstall complete — hooks, pconfig, and global config cleared');
+	openidconnect_addon()->uninstall();
 }
 
 function openidconnect_load_config(ConfigFileManager $loader): void
 {
-	try {
-		$config = $loader->loadAddonConfig('openidconnect');
-		if (!is_array($config)) {
-			DI::logger()->warning('openidconnect: addon config loader returned non-array', ['type' => gettype($config)]);
-			return;
-		}
-
-		DI::appHelper()->getConfigCache()->load($config, Cache::SOURCE_STATIC);
-	} catch (\Throwable $e) {
-		// Never let a malformed addon config hard-fail Friendica startup.
-		DI::logger()->error('openidconnect: failed to load addon config', [
-			'error' => $e->getMessage(),
-			'trace' => $e->getTraceAsString(),
-		]);
-	}
+	openidconnect_addon()->loadConfig($loader);
 }
 
 
@@ -284,60 +223,12 @@ function openidconnect_callback(): void
 
 function openidconnect_link_account(): void
 {
-	if (!openidconnect_is_configured()) {
-		DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect is not configured.'));
-		DI::baseUrl()->redirect('settings/account');
-		return;
-	}
-
-	$uid = DI::userSession()->getLocalUserId();
-	if (!$uid) {
-		DI::sysmsg()->addNotice(DI::l10n()->t('You must be logged in to link your account.'));
-		DI::baseUrl()->redirect('login');
-		return;
-	}
-
-	$existingOidc = openidconnect_get_linked_account($uid);
-	if ($existingOidc) {
-		DI::sysmsg()->addNotice(DI::l10n()->t('Your account is already linked to an OpenID Connect provider.'));
-		DI::baseUrl()->redirect('settings/account');
-		return;
-	}
-
-	openidconnect_redirect_to_provider(true, 'settings/account');
+	openidconnect_addon()->beginAccountLink();
 }
 
 function openidconnect_unlink_account(): void
 {
-	if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-		DI::baseUrl()->redirect('settings/account');
-		return;
-	}
-
-	BaseModule::checkFormSecurityTokenRedirectOnError('settings/account', 'openidconnect_unlink');
-
-	$uid = DI::userSession()->getLocalUserId();
-	DI::logger()->debug('openidconnect_unlink_account', ['uid' => $uid]);
-
-	if (!$uid) {
-		DI::logger()->warning('openidconnect_unlink_account: not logged in');
-		DI::baseUrl()->redirect('login');
-		return;
-	}
-
-	$linkedAccount = openidconnect_get_linked_account($uid);
-	DI::logger()->debug('openidconnect_unlink_account linked', ['linkedAccount' => $linkedAccount]);
-
-	if ($linkedAccount) {
-		static $linker;
-		($linker ??= new \Friendica\Addon\OpenIdConnect\Account\AccountLinker())->unlink($uid);
-
-		DI::sysmsg()->addInfo(DI::l10n()->t('OpenID Connect account link removed.'));
-	} else {
-		DI::sysmsg()->addNotice(DI::l10n()->t('No OpenID Connect link found for this account.'));
-	}
-
-	DI::baseUrl()->redirect('settings/account');
+	openidconnect_addon()->unlinkAccount();
 }
 
 function openidconnect_get_linked_account(int $uid): ?array
@@ -451,87 +342,12 @@ function openidconnect_sso_initiate(string &$o): void
 
 function openidconnect_logout(): void
 {
-	$tokens = DI::session()->get('openidconnect_tokens');
-	DI::session()->remove('openidconnect_tokens');
-	openidconnect_set_logout_no_auto_cookie();
-
-	if (empty($tokens['id_token'])) {
-		return;
-	}
-
-	$config = openidconnect_get_provider_config();
-	$endSessionEndpoint = $config['end_session_endpoint'] ?? '';
-	if (empty($endSessionEndpoint)) {
-		return;
-	}
-
-	// Revoke access token silently before handing off to SLO
-	$revocationEndpoint = $config['revocation_endpoint'] ?? '';
-	if (!empty($tokens['access_token']) && $revocationEndpoint) {
-		try {
-			openidconnect_revoke_token($revocationEndpoint, $tokens['access_token'], $config, 10);
-		} catch (\Throwable $e) {
-			DI::logger()->warning('openidconnect: token revocation failed during logout', ['error' => $e->getMessage()]);
-		}
-	}
-
-	if (!DI::config()->get('openidconnect', 'idp_signout')) {
-		return;
-	}
-
-	// RP-Initiated Logout (RFC 8705): clear the Friendica session ourselves and
-	// hand the browser off to the IdP end_session endpoint so the IdP session
-	// is also terminated.  The IdP redirects back to post_logout_redirect_uri.
-	$params = [
-		'id_token_hint'            => $tokens['id_token'],
-		'post_logout_redirect_uri' => (string)DI::baseUrl(),
-	];
-	$sloUrl = $endSessionEndpoint . '?' . http_build_query($params);
-
-	DI::session()->clear();
-
-	header('Location: ' . $sloUrl);
-	exit();
-}
-
-function openidconnect_revoke_token(string $endpoint, string $token, array $providerConfig, int $timeout = 30): void
-{
-	static $client;
-	($client ??= new \Friendica\Addon\OpenIdConnect\Provider\TokenClient())->revoke($endpoint, $token, $providerConfig, $timeout);
+	openidconnect_addon()->logout();
 }
 
 function openidconnect_revoke(): void
 {
-	$tokens = DI::session()->get('openidconnect_tokens');
-	if (empty($tokens['access_token'])) {
-		DI::baseUrl()->redirect();
-		return;
-	}
-
-	$config = openidconnect_get_provider_config();
-	$revocationEndpoint = $config['revocation_endpoint'] ?? '';
-
-	if (empty($revocationEndpoint)) {
-		DI::session()->remove('openidconnect_tokens');
-		DI::baseUrl()->redirect();
-		return;
-	}
-
-	try {
-		openidconnect_revoke_token($revocationEndpoint, $tokens['access_token'], $config);
-	} catch (\Throwable $e) {
-		DI::logger()->warning('openidconnect: access token revocation failed', ['error' => $e->getMessage()]);
-	}
-	if (!empty($tokens['refresh_token'])) {
-		try {
-			openidconnect_revoke_token($revocationEndpoint, $tokens['refresh_token'], $config);
-		} catch (\Throwable $e) {
-			DI::logger()->warning('openidconnect: refresh token revocation failed', ['error' => $e->getMessage()]);
-		}
-	}
-
-	DI::session()->remove('openidconnect_tokens');
-	DI::baseUrl()->redirect();
+	openidconnect_addon()->revoke();
 }
 
 function openidconnect_page_end(string &$o): void
