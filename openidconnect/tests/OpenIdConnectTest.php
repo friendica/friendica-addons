@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Friendica\Addon\OpenIdConnect\Tests;
 
+use Friendica\Addon\openidconnect\src\Utilities;
+use Friendica\Addon\openidconnect\src\ProviderConfig;
+use Friendica\Addon\openidconnect\src\UserInfo;
 use Friendica\DI;
 use PHPUnit\Framework\TestCase;
 
@@ -15,86 +18,76 @@ final class OpenIdConnectTest extends TestCase
 		DI::resetTestState();
 	}
 
-	public function testSanitizeReturnPathKeepsRelativePath(): void
+	// -----------------------------------------------------------------------
+	// Utilities class tests
+	// -----------------------------------------------------------------------
+
+	public function testUtilitiesSanitizeReturnPathKeepsRelativePath(): void
 	{
-		self::assertSame('settings/account', openidconnect_sanitize_return_path('settings/account'));
-		self::assertSame('oauth/authorize?client_id=test', openidconnect_sanitize_return_path('/oauth/authorize?client_id=test'));
+		self::assertSame('settings/account', Utilities::sanitizeReturnPath('settings/account'));
+		self::assertSame('oauth/authorize?client_id=test', Utilities::sanitizeReturnPath('/oauth/authorize?client_id=test'));
 	}
 
-	public function testSanitizeReturnPathRejectsAbsoluteUrlsAndCustomSchemes(): void
+	public function testUtilitiesSanitizeReturnPathRejectsAbsoluteUrlsAndCustomSchemes(): void
 	{
-		self::assertSame('', openidconnect_sanitize_return_path('https://evil.example/callback'));
-		self::assertSame('', openidconnect_sanitize_return_path('//evil.example/callback'));
-		self::assertSame('', openidconnect_sanitize_return_path('mona://oauth'));
+		self::assertSame('', Utilities::sanitizeReturnPath('https://evil.example/callback'));
+		self::assertSame('', Utilities::sanitizeReturnPath('//evil.example/callback'));
+		self::assertSame('', Utilities::sanitizeReturnPath('mona://oauth'));
 	}
 
-	public function testGenerateNonceReturnsExpectedLengthAndHex(): void
+	public function testUtilitiesGenerateNonceReturnsExpectedLengthAndHex(): void
 	{
-		$nonce = openidconnect_generate_nonce();
+		$nonce = Utilities::generateNonce();
 
 		self::assertSame(OIDC_NONCE_LENGTH * 2, strlen($nonce));
 		self::assertMatchesRegularExpression('/^[a-f0-9]+$/', $nonce);
 	}
 
-	public function testGeneratePkceVerifierAndChallengeUseBase64UrlAlphabet(): void
+	public function testUtilitiesGeneratePkceVerifierAndChallengeUseBase64UrlAlphabet(): void
 	{
-		$verifier = openidconnect_generate_pkce_verifier();
-		$challenge = openidconnect_generate_pkce_challenge($verifier);
+		$verifier = Utilities::generatePkceVerifier();
+		$challenge = Utilities::generatePkceChallenge($verifier);
 
 		self::assertMatchesRegularExpression('/^[A-Za-z0-9\-_]+$/', $verifier);
 		self::assertMatchesRegularExpression('/^[A-Za-z0-9\-_]+$/', $challenge);
 		self::assertNotSame($verifier, $challenge);
 	}
 
-	public function testGetClientAuthMethodPrefersClientSecretBasic(): void
-	{
-		$config = ['token_endpoint_auth_methods_supported' => ['client_secret_post', 'client_secret_basic']];
-
-		self::assertSame('client_secret_basic', openidconnect_get_client_auth_method($config));
-	}
-
-	public function testGetClientAuthMethodFallsBackToClientSecretPost(): void
-	{
-		$config = ['token_endpoint_auth_methods_supported' => ['client_secret_post']];
-
-		self::assertSame('client_secret_post', openidconnect_get_client_auth_method($config));
-	}
-
-	public function testIsSafeUrlAllowsSameHostAsConfiguredDiscoveryUrlEvenOnPrivateNetwork(): void
+	public function testUtilitiesIsSafeUrlAllowsSameHostAsConfiguredDiscoveryUrlEvenOnPrivateNetwork(): void
 	{
 		DI::config()->set('openidconnect', 'discovery_url', 'http://authentik-server.friendica-local-dev.orb.local:9000/application/o/demo/.well-known/openid-configuration');
 
-		self::assertTrue(openidconnect_is_safe_url('http://authentik-server.friendica-local-dev.orb.local:9000/media/avatar.png'));
+		self::assertTrue(Utilities::isSafeUrl('http://authentik-server.friendica-local-dev.orb.local:9000/media/avatar.png'));
 	}
 
-	public function testIsSafeUrlRejectsNonHttpsThirdPartyHost(): void
+	public function testUtilitiesIsSafeUrlRejectsNonHttpsThirdPartyHost(): void
 	{
 		DI::config()->set('openidconnect', 'discovery_url', 'https://id.example.com/.well-known/openid-configuration');
 
-		self::assertFalse(openidconnect_is_safe_url('http://cdn.example.com/avatar.png'));
+		self::assertFalse(Utilities::isSafeUrl('http://cdn.example.com/avatar.png'));
 	}
 
-	public function testShouldAutoRedirectLoginRequiresTransparentSsoEnabled(): void
+	public function testUtilitiesShouldAutoRedirectLoginRequiresTransparentSsoEnabled(): void
 	{
 		$_SERVER['REQUEST_METHOD'] = 'GET';
 
-		self::assertFalse(openidconnect_should_auto_redirect_login([], $_SERVER));
+		self::assertFalse(Utilities::shouldAutoRedirectLogin([], $_SERVER));
 
 		DI::config()->set('openidconnect', 'transparent_sso', true);
 
-		self::assertTrue(openidconnect_should_auto_redirect_login([], $_SERVER));
+		self::assertTrue(Utilities::shouldAutoRedirectLogin([], $_SERVER));
 	}
 
-	public function testShouldAutoRedirectLoginRejectsBearerRequestsAndFallbackFlag(): void
+	public function testUtilitiesShouldAutoRedirectLoginRejectsBearerRequestsAndFallbackFlag(): void
 	{
 		DI::config()->set('openidconnect', 'transparent_sso', true);
 
-		self::assertFalse(openidconnect_should_auto_redirect_login(
+		self::assertFalse(Utilities::shouldAutoRedirectLogin(
 			['openidconnect_no_auto' => '1'],
 			['REQUEST_METHOD' => 'GET']
 		));
 
-		self::assertFalse(openidconnect_should_auto_redirect_login(
+		self::assertFalse(Utilities::shouldAutoRedirectLogin(
 			[],
 			[
 				'REQUEST_METHOD' => 'GET',
@@ -102,42 +95,46 @@ final class OpenIdConnectTest extends TestCase
 			]
 		));
 
-		self::assertFalse(openidconnect_should_auto_redirect_login([], ['REQUEST_METHOD' => 'POST']));
+		self::assertFalse(Utilities::shouldAutoRedirectLogin([], ['REQUEST_METHOD' => 'POST']));
 	}
 
-	public function testIsBearerRequestOnlyUsesCanonicalServerHeader(): void
+	public function testUtilitiesIsBearerRequestOnlyUsesCanonicalServerHeader(): void
 	{
-		self::assertTrue(openidconnect_is_bearer_request(['HTTP_AUTHORIZATION' => 'Bearer test-token']));
-		self::assertFalse(openidconnect_is_bearer_request(['Authorization' => 'Bearer test-token']));
-		self::assertFalse(openidconnect_is_bearer_request([]));
+		self::assertTrue(Utilities::isBearerRequest(['HTTP_AUTHORIZATION' => 'Bearer test-token']));
+		self::assertFalse(Utilities::isBearerRequest(['Authorization' => 'Bearer test-token']));
+		self::assertFalse(Utilities::isBearerRequest([]));
 	}
 
-	public function testBuildLoginFallbackPathDisablesAutoRedirectAndPreservesReturnPath(): void
+	public function testUtilitiesBuildLoginFallbackPathDisablesAutoRedirectAndPreservesReturnPath(): void
 	{
-		self::assertSame('login?openidconnect_no_auto=1', openidconnect_build_login_fallback_path(''));
+		self::assertSame('login?openidconnect_no_auto=1', Utilities::buildLoginFallbackPath(''));
 		self::assertSame(
 			'login?openidconnect_no_auto=1&return_path=oauth%2Fauthorize%3Fclient_id%3Dtest',
-			openidconnect_build_login_fallback_path('oauth/authorize?client_id=test')
+			Utilities::buildLoginFallbackPath('oauth/authorize?client_id=test')
 		);
 	}
 
-	public function testGetAuthorizationErrorSupportsErrAlias(): void
+	public function testUtilitiesGetAuthorizationErrorSupportsErrAlias(): void
 	{
-		self::assertSame('login_required', openidconnect_get_authorization_error(['err' => 'login_required']));
-		self::assertSame('access_denied', openidconnect_get_authorization_error(['error' => 'access_denied']));
-		self::assertSame('', openidconnect_get_authorization_error([]));
+		self::assertSame('login_required', Utilities::getAuthorizationError(['err' => 'login_required']));
+		self::assertSame('access_denied', Utilities::getAuthorizationError(['error' => 'access_denied']));
+		self::assertSame('', Utilities::getAuthorizationError([]));
 	}
 
-	public function testShouldFallbackToManualLoginForSilentAuthErrors(): void
+	public function testUtilitiesShouldFallbackToManualLoginForSilentAuthErrors(): void
 	{
-		self::assertTrue(openidconnect_should_fallback_to_manual_login('login_required'));
-		self::assertTrue(openidconnect_should_fallback_to_manual_login('interaction_required'));
-		self::assertTrue(openidconnect_should_fallback_to_manual_login('consent_required'));
-		self::assertTrue(openidconnect_should_fallback_to_manual_login('account_selection_required'));
-		self::assertFalse(openidconnect_should_fallback_to_manual_login('access_denied'));
+		self::assertTrue(Utilities::shouldFallbackToManualLogin('login_required'));
+		self::assertTrue(Utilities::shouldFallbackToManualLogin('interaction_required'));
+		self::assertTrue(Utilities::shouldFallbackToManualLogin('consent_required'));
+		self::assertTrue(Utilities::shouldFallbackToManualLogin('account_selection_required'));
+		self::assertFalse(Utilities::shouldFallbackToManualLogin('access_denied'));
 	}
 
-	public function testExtractUserinfoFromIdTokenMapsCoreClaims(): void
+	// -----------------------------------------------------------------------
+	// UserInfo class tests
+	// -----------------------------------------------------------------------
+
+	public function testUserInfoExtractFromIdTokenMapsCoreClaims(): void
 	{
 		$claims = (object) [
 			'sub' => 'oidc-sub-123',
@@ -148,7 +145,7 @@ final class OpenIdConnectTest extends TestCase
 			'email_verified' => true,
 		];
 
-		$userinfo = openidconnect_extract_userinfo_from_id_token($claims);
+		$userinfo = UserInfo::extractFromIdToken($claims);
 
 		self::assertSame('oidc-sub-123', $userinfo['sub']);
 		self::assertSame('user@example.com', $userinfo['email']);
@@ -158,7 +155,7 @@ final class OpenIdConnectTest extends TestCase
 		self::assertTrue($userinfo['email_verified']);
 	}
 
-	public function testExtractUserinfoFromIdTokenNormalizesStringEmailVerified(): void
+	public function testUserInfoExtractFromIdTokenNormalizesStringEmailVerified(): void
 	{
 		$claims = (object) [
 			'sub' => 'oidc-sub-456',
@@ -167,9 +164,67 @@ final class OpenIdConnectTest extends TestCase
 			'email_verified' => '1',
 		];
 
-		$userinfo = openidconnect_extract_userinfo_from_id_token($claims);
+		$userinfo = UserInfo::extractFromIdToken($claims);
 
 		self::assertSame('nick-fallback', $userinfo['preferred_username']);
 		self::assertTrue($userinfo['email_verified']);
+	}
+
+	// -----------------------------------------------------------------------
+	// ProviderConfig class tests
+	// -----------------------------------------------------------------------
+
+	public function testProviderConfigGetClientAuthMethodPrefersClientSecretBasic(): void
+	{
+		$config = ['token_endpoint_auth_methods_supported' => ['client_secret_post', 'client_secret_basic']];
+
+		self::assertSame('client_secret_basic', ProviderConfig::getClientAuthMethod($config));
+	}
+
+	public function testProviderConfigGetClientAuthMethodFallsBackToClientSecretPost(): void
+	{
+		$config = ['token_endpoint_auth_methods_supported' => ['client_secret_post']];
+
+		self::assertSame('client_secret_post', ProviderConfig::getClientAuthMethod($config));
+	}
+
+	// -----------------------------------------------------------------------
+	// Procedural wrapper backward-compatibility tests
+	// -----------------------------------------------------------------------
+
+	public function testProceduralSanitizeReturnPath(): void
+	{
+		self::assertSame('settings/account', openidconnect_sanitize_return_path('settings/account'));
+	}
+
+	public function testProceduralIsSafeUrl(): void
+	{
+		DI::config()->set('openidconnect', 'discovery_url', 'https://id.example.com/.well-known/openid-configuration');
+
+		self::assertFalse(openidconnect_is_safe_url('http://cdn.example.com/avatar.png'));
+	}
+
+	public function testProceduralGetClientAuthMethod(): void
+	{
+		$config = ['token_endpoint_auth_methods_supported' => ['client_secret_basic']];
+
+		self::assertSame('client_secret_basic', openidconnect_get_client_auth_method($config));
+	}
+
+	public function testProceduralExtractUserinfoFromIdToken(): void
+	{
+		$claims = (object) [
+			'sub' => 'sub-1',
+			'email' => 'a@b.com',
+			'name' => 'A B',
+			'preferred_username' => 'ab',
+			'picture' => '',
+			'email_verified' => true,
+		];
+
+		$userinfo = openidconnect_extract_userinfo_from_id_token($claims);
+
+		self::assertSame('sub-1', $userinfo['sub']);
+		self::assertSame('a@b.com', $userinfo['email']);
 	}
 }

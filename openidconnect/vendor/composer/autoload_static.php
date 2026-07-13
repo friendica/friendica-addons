@@ -9,11 +9,16 @@ class ComposerStaticInite726dcac25b6fce9e49d2e42e19ffbdf
     public static $prefixLengthsPsr4 = array (
         'F' =>
         array (
+            'Friendica\\Addon\\openidconnect\\src\\' => 35,
             'Firebase\\JWT\\' => 13,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'Friendica\\Addon\\openidconnect\\src\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/src',
+        ),
         'Firebase\\JWT\\' =>
         array (
             0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
@@ -22,6 +27,13 @@ class ComposerStaticInite726dcac25b6fce9e49d2e42e19ffbdf
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'Friendica\\Addon\\openidconnect\\src\\AdminSettings' => __DIR__ . '/../..' . '/src/AdminSettings.php',
+        'Friendica\\Addon\\openidconnect\\src\\AvatarManager' => __DIR__ . '/../..' . '/src/AvatarManager.php',
+        'Friendica\\Addon\\openidconnect\\src\\ProviderConfig' => __DIR__ . '/../..' . '/src/ProviderConfig.php',
+        'Friendica\\Addon\\openidconnect\\src\\TokenHandler' => __DIR__ . '/../..' . '/src/TokenHandler.php',
+        'Friendica\\Addon\\openidconnect\\src\\UserInfo' => __DIR__ . '/../..' . '/src/UserInfo.php',
+        'Friendica\\Addon\\openidconnect\\src\\UserManager' => __DIR__ . '/../..' . '/src/UserManager.php',
+        'Friendica\\Addon\\openidconnect\\src\\Utilities' => __DIR__ . '/../..' . '/src/Utilities.php',
         'Firebase\\JWT\\BeforeValidException' => __DIR__ . '/..' . '/firebase/php-jwt/src/BeforeValidException.php',
         'Firebase\\JWT\\CachedKeySet' => __DIR__ . '/..' . '/firebase/php-jwt/src/CachedKeySet.php',
         'Firebase\\JWT\\ExpiredException' => __DIR__ . '/..' . '/firebase/php-jwt/src/ExpiredException.php',

@@ -8,9 +8,14 @@
     "require-dev": {
         "phpunit/phpunit": "^11.5"
     },
+    "autoload": {
+        "psr-4": {
+            "Friendica\\Addon\\openidconnect\\src\\": "src/"
+        }
+    },
     "scripts": {
         "test:setup": "COMPOSER_VENDOR_DIR=vendor-dev composer install --no-interaction --no-progress",
-        "lint": "php -l openidconnect.php",
+        "lint": "php -l openidconnect.php && find src/ -name '*.php' -exec php -l {} +",
         "test": "COMPOSER_VENDOR_DIR=vendor-dev vendor-dev/bin/phpunit -c phpunit.xml",
         "deps:audit": "composer audit --no-interaction",
         "qa": [
