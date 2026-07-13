@@ -16,15 +16,15 @@ final class ProviderConfigurationTest extends AddonTestCase
 
     public function testPrefersBasicClientAuthenticationWhenAdvertised(): void
     {
-        self::assertSame('client_secret_basic', ProviderConfiguration::clientAuthMethod([
-            'token_endpoint_auth_methods_supported' => ['client_secret_post', 'client_secret_basic'],
-        ]));
+        $config = ['token_endpoint_auth_methods_supported' => ['client_secret_post', 'client_secret_basic']];
+
+        self::assertSame('client_secret_basic', ProviderConfiguration::clientAuthMethod($config));
     }
 
     public function testUsesPostWhenBasicIsNotAdvertised(): void
     {
-        self::assertSame('client_secret_post', ProviderConfiguration::clientAuthMethod([
-            'token_endpoint_auth_methods_supported' => ['client_secret_post'],
-        ]));
+        $config = ['token_endpoint_auth_methods_supported' => ['client_secret_post']];
+
+        self::assertSame('client_secret_post', ProviderConfiguration::clientAuthMethod($config));
     }
 }
