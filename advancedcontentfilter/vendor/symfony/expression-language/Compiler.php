@@ -28,7 +28,7 @@ class Compiler implements ResetInterface
         $this->functions = $functions;
     }
 
-    public function getFunction($name)
+    public function getFunction(string $name)
     {
         return $this->functions[$name];
     }
@@ -36,13 +36,16 @@ class Compiler implements ResetInterface
     /**
      * Gets the current PHP code after compilation.
      *
-     * @return string The PHP code
+     * @return string
      */
     public function getSource()
     {
         return $this->source;
     }
 
+    /**
+     * @return $this
+     */
     public function reset()
     {
         $this->source = '';
@@ -78,11 +81,9 @@ class Compiler implements ResetInterface
     /**
      * Adds a raw string to the compiled code.
      *
-     * @param string $string The string
-     *
      * @return $this
      */
-    public function raw($string)
+    public function raw(string $string)
     {
         $this->source .= $string;
 
@@ -92,11 +93,9 @@ class Compiler implements ResetInterface
     /**
      * Adds a quoted string to the compiled code.
      *
-     * @param string $value The string
-     *
      * @return $this
      */
-    public function string($value)
+    public function string(string $value)
     {
         $this->source .= sprintf('"%s"', addcslashes($value, "\0\t\"\$\\"));
 

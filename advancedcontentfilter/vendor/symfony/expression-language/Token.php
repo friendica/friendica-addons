@@ -32,7 +32,7 @@ class Token
     /**
      * @param string                $type   The type of the token (self::*_TYPE)
      * @param string|int|float|null $value  The token value
-     * @param int                   $cursor The cursor position in the source
+     * @param int|null              $cursor The cursor position in the source
      */
     public function __construct(string $type, $value, ?int $cursor)
     {
@@ -44,7 +44,7 @@ class Token
     /**
      * Returns a string representation of the token.
      *
-     * @return string A string representation of the token
+     * @return string
      */
     public function __toString()
     {
@@ -54,12 +54,9 @@ class Token
     /**
      * Tests the current token for a type and/or a value.
      *
-     * @param string      $type  The type to test
-     * @param string|null $value The token value
-     *
      * @return bool
      */
-    public function test($type, $value = null)
+    public function test(string $type, ?string $value = null)
     {
         return $this->type === $type && (null === $value || $this->value == $value);
     }
