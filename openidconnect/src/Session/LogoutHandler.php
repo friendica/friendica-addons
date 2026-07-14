@@ -65,10 +65,7 @@ final class LogoutHandler
 		$path = trim(DI::baseUrl()->getPath(), '/');
 		$cookiePath = $path === '' ? '/' : '/' . $path . '/';
 
-		$https = $_SERVER['HTTPS'] ?? '';
-		$forwardedProto = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '';
-		$secure = (is_string($https) && $https !== '' && strtolower($https) !== 'off')
-			|| (is_string($forwardedProto) && strtolower($forwardedProto) === 'https');
+		$secure = str_starts_with((string)DI::baseUrl(), 'https://');
 
 		setcookie(OIDC_LOGOUT_NO_AUTO_COOKIE, '1', [
 			'expires' => time() + OIDC_LOGOUT_NO_AUTO_TTL,

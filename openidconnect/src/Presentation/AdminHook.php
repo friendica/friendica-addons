@@ -26,6 +26,12 @@ final class AdminHook
         'button_text',
     ];
 
+    private const REQUIRED_PROVIDER_KEYS = [
+        'discovery_url',
+        'client_id',
+        'client_secret',
+    ];
+
     public function isReadOnly(string $key): bool
     {
         if ($key === 'button_text') {
@@ -141,6 +147,19 @@ final class AdminHook
 
     public function save(array $post): void
     {
+        $stringValues = [];
+        foreach (self::STRING_KEYS as $key) {
+            $stringValues[$key] = trim((string)($post[$key] ?? DI::config()->get('openidconnect', $key) ?? ''));
+        }
+
+        $errors = $this->validateSettings($post, $stringValues);
+        if ($errors !== []) {
+            foreach ($errors as $error) {
+                DI::sysmsg()->addNotice($error);
+            }
+            return;
+        }
+
         foreach (self::BOOLEAN_KEYS as $key) {
             if ($this->isReadOnly($key)) {
                 continue;
@@ -154,13 +173,51 @@ final class AdminHook
                 continue;
             }
 
-            $value = $post[$key] ?? '';
-            DI::config()->set('openidconnect', $key, trim((string)$value));
+            DI::config()->set('openidconnect', $key, $stringValues[$key]);
         }
 
         DI::cache()->delete('openidconnect:provider_config');
         DI::cache()->delete('openidconnect:jwks');
 
         DI::sysmsg()->addInfo(DI::l10n()->t('OpenID Connect settings saved.'));
+    }
+
+    private function validateSettings(array $post, array $stringValues): array
+    {
+        $errors = [];
+
+        if (!$this->isReadOnly('discovery_url') && array_key_exists('discovery_url', $post)) {
+            $discoveryUrl = $stringValues['discovery_url'] ?? '';
+            if ($discoveryUrl === '' || !filter_var($discoveryUrl, FILTER_VALIDATE_URL)) {
+                $errors[] = DI::l10n()->t('OpenID Connect: Discovery URL must be a valid URL.');
+            }
+        }
+
+        $providerFieldSubmitted = false;
+        foreach (self::REQUIRED_PROVIDER_KEYS as $key) {
+            if (array_key_exists($key, $post) && !$this->isReadOnly($key)) {
+                $providerFieldSubmitted = true;
+                break;
+            }
+        }
+
+        if ($providerFieldSubmitted) {
+            foreach (self::REQUIRED_PROVIDER_KEYS as $key) {
+                if ($this->isReadOnly($key)) {
+                    continue;
+                }
+
+                if (($stringValues[$key] ?? '') === '') {
+                    $errors[] = DI::l10n()->t('OpenID Connect: %s is required.', match ($key) {
+                        'discovery_url' => DI::l10n()->t('Discovery URL'),
+                        'client_id' => DI::l10n()->t('Client ID'),
+                        'client_secret' => DI::l10n()->t('Client Secret'),
+                        default => $key,
+                    });
+                }
+            }
+        }
+
+        return $errors;
     }
 }

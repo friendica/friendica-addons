@@ -6,6 +6,7 @@ namespace Friendica\Addon\OpenIdConnect\Provider;
 
 use Friendica\Core\Cache\Enum\Duration;
 use Friendica\DI;
+use Friendica\Network\HTTPClient\Client\HttpClientOptions;
 
 final class ProviderConfiguration
 {
@@ -54,7 +55,31 @@ final class ProviderConfiguration
         }
 
         try {
-            $response = DI::httpClient()->fetch($discoveryUrl, '', 30);
+            if (method_exists(DI::httpClient(), 'get')) {
+                $options = [];
+                if (class_exists(HttpClientOptions::class)) {
+                    $options[HttpClientOptions::TIMEOUT] = 30;
+                } else {
+                    $options['timeout'] = 30;
+                }
+
+                $response = DI::httpClient()->get($discoveryUrl, '', [
+                    ...$options,
+                ]);
+
+                if (!$response->isSuccess()) {
+                    DI::logger()->error('openidconnect: failed to fetch OIDC discovery document', [
+                        'url' => $discoveryUrl,
+                        'code' => $response->getReturnCode(),
+                        'body' => mb_substr($response->getBodyString(), 0, 1024),
+                    ]);
+                    return [];
+                }
+
+                $responseBody = $response->getBodyString();
+            } else {
+                $responseBody = DI::httpClient()->fetch($discoveryUrl, '', 30);
+            }
         } catch (\Throwable $e) {
             DI::logger()->error('openidconnect: exception while fetching discovery document', [
                 'url' => $discoveryUrl,
@@ -63,13 +88,13 @@ final class ProviderConfiguration
             return [];
         }
 
-        if (!$response) {
-            DI::logger()->error('Failed to fetch OIDC discovery document', ['url' => $discoveryUrl]);
+        if ($responseBody === '') {
+            DI::logger()->error('openidconnect: empty OIDC discovery response body', ['url' => $discoveryUrl]);
             return [];
         }
 
         try {
-            $config = json_decode($response, true, 512, JSON_THROW_ON_ERROR);
+            $config = json_decode($responseBody, true, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException $e) {
             DI::logger()->error('openidconnect: malformed JSON in OIDC discovery document', [
                 'url'   => $discoveryUrl,
@@ -95,7 +120,8 @@ final class ProviderConfiguration
             DI::logger()->warning('openidconnect: discovery document has no issuer claim, proceeding with derived issuer validation from discovery_url', ['url' => $discoveryUrl]);
         }
 
-        DI::cache()->set(self::CACHE_KEY, $config, Duration::DAY);
+        $cacheTtl = class_exists(Duration::class) ? Duration::DAY : 86400;
+        DI::cache()->set(self::CACHE_KEY, $config, $cacheTtl);
         return $config;
     }
 

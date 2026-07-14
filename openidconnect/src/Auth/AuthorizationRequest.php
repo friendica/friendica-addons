@@ -47,23 +47,15 @@ final class AuthorizationRequest
 
         $returnPath = LoginPolicy::sanitizeReturnPath($returnPath);
 
-        if ($linkMode) {
-            $stateData = [
-                'return_path' => $returnPath ?: 'settings/account',
-                'link_mode' => true,
-                'nonce' => $nonce,
-                'pkce_verifier' => $pkceVerifier,
-                'created_at' => time(),
-            ];
-        } else {
-            $stateData = [
-                'return_path' => $returnPath,
-                'link_mode' => false,
-                'silent_auth' => $promptNone,
-                'nonce' => $nonce,
-                'pkce_verifier' => $pkceVerifier,
-                'created_at' => time(),
-            ];
+        $stateData = [
+            'return_path' => $linkMode ? ($returnPath ?: 'settings/account') : $returnPath,
+            'link_mode' => $linkMode,
+            'nonce' => $nonce,
+            'pkce_verifier' => $pkceVerifier,
+            'created_at' => time(),
+        ];
+        if (!$linkMode) {
+            $stateData['silent_auth'] = $promptNone;
         }
 
         try {

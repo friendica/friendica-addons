@@ -4,8 +4,34 @@ declare(strict_types=1);
 
 namespace Friendica;
 
+final class BaseModule
+{
+	public static function getFormSecurityToken(string $formName = ''): string
+	{
+		return 'test-token-' . $formName;
+	}
+
+	public static function checkFormSecurityToken(string $formName = ''): bool
+	{
+		$provided = $_POST['form_security_token'] ?? $_REQUEST['form_security_token'] ?? null;
+		if (!is_string($provided) || $provided === '') {
+			return false;
+		}
+
+		return hash_equals(self::getFormSecurityToken($formName), $provided);
+	}
+
+	public static function checkFormSecurityTokenRedirectOnError(string $redirectTo, string $formName): void
+	{
+		if (!self::checkFormSecurityToken($formName)) {
+			DI::baseUrl()->redirect($redirectTo);
+		}
+	}
+}
+
 final class TestLogger
 {
+	public array $debugs = [];
 	public array $warnings = [];
 	public array $errors = [];
 
@@ -21,6 +47,7 @@ final class TestLogger
 
 	public function debug(string $message, array $context = []): void
 	{
+		$this->debugs[] = [$message, $context];
 	}
 
 	public function info(string $message, array $context = []): void
@@ -84,7 +111,7 @@ final class TestHttpClient
 		return $this->nextGetResponse ?? new TestHttpResponse(false, '', 500);
 	}
 
-	public function post(string $url, array $postData = [], array $headers = [], int $timeout = 30): TestHttpResponse
+	public function post(string $url, array|string $postData = [], array $headers = [], int $timeout = 30): TestHttpResponse
 	{
 		$this->postCalls[] = ['url' => $url, 'postData' => $postData, 'headers' => $headers, 'timeout' => $timeout];
 
@@ -226,6 +253,56 @@ final class TestSession
 	{
 		unset($this->values[$key]);
 	}
+
+	public function clear(): void
+	{
+		$this->values = [];
+	}
+}
+
+final class TestArgs
+{
+	private string $queryString = '';
+
+	public function setQueryString(string $queryString): void
+	{
+		$this->queryString = $queryString;
+	}
+
+	public function getQueryString(): string
+	{
+		return $this->queryString;
+	}
+
+	public function getArgc(): int
+	{
+		return 0;
+	}
+
+	public function getArgv(): array
+	{
+		return [];
+	}
+
+	public function get(int $position): string
+	{
+		return '';
+	}
+
+	public function getCommand(): string
+	{
+		return '';
+	}
+}
+
+final class TestPage
+{
+	public array $stylesheets = [];
+
+	public function registerStylesheet(string $path): void
+	{
+		$this->stylesheets[] = $path;
+	}
 }
 
 final class TestAuth
@@ -286,6 +363,8 @@ class DI
 	private static ?TestAuth $auth = null;
 	private static ?TestPConfig $pConfig = null;
 	private static ?TestUserSession $userSession = null;
+	private static ?TestArgs $args = null;
+	private static ?TestPage $page = null;
 
 	public static function resetTestState(): void
 	{
@@ -300,6 +379,8 @@ class DI
 		self::$auth = new TestAuth();
 		self::$pConfig = new TestPConfig();
 		self::$userSession = new TestUserSession();
+		self::$args = new TestArgs();
+		self::$page = new TestPage();
 	}
 
 	public static function logger(): TestLogger
@@ -355,6 +436,16 @@ class DI
 	public static function userSession(): TestUserSession
 	{
 		return self::$userSession ??= new TestUserSession();
+	}
+
+	public static function args(): TestArgs
+	{
+		return self::$args ??= new TestArgs();
+	}
+
+	public static function page(): TestPage
+	{
+		return self::$page ??= new TestPage();
 	}
 }
 

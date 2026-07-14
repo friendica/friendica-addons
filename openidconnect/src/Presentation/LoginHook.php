@@ -23,15 +23,18 @@ final class LoginHook
             return;
         }
 
-        $returnAuthorize = $_GET['return_authorize'] ?? '';
+        $query = $this->queryParams();
+        $server = $this->serverParams();
+
+        $returnAuthorize = $query['return_authorize'] ?? '';
         $returnPath = '';
         if (!empty($returnAuthorize)) {
             $returnPath = 'oauth/authorize?' . $returnAuthorize;
-        } elseif (!empty($_GET['return_path'])) {
-            $returnPath = $_GET['return_path'];
+        } elseif (!empty($query['return_path'])) {
+            $returnPath = $query['return_path'];
         }
 
-        if (LoginPolicy::shouldAutoRedirect($_GET, $_SERVER, (bool)DI::config()->get('openidconnect', 'transparent_sso'))) {
+        if (LoginPolicy::shouldAutoRedirect($query, $server, (bool)DI::config()->get('openidconnect', 'transparent_sso'))) {
             (new \Friendica\Addon\OpenIdConnect\Auth\AuthorizationRequest($this->providerConfiguration))->redirect(
                 false,
                 $returnPath,
@@ -56,5 +59,58 @@ final class LoginHook
             . '<a href="' . htmlspecialchars($authHref, ENT_QUOTES, 'UTF-8') . '" class="btn btn-primary openidconnect-sso-link">'
             . $buttonText
             . '</a></div>';
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function queryParams(): array
+    {
+        $queryString = DI::args()->getQueryString();
+        if (!is_string($queryString) || $queryString === '') {
+            return [];
+        }
+
+        $query = [];
+        parse_str($queryString, $query);
+
+        if (!is_array($query)) {
+            return [];
+        }
+
+        $result = [];
+        foreach ($query as $key => $value) {
+            if (!is_string($key)) {
+                continue;
+            }
+
+            if (is_string($value)) {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function serverParams(): array
+    {
+        $result = [];
+
+        $method = filter_input(INPUT_SERVER, 'REQUEST_METHOD', FILTER_UNSAFE_RAW);
+        if (is_string($method) && $method !== '') {
+            $result['REQUEST_METHOD'] = $method;
+        } else {
+            $result['REQUEST_METHOD'] = 'GET';
+        }
+
+        $authorization = filter_input(INPUT_SERVER, 'HTTP_AUTHORIZATION', FILTER_UNSAFE_RAW);
+        if (is_string($authorization) && $authorization !== '') {
+            $result['HTTP_AUTHORIZATION'] = $authorization;
+        }
+
+        return $result;
     }
 }

@@ -6,6 +6,7 @@ namespace Friendica\Addon\OpenIdConnect\Route;
 
 use Friendica\Addon\OpenIdConnect\Provider\ProviderConfiguration;
 use Friendica\Addon\OpenIdConnect\Provider\TokenClient;
+use Friendica\BaseModule;
 use Friendica\DI;
 
 final class RevokeRoute
@@ -21,6 +22,16 @@ final class RevokeRoute
 
 	public function handle(): void
 	{
+		if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+			DI::baseUrl()->redirect();
+			return;
+		}
+
+		if (!BaseModule::checkFormSecurityToken('openidconnect_revoke')) {
+			DI::baseUrl()->redirect();
+			return;
+		}
+
 		$tokens = DI::session()->get('openidconnect_tokens');
 		if (empty($tokens['access_token'])) {
 			DI::baseUrl()->redirect();
@@ -39,14 +50,14 @@ final class RevokeRoute
 		try {
 			$this->tokenClient->revoke($revocationEndpoint, $tokens['access_token'], $config);
 		} catch (\Throwable $e) {
-			DI::logger()->warning('openidconnect: access token revocation failed', ['error' => $e->getMessage()]);
+			DI::logger()->warning('openidconnect: access token revocation failed', ['exception' => $e::class]);
 		}
 
 		if (!empty($tokens['refresh_token'])) {
 			try {
 				$this->tokenClient->revoke($revocationEndpoint, $tokens['refresh_token'], $config);
 			} catch (\Throwable $e) {
-				DI::logger()->warning('openidconnect: refresh token revocation failed', ['error' => $e->getMessage()]);
+				DI::logger()->warning('openidconnect: refresh token revocation failed', ['exception' => $e::class]);
 			}
 		}
 

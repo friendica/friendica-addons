@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Friendica\Addon\OpenIdConnect\Provider;
 
 use Friendica\DI;
-use Friendica\Network\HTTPClient\Client\HttpClientOptions;
 
 final class TokenClient
 {
@@ -46,7 +45,7 @@ final class TokenClient
         }
 
         try {
-            $response = DI::httpClient()->post($config['token_endpoint'], $postData, $headers, 30);
+            $response = $this->postForm($config['token_endpoint'], $postData, $headers, 30);
         } catch (\Throwable $e) {
             DI::logger()->error('openidconnect: token endpoint request threw exception', [
                 'endpoint' => $config['token_endpoint'],
@@ -56,9 +55,10 @@ final class TokenClient
         }
 
         if (!$response->isSuccess()) {
-            DI::logger()->error('Token endpoint returned error', [
+            DI::logger()->error('openidconnect: token endpoint returned non-success response', [
+                'endpoint' => $config['token_endpoint'],
                 'code'     => $response->getReturnCode(),
-                'response' => $response->getBodyString(),
+                'body'     => $this->responseBodySnippet($response),
             ]);
             return [];
         }
@@ -67,6 +67,13 @@ final class TokenClient
             $tokens = json_decode($response->getBodyString(), true, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException $e) {
             DI::logger()->error('openidconnect: malformed JSON in token response', ['error' => $e->getMessage()]);
+            return [];
+        }
+
+        if (!is_array($tokens)) {
+            DI::logger()->error('openidconnect: token response was valid JSON but not an object', [
+                'json_type' => gettype($tokens),
+            ]);
             return [];
         }
 
@@ -96,7 +103,7 @@ final class TokenClient
         }
 
         try {
-            $response = DI::httpClient()->post($endpoint, $postData, $headers, $timeout);
+            $response = $this->postForm($endpoint, $postData, $headers, $timeout);
         } catch (\Throwable $e) {
             DI::logger()->warning('openidconnect: revocation endpoint request threw exception', [
                 'endpoint' => $endpoint,
@@ -109,8 +116,30 @@ final class TokenClient
             DI::logger()->warning('openidconnect: revocation endpoint returned non-success', [
                 'endpoint' => $endpoint,
                 'code'     => $response->getReturnCode(),
-                'body'     => $response->getBodyString(),
+                'body'     => $this->responseBodySnippet($response),
             ]);
         }
+    }
+
+    private function postForm(string $endpoint, array $postData, array $headers, int $timeout)
+    {
+        $encodedBody = http_build_query($postData, '', '&', PHP_QUERY_RFC3986);
+
+        try {
+            return DI::httpClient()->post($endpoint, $encodedBody, $headers, $timeout);
+        } catch (\TypeError) {
+            return DI::httpClient()->post($endpoint, $postData, $headers, $timeout);
+        }
+    }
+
+    private function responseBodySnippet(object $response): string
+    {
+        try {
+            $body = $response->getBodyString();
+        } catch (\Throwable $e) {
+            return '[unavailable: ' . $e->getMessage() . ']';
+        }
+
+        return mb_substr($body, 0, 1024);
     }
 }

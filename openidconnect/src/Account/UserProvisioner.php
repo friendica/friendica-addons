@@ -10,6 +10,8 @@ use Friendica\Model\User;
 
 final class UserProvisioner
 {
+    private const MAX_CREATE_RETRIES = 5;
+
     private AccountLinker $linker;
     private AvatarUpdater $avatarUpdater;
 
@@ -117,66 +119,136 @@ final class UserProvisioner
     private function createUser(string $sub, string $email, string $name, string $nickname, string $picture): ?array
     {
         $nickname = trim($nickname);
-        if (DBA::exists('user', ['nickname' => $nickname])) {
-            $counter = 1;
-            $baseNickname = $nickname;
-            while (DBA::exists('user', ['nickname' => $nickname]) && $counter <= 9999) {
-                $nickname = $baseNickname . $counter;
-                $counter++;
-            }
-            if ($counter > 9999) {
-                throw new \RuntimeException('Could not generate a unique nickname for: ' . $baseNickname);
-            }
+
+        if ($nickname === '') {
+            $nickname = $this->normaliseNickname('', $name, $email);
         }
+
+        $nickname = $this->resolveUniqueNickname($nickname, static fn(string $candidate): bool => DBA::exists('user', ['nickname' => $candidate]));
 
         $bytes = random_bytes(32);
         $password = base64_encode($bytes);
 
-        try {
-            DI::logger()->debug('openidconnect: calling User::create', ['email' => $email, 'nickname' => $nickname, 'name' => $name]);
-            $user = User::create([
-                'username' => $name ?: $nickname,
-                'nickname' => $nickname,
-                'email' => $email,
-                'password' => $password,
-                'verified' => true,
-                'openid' => $sub,
-            ]);
-            DI::logger()->debug('openidconnect: User::create returned', ['uid' => $user['uid'] ?? 'MISSING', 'user_keys' => array_keys($user ?: [])]);
+        for ($attempt = 0; $attempt < self::MAX_CREATE_RETRIES; $attempt++) {
+            $candidate = $attempt === 0
+                ? $nickname
+                : $this->resolveUniqueNickname($nickname . $attempt, static fn(string $nameCandidate): bool => DBA::exists('user', ['nickname' => $nameCandidate]));
 
-            // Resolve uid before any use — User::create may not include it in the returned array.
-            $uid = $user['uid'] ?? DBA::lastInsertId();
-            DI::logger()->debug('openidconnect: resolved uid', ['uid' => $uid]);
+            try {
+                $user = $this->runInTransaction(function () use ($name, $candidate, $email, $password, $sub): array {
+                    DI::logger()->debug('openidconnect: calling User::create', ['email' => $email, 'nickname' => $candidate, 'name' => $name]);
+                    return User::create([
+                        'username' => $name ?: $candidate,
+                        'nickname' => $candidate,
+                        'email' => $email,
+                        'password' => $password,
+                        'verified' => true,
+                        'openid' => $sub,
+                    ]);
+                });
 
-            if (!$uid) {
-                DI::logger()->error('openidconnect: uid=0 after User::create — aborting account creation');
-                return null;
+                DI::logger()->debug('openidconnect: User::create returned', ['uid' => $user['uid'] ?? 'MISSING', 'user_keys' => array_keys($user ?: [])]);
+
+                $uid = (int)($user['uid'] ?? 0);
+                if ($uid <= 0) {
+                    $created = DBA::selectFirst('user', ['uid'], ['openid' => $sub]);
+                    $uid = (int)($created['uid'] ?? 0);
+                }
+                if ($uid <= 0) {
+                    $uid = (int)DBA::lastInsertId();
+                }
+
+                DI::logger()->debug('openidconnect: resolved uid', ['uid' => $uid]);
+
+                if ($uid <= 0) {
+                    DI::logger()->error('openidconnect: uid=0 after User::create — aborting account creation');
+                    return null;
+                }
+
+                DBA::update('user', ['openid' => $sub], ['uid' => $uid]);
+
+                if (!empty($picture)) {
+                    $this->avatarUpdater->update($uid, $picture);
+                }
+
+                DI::pConfig()->set($uid, 'openidconnect', 'oidc_sub', $sub);
+                DI::pConfig()->set($uid, 'openidconnect', 'oidc_email', $email);
+                DI::pConfig()->set($uid, 'openidconnect', 'oidc_nickname', $candidate);
+
+                DI::logger()->info('OpenID Connect user created', ['nickname' => $candidate, 'email' => $email, 'uid' => $uid]);
+                return DBA::selectFirst('user', [], ['uid' => $uid]);
+            } catch (\Throwable $e) {
+                $linked = DBA::selectFirst('user', [], ['openid' => $sub]);
+                if ($linked) {
+                    DI::logger()->warning('openidconnect: createUser race reconciled via existing sub link', ['uid' => $linked['uid'] ?? null]);
+                    return $linked;
+                }
+
+                if ($this->isRetryableCreateException($e)) {
+                    continue;
+                }
+
+                DI::logger()->error('openidconnect: User::create failed', [
+                    'exception' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+                throw $e;
             }
-
-            // User::create does not honour the 'openid' key — set it explicitly.
-            DBA::update('user', ['openid' => $sub], ['uid' => $uid]);
-
-            if (!empty($picture)) {
-                $this->avatarUpdater->update($uid, $picture);
-            }
-
-            DI::pConfig()->set($uid, 'openidconnect', 'oidc_sub', $sub);
-            DI::pConfig()->set($uid, 'openidconnect', 'oidc_email', $email);
-            DI::pConfig()->set($uid, 'openidconnect', 'oidc_nickname', $nickname);
-
-            DI::logger()->info('OpenID Connect user created', ['nickname' => $nickname, 'email' => $email, 'uid' => $uid]);
-            $userData = DBA::selectFirst('user', [], ['uid' => $uid]);
-            return $userData;
-        } catch (\Throwable $e) {
-            // Log the full trace here for diagnostic detail, then re-throw so the
-            // caller can show the user a proper error notice and redirect — the
-            // inner catch must not swallow errors silently or the outer handler
-            // becomes dead code.
-            DI::logger()->error('openidconnect: User::create failed', [
-                'exception' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-            throw $e;
         }
+
+        throw new \RuntimeException('OpenID Connect: Could not create user due to concurrent uniqueness conflicts.');
+    }
+
+    public function resolveUniqueNickname(string $baseNickname, callable $exists): string
+    {
+        $normalizedBase = trim($baseNickname);
+        if ($normalizedBase === '') {
+            $normalizedBase = 'user';
+        }
+
+        $candidate = $normalizedBase;
+        $counter = 1;
+        while ($exists($candidate) && $counter <= 9999) {
+            $candidate = $normalizedBase . $counter;
+            $counter++;
+        }
+
+        if ($counter > 9999) {
+            throw new \RuntimeException('Could not generate a unique nickname for: ' . $normalizedBase);
+        }
+
+        return $candidate;
+    }
+
+    public function isRetryableCreateException(\Throwable $exception): bool
+    {
+        $message = strtolower($exception->getMessage());
+        return str_contains($message, 'duplicate')
+            || str_contains($message, 'unique constraint')
+            || str_contains($message, '1062')
+            || str_contains($message, '23505')
+            || str_contains($message, 'nickname')
+            || str_contains($message, 'email');
+    }
+
+    private function runInTransaction(callable $operation): mixed
+    {
+        if (method_exists(DBA::class, 'transaction')) {
+            return DBA::transaction($operation);
+        }
+
+        if (method_exists(DBA::class, 'beginTransaction') && method_exists(DBA::class, 'commit') && method_exists(DBA::class, 'rollback')) {
+            DBA::beginTransaction();
+            try {
+                $result = $operation();
+                DBA::commit();
+                return $result;
+            } catch (\Throwable $e) {
+                DBA::rollback();
+                throw $e;
+            }
+        }
+
+        return $operation();
     }
 }

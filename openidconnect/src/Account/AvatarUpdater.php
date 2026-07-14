@@ -10,6 +10,16 @@ use Friendica\Model\Contact;
 
 final class AvatarUpdater
 {
+    private const MAX_AVATAR_BYTES = 5 * 1024 * 1024;
+
+    /** @var null|callable(string): array<int, string> */
+    private $hostIpResolver;
+
+    public function __construct(?callable $hostIpResolver = null)
+    {
+        $this->hostIpResolver = $hostIpResolver;
+    }
+
     public function isSafeUrl(string $url): bool
     {
         if (!filter_var($url, FILTER_VALIDATE_URL)) {
@@ -33,20 +43,25 @@ final class AvatarUpdater
             return false;
         }
 
-        // Use dns_get_record to handle both A and AAAA; fall back to gethostbyname.
-        $records = @dns_get_record($host, DNS_A | DNS_AAAA) ?: [];
-        $ips = array_map(fn($r) => $r['ip'] ?? $r['ipv6'] ?? '', $records);
+        $ips = $this->resolveHostIps($host);
         if (empty($ips)) {
-            $ips = [gethostbyname($host)];
+            return false;
         }
 
+        $hasPublicIp = false;
         foreach ($ips as $ip) {
-            if ($ip && filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false) {
-                return true; // at least one public IP — allow
+            if ($ip === '') {
+                return false;
             }
+
+            if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
+                return false;
+            }
+
+            $hasPublicIp = true;
         }
 
-        return false;
+        return $hasPublicIp;
     }
 
     public function update(int $uid, string $url): void
@@ -57,6 +72,15 @@ final class AvatarUpdater
 
         if (!$this->isSafeUrl($url)) {
             DI::logger()->warning('openidconnect: rejected unsafe picture URL', ['url' => $url]);
+            return;
+        }
+
+        if (!$this->isWithinDownloadSizeLimit($url, self::MAX_AVATAR_BYTES)) {
+            DI::logger()->warning('openidconnect: rejected avatar URL with oversized content-length', [
+                'uid' => $uid,
+                'url' => $url,
+                'max_bytes' => self::MAX_AVATAR_BYTES,
+            ]);
             return;
         }
 
@@ -73,6 +97,16 @@ final class AvatarUpdater
 
         if (empty($photoData)) {
             DI::logger()->warning('openidconnect: avatar fetch returned empty payload', ['uid' => $uid, 'url' => $url]);
+            return;
+        }
+
+        if (strlen($photoData) > self::MAX_AVATAR_BYTES) {
+            DI::logger()->warning('openidconnect: rejected oversized avatar payload', [
+                'uid' => $uid,
+                'url' => $url,
+                'bytes' => strlen($photoData),
+                'max_bytes' => self::MAX_AVATAR_BYTES,
+            ]);
             return;
         }
 
@@ -99,6 +133,30 @@ final class AvatarUpdater
         } finally {
             $this->deleteTemporaryFile($tempFile, $uid);
         }
+    }
+
+    public function isWithinDownloadSizeLimit(string $url, int $maxBytes): bool
+    {
+        $headers = @get_headers($url, true);
+        if (!is_array($headers)) {
+            return true;
+        }
+
+        $contentLengthHeader = $headers['Content-Length'] ?? $headers['content-length'] ?? null;
+        if (is_array($contentLengthHeader)) {
+            $contentLengthHeader = end($contentLengthHeader);
+        }
+
+        if ($contentLengthHeader === null || $contentLengthHeader === '') {
+            return true;
+        }
+
+        $contentLength = (int)$contentLengthHeader;
+        if ($contentLength <= 0) {
+            return true;
+        }
+
+        return $contentLength <= $maxBytes;
     }
 
     public function deleteTemporaryFile(string $path, int $uid): void
@@ -137,5 +195,39 @@ final class AvatarUpdater
                 'error' => $e->getMessage(),
             ]);
         }
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function resolveHostIps(string $host): array
+    {
+        if ($this->hostIpResolver !== null) {
+            try {
+                $ips = ($this->hostIpResolver)($host);
+            } catch (\Throwable $e) {
+                DI::logger()->warning('openidconnect: host IP resolver failed', ['host' => $host, 'error' => $e->getMessage()]);
+                return [];
+            }
+
+            return array_values(array_filter(array_map('strval', $ips), static fn(string $ip): bool => $ip !== ''));
+        }
+
+        $records = @dns_get_record($host, DNS_A | DNS_AAAA) ?: [];
+        $ips = array_values(array_filter(array_map(
+            static fn(array $record): string => (string)($record['ip'] ?? $record['ipv6'] ?? ''),
+            $records
+        )));
+
+        if (!empty($ips)) {
+            return $ips;
+        }
+
+        $fallback = gethostbyname($host);
+        if ($fallback === $host) {
+            return [];
+        }
+
+        return [$fallback];
     }
 }

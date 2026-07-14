@@ -48,6 +48,7 @@ final class CallbackLinkCompleter
         }
 
         DI::session()->set('openidconnect_tokens', $tokens);
+        session_write_close();
 
         DI::sysmsg()->addInfo(DI::l10n()->t('OpenID Connect account successfully linked.'));
         DI::baseUrl()->redirect($returnPath);

@@ -29,4 +29,35 @@ final class AvatarUpdaterTest extends AddonTestCase
 
         self::assertFalse((new AvatarUpdater())->isSafeUrl('http://cdn.example.com/avatar.png'));
     }
+
+    public function testIsSafeUrlRejectsHostWhenAnyResolvedIpIsPrivate(): void
+    {
+        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example.com/.well-known/openid-configuration');
+
+        $updater = new AvatarUpdater(static fn(string $host): array => ['8.8.8.8', '10.0.0.2']);
+
+        self::assertFalse($updater->isSafeUrl('https://cdn.example.com/avatar.png'));
+    }
+
+    public function testIsSafeUrlAcceptsHostWhenAllResolvedIpsArePublic(): void
+    {
+        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example.com/.well-known/openid-configuration');
+
+        $updater = new AvatarUpdater(static fn(string $host): array => ['1.1.1.1', '8.8.8.8']);
+
+        self::assertTrue($updater->isSafeUrl('https://cdn.example.com/avatar.png'));
+    }
+
+    public function testUpdateRejectsOversizedAvatarPayload(): void
+    {
+        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example.com/.well-known/openid-configuration');
+
+        $updater = new AvatarUpdater();
+        DI::httpClient()->nextResponse = str_repeat('A', (5 * 1024 * 1024) + 1);
+
+        $updater->update(1, 'https://id.example.com/avatar.png');
+
+        self::assertNotEmpty(DI::logger()->warnings);
+        self::assertSame('openidconnect: rejected oversized avatar payload', DI::logger()->warnings[array_key_last(DI::logger()->warnings)][0]);
+    }
 }

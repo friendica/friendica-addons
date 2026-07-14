@@ -39,7 +39,7 @@ final class CallbackHandler
             return;
         }
 
-        $stateData = $this->loadCallbackState($state);
+        $stateData = $this->dependencies->authorizationRequest->consumeState($state);
         if (empty($stateData)) {
             DI::logger()->warning('openidconnect: state not found in cache (expired or replay attempt)');
             DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect authentication failed: invalid or expired state.'));
@@ -49,7 +49,6 @@ final class CallbackHandler
 
         $isLinkMode = !empty($stateData['link_mode']);
         $returnPath = LoginPolicy::sanitizeReturnPath((string)($stateData['return_path'] ?? ''));
-        $expectedNonce = (string)($stateData['nonce'] ?? '');
         $pkceVerifier = (string)($stateData['pkce_verifier'] ?? '');
 
         try {
@@ -115,7 +114,8 @@ final class CallbackHandler
 
     private function handleAuthorizationError(array $query): bool
     {
-        $error = $this->extractAuthorizationError($query);
+        $error = $query['error'] ?? $query['err'] ?? '';
+        $error = is_string($error) ? $error : '';
         $state = is_string($query['state'] ?? null) ? (string)$query['state'] : '';
 
         if ($error === '') {
@@ -140,18 +140,6 @@ final class CallbackHandler
         DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect authentication failed: %s', $error));
         DI::baseUrl()->redirect(LoginPolicy::buildFallbackPath($returnPath));
         return true;
-    }
-
-    private function loadCallbackState(string $state): array
-    {
-        return $this->dependencies->authorizationRequest->consumeState($state);
-    }
-
-    private function extractAuthorizationError(array $query): string
-    {
-        $error = $query['error'] ?? $query['err'] ?? '';
-
-        return is_string($error) ? $error : '';
     }
 
     private function shouldFallbackToManualLogin(string $error): bool

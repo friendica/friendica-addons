@@ -21,4 +21,6 @@ if ($autoloadFile === null) {
 
 require_once $autoloadFile;
 require_once __DIR__ . '/stubs/DI.php';
+require_once __DIR__ . '/stubs/DBA.php';
+require_once __DIR__ . '/stubs/AuthSessionFunctions.php';
 require_once __DIR__ . '/../openidconnect.php';
