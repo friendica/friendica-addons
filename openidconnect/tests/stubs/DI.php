@@ -53,6 +53,10 @@ final class TestHttpClient
 	public ?string $nextResponse = null;
 	public ?\Throwable $nextException = null;
 	public array $calls = [];
+	public ?TestHttpResponse $nextGetResponse = null;
+	public ?TestHttpResponse $nextPostResponse = null;
+	public array $getCalls = [];
+	public array $postCalls = [];
 
 	public function fetch(string $url, string $accept = '', int $timeout = 30): string
 	{
@@ -65,6 +69,57 @@ final class TestHttpClient
 		}
 
 		return (string)$this->nextResponse;
+	}
+
+	public function get(string $url, string $accept = '', array $options = []): TestHttpResponse
+	{
+		$this->getCalls[] = ['url' => $url, 'accept' => $accept, 'options' => $options];
+
+		if ($this->nextException !== null) {
+			$exception = $this->nextException;
+			$this->nextException = null;
+			throw $exception;
+		}
+
+		return $this->nextGetResponse ?? new TestHttpResponse(false, '', 500);
+	}
+
+	public function post(string $url, array $postData = [], array $headers = [], int $timeout = 30): TestHttpResponse
+	{
+		$this->postCalls[] = ['url' => $url, 'postData' => $postData, 'headers' => $headers, 'timeout' => $timeout];
+
+		if ($this->nextException !== null) {
+			$exception = $this->nextException;
+			$this->nextException = null;
+			throw $exception;
+		}
+
+		return $this->nextPostResponse ?? new TestHttpResponse(false, '', 500);
+	}
+}
+
+final class TestHttpResponse
+{
+	public function __construct(
+		private bool $success,
+		private string $body,
+		private int $code = 200,
+	) {
+	}
+
+	public function isSuccess(): bool
+	{
+		return $this->success;
+	}
+
+	public function getBodyString(): string
+	{
+		return $this->body;
+	}
+
+	public function getReturnCode(): int
+	{
+		return $this->code;
 	}
 }
 

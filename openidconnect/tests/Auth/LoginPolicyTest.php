@@ -77,6 +77,15 @@ final class LoginPolicyTest extends AddonTestCase
         self::assertFalse(LoginPolicy::shouldAutoRedirect([], ['REQUEST_METHOD' => 'POST'], true));
     }
 
+    public function testShouldAutoRedirectLoginRejectsWhenLogoutNoAutoCookieIsPresent(): void
+    {
+        $_COOKIE[LoginPolicy::LOGOUT_NO_AUTO_COOKIE] = '1';
+
+        self::assertFalse(LoginPolicy::shouldAutoRedirect([], ['REQUEST_METHOD' => 'GET'], true));
+
+        unset($_COOKIE[LoginPolicy::LOGOUT_NO_AUTO_COOKIE]);
+    }
+
     public function testIsBearerRequestOnlyUsesCanonicalServerHeader(): void
     {
         self::assertTrue(LoginPolicy::isBearerRequest(['HTTP_AUTHORIZATION' => 'Bearer test-token']));

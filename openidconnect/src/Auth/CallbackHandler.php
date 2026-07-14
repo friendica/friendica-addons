@@ -70,6 +70,9 @@ final class CallbackHandler
 
         $userinfo = $this->dependencies->identityVerifier->verify($tokens, $stateData);
         if (empty($userinfo)) {
+            DI::logger()->warning('openidconnect: identity verification returned empty user info payload in callback');
+            DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect authentication failed: could not verify your identity.'));
+            DI::baseUrl()->redirect(LoginPolicy::buildFallbackPath($returnPath));
             return;
         }
 

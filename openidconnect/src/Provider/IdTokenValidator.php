@@ -18,6 +18,23 @@ use Firebase\JWT\SignatureInvalidException;
 final class IdTokenValidator
 {
     private const CACHE_KEY = 'openidconnect:jwks';
+    /**
+     * Explicit allowlist for asymmetric JWT algorithms accepted for id_token.
+     *
+     * @var list<string>
+     */
+    private const ALLOWED_JWT_ALGORITHMS = [
+        'RS256',
+        'RS384',
+        'RS512',
+        'PS256',
+        'PS384',
+        'PS512',
+        'ES256',
+        'ES384',
+        'ES512',
+        'EdDSA',
+    ];
 
     private ProviderConfiguration $providerConfiguration;
 
@@ -50,57 +67,58 @@ final class IdTokenValidator
             return false;
         }
 
+        $alg = $this->extractAlgorithm($idToken);
+        if ($alg === '' || !in_array($alg, self::ALLOWED_JWT_ALGORITHMS, true)) {
+            DI::logger()->warning('openidconnect: id_token rejected due to non-allowlisted JWT algorithm', [
+                'alg' => $alg,
+            ]);
+            return false;
+        }
+
         $jwksData = DI::cache()->get(self::CACHE_KEY);
         if (empty($jwksData)) {
-            $response = DI::httpClient()->get($jwksUri, '', [
-                HttpClientOptions::TIMEOUT => 15,
-            ]);
-            if (!$response->isSuccess()) {
-                DI::logger()->error('openidconnect: failed to fetch JWKS', ['uri' => $jwksUri]);
-                return false;
-            }
-            try {
-                $jwksData = json_decode($response->getBodyString(), true, 512, JSON_THROW_ON_ERROR);
-            } catch (\JsonException $e) {
-                DI::logger()->error('openidconnect: malformed JSON in JWKS response', [
-                    'uri'   => $jwksUri,
-                    'error' => $e->getMessage(),
-                ]);
-                return false;
-            }
-            if (empty($jwksData['keys'])) {
-                DI::logger()->error('openidconnect: JWKS response missing keys array');
+            $jwksData = $this->fetchJwks($jwksUri);
+            if ($jwksData === false) {
                 return false;
             }
             DI::cache()->set(self::CACHE_KEY, $jwksData, Duration::DAY);
         }
 
-        JWT::$leeway = 60;
-
-        try {
-            $keySet  = JWK::parseKeySet($jwksData, 'RS256');
-            $decoded = JWT::decode($idToken, $keySet);
-        } catch (SignatureInvalidException $e) {
-            static $jwksRetried = false;
-            if (!$jwksRetried) {
-                $jwksRetried = true;
-                DI::cache()->delete(self::CACHE_KEY);
-                DI::logger()->warning('openidconnect: signature invalid — busting JWKS cache and retrying');
-                return $this->validate($idToken, $expectedNonce, $accessToken);
+        $decoded = null;
+        for ($attempt = 0; $attempt < 2; $attempt++) {
+            try {
+                $keySet = JWK::parseKeySet($jwksData, 'RS256');
+                $decoded = $this->decodeWithLeeway($idToken, $keySet);
+                break;
+            } catch (SignatureInvalidException $e) {
+                if ($attempt === 0) {
+                    DI::cache()->delete(self::CACHE_KEY);
+                    DI::logger()->warning('openidconnect: signature invalid — busting JWKS cache and retrying');
+                    $jwksData = $this->fetchJwks($jwksUri);
+                    if ($jwksData === false) {
+                        return false;
+                    }
+                    DI::cache()->set(self::CACHE_KEY, $jwksData, Duration::DAY);
+                    continue;
+                }
+                DI::logger()->warning('openidconnect: id_token signature invalid after JWKS refresh');
+                return false;
+            } catch (ExpiredException $e) {
+                DI::logger()->warning('openidconnect: id_token expired');
+                return false;
+            } catch (BeforeValidException $e) {
+                DI::logger()->warning('openidconnect: id_token not yet valid');
+                return false;
+            } catch (\UnexpectedValueException $e) {
+                DI::logger()->warning('openidconnect: id_token malformed', ['error' => $e->getMessage()]);
+                return false;
+            } catch (\InvalidArgumentException $e) {
+                DI::logger()->error('openidconnect: JWKS key configuration error', ['error' => $e->getMessage()]);
+                return false;
             }
-            DI::logger()->warning('openidconnect: id_token signature invalid after JWKS refresh');
-            return false;
-        } catch (ExpiredException $e) {
-            DI::logger()->warning('openidconnect: id_token expired');
-            return false;
-        } catch (BeforeValidException $e) {
-            DI::logger()->warning('openidconnect: id_token not yet valid');
-            return false;
-        } catch (\UnexpectedValueException $e) {
-            DI::logger()->warning('openidconnect: id_token malformed', ['error' => $e->getMessage()]);
-            return false;
-        } catch (\InvalidArgumentException $e) {
-            DI::logger()->error('openidconnect: JWKS key configuration error', ['error' => $e->getMessage()]);
+        }
+
+        if ($decoded === null) {
             return false;
         }
 
@@ -147,5 +165,74 @@ final class IdTokenValidator
         }
 
         return $decoded;
+    }
+
+    private function fetchJwks(string $jwksUri): array|false
+    {
+        try {
+            $response = DI::httpClient()->get($jwksUri, '', [
+                HttpClientOptions::TIMEOUT => 15,
+            ]);
+        } catch (\Throwable $e) {
+            DI::logger()->error('openidconnect: failed to fetch JWKS', [
+                'uri' => $jwksUri,
+                'error' => $e->getMessage(),
+            ]);
+            return false;
+        }
+
+        if (!$response->isSuccess()) {
+            DI::logger()->error('openidconnect: failed to fetch JWKS', ['uri' => $jwksUri]);
+            return false;
+        }
+
+        try {
+            $jwksData = json_decode($response->getBodyString(), true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            DI::logger()->error('openidconnect: malformed JSON in JWKS response', [
+                'uri'   => $jwksUri,
+                'error' => $e->getMessage(),
+            ]);
+            return false;
+        }
+
+        if (empty($jwksData['keys'])) {
+            DI::logger()->error('openidconnect: JWKS response missing keys array');
+            return false;
+        }
+
+        return $jwksData;
+    }
+
+    private function decodeWithLeeway(string $idToken, array $keySet): object
+    {
+        $previousLeeway = JWT::$leeway;
+        JWT::$leeway = 60;
+
+        try {
+            return JWT::decode($idToken, $keySet);
+        } finally {
+            JWT::$leeway = $previousLeeway;
+        }
+    }
+
+    private function extractAlgorithm(string $idToken): string
+    {
+        $parts = explode('.', $idToken);
+        if (count($parts) !== 3 || $parts[0] === '') {
+            return '';
+        }
+
+        try {
+            $header = JWT::jsonDecode(JWT::urlsafeB64Decode($parts[0]));
+        } catch (\Throwable $e) {
+            return '';
+        }
+
+        if (!is_object($header) || !isset($header->alg) || !is_string($header->alg)) {
+            return '';
+        }
+
+        return $header->alg;
     }
 }

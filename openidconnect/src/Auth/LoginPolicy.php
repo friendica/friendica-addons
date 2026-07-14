@@ -12,6 +12,7 @@ final class LoginPolicy
     public const NONCE_BYTES = 32;
     public const PKCE_VERIFIER_BYTES = 48;
     public const NO_AUTO_QUERY_KEY = 'openidconnect_no_auto';
+    public const LOGOUT_NO_AUTO_COOKIE = 'openidconnect_no_auto_logout';
 
     public static function sanitizeReturnPath(string $returnPath): string
     {
@@ -79,7 +80,7 @@ final class LoginPolicy
         }
 
         // Suppress transparent SSO briefly after logout to avoid immediate re-login loops.
-        if (!empty($_COOKIE[OIDC_LOGOUT_NO_AUTO_COOKIE])) {
+        if (!empty($_COOKIE[self::LOGOUT_NO_AUTO_COOKIE])) {
             return false;
         }
 
