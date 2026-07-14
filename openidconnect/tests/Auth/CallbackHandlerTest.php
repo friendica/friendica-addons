@@ -32,6 +32,21 @@ final class CallbackHandlerTest extends AddonTestCase
         self::assertSame('login?openidconnect_no_auto=1&return_path=oauth%2Fauthorize%3Fclient_id%3Dtest', DI::baseUrl()->lastRedirect());
     }
 
+    public function testAuthorizationErrorLogContextDoesNotLeakRawStateValue(): void
+    {
+        DI::cache()->set('oidcstate:opaque-secret-state', ['silent_auth' => false], 600);
+
+        (new CallbackHandler($this->dependencies()))->handle([
+            'state' => 'opaque-secret-state',
+            'error' => 'access_denied',
+        ]);
+
+        $lastWarning = DI::logger()->warnings[array_key_last(DI::logger()->warnings)];
+        self::assertSame('openidconnect: authorization endpoint returned an error', $lastWarning[0]);
+        $contextEncoded = json_encode($lastWarning[1], JSON_THROW_ON_ERROR);
+        self::assertStringNotContainsString('opaque-secret-state', $contextEncoded);
+    }
+
     public function testMissingCodeOrStateRedirectsToLogin(): void
     {
         (new CallbackHandler($this->dependencies()))->handle([]);

@@ -82,8 +82,21 @@ final class AdminHookTest extends AddonTestCase
             'client_secret' => '   ',
         ]);
 
-        self::assertContains('OpenID Connect: Client Secret is required.', DI::sysmsg()->notices);
         self::assertSame('existing-secret', DI::config()->get('openidconnect', 'client_secret'));
+        self::assertContains('OpenID Connect settings saved.', DI::sysmsg()->infos);
+    }
+
+    public function testRenderDoesNotExposeStoredClientSecretInPayload(): void
+    {
+        DI::config()->set('openidconnect', 'client_secret', 'super-sensitive-secret');
+
+        $output = '';
+        (new AdminHook())->render($output);
+
+        self::assertStringNotContainsString('super-sensitive-secret', $output);
+
+        $decoded = json_decode($output, true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame('', $decoded['vars']['$client_secret'][2]);
     }
 
     public function testSaveRespectsReadOnlyProviderFieldsButAllowsButtonText(): void

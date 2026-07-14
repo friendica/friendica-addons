@@ -151,6 +151,28 @@ final class IdTokenValidatorTest extends AddonTestCase
         self::assertFalse((new IdTokenValidator())->validate($token, '', 'different-access-token'));
     }
 
+    public function testRejectsAzpMismatchForMultiAudienceToken(): void
+    {
+        [$privateKey, $jwk] = $this->generateRsaMaterial();
+
+        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
+        DI::config()->set('openidconnect', 'client_id', 'client-id');
+        DI::cache()->set('openidconnect:provider_config', ['jwks_uri' => 'https://id.example/jwks'], 600);
+        DI::cache()->set('openidconnect:jwks', ['keys' => [$jwk]], 600);
+
+        $token = JWT::encode([
+            'iss' => 'https://id.example',
+            'aud' => ['client-id', 'other-client'],
+            'azp' => 'wrong-client',
+            'sub' => 'subject-1',
+            'iat' => time() - 5,
+            'nbf' => time() - 5,
+            'exp' => time() + 300,
+        ], $privateKey, 'RS256', $jwk['kid']);
+
+        self::assertFalse((new IdTokenValidator())->validate($token));
+    }
+
     public function testRejectsExpiredToken(): void
     {
         [$privateKey, $jwk] = $this->generateRsaMaterial();

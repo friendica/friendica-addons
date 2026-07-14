@@ -75,48 +75,12 @@ final class IdTokenValidator
             return false;
         }
 
-        $jwksData = DI::cache()->get(self::CACHE_KEY);
-        if (empty($jwksData)) {
-            $jwksData = $this->fetchJwks($jwksUri);
-            if ($jwksData === false) {
-                return false;
-            }
-            DI::cache()->set(self::CACHE_KEY, $jwksData, Duration::DAY);
+        $jwksData = $this->loadJwksData($jwksUri);
+        if ($jwksData === false) {
+            return false;
         }
 
-        $decoded = null;
-        for ($attempt = 0; $attempt < 2; $attempt++) {
-            try {
-                $keySet = JWK::parseKeySet($jwksData, 'RS256');
-                $decoded = $this->decodeWithLeeway($idToken, $keySet);
-                break;
-            } catch (SignatureInvalidException $e) {
-                if ($attempt === 0) {
-                    DI::cache()->delete(self::CACHE_KEY);
-                    DI::logger()->warning('openidconnect: signature invalid — busting JWKS cache and retrying');
-                    $jwksData = $this->fetchJwks($jwksUri);
-                    if ($jwksData === false) {
-                        return false;
-                    }
-                    DI::cache()->set(self::CACHE_KEY, $jwksData, Duration::DAY);
-                    continue;
-                }
-                DI::logger()->warning('openidconnect: id_token signature invalid after JWKS refresh');
-                return false;
-            } catch (ExpiredException $e) {
-                DI::logger()->warning('openidconnect: id_token expired');
-                return false;
-            } catch (BeforeValidException $e) {
-                DI::logger()->warning('openidconnect: id_token not yet valid');
-                return false;
-            } catch (\UnexpectedValueException $e) {
-                DI::logger()->warning('openidconnect: id_token malformed', ['error' => $e->getMessage()]);
-                return false;
-            } catch (\InvalidArgumentException $e) {
-                DI::logger()->error('openidconnect: JWKS key configuration error', ['error' => $e->getMessage()]);
-                return false;
-            }
-        }
+        $decoded = $this->decodeIdToken($idToken, $jwksUri, $jwksData);
 
         if ($decoded === null) {
             return false;
@@ -126,45 +90,162 @@ final class IdTokenValidator
         $expectedIss = preg_replace('#/\.well-known/openid-configuration$#', '', $expectedIss);
         $expectedAud = DI::config()->get('openidconnect', 'client_id');
 
-        if (rtrim($decoded->iss ?? '', '/') !== rtrim($expectedIss, '/')) {
-            DI::logger()->warning('openidconnect: id_token iss mismatch', [
-                'expected' => $expectedIss,
-                'got'      => $decoded->iss ?? '',
-            ]);
+        if (!$this->hasValidIssuer($decoded, (string) $expectedIss)) {
             return false;
         }
 
         $aud = $decoded->aud ?? '';
-        if (!self::hasAudience($aud, $expectedAud)) {
-            DI::logger()->warning('openidconnect: id_token aud mismatch', [
-                'expected' => $expectedAud,
-                'got'      => $aud,
-            ]);
+        if (!$this->hasValidAudience($aud, (string) $expectedAud)) {
             return false;
         }
 
-        if ($expectedNonce !== '' && ($decoded->nonce ?? '') !== $expectedNonce) {
-            DI::logger()->warning('openidconnect: id_token nonce mismatch');
+        if (!$this->hasValidNonce($decoded, $expectedNonce)) {
             return false;
         }
 
-        $audList = is_array($decoded->aud ?? '') ? ($decoded->aud ?? []) : [$decoded->aud ?? ''];
-        if (count($audList) > 1 && isset($decoded->azp) && $decoded->azp !== $expectedAud) {
-            DI::logger()->warning('openidconnect: azp mismatch in multi-audience token', [
-                'expected' => $expectedAud,
-                'got'      => $decoded->azp,
-            ]);
+        if (!$this->hasValidAuthorizedParty($decoded, (string) $expectedAud)) {
             return false;
         }
 
-        if ($accessToken !== '' && isset($decoded->at_hash)) {
-            if (!hash_equals(self::accessTokenHash($accessToken), $decoded->at_hash)) {
-                DI::logger()->warning('openidconnect: at_hash mismatch — possible access-token substitution attack');
-                return false;
-            }
+        if (!$this->hasValidAccessTokenHash($decoded, $accessToken)) {
+            return false;
         }
 
         return $decoded;
+    }
+
+    private function loadJwksData(string $jwksUri): array|false
+    {
+        $jwksData = DI::cache()->get(self::CACHE_KEY);
+        if (!empty($jwksData)) {
+            return $jwksData;
+        }
+
+        $jwksData = $this->fetchAndCacheJwks($jwksUri);
+        if ($jwksData === false) {
+            return false;
+        }
+
+        return $jwksData;
+    }
+
+    private function fetchAndCacheJwks(string $jwksUri): array|false
+    {
+        $jwksData = $this->fetchJwks($jwksUri);
+        if ($jwksData === false) {
+            return false;
+        }
+
+        DI::cache()->set(self::CACHE_KEY, $jwksData, Duration::DAY);
+        return $jwksData;
+    }
+
+    private function decodeIdToken(string $idToken, string $jwksUri, array $jwksData): ?object
+    {
+        for ($attempt = 0; $attempt < 2; $attempt++) {
+            try {
+                $keySet = JWK::parseKeySet($jwksData, 'RS256');
+                return $this->decodeWithLeeway($idToken, $keySet);
+            } catch (SignatureInvalidException $e) {
+                if ($attempt === 0) {
+                    $jwksData = $this->refreshJwksAfterSignatureFailure($jwksUri);
+                    if ($jwksData === false) {
+                        return null;
+                    }
+
+                    continue;
+                }
+
+                DI::logger()->warning('openidconnect: id_token signature invalid after JWKS refresh');
+                return null;
+            } catch (ExpiredException $e) {
+                DI::logger()->warning('openidconnect: id_token expired');
+                return null;
+            } catch (BeforeValidException $e) {
+                DI::logger()->warning('openidconnect: id_token not yet valid');
+                return null;
+            } catch (\UnexpectedValueException $e) {
+                DI::logger()->warning('openidconnect: id_token malformed', ['error' => $e->getMessage()]);
+                return null;
+            } catch (\InvalidArgumentException $e) {
+                DI::logger()->error('openidconnect: JWKS key configuration error', ['error' => $e->getMessage()]);
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    private function refreshJwksAfterSignatureFailure(string $jwksUri): array|false
+    {
+        DI::cache()->delete(self::CACHE_KEY);
+        DI::logger()->warning('openidconnect: signature invalid — busting JWKS cache and retrying');
+
+        return $this->fetchAndCacheJwks($jwksUri);
+    }
+
+    private function hasValidIssuer(object $decoded, string $expectedIss): bool
+    {
+        if (rtrim($decoded->iss ?? '', '/') === rtrim($expectedIss, '/')) {
+            return true;
+        }
+
+        DI::logger()->warning('openidconnect: id_token iss mismatch', [
+            'expected' => $expectedIss,
+            'got' => $decoded->iss ?? '',
+        ]);
+        return false;
+    }
+
+    private function hasValidAudience(string|array $audience, string $expectedAud): bool
+    {
+        if (self::hasAudience($audience, $expectedAud)) {
+            return true;
+        }
+
+        DI::logger()->warning('openidconnect: id_token aud mismatch', [
+            'expected' => $expectedAud,
+            'got' => $audience,
+        ]);
+        return false;
+    }
+
+    private function hasValidNonce(object $decoded, string $expectedNonce): bool
+    {
+        if ($expectedNonce === '' || ($decoded->nonce ?? '') === $expectedNonce) {
+            return true;
+        }
+
+        DI::logger()->warning('openidconnect: id_token nonce mismatch');
+        return false;
+    }
+
+    private function hasValidAuthorizedParty(object $decoded, string $expectedAud): bool
+    {
+        $audList = is_array($decoded->aud ?? '') ? ($decoded->aud ?? []) : [$decoded->aud ?? ''];
+        if (count($audList) <= 1 || !isset($decoded->azp) || $decoded->azp === $expectedAud) {
+            return true;
+        }
+
+        DI::logger()->warning('openidconnect: azp mismatch in multi-audience token', [
+            'expected' => $expectedAud,
+            'got' => $decoded->azp,
+        ]);
+        return false;
+    }
+
+    private function hasValidAccessTokenHash(object $decoded, string $accessToken): bool
+    {
+        if ($accessToken === '' || !isset($decoded->at_hash)) {
+            return true;
+        }
+
+        if (hash_equals(self::accessTokenHash($accessToken), $decoded->at_hash)) {
+            return true;
+        }
+
+        DI::logger()->warning('openidconnect: at_hash mismatch — possible access-token substitution attack');
+        return false;
     }
 
     private function fetchJwks(string $jwksUri): array|false

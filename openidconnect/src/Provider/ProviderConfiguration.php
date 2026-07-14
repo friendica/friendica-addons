@@ -71,7 +71,7 @@ final class ProviderConfiguration
                     DI::logger()->error('openidconnect: failed to fetch OIDC discovery document', [
                         'url' => $discoveryUrl,
                         'code' => $response->getReturnCode(),
-                        'body' => mb_substr($response->getBodyString(), 0, 1024),
+                        'body' => $this->sanitizeSensitiveString(mb_substr($response->getBodyString(), 0, 1024)),
                     ]);
                     return [];
                 }
@@ -121,8 +121,26 @@ final class ProviderConfiguration
         }
 
         $cacheTtl = class_exists(Duration::class) ? Duration::DAY : 86400;
-        DI::cache()->set(self::CACHE_KEY, $config, $cacheTtl);
+        try {
+            DI::cache()->set(self::CACHE_KEY, $config, $cacheTtl);
+        } catch (\Throwable $e) {
+            DI::logger()->warning('openidconnect: failed to cache OIDC discovery document', [
+                'url' => $discoveryUrl,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
         return $config;
+    }
+
+    private function sanitizeSensitiveString(string $value): string
+    {
+        $redacted = preg_replace('/("(?:access_token|refresh_token|id_token|client_secret|token|email|sub)"\s*:\s*")([^"]*)(")/i', '$1[redacted]$3', $value);
+        if ($redacted === null) {
+            return '[redacted]';
+        }
+
+        return preg_replace('/(Bearer\s+|token\s+)([^\s"\']+)/i', '$1[redacted]', $redacted) ?? '[redacted]';
     }
 
     public static function clientAuthMethod(array $metadata, string $endpoint = 'token'): string

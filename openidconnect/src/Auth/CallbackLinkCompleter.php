@@ -34,14 +34,18 @@ final class CallbackLinkCompleter
 
         $existingOwner = DBA::selectFirst('user', ['uid'], ['openid' => $sub]);
         if (!empty($existingOwner['uid']) && (int)$existingOwner['uid'] !== (int)$userId) {
-            DI::logger()->warning('openidconnect: refusing to link subject already linked to another account', ['sub' => $sub, 'owner_uid' => $existingOwner['uid'], 'attempted_uid' => $userId]);
+            DI::logger()->warning('openidconnect: refusing to link subject already linked to another account', [
+                'has_sub' => $sub !== '',
+                'owner_uid' => $existingOwner['uid'],
+                'attempted_uid' => $userId,
+            ]);
             DI::sysmsg()->addNotice(DI::l10n()->t('This identity is already linked to another account.'));
             DI::baseUrl()->redirect('settings/account');
             return;
         }
 
         if (!$this->accountLinker->link($userId, $sub, $email, $nickname)) {
-            DI::logger()->warning('openidconnect: link mode failed to store user link', ['uid' => $userId, 'sub' => $sub]);
+            DI::logger()->warning('openidconnect: link mode failed to store user link', ['uid' => $userId, 'has_sub' => $sub !== '']);
             DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect account link failed. Please try again or contact the administrator.'));
             DI::baseUrl()->redirect('settings/account');
             return;

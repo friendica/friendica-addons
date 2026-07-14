@@ -95,7 +95,7 @@ final class AdminHook
             '$client_secret' => $this->buildField(
                 'client_secret',
                 DI::l10n()->t('Client Secret'),
-                DI::config()->get('openidconnect', 'client_secret'),
+                '',
                 DI::l10n()->t('The OAuth2 client secret from your identity provider')
             ),
             '$scopes' => $this->buildField(
@@ -150,6 +150,17 @@ final class AdminHook
         $stringValues = [];
         foreach (self::STRING_KEYS as $key) {
             $stringValues[$key] = trim((string)($post[$key] ?? DI::config()->get('openidconnect', $key) ?? ''));
+        }
+
+        if (
+            !$this->isReadOnly('client_secret')
+            && array_key_exists('client_secret', $post)
+            && trim((string)$post['client_secret']) === ''
+        ) {
+            $storedSecret = trim((string)(DI::config()->get('openidconnect', 'client_secret') ?? ''));
+            if ($storedSecret !== '') {
+                $stringValues['client_secret'] = $storedSecret;
+            }
         }
 
         $errors = $this->validateSettings($post, $stringValues);

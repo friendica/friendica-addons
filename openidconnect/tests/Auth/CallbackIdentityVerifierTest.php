@@ -83,4 +83,29 @@ final class CallbackIdentityVerifierTest extends AddonTestCase
         self::assertNotEmpty(DI::sysmsg()->notices);
         self::assertStringContainsString('Email address not provided', implode(' ', DI::sysmsg()->notices));
     }
+
+    public function testVerifyUnverifiedEmailWarningDoesNotLogRawEmailAddress(): void
+    {
+        DI::cache()->set('openidconnect:provider_config', [
+            'userinfo_endpoint' => 'https://id.example/userinfo',
+        ], 600);
+        DI::httpClient()->nextGetResponse = new TestHttpResponse(
+            true,
+            json_encode([
+                'sub' => 'sub-1',
+                'email' => 'sensitive.person@example.test',
+                'email_verified' => false,
+            ], JSON_THROW_ON_ERROR),
+            200
+        );
+
+        (new CallbackIdentityVerifier(null, new UserInfo(new ProviderConfiguration()), new ProviderConfiguration()))
+            ->verify(['access_token' => 'access-token'], []);
+
+        self::assertNotEmpty(DI::logger()->warnings);
+        $lastWarning = DI::logger()->warnings[array_key_last(DI::logger()->warnings)];
+        self::assertSame('openidconnect: email not verified by IdP', $lastWarning[0]);
+        self::assertArrayNotHasKey('email', $lastWarning[1]);
+        self::assertStringNotContainsString('sensitive.person@example.test', json_encode($lastWarning[1], JSON_THROW_ON_ERROR));
+    }
 }

@@ -40,7 +40,7 @@ final class LogoutHandler
 			try {
 				$this->tokenClient->revoke($revocationEndpoint, $tokens['access_token'], $config, 10);
 			} catch (\Throwable $e) {
-				DI::logger()->warning('openidconnect: token revocation failed during logout', ['error' => $e->getMessage()]);
+				DI::logger()->warning('openidconnect: token revocation failed during logout', ['exception' => $e::class]);
 			}
 		}
 

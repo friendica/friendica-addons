@@ -47,7 +47,7 @@ final class CallbackIdentityVerifier
             $userinfo = $this->userInfo->fetch($accessToken);
         } catch (\Throwable $e) {
             DI::logger()->error('openidconnect: exception while requesting userinfo', [
-                'error' => $e->getMessage(),
+                'exception' => $e::class,
             ]);
             $userinfo = [];
         }
@@ -87,7 +87,9 @@ final class CallbackIdentityVerifier
         }
 
         if ($emailVerified === false && !DI::config()->get('openidconnect', 'allow_unverified_email')) {
-            DI::logger()->warning('openidconnect: email not verified by IdP', ['email' => $userinfo['email'] ?? '']);
+            DI::logger()->warning('openidconnect: email not verified by IdP', [
+                'has_email' => !empty($userinfo['email']),
+            ]);
             DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect: Your email address has not been verified by the identity provider.'));
             DI::baseUrl()->redirect('login');
             return [];
@@ -97,7 +99,10 @@ final class CallbackIdentityVerifier
         $email = $userinfo['email'] ?? '';
 
         if (!empty($validatedIdToken) && !empty($validatedIdToken->sub) && $sub !== '' && $validatedIdToken->sub !== $sub) {
-            DI::logger()->warning('openidconnect: id_token sub and userinfo sub mismatch', ['id_token_sub' => $validatedIdToken->sub, 'userinfo_sub' => $sub]);
+            DI::logger()->warning('openidconnect: id_token sub and userinfo sub mismatch', [
+                'has_id_token_sub' => !empty($validatedIdToken->sub),
+                'has_userinfo_sub' => $sub !== '',
+            ]);
             DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect authentication failed: inconsistent provider identity.'));
             DI::baseUrl()->redirect('login');
             return [];

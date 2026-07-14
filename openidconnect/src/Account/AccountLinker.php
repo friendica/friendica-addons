@@ -32,7 +32,11 @@ final class AccountLinker
 
         $existingOwner = DBA::selectFirst('user', ['uid'], ['openid' => $sub]);
         if (!empty($existingOwner['uid']) && (int)$existingOwner['uid'] !== $uid) {
-            DI::logger()->warning('openidconnect_link_user: subject already linked to another uid', ['sub' => $sub, 'owner_uid' => $existingOwner['uid'], 'uid' => $uid]);
+            DI::logger()->warning('openidconnect_link_user: subject already linked to another uid', [
+                'has_sub' => $sub !== '',
+                'owner_uid' => $existingOwner['uid'],
+                'uid' => $uid,
+            ]);
             return false;
         }
 
@@ -42,7 +46,7 @@ final class AccountLinker
         DI::pConfig()->set($uid, 'openidconnect', 'oidc_email', $email);
         DI::pConfig()->set($uid, 'openidconnect', 'oidc_nickname', $nickname);
 
-        DI::logger()->info('OpenID Connect account linked', ['uid' => $uid, 'sub' => $sub]);
+        DI::logger()->info('OpenID Connect account linked', ['uid' => $uid, 'has_sub' => $sub !== '']);
 
         return true;
     }

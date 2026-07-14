@@ -49,7 +49,7 @@ final class TokenClient
         } catch (\Throwable $e) {
             DI::logger()->error('openidconnect: token endpoint request threw exception', [
                 'endpoint' => $config['token_endpoint'],
-                'error'    => $e->getMessage(),
+                'exception' => $e::class,
             ]);
             return [];
         }
@@ -58,7 +58,7 @@ final class TokenClient
             DI::logger()->error('openidconnect: token endpoint returned non-success response', [
                 'endpoint' => $config['token_endpoint'],
                 'code'     => $response->getReturnCode(),
-                'body'     => $this->responseBodySnippet($response),
+                'body'     => $this->sanitizeSensitiveString($this->responseBodySnippet($response)),
             ]);
             return [];
         }
@@ -107,7 +107,7 @@ final class TokenClient
         } catch (\Throwable $e) {
             DI::logger()->warning('openidconnect: revocation endpoint request threw exception', [
                 'endpoint' => $endpoint,
-                'error'    => $e->getMessage(),
+                'exception' => $e::class,
             ]);
             return;
         }
@@ -116,7 +116,7 @@ final class TokenClient
             DI::logger()->warning('openidconnect: revocation endpoint returned non-success', [
                 'endpoint' => $endpoint,
                 'code'     => $response->getReturnCode(),
-                'body'     => $this->responseBodySnippet($response),
+                'body'     => $this->sanitizeSensitiveString($this->responseBodySnippet($response)),
             ]);
         }
     }
@@ -141,5 +141,15 @@ final class TokenClient
         }
 
         return mb_substr($body, 0, 1024);
+    }
+
+    private function sanitizeSensitiveString(string $value): string
+    {
+        $redacted = preg_replace('/("(?:access_token|refresh_token|id_token|client_secret|token|email|sub)"\s*:\s*")([^"]*)(")/i', '$1[redacted]$3', $value);
+        if ($redacted === null) {
+            return '[redacted]';
+        }
+
+        return preg_replace('/(Bearer\s+|token\s+)([^\s"\']+)/i', '$1[redacted]', $redacted) ?? '[redacted]';
     }
 }

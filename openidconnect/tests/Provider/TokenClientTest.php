@@ -74,6 +74,31 @@ final class TokenClientTest extends AddonTestCase
         );
     }
 
+    public function testExchangeCodeFailureLogContextDoesNotLeakSensitiveFields(): void
+    {
+        DI::config()->set('openidconnect', 'client_id', 'client-id');
+        DI::config()->set('openidconnect', 'client_secret', 'ultra-secret-client-secret');
+        DI::cache()->set('openidconnect:provider_config', [
+            'token_endpoint' => 'https://id.example/token',
+        ], 600);
+        DI::httpClient()->nextPostResponse = new TestHttpResponse(
+            false,
+            '{"access_token":"access-token-123","client_secret":"ultra-secret-client-secret","email":"person@example.test","sub":"subject-123"}',
+            400
+        );
+
+        $result = (new TokenClient())->exchangeCode('bad-code');
+
+        self::assertSame([], $result);
+        $lastError = DI::logger()->errors[array_key_last(DI::logger()->errors)];
+        self::assertSame('openidconnect: token endpoint returned non-success response', $lastError[0]);
+        $contextEncoded = json_encode($lastError[1], JSON_THROW_ON_ERROR);
+        self::assertStringNotContainsString('access-token-123', $contextEncoded);
+        self::assertStringNotContainsString('ultra-secret-client-secret', $contextEncoded);
+        self::assertStringNotContainsString('person@example.test', $contextEncoded);
+        self::assertStringNotContainsString('subject-123', $contextEncoded);
+    }
+
     public function testExchangeCodeReturnsEmptyArrayWhenHttpClientThrows(): void
     {
         DI::config()->set('openidconnect', 'client_id', 'client-id');
@@ -152,5 +177,46 @@ final class TokenClientTest extends AddonTestCase
             'openidconnect: revocation endpoint request threw exception',
             DI::logger()->warnings[array_key_last(DI::logger()->warnings)][0]
         );
+    }
+
+    public function testRevokeFailureLogContextDoesNotLeakTokenOrClientSecret(): void
+    {
+        DI::config()->set('openidconnect', 'client_id', 'client-id');
+        DI::config()->set('openidconnect', 'client_secret', 'ultra-secret-client-secret');
+        DI::httpClient()->nextPostResponse = new TestHttpResponse(
+            false,
+            '{"error":"invalid_token","error_description":"token access-token-123 rejected"}',
+            400
+        );
+
+        (new TokenClient())->revoke(
+            'https://id.example/revoke',
+            'access-token-123',
+            ['revocation_endpoint_auth_methods_supported' => ['client_secret_post']]
+        );
+
+        $lastWarning = DI::logger()->warnings[array_key_last(DI::logger()->warnings)];
+        self::assertSame('openidconnect: revocation endpoint returned non-success', $lastWarning[0]);
+        $contextEncoded = json_encode($lastWarning[1], JSON_THROW_ON_ERROR);
+        self::assertStringNotContainsString('access-token-123', $contextEncoded);
+        self::assertStringNotContainsString('ultra-secret-client-secret', $contextEncoded);
+    }
+
+    public function testRevokeExceptionLogContextDoesNotLeakTokenFromExceptionMessage(): void
+    {
+        DI::config()->set('openidconnect', 'client_id', 'client-id');
+        DI::config()->set('openidconnect', 'client_secret', 'client-secret');
+        DI::httpClient()->nextException = new \RuntimeException('timeout for token access-token-123');
+
+        (new TokenClient())->revoke(
+            'https://id.example/revoke',
+            'access-token-123',
+            ['revocation_endpoint_auth_methods_supported' => ['client_secret_post']]
+        );
+
+        $lastWarning = DI::logger()->warnings[array_key_last(DI::logger()->warnings)];
+        self::assertSame('openidconnect: revocation endpoint request threw exception', $lastWarning[0]);
+        $contextEncoded = json_encode($lastWarning[1], JSON_THROW_ON_ERROR);
+        self::assertStringNotContainsString('access-token-123', $contextEncoded);
     }
 }

@@ -74,6 +74,53 @@ final class UserProvisionerTest extends AddonTestCase
         self::assertSame('new@example.test', DI::pConfig()->get(5, 'openidconnect', 'oidc_email'));
     }
 
+    public function testFindOrCreateDoesNotOverwriteLinkedUserEmailWhenNewAddressIsAlreadyTaken(): void
+    {
+        DBA::seedUser([
+            'uid' => 5,
+            'openid' => 'subject-1',
+            'email' => 'old@example.test',
+            'nickname' => 'jane',
+        ]);
+        DBA::seedUser([
+            'uid' => 6,
+            'openid' => '',
+            'email' => 'taken@example.test',
+            'nickname' => 'taken',
+        ]);
+
+        $service = new UserProvisioner(new AccountLinker(), new AvatarUpdater());
+
+        $result = $service->findOrCreate('subject-1', 'taken@example.test', 'Jane', 'jane', '');
+
+        self::assertIsArray($result);
+        self::assertSame(5, $result['uid']);
+        self::assertSame('old@example.test', $result['email']);
+        self::assertSame('old@example.test', DBA::selectFirst('user', [], ['uid' => 5])['email']);
+        self::assertSame('taken@example.test', DBA::selectFirst('user', [], ['uid' => 6])['email']);
+        self::assertSame('taken@example.test', DI::pConfig()->get(5, 'openidconnect', 'oidc_email'));
+    }
+
+    public function testFindOrCreateKeepsLinkedUserEmailWhenProviderOmitsIt(): void
+    {
+        DBA::seedUser([
+            'uid' => 5,
+            'openid' => 'subject-1',
+            'email' => 'old@example.test',
+            'nickname' => 'jane',
+        ]);
+
+        $service = new UserProvisioner(new AccountLinker(), new AvatarUpdater());
+
+        $result = $service->findOrCreate('subject-1', '', 'Jane', 'jane', '');
+
+        self::assertIsArray($result);
+        self::assertSame(5, $result['uid']);
+        self::assertSame('old@example.test', $result['email']);
+        self::assertSame('old@example.test', DBA::selectFirst('user', [], ['uid' => 5])['email']);
+        self::assertSame('', DI::pConfig()->get(5, 'openidconnect', 'oidc_email'));
+    }
+
     public function testFindOrCreateRejectsEmailMappedToDifferentLinkedSubject(): void
     {
         DBA::seedUser([
@@ -90,6 +137,14 @@ final class UserProvisionerTest extends AddonTestCase
         self::assertNull($result);
         self::assertNotEmpty(DI::sysmsg()->notices);
         self::assertStringContainsString('This account is not linked to your identity provider', DI::sysmsg()->notices[0]);
+
+        self::assertNotEmpty(DI::logger()->warnings);
+        $lastWarning = DI::logger()->warnings[array_key_last(DI::logger()->warnings)];
+        self::assertSame('openidconnect: email matches account linked to different sub - REJECTED', $lastWarning[0]);
+        $contextEncoded = json_encode($lastWarning[1], JSON_THROW_ON_ERROR);
+        self::assertStringNotContainsString('same@example.test', $contextEncoded);
+        self::assertStringNotContainsString('different-subject', $contextEncoded);
+        self::assertStringNotContainsString('incoming-subject', $contextEncoded);
     }
 
     public function testFindOrCreateAutoLinksUnlinkedAccountByEmailWhenEnabled(): void

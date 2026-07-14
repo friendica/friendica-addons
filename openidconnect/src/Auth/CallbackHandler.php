@@ -128,7 +128,7 @@ final class CallbackHandler
 
         DI::logger()->warning('openidconnect: authorization endpoint returned an error', [
             'error' => $error,
-            'state' => $state,
+            'has_state' => $state !== '',
             'silent_auth' => $isSilentAuth,
         ]);
 
