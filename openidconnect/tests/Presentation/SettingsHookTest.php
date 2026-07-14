@@ -44,4 +44,21 @@ final class SettingsHookTest extends AddonTestCase
         );
         self::assertSame($expectedConfirmJson, $aside['vars']['$confirm_json']);
     }
+
+    public function testAppendDoesNotExposeStoredEmailOrNicknameInLinkedPayload(): void
+    {
+        DI::userSession()->setLocalUserId(42);
+        DI::pConfig()->set(42, 'openidconnect', 'oidc_sub', 'sub-123');
+        DI::pConfig()->set(42, 'openidconnect', 'oidc_email', 'person@example.test');
+        DI::pConfig()->set(42, 'openidconnect', 'oidc_nickname', 'nick');
+
+        $data = [];
+        (new SettingsHook())->append($data);
+
+        $aside = json_decode((string)$data['aside'], true, 512, JSON_THROW_ON_ERROR);
+
+        self::assertSame(['sub' => 'sub-123'], $aside['vars']['$linked']);
+        self::assertArrayNotHasKey('email', $aside['vars']['$linked']);
+        self::assertArrayNotHasKey('nickname', $aside['vars']['$linked']);
+    }
 }

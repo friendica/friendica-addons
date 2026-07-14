@@ -26,6 +26,7 @@ final class SettingsHook
         }
 
         $linkedAccount = $this->accountLinker->get($uid);
+    $linkedPayload = $linkedAccount ? ['sub' => $linkedAccount['sub'] ?? ''] : null;
         $baseUrl = (string)DI::baseUrl();
 
         $tpl = Renderer::getMarkupTemplate('settings.tpl', 'addon/openidconnect/');
@@ -40,7 +41,7 @@ final class SettingsHook
         }
 
         $data['aside'] = Renderer::replaceMacros($tpl, [
-            '$linked' => $linkedAccount,
+            '$linked' => $linkedPayload,
             '$sub_label' => DI::l10n()->t('OIDC ID:'),
             '$unlink_url' => $baseUrl . '/openidconnect/unlink',
             '$link_url' => $baseUrl . '/openidconnect/link',

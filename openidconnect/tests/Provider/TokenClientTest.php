@@ -74,6 +74,25 @@ final class TokenClientTest extends AddonTestCase
         );
     }
 
+    public function testExchangeCodeReturnsEmptyArrayWhenTokenResponseContainsMalformedJson(): void
+    {
+        DI::config()->set('openidconnect', 'client_id', 'client-id');
+        DI::config()->set('openidconnect', 'client_secret', 'client-secret');
+        DI::cache()->set('openidconnect:provider_config', [
+            'token_endpoint' => 'https://id.example/token',
+        ], 600);
+        DI::httpClient()->nextPostResponse = new TestHttpResponse(true, '{"access_token":', 200);
+
+        $result = (new TokenClient())->exchangeCode('bad-code');
+
+        self::assertSame([], $result);
+        self::assertNotEmpty(DI::logger()->errors);
+        self::assertSame(
+            'openidconnect: malformed JSON in token response',
+            DI::logger()->errors[array_key_last(DI::logger()->errors)][0]
+        );
+    }
+
     public function testExchangeCodeFailureLogContextDoesNotLeakSensitiveFields(): void
     {
         DI::config()->set('openidconnect', 'client_id', 'client-id');
@@ -97,6 +116,29 @@ final class TokenClientTest extends AddonTestCase
         self::assertStringNotContainsString('ultra-secret-client-secret', $contextEncoded);
         self::assertStringNotContainsString('person@example.test', $contextEncoded);
         self::assertStringNotContainsString('subject-123', $contextEncoded);
+    }
+
+    public function testExchangeCodeFailureLogContextRedactsPlainTextBearerTokenAndEmail(): void
+    {
+        DI::config()->set('openidconnect', 'client_id', 'client-id');
+        DI::config()->set('openidconnect', 'client_secret', 'ultra-secret-client-secret');
+        DI::cache()->set('openidconnect:provider_config', [
+            'token_endpoint' => 'https://id.example/token',
+        ], 600);
+        DI::httpClient()->nextPostResponse = new TestHttpResponse(
+            false,
+            'Bearer access-token-123 rejected for person@example.test',
+            400
+        );
+
+        $result = (new TokenClient())->exchangeCode('bad-code');
+
+        self::assertSame([], $result);
+        $lastError = DI::logger()->errors[array_key_last(DI::logger()->errors)];
+        self::assertSame('openidconnect: token endpoint returned non-success response', $lastError[0]);
+        $contextEncoded = json_encode($lastError[1], JSON_THROW_ON_ERROR);
+        self::assertStringNotContainsString('access-token-123', $contextEncoded);
+        self::assertStringNotContainsString('person@example.test', $contextEncoded);
     }
 
     public function testExchangeCodeReturnsEmptyArrayWhenHttpClientThrows(): void

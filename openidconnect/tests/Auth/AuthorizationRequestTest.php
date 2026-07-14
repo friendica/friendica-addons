@@ -5,12 +5,53 @@ declare(strict_types=1);
 namespace Friendica\Addon\OpenIdConnect\Tests\Auth;
 
 use Friendica\Addon\OpenIdConnect\Auth\AuthorizationRequest;
+use Friendica\Addon\OpenIdConnect\Auth\LoginPolicy;
 use Friendica\Addon\OpenIdConnect\Provider\ProviderConfiguration;
 use Friendica\Addon\OpenIdConnect\Tests\Support\AddonTestCase;
 use Friendica\DI;
 
 final class AuthorizationRequestTest extends AddonTestCase
 {
+    public function testRedirectBuildsAuthorizationUrlAndPersistsPkceNonceAndState(): void
+    {
+        $probeOutput = shell_exec(sprintf(
+            '%s %s',
+            escapeshellarg(PHP_BINARY),
+            escapeshellarg(__DIR__ . '/../Support/authorization_redirect_probe.php')
+        ));
+
+        self::assertIsString($probeOutput);
+        $probe = json_decode(trim($probeOutput), true, 512, JSON_THROW_ON_ERROR);
+
+        self::assertIsArray($probe['state_write'] ?? null);
+        self::assertStringStartsWith('oidcstate:', (string)$probe['state_write']['key']);
+        self::assertSame('oauth/authorize?client_id=test', $probe['state_write']['value']['return_path']);
+        self::assertFalse((bool)$probe['state_write']['value']['link_mode']);
+        self::assertTrue((bool)$probe['state_write']['value']['silent_auth']);
+        self::assertIsInt($probe['state_write']['value']['created_at']);
+        self::assertSame(64, strlen((string)$probe['state_write']['value']['nonce']));
+        self::assertNotSame('', (string)$probe['state_write']['value']['pkce_verifier']);
+
+        $location = $probe['location_header'] ?? '';
+        self::assertIsString($location);
+        self::assertStringStartsWith('Location: https://id.example/authorize?', $location);
+
+        parse_str((string)parse_url(substr($location, strlen('Location: ')), PHP_URL_QUERY), $params);
+
+        self::assertSame('code', $params['response_type'] ?? null);
+        self::assertSame('client-id', $params['client_id'] ?? null);
+        self::assertSame('https://example.test/openidconnect/callback', $params['redirect_uri'] ?? null);
+        self::assertSame('openid email profile', $params['scope'] ?? null);
+        self::assertSame('none', $params['prompt'] ?? null);
+        self::assertSame(substr((string)$probe['state_write']['key'], strlen('oidcstate:')), $params['state'] ?? null);
+        self::assertSame($probe['state_write']['value']['nonce'], $params['nonce'] ?? null);
+        self::assertSame(
+            LoginPolicy::generatePkceChallenge((string)$probe['state_write']['value']['pkce_verifier']),
+            $params['code_challenge'] ?? null
+        );
+        self::assertSame('S256', $params['code_challenge_method'] ?? null);
+    }
+
     public function testConsumesStateOnlyOnce(): void
     {
         DI::cache()->set('oidcstate:state', ['nonce' => 'nonce'], 600);
@@ -28,6 +69,7 @@ final class AuthorizationRequestTest extends AddonTestCase
 
         self::assertSame([], $request->consumeState('state'));
         self::assertSame('openidconnect: failed to read callback state from cache', DI::logger()->errors[0][0]);
+        self::assertArrayNotHasKey('state', DI::logger()->errors[0][1]);
     }
 
     public function testConsumeStateReturnsStateEvenWhenCacheDeleteFails(): void
@@ -39,6 +81,7 @@ final class AuthorizationRequestTest extends AddonTestCase
 
         self::assertSame(['nonce' => 'nonce'], $request->consumeState('state'));
         self::assertSame('openidconnect: failed to delete callback state from cache', DI::logger()->warnings[0][0]);
+        self::assertArrayNotHasKey('state', DI::logger()->warnings[0][1]);
     }
 
     public function testRedirectReturnsWhenAddonIsNotConfigured(): void
@@ -119,5 +162,6 @@ final class AuthorizationRequestTest extends AddonTestCase
 
         self::assertSame('openidconnect: failed to persist state in cache', DI::logger()->errors[0][0]);
         self::assertContains('OpenID Connect authentication could not be started.', DI::sysmsg()->notices);
+        self::assertArrayNotHasKey('state', DI::logger()->errors[0][1]);
     }
 }

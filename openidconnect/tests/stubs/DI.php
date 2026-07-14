@@ -34,6 +34,7 @@ final class TestLogger
 	public array $debugs = [];
 	public array $warnings = [];
 	public array $errors = [];
+	public array $infos = [];
 
 	public function warning(string $message, array $context = []): void
 	{
@@ -52,6 +53,7 @@ final class TestLogger
 
 	public function info(string $message, array $context = []): void
 	{
+		$this->infos[] = [$message, $context];
 	}
 }
 
@@ -59,6 +61,7 @@ final class TestCache
 {
 	private array $values = [];
 	public array $setCalls = [];
+	public array $deleteCalls = [];
 	public ?\Throwable $nextGetException = null;
 	public ?\Throwable $nextSetException = null;
 	public ?\Throwable $nextDeleteException = null;
@@ -94,6 +97,7 @@ final class TestCache
 			throw $exception;
 		}
 
+		$this->deleteCalls[] = $key;
 		unset($this->values[$key]);
 	}
 }
@@ -177,6 +181,7 @@ final class TestConfig
 {
 	private array $values = [];
 	private ?TestConfigCache $cache = null;
+	public array $deleteCalls = [];
 
 	public function set(string $cat, string $key, mixed $value): void
 	{
@@ -188,6 +193,12 @@ final class TestConfig
 		return $this->values[$cat][$key] ?? null;
 	}
 
+	public function delete(string $cat, string $key): void
+	{
+		$this->deleteCalls[] = [$cat, $key];
+		unset($this->values[$cat][$key]);
+	}
+
 	public function getCache(): TestConfigCache
 	{
 		return $this->cache ??= new TestConfigCache();
@@ -197,6 +208,7 @@ final class TestConfig
 final class TestConfigCache
 {
 	private array $sources = [];
+	public array $loadCalls = [];
 
 	public function setSource(string $cat, string $key, int $source): void
 	{
@@ -206,6 +218,21 @@ final class TestConfigCache
 	public function getSource(string $cat, string $key): int
 	{
 		return $this->sources[$cat][$key] ?? -1;
+	}
+
+	public function load(array $config, int $source): void
+	{
+		$this->loadCalls[] = ['config' => $config, 'source' => $source];
+	}
+}
+
+final class TestAppHelper
+{
+	private ?TestConfigCache $configCache = null;
+
+	public function getConfigCache(): TestConfigCache
+	{
+		return $this->configCache ??= new TestConfigCache();
 	}
 }
 
@@ -388,6 +415,7 @@ class DI
 	private static ?TestUserSession $userSession = null;
 	private static ?TestArgs $args = null;
 	private static ?TestPage $page = null;
+	private static ?TestAppHelper $appHelper = null;
 
 	public static function resetTestState(): void
 	{
@@ -404,6 +432,7 @@ class DI
 		self::$userSession = new TestUserSession();
 		self::$args = new TestArgs();
 		self::$page = new TestPage();
+		self::$appHelper = new TestAppHelper();
 	}
 
 	public static function logger(): TestLogger
@@ -469,6 +498,11 @@ class DI
 	public static function page(): TestPage
 	{
 		return self::$page ??= new TestPage();
+	}
+
+	public static function appHelper(): TestAppHelper
+	{
+		return self::$appHelper ??= new TestAppHelper();
 	}
 }
 

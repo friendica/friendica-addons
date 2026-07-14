@@ -150,6 +150,11 @@ final class TokenClient
             return '[redacted]';
         }
 
-        return preg_replace('/(Bearer\s+|token\s+)([^\s"\']+)/i', '$1[redacted]', $redacted) ?? '[redacted]';
+        $redacted = preg_replace('/(Bearer\s+|token\s+)([^\s"\']+)/i', '$1[redacted]', $redacted);
+        if ($redacted === null) {
+            return '[redacted]';
+        }
+
+        return preg_replace('/\b[\w.%-]+@[\w.-]+\.[A-Za-z]{2,}\b/', '[redacted-email]', $redacted) ?? '[redacted]';
     }
 }

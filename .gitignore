@@ -25,3 +25,9 @@ report/
 vendor-dev/
 */.*.md
 */.*.cache
+
+# coverage artifacts
+coverage/
+coverage-html/
+*/**/coverage.xml
+*/**/coverage-*.txt

@@ -55,4 +55,22 @@ final class AccountLinkRoutesTest extends AddonTestCase
         self::assertArrayNotHasKey('email', $logContext);
         self::assertArrayNotHasKey('nickname', $logContext);
     }
+
+    public function testUnlinkWithInvalidCsrfDoesNotRemoveLinkOrTokens(): void
+    {
+        DI::userSession()->setLocalUserId(42);
+        DI::pConfig()->set(42, 'openidconnect', 'oidc_sub', 'subject-123');
+        DI::pConfig()->set(42, 'openidconnect', 'oidc_email', 'person@example.test');
+        DI::pConfig()->set(42, 'openidconnect', 'oidc_nickname', 'sensitive-nickname');
+        DI::session()->set('openidconnect_tokens', ['access_token' => 'access-token']);
+
+        (new AccountLinkRoutes())->unlink();
+
+        self::assertSame('settings/account', DI::baseUrl()->lastRedirect());
+        self::assertSame('subject-123', DI::pConfig()->get(42, 'openidconnect', 'oidc_sub'));
+        self::assertSame('person@example.test', DI::pConfig()->get(42, 'openidconnect', 'oidc_email'));
+        self::assertSame('sensitive-nickname', DI::pConfig()->get(42, 'openidconnect', 'oidc_nickname'));
+        self::assertSame('access-token', DI::session()->get('openidconnect_tokens')['access_token']);
+        self::assertEmpty(DI::sysmsg()->infos);
+    }
 }

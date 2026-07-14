@@ -42,6 +42,26 @@ final class ProviderConfigurationTest extends AddonTestCase
         );
     }
 
+    public function testGetPurgesInvalidCachedTypeBeforeRefetchingDiscoveryDocument(): void
+    {
+        DI::cache()->set('openidconnect:provider_config', 'corrupt-cache', 600);
+        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
+        DI::httpClient()->nextGetResponse = new TestHttpResponse(
+            true,
+            json_encode(['authorization_endpoint' => 'https://id.example/authorize'], JSON_THROW_ON_ERROR),
+            200
+        );
+
+        $result = (new ProviderConfiguration())->get();
+
+        self::assertSame('https://id.example/authorize', $result['authorization_endpoint']);
+        self::assertCount(1, DI::httpClient()->getCalls);
+        self::assertContains(
+            'openidconnect: provider config cache contained invalid type',
+            array_column(DI::logger()->warnings, 0)
+        );
+    }
+
     public function testGetLogsStatusAndBodySnippetWhenDiscoveryRequestFails(): void
     {
         DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');

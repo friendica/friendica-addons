@@ -52,7 +52,10 @@ final class AccountLinkRoutes
 
 	public function unlink(): void
 	{
-		BaseModule::checkFormSecurityTokenRedirectOnError('settings/account', 'openidconnect_unlink');
+		if (!BaseModule::checkFormSecurityToken('openidconnect_unlink')) {
+			DI::baseUrl()->redirect('settings/account');
+			return;
+		}
 
 		$uid = DI::userSession()->getLocalUserId();
 		DI::logger()->debug('openidconnect_unlink_account', ['uid' => $uid]);

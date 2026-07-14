@@ -27,6 +27,49 @@ final class OpenIdConnectAddonTest extends AddonTestCase
 		self::assertSame('openidconnect: unknown route requested', DI::logger()->warnings[0][0]);
 	}
 
+	public function testDispatchCallbackHandlesCurrentRequestQuery(): void
+	{
+		DI::cache()->set('oidcstate:s', ['silent_auth' => true, 'return_path' => 'oauth/authorize?client_id=test'], 600);
+		$_GET = ['state' => 's', 'error' => 'login_required'];
+
+		$addon = new OpenIdConnectAddon();
+		$addon->dispatch('callback');
+
+		self::assertSame('login?openidconnect_no_auto=1&return_path=oauth%2Fauthorize%3Fclient_id%3Dtest', DI::baseUrl()->lastRedirect());
+	}
+
+	public function testDispatchRevokeHandlesRouteBranch(): void
+	{
+		DI::session()->set('openidconnect_tokens', ['access_token' => 'access-token']);
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+
+		$addon = new OpenIdConnectAddon();
+		$addon->dispatch('revoke');
+
+		self::assertSame('', DI::baseUrl()->lastRedirect());
+	}
+
+	public function testDispatchLinkHandlesRouteBranch(): void
+	{
+		$addon = new OpenIdConnectAddon();
+
+		$addon->dispatch('link');
+
+		self::assertSame('settings/account', DI::baseUrl()->lastRedirect());
+		self::assertContains('OpenID Connect is not configured.', DI::sysmsg()->notices);
+	}
+
+	public function testDispatchUnlinkHandlesRouteBranch(): void
+	{
+		$_POST['form_security_token'] = \Friendica\BaseModule::getFormSecurityToken('openidconnect_unlink');
+		$_REQUEST['form_security_token'] = $_POST['form_security_token'];
+
+		$addon = new OpenIdConnectAddon();
+		$addon->dispatch('unlink');
+
+		self::assertSame('login', DI::baseUrl()->lastRedirect());
+	}
+
 	public function testBeginAccountLinkRedirectsToSettingsWhenNotConfigured(): void
 	{
 		$addon = new OpenIdConnectAddon();
@@ -39,6 +82,8 @@ final class OpenIdConnectAddonTest extends AddonTestCase
 
 	public function testUnlinkAccountRedirectsToLoginForAnonymousUser(): void
 	{
+		$_POST['form_security_token'] = \Friendica\BaseModule::getFormSecurityToken('openidconnect_unlink');
+
 		$addon = new OpenIdConnectAddon();
 
 		$addon->unlinkAccount();

@@ -6,6 +6,7 @@ namespace Friendica\Addon\OpenIdConnect\Tests\Support;
 
 use Friendica\Addon\OpenIdConnect\Auth\SessionFunctionSpy;
 use Friendica\Addon\OpenIdConnect\Session\CookieSpy;
+use Friendica\Core\Hook;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Contact;
@@ -18,6 +19,7 @@ abstract class AddonTestCase extends TestCase
     {
         parent::setUp();
         DBA::resetTestState();
+        Hook::resetTestState();
         DI::resetTestState();
         User::resetTestState();
         Contact::resetTestState();
@@ -25,6 +27,7 @@ abstract class AddonTestCase extends TestCase
         CookieSpy::reset();
         $_GET = [];
         $_POST = [];
+        $_REQUEST = [];
         $_SERVER = [];
     }
 }

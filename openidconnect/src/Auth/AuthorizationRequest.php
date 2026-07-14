@@ -62,7 +62,6 @@ final class AuthorizationRequest
             DI::cache()->set(self::STATE_PREFIX . $state, $stateData, self::STATE_TTL);
         } catch (\Throwable $e) {
             DI::logger()->error('openidconnect: failed to persist state in cache', [
-                'state' => $state,
                 'error' => $e->getMessage(),
             ]);
             DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect authentication could not be started.'));
@@ -110,7 +109,6 @@ final class AuthorizationRequest
             $stateData = DI::cache()->get($cacheKey);
         } catch (\Throwable $e) {
             DI::logger()->error('openidconnect: failed to read callback state from cache', [
-                'state' => $state,
                 'error' => $e->getMessage(),
             ]);
             $stateData = [];
@@ -124,7 +122,6 @@ final class AuthorizationRequest
             DI::cache()->delete($cacheKey);
         } catch (\Throwable $e) {
             DI::logger()->warning('openidconnect: failed to delete callback state from cache', [
-                'state' => $state,
                 'error' => $e->getMessage(),
             ]);
         }

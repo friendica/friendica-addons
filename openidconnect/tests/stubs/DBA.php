@@ -18,12 +18,24 @@ final class DBA
 
     private static int $lastInsertId = 0;
 
+    /**
+     * @var list<array{table: string, condition: array<string, mixed>}>
+     */
+    public static array $deleteCalls = [];
+
     public static function resetTestState(): void
     {
         self::$users = [];
         self::$contacts = [];
         self::$lastInsertId = 0;
+		self::$deleteCalls = [];
     }
+
+	public static function delete(string $table, array $condition): bool
+	{
+		self::$deleteCalls[] = ['table' => $table, 'condition' => $condition];
+		return true;
+	}
 
     public static function selectFirst(string $table, array $fields, array $condition): array
     {

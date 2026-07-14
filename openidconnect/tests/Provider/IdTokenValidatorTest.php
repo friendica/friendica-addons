@@ -40,6 +40,64 @@ final class IdTokenValidatorTest extends AddonTestCase
         self::assertFalse($validator->validate($token));
     }
 
+    public function testUsesWarmCachedJwksWithoutFetchingAgain(): void
+    {
+        [$privateKey, $jwk] = $this->generateRsaMaterial();
+
+        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
+        DI::config()->set('openidconnect', 'client_id', 'client-id');
+        DI::cache()->set('openidconnect:provider_config', ['jwks_uri' => 'https://id.example/jwks'], 600);
+        DI::cache()->set('openidconnect:jwks', ['keys' => [$jwk]], 600);
+
+        $token = JWT::encode([
+            'iss' => 'https://id.example',
+            'aud' => 'client-id',
+            'sub' => 'subject-1',
+            'iat' => time() - 5,
+            'nbf' => time() - 5,
+            'exp' => time() + 300,
+        ], $privateKey, 'RS256', $jwk['kid']);
+
+        self::assertIsObject((new IdTokenValidator())->validate($token));
+        self::assertSame([], DI::httpClient()->getCalls);
+    }
+
+    public function testRefreshesStaleCachedJwksAfterSignatureFailureAndSucceeds(): void
+    {
+        [, $staleJwk] = $this->generateRsaMaterial();
+        [$freshPrivateKey, $freshJwk] = $this->generateRsaMaterial();
+
+        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
+        DI::config()->set('openidconnect', 'client_id', 'client-id');
+        DI::cache()->set('openidconnect:provider_config', ['jwks_uri' => 'https://id.example/jwks'], 600);
+        DI::cache()->set('openidconnect:jwks', ['keys' => [$staleJwk]], 600);
+        DI::httpClient()->nextGetResponse = new \Friendica\TestHttpResponse(
+            true,
+            json_encode(['keys' => [$freshJwk]], JSON_THROW_ON_ERROR),
+            200
+        );
+
+        $token = JWT::encode([
+            'iss' => 'https://id.example',
+            'aud' => 'client-id',
+            'sub' => 'subject-1',
+            'iat' => time() - 5,
+            'nbf' => time() - 5,
+            'exp' => time() + 300,
+        ], $freshPrivateKey, 'RS256', $freshJwk['kid']);
+
+        $decoded = (new IdTokenValidator())->validate($token);
+
+        self::assertIsObject($decoded);
+        self::assertSame('subject-1', $decoded->sub);
+        self::assertCount(1, DI::httpClient()->getCalls);
+        self::assertNotEmpty(DI::logger()->warnings);
+        self::assertSame(
+            'openidconnect: signature invalid — busting JWKS cache and retrying',
+            DI::logger()->warnings[array_key_last(DI::logger()->warnings)][0]
+        );
+    }
+
     public function testValidateRestoresGlobalJwtLeewayAfterDecode(): void
     {
         [$privateKey, $jwk] = $this->generateRsaMaterial();

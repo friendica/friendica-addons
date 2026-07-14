@@ -48,6 +48,15 @@ final class AvatarUpdaterTest extends AddonTestCase
         self::assertTrue($updater->isSafeUrl('https://cdn.example.com/avatar.png'));
     }
 
+    public function testIsSafeUrlRejectsUrlsWithEmbeddedCredentials(): void
+    {
+        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example.com/.well-known/openid-configuration');
+
+        $updater = new AvatarUpdater(static fn(string $host): array => ['1.1.1.1']);
+
+        self::assertFalse($updater->isSafeUrl('https://user:pass@cdn.example.com/avatar.png'));
+    }
+
     public function testIsSafeUrlRejectsWhenResolverThrows(): void
     {
         DI::config()->set('openidconnect', 'discovery_url', 'https://id.example.com/.well-known/openid-configuration');
@@ -77,5 +86,22 @@ final class AvatarUpdaterTest extends AddonTestCase
 
         self::assertNotEmpty(DI::logger()->warnings);
         self::assertSame('openidconnect: rejected oversized avatar payload', DI::logger()->warnings[array_key_last(DI::logger()->warnings)][0]);
+    }
+
+    public function testUpdateFetchFailureLogDoesNotLeakSignedAvatarQueryParameters(): void
+    {
+        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example.com/.well-known/openid-configuration');
+
+        $updater = new AvatarUpdater(static fn(string $host): array => ['1.1.1.1']);
+        DI::httpClient()->nextException = new \RuntimeException('timeout');
+
+        $updater->update(1, 'https://cdn.example.com/avatar.png?token=signed-token-123&email=person@example.test');
+
+        self::assertNotEmpty(DI::logger()->warnings);
+        $lastWarning = DI::logger()->warnings[array_key_last(DI::logger()->warnings)];
+        self::assertSame('openidconnect: failed to fetch avatar image', $lastWarning[0]);
+        $contextEncoded = json_encode($lastWarning[1], JSON_THROW_ON_ERROR);
+        self::assertStringNotContainsString('signed-token-123', $contextEncoded);
+        self::assertStringNotContainsString('person@example.test', $contextEncoded);
     }
 }

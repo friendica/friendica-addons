@@ -20,6 +20,7 @@ use Friendica\Addon\OpenIdConnect\Provider\IdTokenValidator;
 use Friendica\Addon\OpenIdConnect\Provider\ProviderConfiguration;
 use Friendica\Addon\OpenIdConnect\Provider\TokenClient;
 use Friendica\Addon\OpenIdConnect\Tests\Support\AddonTestCase;
+use Friendica\Database\DBA;
 use Friendica\DI;
 
 final class CallbackHandlerTest extends AddonTestCase
@@ -151,6 +152,83 @@ final class CallbackHandlerTest extends AddonTestCase
             'could not verify your identity',
             implode(' ', DI::sysmsg()->notices)
         );
+    }
+
+    public function testSuccessfulNonLinkCallbackAuthenticatesUserStoresTokensAndSanitizesExternalReturnPath(): void
+    {
+        DI::config()->set('openidconnect', 'client_id', 'client-id');
+        DI::config()->set('openidconnect', 'client_secret', 'secret');
+        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
+
+        DI::cache()->set('openidconnect:provider_config', [
+            'token_endpoint' => 'https://id.example/token',
+            'userinfo_endpoint' => 'https://id.example/userinfo',
+            'jwks_uri' => 'https://id.example/jwks',
+        ], 600);
+        DI::cache()->set('oidcstate:s', [
+            'nonce' => 'nonce',
+            'pkce_verifier' => 'pkce',
+            'return_path' => 'https://evil.example/phish',
+        ], 600);
+        DBA::seedUser([
+            'uid' => 11,
+            'openid' => 'sub-1',
+            'email' => 'person@example.test',
+            'nickname' => 'person',
+        ]);
+
+        DI::httpClient()->nextPostResponse = new TestHttpResponse(
+            true,
+            json_encode(['access_token' => 'access-token'], JSON_THROW_ON_ERROR),
+            200
+        );
+        DI::httpClient()->nextGetResponse = new TestHttpResponse(
+            true,
+            json_encode([
+                'sub' => 'sub-1',
+                'email' => 'person@example.test',
+                'name' => 'Person Example',
+                'preferred_username' => 'person',
+            ], JSON_THROW_ON_ERROR),
+            200
+        );
+
+        (new CallbackHandler($this->dependencies()))->handle([
+            'code' => 'auth-code',
+            'state' => 's',
+        ]);
+
+        self::assertSame(11, DI::auth()->authenticatedUser['uid'] ?? null);
+        self::assertTrue((bool) DI::session()->get('2fa'));
+        self::assertSame('access-token', DI::session()->get('openidconnect_tokens')['access_token']);
+        self::assertTrue(SessionFunctionSpy::$sessionWriteCloseCalled);
+        self::assertSame('', DI::baseUrl()->lastRedirect());
+        self::assertSame([], DI::sysmsg()->notices);
+
+        $logPayload = json_encode([
+            'warnings' => DI::logger()->warnings,
+            'errors' => DI::logger()->errors,
+            'debugs' => DI::logger()->debugs,
+        ], JSON_THROW_ON_ERROR);
+        self::assertStringNotContainsString('access-token', $logPayload);
+        self::assertStringNotContainsString('person@example.test', $logPayload);
+        self::assertStringNotContainsString('sub-1', $logPayload);
+    }
+
+    public function testAuthorizationErrorWithAbsoluteReturnPathFallsBackToLoginWithoutLeakingPath(): void
+    {
+        DI::cache()->set('oidcstate:s', [
+            'silent_auth' => false,
+            'return_path' => 'https://evil.example/phish?token=secret',
+        ], 600);
+
+        (new CallbackHandler($this->dependencies()))->handle([
+            'state' => 's',
+            'error' => 'access_denied',
+        ]);
+
+        self::assertSame('login?openidconnect_no_auto=1', DI::baseUrl()->lastRedirect());
+        self::assertStringNotContainsString('evil.example', implode(' ', DI::sysmsg()->notices));
     }
 
     private function dependencies(): CallbackDependencies

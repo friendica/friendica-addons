@@ -31,6 +31,10 @@ final class AvatarUpdater
             return false;
         }
 
+        if (!empty($parsed['user']) || !empty($parsed['pass'])) {
+            return false;
+        }
+
         $host = $parsed['host'];
 
         // Trust any URL on the same host as the configured IdP (covers self-hosted/private Authentik).
@@ -71,14 +75,14 @@ final class AvatarUpdater
         }
 
         if (!$this->isSafeUrl($url)) {
-            DI::logger()->warning('openidconnect: rejected unsafe picture URL', ['url' => $url]);
+            DI::logger()->warning('openidconnect: rejected unsafe picture URL', ['url' => $this->sanitizeSensitiveUrl($url)]);
             return;
         }
 
         if (!$this->isWithinDownloadSizeLimit($url, self::MAX_AVATAR_BYTES)) {
             DI::logger()->warning('openidconnect: rejected avatar URL with oversized content-length', [
                 'uid' => $uid,
-                'url' => $url,
+                'url' => $this->sanitizeSensitiveUrl($url),
                 'max_bytes' => self::MAX_AVATAR_BYTES,
             ]);
             return;
@@ -89,21 +93,21 @@ final class AvatarUpdater
         } catch (\Throwable $e) {
             DI::logger()->warning('openidconnect: failed to fetch avatar image', [
                 'uid' => $uid,
-                'url' => $url,
+                'url' => $this->sanitizeSensitiveUrl($url),
                 'error' => $e->getMessage(),
             ]);
             return;
         }
 
         if (empty($photoData)) {
-            DI::logger()->warning('openidconnect: avatar fetch returned empty payload', ['uid' => $uid, 'url' => $url]);
+            DI::logger()->warning('openidconnect: avatar fetch returned empty payload', ['uid' => $uid, 'url' => $this->sanitizeSensitiveUrl($url)]);
             return;
         }
 
         if (strlen($photoData) > self::MAX_AVATAR_BYTES) {
             DI::logger()->warning('openidconnect: rejected oversized avatar payload', [
                 'uid' => $uid,
-                'url' => $url,
+                'url' => $this->sanitizeSensitiveUrl($url),
                 'bytes' => strlen($photoData),
                 'max_bytes' => self::MAX_AVATAR_BYTES,
             ]);
@@ -229,5 +233,37 @@ final class AvatarUpdater
         }
 
         return [$fallback];
+    }
+
+    private function sanitizeSensitiveUrl(string $url): string
+    {
+        $parts = parse_url($url);
+        if (!is_array($parts)) {
+            return '[redacted-url]';
+        }
+
+        if (isset($parts['user']) || isset($parts['pass'])) {
+            unset($parts['user'], $parts['pass']);
+        }
+
+        if (isset($parts['query']) && $parts['query'] !== '') {
+            parse_str($parts['query'], $query);
+            foreach ($query as $key => $value) {
+                if (preg_match('/token|secret|email|sub/i', (string) $key)) {
+                    $query[$key] = '[redacted]';
+                }
+            }
+
+            $parts['query'] = http_build_query($query, '', '&', PHP_QUERY_RFC3986);
+        }
+
+        $scheme = isset($parts['scheme']) ? $parts['scheme'] . '://' : '';
+        $host = $parts['host'] ?? '';
+        $port = isset($parts['port']) ? ':' . $parts['port'] : '';
+        $path = $parts['path'] ?? '';
+        $query = isset($parts['query']) && $parts['query'] !== '' ? '?' . $parts['query'] : '';
+        $fragment = isset($parts['fragment']) && $parts['fragment'] !== '' ? '#' . $parts['fragment'] : '';
+
+        return $scheme . $host . $port . $path . $query . $fragment;
     }
 }

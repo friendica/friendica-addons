@@ -136,7 +136,8 @@ final class IdTokenValidator
             return false;
         }
 
-        DI::cache()->set(self::CACHE_KEY, $jwksData, Duration::DAY);
+        $cacheTtl = class_exists(Duration::class) ? Duration::DAY : 86400;
+        DI::cache()->set(self::CACHE_KEY, $jwksData, $cacheTtl);
         return $jwksData;
     }
 
@@ -165,6 +166,15 @@ final class IdTokenValidator
                 DI::logger()->warning('openidconnect: id_token not yet valid');
                 return null;
             } catch (\UnexpectedValueException $e) {
+                if ($attempt === 0 && $this->shouldRetryAfterDecodeFailure($e)) {
+                    $jwksData = $this->refreshJwksAfterSignatureFailure($jwksUri);
+                    if ($jwksData === false) {
+                        return null;
+                    }
+
+                    continue;
+                }
+
                 DI::logger()->warning('openidconnect: id_token malformed', ['error' => $e->getMessage()]);
                 return null;
             } catch (\InvalidArgumentException $e) {
@@ -174,6 +184,15 @@ final class IdTokenValidator
         }
 
         return null;
+    }
+
+    private function shouldRetryAfterDecodeFailure(\UnexpectedValueException $e): bool
+    {
+        $message = strtolower($e->getMessage());
+
+        return str_contains($message, 'kid')
+            || str_contains($message, 'unable to find a key')
+            || str_contains($message, 'algorithm not supported');
     }
 
     private function refreshJwksAfterSignatureFailure(string $jwksUri): array|false
@@ -251,8 +270,15 @@ final class IdTokenValidator
     private function fetchJwks(string $jwksUri): array|false
     {
         try {
+            $options = [];
+            if (class_exists(HttpClientOptions::class)) {
+                $options[HttpClientOptions::TIMEOUT] = 15;
+            } else {
+                $options['timeout'] = 15;
+            }
+
             $response = DI::httpClient()->get($jwksUri, '', [
-                HttpClientOptions::TIMEOUT => 15,
+                ...$options,
             ]);
         } catch (\Throwable $e) {
             DI::logger()->error('openidconnect: failed to fetch JWKS', [

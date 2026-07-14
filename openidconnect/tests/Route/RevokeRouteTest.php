@@ -62,4 +62,52 @@ final class RevokeRouteTest extends AddonTestCase
         self::assertStringContainsString('token=access-token', (string) DI::httpClient()->postCalls[0]['postData']);
         self::assertStringContainsString('token=refresh-token', (string) DI::httpClient()->postCalls[1]['postData']);
     }
+
+    public function testHandleClearsSessionLocallyWhenProviderHasNoRevocationEndpoint(): void
+    {
+        DI::session()->set('openidconnect_tokens', [
+            'access_token' => 'access-token',
+            'refresh_token' => 'refresh-token',
+        ]);
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST['form_security_token'] = 'test-token-openidconnect_revoke';
+
+        (new RevokeRoute())->handle();
+
+        self::assertNull(DI::session()->get('openidconnect_tokens'));
+        self::assertSame('', DI::baseUrl()->lastRedirect());
+        self::assertCount(0, DI::httpClient()->postCalls);
+    }
+
+    public function testHandleLogsSafeWarningsAndClearsSessionWhenRevocationThrows(): void
+    {
+        DI::session()->set('openidconnect_tokens', [
+            'access_token' => 'access-token-123',
+            'refresh_token' => 'refresh-token-456',
+        ]);
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST['form_security_token'] = 'test-token-openidconnect_revoke';
+
+        DI::cache()->set('openidconnect:provider_config', [
+            'revocation_endpoint' => 'https://id.example/revoke',
+        ], 600);
+
+        DI::httpClient()->nextException = new \RuntimeException('failed for access-token-123 with super-secret');
+
+        (new RevokeRoute())->handle();
+
+        self::assertNull(DI::session()->get('openidconnect_tokens'));
+        self::assertCount(2, DI::logger()->warnings);
+
+        foreach (DI::logger()->warnings as [$message, $context]) {
+            self::assertContains($message, [
+                'openidconnect: revocation endpoint request threw exception',
+                'openidconnect: revocation endpoint returned non-success',
+            ]);
+            $contextEncoded = json_encode($context, JSON_THROW_ON_ERROR);
+            self::assertStringNotContainsString('access-token-123', $contextEncoded);
+            self::assertStringNotContainsString('refresh-token-456', $contextEncoded);
+            self::assertStringNotContainsString('super-secret', $contextEncoded);
+        }
+    }
 }
