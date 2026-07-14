@@ -65,6 +65,113 @@ final class IdTokenValidatorTest extends AddonTestCase
         self::assertSame(7, JWT::$leeway);
     }
 
+    public function testRejectsIssuerMismatch(): void
+    {
+        [$privateKey, $jwk] = $this->generateRsaMaterial();
+
+        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
+        DI::config()->set('openidconnect', 'client_id', 'client-id');
+        DI::cache()->set('openidconnect:provider_config', ['jwks_uri' => 'https://id.example/jwks'], 600);
+        DI::cache()->set('openidconnect:jwks', ['keys' => [$jwk]], 600);
+
+        $token = JWT::encode([
+            'iss' => 'https://evil.example',
+            'aud' => 'client-id',
+            'sub' => 'subject-1',
+            'iat' => time() - 5,
+            'nbf' => time() - 5,
+            'exp' => time() + 300,
+        ], $privateKey, 'RS256', $jwk['kid']);
+
+        self::assertFalse((new IdTokenValidator())->validate($token));
+    }
+
+    public function testRejectsAudienceMismatch(): void
+    {
+        [$privateKey, $jwk] = $this->generateRsaMaterial();
+
+        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
+        DI::config()->set('openidconnect', 'client_id', 'client-id');
+        DI::cache()->set('openidconnect:provider_config', ['jwks_uri' => 'https://id.example/jwks'], 600);
+        DI::cache()->set('openidconnect:jwks', ['keys' => [$jwk]], 600);
+
+        $token = JWT::encode([
+            'iss' => 'https://id.example',
+            'aud' => ['other-client'],
+            'sub' => 'subject-1',
+            'iat' => time() - 5,
+            'nbf' => time() - 5,
+            'exp' => time() + 300,
+        ], $privateKey, 'RS256', $jwk['kid']);
+
+        self::assertFalse((new IdTokenValidator())->validate($token));
+    }
+
+    public function testRejectsNonceMismatchWhenNonceIsExpected(): void
+    {
+        [$privateKey, $jwk] = $this->generateRsaMaterial();
+
+        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
+        DI::config()->set('openidconnect', 'client_id', 'client-id');
+        DI::cache()->set('openidconnect:provider_config', ['jwks_uri' => 'https://id.example/jwks'], 600);
+        DI::cache()->set('openidconnect:jwks', ['keys' => [$jwk]], 600);
+
+        $token = JWT::encode([
+            'iss' => 'https://id.example',
+            'aud' => 'client-id',
+            'nonce' => 'nonce-from-token',
+            'sub' => 'subject-1',
+            'iat' => time() - 5,
+            'nbf' => time() - 5,
+            'exp' => time() + 300,
+        ], $privateKey, 'RS256', $jwk['kid']);
+
+        self::assertFalse((new IdTokenValidator())->validate($token, 'different-nonce'));
+    }
+
+    public function testRejectsAccessTokenHashMismatch(): void
+    {
+        [$privateKey, $jwk] = $this->generateRsaMaterial();
+
+        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
+        DI::config()->set('openidconnect', 'client_id', 'client-id');
+        DI::cache()->set('openidconnect:provider_config', ['jwks_uri' => 'https://id.example/jwks'], 600);
+        DI::cache()->set('openidconnect:jwks', ['keys' => [$jwk]], 600);
+
+        $token = JWT::encode([
+            'iss' => 'https://id.example',
+            'aud' => 'client-id',
+            'at_hash' => IdTokenValidator::accessTokenHash('expected-access-token'),
+            'sub' => 'subject-1',
+            'iat' => time() - 5,
+            'nbf' => time() - 5,
+            'exp' => time() + 300,
+        ], $privateKey, 'RS256', $jwk['kid']);
+
+        self::assertFalse((new IdTokenValidator())->validate($token, '', 'different-access-token'));
+    }
+
+    public function testRejectsExpiredToken(): void
+    {
+        [$privateKey, $jwk] = $this->generateRsaMaterial();
+
+        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
+        DI::config()->set('openidconnect', 'client_id', 'client-id');
+        DI::cache()->set('openidconnect:provider_config', ['jwks_uri' => 'https://id.example/jwks'], 600);
+        DI::cache()->set('openidconnect:jwks', ['keys' => [$jwk]], 600);
+
+        $token = JWT::encode([
+            'iss' => 'https://id.example',
+            'aud' => 'client-id',
+            'sub' => 'subject-1',
+            'iat' => time() - 3600,
+            'nbf' => time() - 3600,
+            'exp' => time() - 120,
+        ], $privateKey, 'RS256', $jwk['kid']);
+
+        self::assertFalse((new IdTokenValidator())->validate($token));
+    }
+
     public function testValidatorDoesNotUseStaticSharedRetryFlag(): void
     {
         $source = file_get_contents(__DIR__ . '/../../src/Provider/IdTokenValidator.php');

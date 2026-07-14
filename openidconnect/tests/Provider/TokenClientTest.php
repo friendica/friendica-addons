@@ -54,4 +54,103 @@ final class TokenClientTest extends AddonTestCase
             DI::logger()->errors[array_key_last(DI::logger()->errors)][0]
         );
     }
+
+    public function testExchangeCodeReturnsEmptyArrayWhenTokenEndpointReturnsFailure(): void
+    {
+        DI::config()->set('openidconnect', 'client_id', 'client-id');
+        DI::config()->set('openidconnect', 'client_secret', 'client-secret');
+        DI::cache()->set('openidconnect:provider_config', [
+            'token_endpoint' => 'https://id.example/token',
+        ], 600);
+        DI::httpClient()->nextPostResponse = new TestHttpResponse(false, '{"error":"invalid_grant"}', 400);
+
+        $result = (new TokenClient())->exchangeCode('bad-code');
+
+        self::assertSame([], $result);
+        self::assertNotEmpty(DI::logger()->errors);
+        self::assertSame(
+            'openidconnect: token endpoint returned non-success response',
+            DI::logger()->errors[array_key_last(DI::logger()->errors)][0]
+        );
+    }
+
+    public function testExchangeCodeReturnsEmptyArrayWhenHttpClientThrows(): void
+    {
+        DI::config()->set('openidconnect', 'client_id', 'client-id');
+        DI::config()->set('openidconnect', 'client_secret', 'client-secret');
+        DI::cache()->set('openidconnect:provider_config', [
+            'token_endpoint' => 'https://id.example/token',
+        ], 600);
+        DI::httpClient()->nextException = new \RuntimeException('network down');
+
+        $result = (new TokenClient())->exchangeCode('code');
+
+        self::assertSame([], $result);
+        self::assertNotEmpty(DI::logger()->errors);
+        self::assertSame(
+            'openidconnect: token endpoint request threw exception',
+            DI::logger()->errors[array_key_last(DI::logger()->errors)][0]
+        );
+    }
+
+    public function testExchangeCodeReturnsEmptyArrayWhenAccessTokenIsMissing(): void
+    {
+        DI::config()->set('openidconnect', 'client_id', 'client-id');
+        DI::config()->set('openidconnect', 'client_secret', 'client-secret');
+        DI::cache()->set('openidconnect:provider_config', [
+            'token_endpoint' => 'https://id.example/token',
+        ], 600);
+        DI::httpClient()->nextPostResponse = new TestHttpResponse(
+            true,
+            json_encode(['id_token' => 'id-token-only'], JSON_THROW_ON_ERROR),
+            200
+        );
+
+        $result = (new TokenClient())->exchangeCode('auth-code');
+
+        self::assertSame([], $result);
+        self::assertNotEmpty(DI::logger()->errors);
+        self::assertSame(
+            'openidconnect: token response missing access_token',
+            DI::logger()->errors[array_key_last(DI::logger()->errors)][0]
+        );
+    }
+
+    public function testRevokeLogsWarningWhenEndpointReturnsFailure(): void
+    {
+        DI::config()->set('openidconnect', 'client_id', 'client-id');
+        DI::config()->set('openidconnect', 'client_secret', 'client-secret');
+        DI::httpClient()->nextPostResponse = new TestHttpResponse(false, '{"error":"invalid_token"}', 400);
+
+        (new TokenClient())->revoke(
+            'https://id.example/revoke',
+            'access-token',
+            ['revocation_endpoint_auth_methods_supported' => ['client_secret_basic']]
+        );
+
+        self::assertNotEmpty(DI::logger()->warnings);
+        self::assertSame(
+            'openidconnect: revocation endpoint returned non-success',
+            DI::logger()->warnings[array_key_last(DI::logger()->warnings)][0]
+        );
+    }
+
+    public function testRevokeHandlesHttpClientExceptionWithoutThrowing(): void
+    {
+        DI::config()->set('openidconnect', 'client_id', 'client-id');
+        DI::config()->set('openidconnect', 'client_secret', 'client-secret');
+        DI::httpClient()->nextException = new \RuntimeException('timeout');
+
+        (new TokenClient())->revoke(
+            'https://id.example/revoke',
+            'access-token',
+            ['revocation_endpoint_auth_methods_supported' => ['client_secret_post']]
+        );
+
+        self::assertNotEmpty(DI::logger()->warnings);
+        self::assertSame(
+            'openidconnect: revocation endpoint request threw exception',
+            DI::logger()->warnings[array_key_last(DI::logger()->warnings)][0]
+        );
+    }
 }

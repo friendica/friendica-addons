@@ -48,6 +48,24 @@ final class AvatarUpdaterTest extends AddonTestCase
         self::assertTrue($updater->isSafeUrl('https://cdn.example.com/avatar.png'));
     }
 
+    public function testIsSafeUrlRejectsWhenResolverThrows(): void
+    {
+        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example.com/.well-known/openid-configuration');
+
+        $updater = new AvatarUpdater(static function (string $host): array {
+            throw new \RuntimeException('dns failure');
+        });
+
+        self::assertFalse($updater->isSafeUrl('https://cdn.example.com/avatar.png'));
+    }
+
+    public function testIsWithinDownloadSizeLimitTreatsUnknownOrInvalidContentLengthAsAllowed(): void
+    {
+        $updater = new AvatarUpdater();
+
+        self::assertTrue($updater->isWithinDownloadSizeLimit('not-a-url', 1024));
+    }
+
     public function testUpdateRejectsOversizedAvatarPayload(): void
     {
         DI::config()->set('openidconnect', 'discovery_url', 'https://id.example.com/.well-known/openid-configuration');

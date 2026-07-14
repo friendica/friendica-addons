@@ -51,4 +51,62 @@ final class AdminHookTest extends AddonTestCase
         self::assertContains('OpenID Connect: Client Secret is required.', DI::sysmsg()->notices);
         self::assertNull(DI::config()->get('openidconnect', 'client_id'));
     }
+
+    public function testSavePreservesExistingClientSecretWhenFieldIsOmitted(): void
+    {
+        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example.com/.well-known/openid-configuration');
+        DI::config()->set('openidconnect', 'client_id', 'existing-client');
+        DI::config()->set('openidconnect', 'client_secret', 'existing-secret');
+
+        $hook = new AdminHook();
+        $hook->save([
+            'discovery_url' => 'https://id.example.com/.well-known/openid-configuration',
+            'client_id' => 'new-client',
+        ]);
+
+        self::assertSame('existing-secret', DI::config()->get('openidconnect', 'client_secret'));
+        self::assertSame('new-client', DI::config()->get('openidconnect', 'client_id'));
+        self::assertContains('OpenID Connect settings saved.', DI::sysmsg()->infos);
+    }
+
+    public function testSaveRejectsExplicitEmptyClientSecretAndDoesNotOverwriteStoredSecret(): void
+    {
+        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example.com/.well-known/openid-configuration');
+        DI::config()->set('openidconnect', 'client_id', 'existing-client');
+        DI::config()->set('openidconnect', 'client_secret', 'existing-secret');
+
+        $hook = new AdminHook();
+        $hook->save([
+            'discovery_url' => 'https://id.example.com/.well-known/openid-configuration',
+            'client_id' => 'existing-client',
+            'client_secret' => '   ',
+        ]);
+
+        self::assertContains('OpenID Connect: Client Secret is required.', DI::sysmsg()->notices);
+        self::assertSame('existing-secret', DI::config()->get('openidconnect', 'client_secret'));
+    }
+
+    public function testSaveRespectsReadOnlyProviderFieldsButAllowsButtonText(): void
+    {
+        DI::config()->set('openidconnect', 'client_id', 'immutable-client');
+        DI::config()->set('openidconnect', 'client_secret', 'immutable-secret');
+        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example.com/.well-known/openid-configuration');
+        DI::config()->set('openidconnect', 'button_text', 'Old Button');
+        DI::config()->getCache()->setSource('openidconnect', 'client_id', 5);
+        DI::config()->getCache()->setSource('openidconnect', 'client_secret', 5);
+        DI::config()->getCache()->setSource('openidconnect', 'discovery_url', 5);
+
+        $hook = new AdminHook();
+        $hook->save([
+            'client_id' => 'attacker-client',
+            'client_secret' => 'attacker-secret',
+            'discovery_url' => 'https://evil.example/.well-known/openid-configuration',
+            'button_text' => 'New Button',
+        ]);
+
+        self::assertSame('immutable-client', DI::config()->get('openidconnect', 'client_id'));
+        self::assertSame('immutable-secret', DI::config()->get('openidconnect', 'client_secret'));
+        self::assertSame('https://id.example.com/.well-known/openid-configuration', DI::config()->get('openidconnect', 'discovery_url'));
+        self::assertSame('New Button', DI::config()->get('openidconnect', 'button_text'));
+    }
 }

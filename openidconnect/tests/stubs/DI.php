@@ -58,19 +58,42 @@ final class TestLogger
 final class TestCache
 {
 	private array $values = [];
+	public array $setCalls = [];
+	public ?\Throwable $nextGetException = null;
+	public ?\Throwable $nextSetException = null;
+	public ?\Throwable $nextDeleteException = null;
 
 	public function get(string $key): mixed
 	{
+		if ($this->nextGetException !== null) {
+			$exception = $this->nextGetException;
+			$this->nextGetException = null;
+			throw $exception;
+		}
+
 		return $this->values[$key] ?? null;
 	}
 
 	public function set(string $key, mixed $value, int $ttl = 0): void
 	{
+		if ($this->nextSetException !== null) {
+			$exception = $this->nextSetException;
+			$this->nextSetException = null;
+			throw $exception;
+		}
+
+		$this->setCalls[] = ['key' => $key, 'value' => $value, 'ttl' => $ttl];
 		$this->values[$key] = $value;
 	}
 
 	public function delete(string $key): void
 	{
+		if ($this->nextDeleteException !== null) {
+			$exception = $this->nextDeleteException;
+			$this->nextDeleteException = null;
+			throw $exception;
+		}
+
 		unset($this->values[$key]);
 	}
 }

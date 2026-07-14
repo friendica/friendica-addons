@@ -3,8 +3,9 @@ PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
 Runtime:       PHP 8.5.8
 Configuration: /Users/danieldekay/Dokumente/projects/programmieren/friendica-patches/friendica-addons/openidconnect/phpunit.xml
 
-..........................................................        58 / 58 (100%)
+................................................................. 65 / 99 ( 65%)
+..................................                                99 / 99 (100%)
 
-Time: 00:00.079, Memory: 10.00 MB
+Time: 00:00.177, Memory: 12.00 MB
 
-OK (58 tests, 141 assertions)
+OK (99 tests, 260 assertions)
