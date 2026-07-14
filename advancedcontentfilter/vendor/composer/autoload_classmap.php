@@ -213,6 +213,7 @@ return array(
     'Symfony\\Component\\ExpressionLanguage\\Node\\NameNode' => $vendorDir . '/symfony/expression-language/Node/NameNode.php',
     'Symfony\\Component\\ExpressionLanguage\\Node\\Node' => $vendorDir . '/symfony/expression-language/Node/Node.php',
     'Symfony\\Component\\ExpressionLanguage\\Node\\NullCoalesceNode' => $vendorDir . '/symfony/expression-language/Node/NullCoalesceNode.php',
+    'Symfony\\Component\\ExpressionLanguage\\Node\\NullCoalescedNameNode' => $vendorDir . '/symfony/expression-language/Node/NullCoalescedNameNode.php',
     'Symfony\\Component\\ExpressionLanguage\\Node\\UnaryNode' => $vendorDir . '/symfony/expression-language/Node/UnaryNode.php',
     'Symfony\\Component\\ExpressionLanguage\\ParsedExpression' => $vendorDir . '/symfony/expression-language/ParsedExpression.php',
     'Symfony\\Component\\ExpressionLanguage\\Parser' => $vendorDir . '/symfony/expression-language/Parser.php',

@@ -296,6 +296,7 @@ class ComposerStaticInitAdvancedContentFilterAddon
         'Symfony\\Component\\ExpressionLanguage\\Node\\NameNode' => __DIR__ . '/..' . '/symfony/expression-language/Node/NameNode.php',
         'Symfony\\Component\\ExpressionLanguage\\Node\\Node' => __DIR__ . '/..' . '/symfony/expression-language/Node/Node.php',
         'Symfony\\Component\\ExpressionLanguage\\Node\\NullCoalesceNode' => __DIR__ . '/..' . '/symfony/expression-language/Node/NullCoalesceNode.php',
+        'Symfony\\Component\\ExpressionLanguage\\Node\\NullCoalescedNameNode' => __DIR__ . '/..' . '/symfony/expression-language/Node/NullCoalescedNameNode.php',
         'Symfony\\Component\\ExpressionLanguage\\Node\\UnaryNode' => __DIR__ . '/..' . '/symfony/expression-language/Node/UnaryNode.php',
         'Symfony\\Component\\ExpressionLanguage\\ParsedExpression' => __DIR__ . '/..' . '/symfony/expression-language/ParsedExpression.php',
         'Symfony\\Component\\ExpressionLanguage\\Parser' => __DIR__ . '/..' . '/symfony/expression-language/Parser.php',

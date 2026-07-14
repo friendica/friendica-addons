@@ -12,7 +12,7 @@
     ],
     "require": {
         "slim/slim": "^4",
-        "symfony/expression-language": "^6.4"
+        "symfony/expression-language": "^7.4"
     },
     "license": "3-clause BSD license",
     "minimum-stability": "stable",
