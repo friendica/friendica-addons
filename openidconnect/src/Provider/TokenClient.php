@@ -9,9 +9,16 @@ use Friendica\Network\HTTPClient\Client\HttpClientOptions;
 
 final class TokenClient
 {
+    private ProviderConfiguration $providerConfiguration;
+
+    public function __construct(?ProviderConfiguration $providerConfiguration = null)
+    {
+        $this->providerConfiguration = $providerConfiguration ?? new ProviderConfiguration();
+    }
+
     public function exchangeCode(string $code, string $codeVerifier = ''): array
     {
-        $config = openidconnect_get_provider_config();
+        $config = $this->providerConfiguration->get();
         if (empty($config['token_endpoint'])) {
             return [];
         }
@@ -19,7 +26,7 @@ final class TokenClient
         $clientId     = DI::config()->get('openidconnect', 'client_id');
         $clientSecret = DI::config()->get('openidconnect', 'client_secret');
         $redirectUri  = DI::baseUrl() . '/openidconnect/callback';
-        $authMethod   = openidconnect_get_client_auth_method($config, 'token');
+        $authMethod   = ProviderConfiguration::clientAuthMethod($config, 'token');
 
         $postData = [
             'grant_type'   => 'authorization_code',
@@ -77,7 +84,7 @@ final class TokenClient
     {
         $clientId     = DI::config()->get('openidconnect', 'client_id');
         $clientSecret = DI::config()->get('openidconnect', 'client_secret');
-        $authMethod   = openidconnect_get_client_auth_method($providerConfig, 'revocation');
+        $authMethod   = ProviderConfiguration::clientAuthMethod($providerConfig, 'revocation');
         $headers      = ['Content-Type' => 'application/x-www-form-urlencoded'];
         $postData     = ['token' => $token];
 

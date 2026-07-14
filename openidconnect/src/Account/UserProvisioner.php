@@ -162,7 +162,7 @@ final class UserProvisioner
 
             DI::pConfig()->set($uid, 'openidconnect', 'oidc_sub', $sub);
             DI::pConfig()->set($uid, 'openidconnect', 'oidc_email', $email);
-            DI::pConfig()->set($uid, 'openidconnect', 'oidc_niface', $nickname);
+            DI::pConfig()->set($uid, 'openidconnect', 'oidc_nickname', $nickname);
 
             DI::logger()->info('OpenID Connect user created', ['nickname' => $nickname, 'email' => $email, 'uid' => $uid]);
             $userData = DBA::selectFirst('user', [], ['uid' => $uid]);

@@ -11,12 +11,13 @@ final class CallbackHandler
 {
     private CallbackDependencies $dependencies;
 
-    public function __construct(?CallbackDependencies $dependencies = null)
+    public function __construct(?CallbackDependencies $dependencies = null, ?\Friendica\Addon\OpenIdConnect\Provider\ProviderConfiguration $providerConfiguration = null)
     {
+        $providerConfiguration = $providerConfiguration ?? new \Friendica\Addon\OpenIdConnect\Provider\ProviderConfiguration();
         $this->dependencies = $dependencies ?? new CallbackDependencies(
-            new AuthorizationRequest(),
-            new \Friendica\Addon\OpenIdConnect\Provider\TokenClient(),
-            new CallbackIdentityVerifier(),
+            new AuthorizationRequest($providerConfiguration),
+            new \Friendica\Addon\OpenIdConnect\Provider\TokenClient($providerConfiguration),
+            new CallbackIdentityVerifier(null, null, $providerConfiguration),
             new CallbackLinkCompleter(),
             new \Friendica\Addon\OpenIdConnect\Account\UserProvisioner(),
         );

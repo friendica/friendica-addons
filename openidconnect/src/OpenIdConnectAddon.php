@@ -48,7 +48,7 @@ final class OpenIdConnectAddon
 		$this->lifecycle = $lifecycle ?? new AddonLifecycle();
 		$this->providerConfiguration = $providerConfiguration ?? new ProviderConfiguration();
 		$this->authorizationRequest = $authorizationRequest ?? new AuthorizationRequest($this->providerConfiguration);
-		$this->callbackHandler = $callbackHandler ?? new CallbackHandler();
+		$this->callbackHandler = $callbackHandler ?? new CallbackHandler(null, $this->providerConfiguration);
 		$this->revokeRoute = $revokeRoute ?? new RevokeRoute($this->providerConfiguration);
 		$this->accountLinkRoutes = $accountLinkRoutes ?? new AccountLinkRoutes($this->providerConfiguration, $this->authorizationRequest);
 		$this->logoutHandler = $logoutHandler ?? new LogoutHandler($this->providerConfiguration);

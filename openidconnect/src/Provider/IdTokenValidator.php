@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Friendica\Addon\OpenIdConnect\Provider;
 
 use Friendica\Addon\OpenIdConnect\Auth\LoginPolicy;
+use Friendica\Addon\OpenIdConnect\Provider\ProviderConfiguration;
 use Friendica\Core\Cache\Enum\Duration;
 use Friendica\DI;
+use Friendica\Network\HTTPClient\Client\HttpClientOptions;
 use Firebase\JWT\BeforeValidException;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWK;
@@ -16,6 +18,13 @@ use Firebase\JWT\SignatureInvalidException;
 final class IdTokenValidator
 {
     private const CACHE_KEY = 'openidconnect:jwks';
+
+    private ProviderConfiguration $providerConfiguration;
+
+    public function __construct(?ProviderConfiguration $providerConfiguration = null)
+    {
+        $this->providerConfiguration = $providerConfiguration ?? new ProviderConfiguration();
+    }
 
     public static function accessTokenHash(string $accessToken): string
     {
@@ -34,7 +43,7 @@ final class IdTokenValidator
             return false;
         }
 
-        $config  = openidconnect_get_provider_config();
+        $config  = $this->providerConfiguration->get();
         $jwksUri = $config['jwks_uri'] ?? '';
         if ($jwksUri === '') {
             DI::logger()->error('openidconnect: jwks_uri missing from discovery document');

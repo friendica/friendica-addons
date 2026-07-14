@@ -6,6 +6,7 @@ namespace Friendica\Addon\OpenIdConnect\Auth;
 
 use Friendica\Addon\OpenIdConnect\Identity\UserInfo;
 use Friendica\Addon\OpenIdConnect\Provider\IdTokenValidator;
+use Friendica\Addon\OpenIdConnect\Provider\ProviderConfiguration;
 use Friendica\DI;
 
 final class CallbackIdentityVerifier
@@ -13,10 +14,13 @@ final class CallbackIdentityVerifier
     private IdTokenValidator $idTokenValidator;
     private UserInfo $userInfo;
 
-    public function __construct(?IdTokenValidator $idTokenValidator = null, ?UserInfo $userInfo = null)
+    private ProviderConfiguration $providerConfiguration;
+
+    public function __construct(?IdTokenValidator $idTokenValidator = null, ?UserInfo $userInfo = null, ?ProviderConfiguration $providerConfiguration = null)
     {
-        $this->idTokenValidator = $idTokenValidator ?? new IdTokenValidator();
-        $this->userInfo = $userInfo ?? new UserInfo();
+        $this->providerConfiguration = $providerConfiguration ?? new ProviderConfiguration();
+        $this->idTokenValidator = $idTokenValidator ?? new IdTokenValidator($this->providerConfiguration);
+        $this->userInfo = $userInfo ?? new UserInfo($this->providerConfiguration);
     }
 
     public function verify(array $tokens, array $stateData): array
