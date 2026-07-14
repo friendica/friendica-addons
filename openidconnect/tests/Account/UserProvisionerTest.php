@@ -18,6 +18,14 @@ final class UserProvisionerTest extends AddonTestCase
         self::assertSame('jane', $service->normaliseNickname('', '', 'jane@example.test'));
     }
 
+    public function testNormalisesNicknameTrimsAndFallsBackToEmptyWhenNameAndEmailPrefixAreUnusable(): void
+    {
+        $service = new UserProvisioner(new AccountLinker(), new AvatarUpdater());
+
+        self::assertSame('a', $service->normaliseNickname('', 'A', 'a@example.test'));
+        self::assertSame('', $service->normaliseNickname('', '!!!', '@example.test'));
+    }
+
     public function testResolveUniqueNicknameFindsNextFreeSuffix(): void
     {
         $service = new UserProvisioner(new AccountLinker(), new AvatarUpdater());

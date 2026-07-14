@@ -11,6 +11,22 @@ use Friendica\DI;
 
 final class AccountLinkRoutesTest extends AddonTestCase
 {
+    public function testBeginRequiresAuthenticatedUser(): void
+    {
+        DI::config()->set('openidconnect', 'client_id', 'client-id');
+        DI::config()->set('openidconnect', 'client_secret', 'secret');
+        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
+        DI::cache()->set('openidconnect:provider_config', [
+            'authorization_endpoint' => 'https://id.example/authorize',
+        ], 600);
+
+        (new AccountLinkRoutes())->begin();
+
+        self::assertSame('login', DI::baseUrl()->lastRedirect());
+        self::assertNotEmpty(DI::sysmsg()->notices);
+        self::assertStringContainsString('must be logged in', implode(' ', DI::sysmsg()->notices));
+    }
+
     public function testUnlinkLogsOnlySafeFlagsForLinkedAccount(): void
     {
         DI::userSession()->setLocalUserId(42);

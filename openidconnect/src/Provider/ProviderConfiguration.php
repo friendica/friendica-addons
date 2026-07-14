@@ -132,6 +132,14 @@ final class ProviderConfiguration
             : 'token_endpoint_auth_methods_supported';
         $methods = $metadata[$metadataKey] ?? [];
 
+        if (!is_array($methods)) {
+            DI::logger()->warning('openidconnect: provider metadata auth methods has invalid type, defaulting to client_secret_basic', [
+                'endpoint' => $endpoint,
+                'type' => gettype($methods),
+            ]);
+            return 'client_secret_basic';
+        }
+
         if (empty($methods) || in_array('client_secret_basic', $methods, true)) {
             return 'client_secret_basic';
         }

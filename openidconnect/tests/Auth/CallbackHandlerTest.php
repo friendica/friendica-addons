@@ -14,6 +14,7 @@ use Friendica\Addon\OpenIdConnect\Auth\CallbackHandler;
 use Friendica\Addon\OpenIdConnect\Auth\CallbackIdentityVerifier;
 use Friendica\Addon\OpenIdConnect\Auth\CallbackLinkCompleter;
 use Friendica\Addon\OpenIdConnect\Auth\LoginPolicy;
+use Friendica\Addon\OpenIdConnect\Auth\SessionFunctionSpy;
 use Friendica\Addon\OpenIdConnect\Identity\UserInfo;
 use Friendica\Addon\OpenIdConnect\Provider\IdTokenValidator;
 use Friendica\Addon\OpenIdConnect\Provider\ProviderConfiguration;
@@ -36,6 +37,67 @@ final class CallbackHandlerTest extends AddonTestCase
         (new CallbackHandler($this->dependencies()))->handle([]);
 
         self::assertSame('login', DI::baseUrl()->lastRedirect());
+    }
+
+    public function testExpiredStateRedirectsToLoginWithNotice(): void
+    {
+        (new CallbackHandler($this->dependencies()))->handle([
+            'code' => 'auth-code',
+            'state' => 'missing-state',
+        ]);
+
+        self::assertSame('login', DI::baseUrl()->lastRedirect());
+        self::assertNotEmpty(DI::sysmsg()->notices);
+        self::assertStringContainsString(
+            'invalid or expired state',
+            implode(' ', DI::sysmsg()->notices)
+        );
+    }
+
+    public function testLinkModeCallbackStoresTokensClosesSessionAndRedirectsToReturnPath(): void
+    {
+        DI::userSession()->setLocalUserId(7);
+        DI::config()->set('openidconnect', 'client_id', 'client-id');
+        DI::config()->set('openidconnect', 'client_secret', 'secret');
+        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
+
+        DI::cache()->set('openidconnect:provider_config', [
+            'token_endpoint' => 'https://id.example/token',
+            'userinfo_endpoint' => 'https://id.example/userinfo',
+            'jwks_uri' => 'https://id.example/jwks',
+        ], 600);
+
+        DI::cache()->set('oidcstate:s', [
+            'nonce' => 'nonce',
+            'pkce_verifier' => 'pkce',
+            'return_path' => 'settings/account',
+            'link_mode' => true,
+        ], 600);
+
+        DI::httpClient()->nextPostResponse = new TestHttpResponse(
+            true,
+            json_encode(['access_token' => 'access-token'], JSON_THROW_ON_ERROR),
+            200
+        );
+        DI::httpClient()->nextGetResponse = new TestHttpResponse(
+            true,
+            json_encode([
+                'sub' => 'sub-1',
+                'email' => 'person@example.test',
+                'name' => 'Person Example',
+                'preferred_username' => 'person',
+            ], JSON_THROW_ON_ERROR),
+            200
+        );
+
+        (new CallbackHandler($this->dependencies()))->handle([
+            'code' => 'auth-code',
+            'state' => 's',
+        ]);
+
+        self::assertSame('access-token', DI::session()->get('openidconnect_tokens')['access_token']);
+        self::assertTrue(SessionFunctionSpy::$sessionWriteCloseCalled);
+        self::assertSame('settings/account', DI::baseUrl()->lastRedirect());
     }
 
     public function testEmptyIdentityVerificationFallsBackToManualLoginWithNotice(): void

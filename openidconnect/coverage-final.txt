@@ -1,0 +1,62 @@
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.5.8 with Xdebug 3.5.3
+Configuration: /Users/danieldekay/Dokumente/projects/programmieren/friendica-patches/friendica-addons/openidconnect/phpunit.xml
+
+..........................................................        58 / 58 (100%)
+
+Time: 00:00.268, Memory: 18.00 MB
+
+OK (58 tests, 141 assertions)
+
+Generating code coverage report in Clover XML format ... done [00:00.009]
+
+
+Code Coverage Report:
+  2026-07-14 11:53:07
+
+ Summary:
+  Classes:  4.55% (1/22)
+  Methods: 35.48% (33/93)
+  Lines:   40.70% (532/1307)
+
+Friendica\Addon\OpenIdConnect\Account\AccountLinker
+  Methods:  33.33% ( 1/ 3)   Lines:  88.46% ( 23/ 26)
+Friendica\Addon\OpenIdConnect\Account\AvatarUpdater
+  Methods:  16.67% ( 1/ 6)   Lines:  32.50% ( 39/120)
+Friendica\Addon\OpenIdConnect\Account\UserProvisioner
+  Methods:  42.86% ( 3/ 7)   Lines:  18.12% ( 25/138)
+Friendica\Addon\OpenIdConnect\Auth\AuthorizationRequest
+  Methods:  33.33% ( 1/ 3)   Lines:   9.09% (  7/ 77)
+Friendica\Addon\OpenIdConnect\Auth\CallbackDependencies
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  1/  1)
+Friendica\Addon\OpenIdConnect\Auth\CallbackHandler
+  Methods:  50.00% ( 2/ 4)   Lines:  72.22% ( 65/ 90)
+Friendica\Addon\OpenIdConnect\Auth\CallbackIdentityVerifier
+  Methods:  50.00% ( 1/ 2)   Lines:  65.62% ( 42/ 64)
+Friendica\Addon\OpenIdConnect\Auth\CallbackLinkCompleter
+  Methods:  50.00% ( 1/ 2)   Lines:  44.00% ( 11/ 25)
+Friendica\Addon\OpenIdConnect\Auth\LoginPolicy
+  Methods:  88.89% ( 8/ 9)   Lines:  96.77% ( 30/ 31)
+Friendica\Addon\OpenIdConnect\Identity\UserInfo
+  Methods:  66.67% ( 2/ 3)   Lines:  74.00% ( 37/ 50)
+Friendica\Addon\OpenIdConnect\OpenIdConnectAddon
+  Methods:   7.14% ( 1/14)   Lines:  42.86% ( 18/ 42)
+Friendica\Addon\OpenIdConnect\Presentation\AdminHook
+  Methods:  16.67% ( 1/ 6)   Lines:  23.88% ( 32/134)
+Friendica\Addon\OpenIdConnect\Presentation\LoginHook
+  Methods:  25.00% ( 1/ 4)   Lines:  77.36% ( 41/ 53)
+Friendica\Addon\OpenIdConnect\Presentation\SettingsHook
+  Methods:  50.00% ( 1/ 2)   Lines:   3.85% (  1/ 26)
+Friendica\Addon\OpenIdConnect\Provider\IdTokenValidator
+  Methods:  57.14% ( 4/ 7)   Lines:  34.17% ( 41/120)
+Friendica\Addon\OpenIdConnect\Provider\ProviderConfiguration
+  Methods:   0.00% ( 0/ 3)   Lines:  68.67% ( 57/ 83)
+Friendica\Addon\OpenIdConnect\Provider\TokenClient
+  Methods:  20.00% ( 1/ 5)   Lines:  36.71% ( 29/ 79)
+Friendica\Addon\OpenIdConnect\Route\AccountLinkRoutes
+  Methods:  33.33% ( 1/ 3)   Lines:  65.71% ( 23/ 35)
+Friendica\Addon\OpenIdConnect\Route\RevokeRoute
+  Methods:  50.00% ( 1/ 2)   Lines:  29.63% (  8/ 27)
+Friendica\Addon\OpenIdConnect\Session\LogoutHandler
+  Methods:  33.33% ( 1/ 3)   Lines:   5.56% (  2/ 36)

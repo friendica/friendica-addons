@@ -30,6 +30,18 @@ final class ProviderConfigurationTest extends AddonTestCase
         self::assertSame('client_secret_post', ProviderConfiguration::clientAuthMethod($config));
     }
 
+    public function testDefaultsToBasicWhenMetadataAuthMethodsTypeIsInvalid(): void
+    {
+        $config = ['token_endpoint_auth_methods_supported' => 'client_secret_post'];
+
+        self::assertSame('client_secret_basic', ProviderConfiguration::clientAuthMethod($config));
+        self::assertNotEmpty(DI::logger()->warnings);
+        self::assertSame(
+            'openidconnect: provider metadata auth methods has invalid type, defaulting to client_secret_basic',
+            DI::logger()->warnings[array_key_last(DI::logger()->warnings)][0]
+        );
+    }
+
     public function testGetLogsStatusAndBodySnippetWhenDiscoveryRequestFails(): void
     {
         DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');

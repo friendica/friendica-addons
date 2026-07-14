@@ -67,7 +67,13 @@ final class CallbackIdentityVerifier
             return [];
         }
 
-        DI::logger()->debug('openidconnect userinfo', ['userinfo' => $userinfo]);
+        DI::logger()->debug('openidconnect userinfo', [
+            'has_sub' => !empty($userinfo['sub']),
+            'has_email' => !empty($userinfo['email']),
+            'has_preferred_username' => !empty($userinfo['preferred_username']),
+            'has_picture' => !empty($userinfo['picture']),
+            'has_email_verified' => array_key_exists('email_verified', $userinfo),
+        ]);
 
         $emailVerifiedRaw = $userinfo['email_verified'] ?? null;
         $emailVerified = null;
