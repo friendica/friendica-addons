@@ -22,6 +22,14 @@ final class DBA
      * @var list<array{table: string, condition: array<string, mixed>}>
      */
     public static array $deleteCalls = [];
+    /**
+     * @var list<array{table: string, fields: array<string, mixed>, condition: array<string, mixed>}>
+     */
+    public static array $updateCalls = [];
+    public static array $pRows = [];
+    public static int $pCallCount = 0;
+
+    public static ?\Throwable $nextSelectException = null;
 
     public static function resetTestState(): void
     {
@@ -29,6 +37,49 @@ final class DBA
         self::$contacts = [];
         self::$lastInsertId = 0;
 		self::$deleteCalls = [];
+        self::$updateCalls = [];
+        self::$pRows = [];
+        self::$pCallCount = 0;
+        self::$nextSelectException = null;
+    }
+
+    public static function p(string $sql, mixed ...$params): object
+    {
+        self::$pCallCount++;
+        return new class(self::$pRows)
+        {
+            /** @var array<int, array<string, mixed>> */
+            private array $rows;
+            private int $position = 0;
+
+            /** @param array<int, array<string, mixed>> $rows */
+            public function __construct(array $rows)
+            {
+                $this->rows = $rows;
+            }
+
+            public function next(): array|false
+            {
+                if (!isset($this->rows[$this->position])) {
+                    return false;
+                }
+
+                return $this->rows[$this->position++];
+            }
+        };
+    }
+
+    public static function fetch(object $result): array|false
+    {
+        if (method_exists($result, 'next')) {
+            return $result->next();
+        }
+
+        return false;
+    }
+
+    public static function close(object $result): void
+    {
     }
 
 	public static function delete(string $table, array $condition): bool
@@ -39,6 +90,12 @@ final class DBA
 
     public static function selectFirst(string $table, array $fields, array $condition): array
     {
+        if (self::$nextSelectException !== null) {
+            $exception = self::$nextSelectException;
+            self::$nextSelectException = null;
+            throw $exception;
+        }
+
         if ($table === 'user') {
             foreach (self::$users as $uid => $row) {
                 if (isset($condition['uid']) && (int)$condition['uid'] !== $uid) {
@@ -85,6 +142,8 @@ final class DBA
 
     public static function update(string $table, array $fields, array $condition): bool
     {
+        self::$updateCalls[] = ['table' => $table, 'fields' => $fields, 'condition' => $condition];
+
         if ($table === 'contact') {
             $id = (int)($condition['id'] ?? 0);
             if ($id > 0) {

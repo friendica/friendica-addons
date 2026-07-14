@@ -28,8 +28,6 @@ This addon enables authentication and registration of users via OpenID Connect (
 2. Enable the addon in the Friendica admin interface under `Admin -> Addons`
 3. Configure the addon under `Admin -> Addons -> OpenID Connect`
 
-For a canonical Authentik-specific setup guide, see `AUTHENTIK_SETUP.md`.
-
 ## Configuration
 
 The following options are available in the admin panel:

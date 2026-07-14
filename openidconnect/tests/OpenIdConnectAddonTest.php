@@ -170,4 +170,24 @@ final class OpenIdConnectAddonTest extends AddonTestCase
 
 		self::assertNotEmpty(DI::sysmsg()->notices);
 	}
+
+	public function testAddonAdminPostRedirectsBackToAddonPageAfterSuccessfulSave(): void
+	{
+		$addon = new OpenIdConnectAddon();
+
+		$addon->addonAdminPost([
+			'discovery_url' => 'https://id.example.com/.well-known/openid-configuration',
+			'client_id' => 'client-id',
+			'client_secret' => 'secret-value',
+			'scopes' => 'openid email profile',
+			'button_text' => 'Sign in with OpenID Connect',
+			'auto_create_accounts' => '1',
+			'allow_unverified_email' => '1',
+			'transparent_sso' => '1',
+			'idp_signout' => '1',
+		]);
+
+		self::assertSame('admin/addons/openidconnect', DI::baseUrl()->lastRedirect());
+		self::assertContains('OpenID Connect settings saved.', DI::sysmsg()->infos);
+	}
 }

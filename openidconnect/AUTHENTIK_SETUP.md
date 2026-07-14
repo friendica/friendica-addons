@@ -10,8 +10,6 @@ support_level: community
 >
 > -- https://friendi.ca/
 
-This guide explains how to configure Friendica's `openidconnect` addon to use authentik as the OpenID Connect provider for logging in to the Friendica web interface.
-
 ## Preparation
 
 The following placeholders are used in this guide:
@@ -44,23 +42,19 @@ To support the integration of Friendica with authentik, you need to create an ap
 
 ## Friendica configuration
 
-Enable the `openidconnect` addon in Friendica and configure it via the admin panel (**Admin** > **Addons** > **OpenID Connect**) or by adding the following to `config/openidconnect.config.php`:
+Enable the `openidconnect` addon in Friendica and configure it via the admin panel (**Admin** > **Addons** > **OpenID Connect**).
 
-```php
-<?php
+Friendica stores these addon settings in its database. For automated setups you can also seed the same values with `bin/console.php config openidconnect <key> <value>`.
 
-return [
-    'openidconnect' => [
-        'discovery_url' => 'https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration',
-        'client_id' => '<client-id>',
-        'client_secret' => '<client-secret>',
-        'scopes' => 'openid email profile',
-        'auto_create_accounts' => true,
-        'allow_unverified_email' => true,
-        'button_text' => 'Sign in with authentik',
-    ],
-];
-```
+Use these values:
+
+- `discovery_url`: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
+- `client_id`: the Authentik client ID
+- `client_secret`: the Authentik client secret
+- `scopes`: `openid email profile`
+- `auto_create_accounts`: enabled
+- `allow_unverified_email`: only enable for local development if needed
+- `button_text`: `Sign in with authentik`
 
 :::note
 The `application_slug` is the slug value you provided when creating the application in authentik. It must match the slug shown in authentik under **Applications** > **your application**.

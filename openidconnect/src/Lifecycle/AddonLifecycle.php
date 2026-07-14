@@ -25,22 +25,31 @@ final class AddonLifecycle
 		'transparent_sso_prompt_none',
 	];
 
+	private function addonEntrypoint(): string
+	{
+		return dirname(__DIR__, 2) . '/openidconnect.php';
+	}
+
 	public function install(): void
 	{
-		Hook::register('load_config', __FILE__, 'openidconnect_load_config');
-		Hook::register('login_hook', __FILE__, 'openidconnect_sso_initiate');
-		Hook::register('logging_out', __FILE__, 'openidconnect_logout');
-		Hook::register('page_end', __FILE__, 'openidconnect_page_end');
-		Hook::register('addon_settings', __FILE__, 'openidconnect_addon_settings');
+		$entrypoint = $this->addonEntrypoint();
+
+		Hook::register('load_config', $entrypoint, 'openidconnect_load_config');
+		Hook::register('login_hook', $entrypoint, 'openidconnect_sso_initiate');
+		Hook::register('logging_out', $entrypoint, 'openidconnect_logout');
+		Hook::register('page_end', $entrypoint, 'openidconnect_page_end');
+		Hook::register('addon_settings', $entrypoint, 'openidconnect_addon_settings');
 	}
 
 	public function uninstall(): void
 	{
-		Hook::unregister('load_config', __FILE__, 'openidconnect_load_config');
-		Hook::unregister('login_hook', __FILE__, 'openidconnect_sso_initiate');
-		Hook::unregister('logging_out', __FILE__, 'openidconnect_logout');
-		Hook::unregister('page_end', __FILE__, 'openidconnect_page_end');
-		Hook::unregister('addon_settings', __FILE__, 'openidconnect_addon_settings');
+		$entrypoint = $this->addonEntrypoint();
+
+		Hook::unregister('load_config', $entrypoint, 'openidconnect_load_config');
+		Hook::unregister('login_hook', $entrypoint, 'openidconnect_sso_initiate');
+		Hook::unregister('logging_out', $entrypoint, 'openidconnect_logout');
+		Hook::unregister('page_end', $entrypoint, 'openidconnect_page_end');
+		Hook::unregister('addon_settings', $entrypoint, 'openidconnect_addon_settings');
 
 		DBA::delete('pconfig', ['cat' => 'openidconnect']);
 

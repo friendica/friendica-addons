@@ -111,6 +111,9 @@ final class TestHttpClient
 	public ?TestHttpResponse $nextPostResponse = null;
 	public array $getCalls = [];
 	public array $postCalls = [];
+	public bool $forceTypeErrorOnFirstStringPost = false;
+	public string $forcedTypeErrorMessage = 'Simulated TypeError for string post payload';
+	private bool $forcedTypeErrorTriggered = false;
 
 	public function fetch(string $url, string $accept = '', int $timeout = 30): string
 	{
@@ -142,6 +145,11 @@ final class TestHttpClient
 	{
 		$this->postCalls[] = ['url' => $url, 'postData' => $postData, 'headers' => $headers, 'timeout' => $timeout];
 
+		if ($this->forceTypeErrorOnFirstStringPost && !$this->forcedTypeErrorTriggered && is_string($postData)) {
+			$this->forcedTypeErrorTriggered = true;
+			throw new \TypeError($this->forcedTypeErrorMessage);
+		}
+
 		if ($this->nextException !== null) {
 			$exception = $this->nextException;
 			$this->nextException = null;
@@ -154,6 +162,9 @@ final class TestHttpClient
 
 final class TestHttpResponse
 {
+	public bool $throwOnGetBodyString = false;
+	public string $getBodyStringExceptionMessage = 'Simulated response body read failure';
+
 	public function __construct(
 		private bool $success,
 		private string $body,
@@ -168,6 +179,10 @@ final class TestHttpResponse
 
 	public function getBodyString(): string
 	{
+		if ($this->throwOnGetBodyString) {
+			throw new \RuntimeException($this->getBodyStringExceptionMessage);
+		}
+
 		return $this->body;
 	}
 
@@ -313,6 +328,7 @@ final class TestSession
 final class TestArgs
 {
 	private string $queryString = '';
+	private string $command = '';
 
 	public function setQueryString(string $queryString): void
 	{
@@ -341,7 +357,12 @@ final class TestArgs
 
 	public function getCommand(): string
 	{
-		return '';
+		return $this->command;
+	}
+
+	public function setCommand(string $command): void
+	{
+		$this->command = $command;
 	}
 }
 
@@ -368,6 +389,8 @@ final class TestAuth
 final class TestPConfig
 {
 	private array $values = [];
+	public array $setCalls = [];
+	public array $deleteCalls = [];
 
 	public function get(int $uid, string $cat, string $key): mixed
 	{
@@ -376,11 +399,13 @@ final class TestPConfig
 
 	public function set(int $uid, string $cat, string $key, mixed $value): void
 	{
+		$this->setCalls[] = ['uid' => $uid, 'cat' => $cat, 'key' => $key, 'value' => $value];
 		$this->values[$uid][$cat][$key] = $value;
 	}
 
 	public function delete(int $uid, string $cat, string $key): void
 	{
+		$this->deleteCalls[] = ['uid' => $uid, 'cat' => $cat, 'key' => $key];
 		unset($this->values[$uid][$cat][$key]);
 	}
 }

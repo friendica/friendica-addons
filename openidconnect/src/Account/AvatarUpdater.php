@@ -74,66 +74,22 @@ final class AvatarUpdater
             return;
         }
 
-        if (!$this->isSafeUrl($url)) {
-            DI::logger()->warning('openidconnect: rejected unsafe picture URL', ['url' => $this->sanitizeSensitiveUrl($url)]);
+        if (!$this->passesAvatarUrlGuards($uid, $url)) {
             return;
         }
 
-        if (!$this->isWithinDownloadSizeLimit($url, self::MAX_AVATAR_BYTES)) {
-            DI::logger()->warning('openidconnect: rejected avatar URL with oversized content-length', [
-                'uid' => $uid,
-                'url' => $this->sanitizeSensitiveUrl($url),
-                'max_bytes' => self::MAX_AVATAR_BYTES,
-            ]);
+        $photoData = $this->fetchValidatedAvatarPayload($uid, $url);
+        if ($photoData === null) {
             return;
         }
 
-        try {
-            $photoData = DI::httpClient()->fetch($url, '', 30);
-        } catch (\Throwable $e) {
-            DI::logger()->warning('openidconnect: failed to fetch avatar image', [
-                'uid' => $uid,
-                'url' => $this->sanitizeSensitiveUrl($url),
-                'error' => $e->getMessage(),
-            ]);
-            return;
-        }
-
-        if (empty($photoData)) {
-            DI::logger()->warning('openidconnect: avatar fetch returned empty payload', ['uid' => $uid, 'url' => $this->sanitizeSensitiveUrl($url)]);
-            return;
-        }
-
-        if (strlen($photoData) > self::MAX_AVATAR_BYTES) {
-            DI::logger()->warning('openidconnect: rejected oversized avatar payload', [
-                'uid' => $uid,
-                'url' => $this->sanitizeSensitiveUrl($url),
-                'bytes' => strlen($photoData),
-                'max_bytes' => self::MAX_AVATAR_BYTES,
-            ]);
-            return;
-        }
-
-        $tempFile = tempnam(sys_get_temp_dir(), 'avatar_');
-        if ($tempFile === false) {
-            DI::logger()->warning('openidconnect: failed to allocate temporary avatar file', ['uid' => $uid]);
-            return;
-        }
-
-        $written = @file_put_contents($tempFile, $photoData);
-        if ($written === false) {
-            DI::logger()->warning('openidconnect: failed to write avatar temp file', ['uid' => $uid, 'tmp' => $tempFile]);
-            $this->deleteTemporaryFile($tempFile, $uid);
+        $tempFile = $this->writeAvatarPayloadToTempFile($uid, $photoData);
+        if ($tempFile === null) {
             return;
         }
 
         try {
-            $contact = DBA::selectFirst('contact', ['id'], ['uid' => $uid, 'self' => true]);
-            if ($contact) {
-                Contact::updateAvatar($contact['id'], $tempFile);
-            }
-        } catch (\Exception $e) {
-            DI::logger()->warning('Failed to update avatar', ['uid' => $uid, 'exception' => $e->getMessage()]);
+            $this->applyAvatarToSelfContact($uid, $tempFile);
         } finally {
             $this->deleteTemporaryFile($tempFile, $uid);
         }
@@ -265,5 +221,85 @@ final class AvatarUpdater
         $fragment = isset($parts['fragment']) && $parts['fragment'] !== '' ? '#' . $parts['fragment'] : '';
 
         return $scheme . $host . $port . $path . $query . $fragment;
+    }
+
+    private function passesAvatarUrlGuards(int $uid, string $url): bool
+    {
+        if (!$this->isSafeUrl($url)) {
+            DI::logger()->warning('openidconnect: rejected unsafe picture URL', ['url' => $this->sanitizeSensitiveUrl($url)]);
+            return false;
+        }
+
+        if (!$this->isWithinDownloadSizeLimit($url, self::MAX_AVATAR_BYTES)) {
+            DI::logger()->warning('openidconnect: rejected avatar URL with oversized content-length', [
+                'uid' => $uid,
+                'url' => $this->sanitizeSensitiveUrl($url),
+                'max_bytes' => self::MAX_AVATAR_BYTES,
+            ]);
+            return false;
+        }
+
+        return true;
+    }
+
+    private function fetchValidatedAvatarPayload(int $uid, string $url): ?string
+    {
+        try {
+            $photoData = DI::httpClient()->fetch($url, '', 30);
+        } catch (\Throwable $e) {
+            DI::logger()->warning('openidconnect: failed to fetch avatar image', [
+                'uid' => $uid,
+                'url' => $this->sanitizeSensitiveUrl($url),
+                'error' => $e->getMessage(),
+            ]);
+            return null;
+        }
+
+        if (empty($photoData)) {
+            DI::logger()->warning('openidconnect: avatar fetch returned empty payload', ['uid' => $uid, 'url' => $this->sanitizeSensitiveUrl($url)]);
+            return null;
+        }
+
+        if (strlen($photoData) > self::MAX_AVATAR_BYTES) {
+            DI::logger()->warning('openidconnect: rejected oversized avatar payload', [
+                'uid' => $uid,
+                'url' => $this->sanitizeSensitiveUrl($url),
+                'bytes' => strlen($photoData),
+                'max_bytes' => self::MAX_AVATAR_BYTES,
+            ]);
+            return null;
+        }
+
+        return $photoData;
+    }
+
+    private function writeAvatarPayloadToTempFile(int $uid, string $photoData): ?string
+    {
+        $tempFile = tempnam(sys_get_temp_dir(), 'avatar_');
+        if ($tempFile === false) {
+            DI::logger()->warning('openidconnect: failed to allocate temporary avatar file', ['uid' => $uid]);
+            return null;
+        }
+
+        $written = @file_put_contents($tempFile, $photoData);
+        if ($written === false) {
+            DI::logger()->warning('openidconnect: failed to write avatar temp file', ['uid' => $uid, 'tmp' => $tempFile]);
+            $this->deleteTemporaryFile($tempFile, $uid);
+            return null;
+        }
+
+        return $tempFile;
+    }
+
+    private function applyAvatarToSelfContact(int $uid, string $tempFile): void
+    {
+        try {
+            $contact = DBA::selectFirst('contact', ['id'], ['uid' => $uid, 'self' => true]);
+            if ($contact) {
+                Contact::updateAvatar($contact['id'], $tempFile);
+            }
+        } catch (\Exception $e) {
+            DI::logger()->warning('Failed to update avatar', ['uid' => $uid, 'exception' => $e->getMessage()]);
+        }
     }
 }

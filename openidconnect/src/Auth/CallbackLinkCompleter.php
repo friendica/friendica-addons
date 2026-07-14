@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Friendica\Addon\OpenIdConnect\Auth;
 
+use Closure;
 use Friendica\Addon\OpenIdConnect\Account\AccountLinker;
 use Friendica\Database\DBA;
 use Friendica\DI;
@@ -11,10 +12,14 @@ use Friendica\DI;
 final class CallbackLinkCompleter
 {
     private AccountLinker $accountLinker;
+    private readonly Closure $ownerLookup;
 
-    public function __construct(?AccountLinker $accountLinker = null)
+    public function __construct(?AccountLinker $accountLinker = null, ?callable $ownerLookup = null)
     {
         $this->accountLinker = $accountLinker ?? new AccountLinker();
+        $this->ownerLookup = $ownerLookup instanceof Closure
+            ? $ownerLookup
+            : Closure::fromCallable($ownerLookup ?? fn(string $sub): ?array => DBA::selectFirst('user', ['uid'], ['openid' => $sub]));
     }
 
     public function complete(string $sub, string $email, string $nickname, string $returnPath, array $tokens): void
@@ -32,7 +37,7 @@ final class CallbackLinkCompleter
             return;
         }
 
-        $existingOwner = DBA::selectFirst('user', ['uid'], ['openid' => $sub]);
+        $existingOwner = ($this->ownerLookup)($sub);
         if (!empty($existingOwner['uid']) && (int)$existingOwner['uid'] !== (int)$userId) {
             DI::logger()->warning('openidconnect: refusing to link subject already linked to another account', [
                 'has_sub' => $sub !== '',

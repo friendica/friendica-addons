@@ -59,5 +59,9 @@ namespace Friendica\Core\Config\ValueObject;
 
 final class Cache
 {
-	public const SOURCE_STATIC = 5;
+	public const SOURCE_STATIC = 0;
+	public const SOURCE_FILE = 1;
+	public const SOURCE_DATA = 2;
+	public const SOURCE_ENV = 3;
+	public const SOURCE_FIX = 5;
 }

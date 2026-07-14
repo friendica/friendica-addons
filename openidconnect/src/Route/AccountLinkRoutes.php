@@ -15,15 +15,18 @@ final class AccountLinkRoutes
 	private ProviderConfiguration $providerConfiguration;
 	private AuthorizationRequest $authorizationRequest;
 	private AccountLinker $accountLinker;
+	private $authorizationRedirectFn;
 
 	public function __construct(
 		?ProviderConfiguration $providerConfiguration = null,
 		?AuthorizationRequest $authorizationRequest = null,
 		?AccountLinker $accountLinker = null,
+		callable $authorizationRedirectFn = null,
 	) {
 		$this->providerConfiguration = $providerConfiguration ?? new ProviderConfiguration();
 		$this->authorizationRequest = $authorizationRequest ?? new AuthorizationRequest($this->providerConfiguration);
 		$this->accountLinker = $accountLinker ?? new AccountLinker();
+		$this->authorizationRedirectFn = $authorizationRedirectFn ?? [$this->authorizationRequest, 'redirect'];
 	}
 
 	public function begin(): void
@@ -47,7 +50,7 @@ final class AccountLinkRoutes
 			return;
 		}
 
-		$this->authorizationRequest->redirect(true, 'settings/account');
+		($this->authorizationRedirectFn)(true, 'settings/account');
 	}
 
 	public function unlink(): void
@@ -70,7 +73,7 @@ final class AccountLinkRoutes
 		DI::logger()->debug('openidconnect_unlink_account linked', [
 			'uid' => (int)$uid,
 			'has_link' => !empty($linkedAccount),
-			'has_sub' => !empty($linkedAccount['sub']),
+			'has_link_id' => !empty($linkedAccount['sub']),
 		]);
 
 		if ($linkedAccount) {

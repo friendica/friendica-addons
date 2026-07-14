@@ -3,7 +3,7 @@
 /**
  * Name: OpenID Connect (OAuth2)
  * Description: Authenticate and register users via OpenID Connect (OAuth2)
- * Version: 0.2
+ * Version: 0.3
  * Author: Daniel Buck <https://friendica.rollenspiel.monster/profile/tealk\>
  * Author: Daniel de Kay <https://charlemos.club/profile/daniel\>
  */
@@ -94,7 +94,7 @@ function openidconnect_addon_admin(string &$output): void
 	openidconnect_addon()->addonAdmin($output);
 }
 
-function openidconnect_addon_admin_post(array $post): void
+function openidconnect_addon_admin_post(): void
 {
-	openidconnect_addon()->addonAdminPost($post);
+	openidconnect_addon()->addonAdminPost($_POST);
 }

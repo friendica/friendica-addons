@@ -144,5 +144,6 @@ final class OpenIdConnectAddon
 	public function addonAdminPost(array $post): void
 	{
 		$this->adminHook->save($post);
+		DI::baseUrl()->redirect('admin/addons/openidconnect');
 	}
 }

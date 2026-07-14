@@ -74,16 +74,8 @@ final class LoginHook
         $query = [];
         parse_str($queryString, $query);
 
-        if (!is_array($query)) {
-            return [];
-        }
-
         $result = [];
         foreach ($query as $key => $value) {
-            if (!is_string($key)) {
-                continue;
-            }
-
             if (is_string($value)) {
                 $result[$key] = $value;
             }
@@ -99,14 +91,14 @@ final class LoginHook
     {
         $result = [];
 
-        $method = filter_input(INPUT_SERVER, 'REQUEST_METHOD', FILTER_UNSAFE_RAW);
+        $method = $_SERVER['REQUEST_METHOD'] ?? null;
         if (is_string($method) && $method !== '') {
             $result['REQUEST_METHOD'] = $method;
         } else {
             $result['REQUEST_METHOD'] = 'GET';
         }
 
-        $authorization = filter_input(INPUT_SERVER, 'HTTP_AUTHORIZATION', FILTER_UNSAFE_RAW);
+        $authorization = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
         if (is_string($authorization) && $authorization !== '') {
             $result['HTTP_AUTHORIZATION'] = $authorization;
         }

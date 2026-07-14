@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Friendica\Addon\OpenIdConnect\Presentation;
 
 use Friendica\BaseModule;
+use Friendica\Core\Config\ValueObject\Cache;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
@@ -34,42 +35,20 @@ final class AdminHook
 
     public function isReadOnly(string $key): bool
     {
-        if ($key === 'button_text') {
-            return false;
-        }
-
         $source = DI::config()->getCache()->getSource('openidconnect', $key);
-        return $source !== 0 && $source !== -1;
-    }
 
-    private function sourceLabel(int $source): string
-    {
-        return match ($source) {
-            0 => DI::l10n()->t('stored in the database'),
-            1 => DI::l10n()->t('provided by a local config file'),
-            2 => DI::l10n()->t('provided by the server environment'),
-            3 => DI::l10n()->t('fixed by the application'),
-            5 => DI::l10n()->t('provided by the addon defaults'),
-            default => DI::l10n()->t('not set'),
-        };
+        return $source >= Cache::SOURCE_ENV;
     }
 
     private function buildField(string $key, string $label, mixed $value, string $description): array
     {
         $readOnly = $this->isReadOnly($key);
-        $source = DI::config()->getCache()->getSource('openidconnect', $key);
-        $sourceHelp = DI::l10n()->t('Source: %s.', $this->sourceLabel($source));
-        $writeHelp = $readOnly
-            ? DI::l10n()->t('This value cannot be changed from this page.')
-            : DI::l10n()->t('This value can be changed from this page.');
 
         return [
             $key,
             $label,
             $value,
             $description,
-            $sourceHelp,
-            $writeHelp,
             $readOnly,
         ];
     }

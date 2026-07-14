@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Friendica\Addon\OpenIdConnect\Tests\Presentation;
 
 use Friendica\Addon\OpenIdConnect\Presentation\AdminHook;
+use Friendica\Core\Config\ValueObject\Cache;
 use Friendica\Addon\OpenIdConnect\Tests\Support\AddonTestCase;
 use Friendica\DI;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -14,23 +15,22 @@ final class AdminHookTest extends AddonTestCase
     public static function sourceLabelProvider(): array
     {
         return [
-            'local config source' => ['discovery_url', '$discovery_url', 1, 'provided by a local config file', true],
-            'environment source' => ['client_id', '$client_id', 2, 'provided by the server environment', true],
-            'application source' => ['scopes', '$scopes', 3, 'fixed by the application', true],
-            'addon default source' => ['allow_unverified_email', '$allow_unverified_email', 5, 'provided by the addon defaults', true],
-            'database source stays writable' => ['button_text', '$button_text', 0, 'stored in the database', false],
+            'static file source stays writable' => ['discovery_url', '$discovery_url', Cache::SOURCE_STATIC, false],
+            'database source stays writable' => ['client_id', '$client_id', Cache::SOURCE_DATA, false],
+            'environment source is readonly' => ['scopes', '$scopes', Cache::SOURCE_ENV, true],
+            'fixed source is readonly' => ['allow_unverified_email', '$allow_unverified_email', Cache::SOURCE_FIX, true],
         ];
     }
 
-    public function testButtonTextIsEditableEvenWhenItsSourceIsStatic(): void
+    public function testButtonTextIsReadonlyWhenProvidedByEnvironment(): void
     {
-        DI::config()->getCache()->setSource('openidconnect', 'button_text', 5);
-        self::assertFalse((new AdminHook())->isReadOnly('button_text'));
+        DI::config()->getCache()->setSource('openidconnect', 'button_text', Cache::SOURCE_ENV);
+        self::assertTrue((new AdminHook())->isReadOnly('button_text'));
     }
 
-    public function testAllOtherStaticConfigurationIsReadOnly(): void
+    public function testEnvironmentConfigurationIsReadonly(): void
     {
-        DI::config()->getCache()->setSource('openidconnect', 'client_id', 5);
+        DI::config()->getCache()->setSource('openidconnect', 'client_id', Cache::SOURCE_ENV);
         self::assertTrue((new AdminHook())->isReadOnly('client_id'));
     }
 
@@ -117,7 +117,6 @@ final class AdminHookTest extends AddonTestCase
         string $configKey,
         string $fieldKey,
         int $source,
-        string $expectedSourceLabel,
         bool $expectedReadOnly,
     ): void {
         DI::config()->getCache()->setSource('openidconnect', $configKey, $source);
@@ -128,14 +127,7 @@ final class AdminHookTest extends AddonTestCase
         $decoded = json_decode($output, true, 512, JSON_THROW_ON_ERROR);
         $field = $decoded['vars'][$fieldKey];
 
-        self::assertSame('Source: ' . $expectedSourceLabel . '.', $field[4]);
-        self::assertSame(
-            $expectedReadOnly
-                ? 'This value cannot be changed from this page.'
-                : 'This value can be changed from this page.',
-            $field[5]
-        );
-        self::assertSame($expectedReadOnly, $field[6]);
+        self::assertSame($expectedReadOnly, $field[4]);
     }
 
     public function testSaveRespectsReadOnlyProviderFieldsButAllowsButtonText(): void
@@ -144,9 +136,9 @@ final class AdminHookTest extends AddonTestCase
         DI::config()->set('openidconnect', 'client_secret', 'immutable-secret');
         DI::config()->set('openidconnect', 'discovery_url', 'https://id.example.com/.well-known/openid-configuration');
         DI::config()->set('openidconnect', 'button_text', 'Old Button');
-        DI::config()->getCache()->setSource('openidconnect', 'client_id', 5);
-        DI::config()->getCache()->setSource('openidconnect', 'client_secret', 5);
-        DI::config()->getCache()->setSource('openidconnect', 'discovery_url', 5);
+        DI::config()->getCache()->setSource('openidconnect', 'client_id', Cache::SOURCE_ENV);
+        DI::config()->getCache()->setSource('openidconnect', 'client_secret', Cache::SOURCE_ENV);
+        DI::config()->getCache()->setSource('openidconnect', 'discovery_url', Cache::SOURCE_ENV);
 
         $hook = new AdminHook();
         $hook->save([
@@ -174,7 +166,7 @@ final class AdminHookTest extends AddonTestCase
         DI::config()->set('openidconnect', 'transparent_sso_prompt_none', true);
         DI::config()->set('openidconnect', 'scopes', 'openid email');
         DI::config()->set('openidconnect', 'button_text', 'Old Button');
-        DI::config()->getCache()->setSource('openidconnect', 'auto_create_accounts', 5);
+        DI::config()->getCache()->setSource('openidconnect', 'auto_create_accounts', Cache::SOURCE_ENV);
 
         $hook = new AdminHook();
         $hook->save([
@@ -207,7 +199,7 @@ final class AdminHookTest extends AddonTestCase
     {
         DI::config()->set('openidconnect', 'client_secret', 'immutable-secret');
         DI::config()->set('openidconnect', 'button_text', 'Old Button');
-        DI::config()->getCache()->setSource('openidconnect', 'client_secret', 5);
+        DI::config()->getCache()->setSource('openidconnect', 'client_secret', Cache::SOURCE_ENV);
 
         $hook = new AdminHook();
         $hook->save([
@@ -238,7 +230,7 @@ final class AdminHookTest extends AddonTestCase
     {
         DI::config()->set('openidconnect', 'discovery_url', 'https://id.example.com/.well-known/openid-configuration');
         DI::config()->set('openidconnect', 'client_secret', 'existing-secret');
-        DI::config()->getCache()->setSource('openidconnect', 'discovery_url', 5);
+        DI::config()->getCache()->setSource('openidconnect', 'discovery_url', Cache::SOURCE_ENV);
 
         $hook = new AdminHook();
         $hook->save([

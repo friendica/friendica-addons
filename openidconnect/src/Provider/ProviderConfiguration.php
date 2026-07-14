@@ -56,11 +56,9 @@ final class ProviderConfiguration
 
         try {
             if (method_exists(DI::httpClient(), 'get')) {
-                $options = [];
+                $options = ['timeout' => 30];
                 if (class_exists(HttpClientOptions::class)) {
-                    $options[HttpClientOptions::TIMEOUT] = 30;
-                } else {
-                    $options['timeout'] = 30;
+                    $options = [HttpClientOptions::TIMEOUT => 30];
                 }
 
                 $response = DI::httpClient()->get($discoveryUrl, '', [
@@ -136,9 +134,7 @@ final class ProviderConfiguration
     private function sanitizeSensitiveString(string $value): string
     {
         $redacted = preg_replace('/("(?:access_token|refresh_token|id_token|client_secret|token|email|sub)"\s*:\s*")([^"]*)(")/i', '$1[redacted]$3', $value);
-        if ($redacted === null) {
-            return '[redacted]';
-        }
+        $redacted = $redacted ?? '[redacted]';
 
         return preg_replace('/(Bearer\s+|token\s+)([^\s"\']+)/i', '$1[redacted]', $redacted) ?? '[redacted]';
     }
