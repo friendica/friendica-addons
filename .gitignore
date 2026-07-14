@@ -23,3 +23,5 @@ report/
 #ignore smarty cache
 /view/smarty3/compiled/
 vendor-dev/
+*/.*.md
+*/.*.cache
