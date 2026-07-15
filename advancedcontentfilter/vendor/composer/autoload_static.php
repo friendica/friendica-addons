@@ -7,17 +7,13 @@ namespace Composer\Autoload;
 class ComposerStaticInitAdvancedContentFilterAddon
 {
     public static $files = array (
-        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
-        '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
-        'S' => 
+        'S' =>
         array (
-            'Symfony\\Polyfill\\Php80\\' => 23,
-            'Symfony\\Polyfill\\Php73\\' => 23,
             'Symfony\\Contracts\\Service\\' => 26,
             'Symfony\\Contracts\\Cache\\' => 24,
             'Symfony\\Component\\VarExporter\\' => 30,
@@ -25,7 +21,7 @@ class ComposerStaticInitAdvancedContentFilterAddon
             'Symfony\\Component\\Cache\\' => 24,
             'Slim\\' => 5,
         ),
-        'P' => 
+        'P' =>
         array (
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Server\\' => 16,
@@ -33,75 +29,66 @@ class ComposerStaticInitAdvancedContentFilterAddon
             'Psr\\Container\\' => 14,
             'Psr\\Cache\\' => 10,
         ),
-        'F' => 
+        'F' =>
         array (
             'FastRoute\\' => 10,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Symfony\\Polyfill\\Php80\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
-        ),
-        'Symfony\\Polyfill\\Php73\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/polyfill-php73',
-        ),
-        'Symfony\\Contracts\\Service\\' => 
+        'Symfony\\Contracts\\Service\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/service-contracts',
         ),
-        'Symfony\\Contracts\\Cache\\' => 
+        'Symfony\\Contracts\\Cache\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/cache-contracts',
         ),
-        'Symfony\\Component\\VarExporter\\' => 
+        'Symfony\\Component\\VarExporter\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/var-exporter',
         ),
-        'Symfony\\Component\\ExpressionLanguage\\' => 
+        'Symfony\\Component\\ExpressionLanguage\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/expression-language',
         ),
-        'Symfony\\Component\\Cache\\' => 
+        'Symfony\\Component\\Cache\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/cache',
         ),
-        'Slim\\' => 
+        'Slim\\' =>
         array (
             0 => __DIR__ . '/..' . '/slim/slim/Slim',
         ),
-        'Psr\\Log\\' => 
+        'Psr\\Log\\' =>
         array (
-            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+            0 => __DIR__ . '/..' . '/psr/log/src',
         ),
-        'Psr\\Http\\Server\\' => 
+        'Psr\\Http\\Server\\' =>
         array (
-            0 => __DIR__ . '/..' . '/psr/http-server-handler/src',
-            1 => __DIR__ . '/..' . '/psr/http-server-middleware/src',
+            0 => __DIR__ . '/..' . '/psr/http-server-middleware/src',
+            1 => __DIR__ . '/..' . '/psr/http-server-handler/src',
         ),
-        'Psr\\Http\\Message\\' => 
+        'Psr\\Http\\Message\\' =>
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
-        'Psr\\Container\\' => 
+        'Psr\\Container\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
         ),
-        'Psr\\Cache\\' => 
+        'Psr\\Cache\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/cache/src',
         ),
-        'FastRoute\\' => 
+        'FastRoute\\' =>
         array (
             0 => __DIR__ . '/..' . '/nikic/fast-route/src',
         ),
     );
 
     public static $classMap = array (
-        'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'FastRoute\\BadRouteException' => __DIR__ . '/..' . '/nikic/fast-route/src/BadRouteException.php',
         'FastRoute\\DataGenerator' => __DIR__ . '/..' . '/nikic/fast-route/src/DataGenerator.php',
@@ -120,8 +107,6 @@ class ComposerStaticInitAdvancedContentFilterAddon
         'FastRoute\\RouteCollector' => __DIR__ . '/..' . '/nikic/fast-route/src/RouteCollector.php',
         'FastRoute\\RouteParser' => __DIR__ . '/..' . '/nikic/fast-route/src/RouteParser.php',
         'FastRoute\\RouteParser\\Std' => __DIR__ . '/..' . '/nikic/fast-route/src/RouteParser/Std.php',
-        'JsonException' => __DIR__ . '/..' . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
-        'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
         'Psr\\Cache\\CacheException' => __DIR__ . '/..' . '/psr/cache/src/CacheException.php',
         'Psr\\Cache\\CacheItemInterface' => __DIR__ . '/..' . '/psr/cache/src/CacheItemInterface.php',
         'Psr\\Cache\\CacheItemPoolInterface' => __DIR__ . '/..' . '/psr/cache/src/CacheItemPoolInterface.php',
@@ -144,17 +129,14 @@ class ComposerStaticInitAdvancedContentFilterAddon
         'Psr\\Http\\Message\\UriInterface' => __DIR__ . '/..' . '/psr/http-message/src/UriInterface.php',
         'Psr\\Http\\Server\\MiddlewareInterface' => __DIR__ . '/..' . '/psr/http-server-middleware/src/MiddlewareInterface.php',
         'Psr\\Http\\Server\\RequestHandlerInterface' => __DIR__ . '/..' . '/psr/http-server-handler/src/RequestHandlerInterface.php',
-        'Psr\\Log\\AbstractLogger' => __DIR__ . '/..' . '/psr/log/Psr/Log/AbstractLogger.php',
-        'Psr\\Log\\InvalidArgumentException' => __DIR__ . '/..' . '/psr/log/Psr/Log/InvalidArgumentException.php',
-        'Psr\\Log\\LogLevel' => __DIR__ . '/..' . '/psr/log/Psr/Log/LogLevel.php',
-        'Psr\\Log\\LoggerAwareInterface' => __DIR__ . '/..' . '/psr/log/Psr/Log/LoggerAwareInterface.php',
-        'Psr\\Log\\LoggerAwareTrait' => __DIR__ . '/..' . '/psr/log/Psr/Log/LoggerAwareTrait.php',
-        'Psr\\Log\\LoggerInterface' => __DIR__ . '/..' . '/psr/log/Psr/Log/LoggerInterface.php',
-        'Psr\\Log\\LoggerTrait' => __DIR__ . '/..' . '/psr/log/Psr/Log/LoggerTrait.php',
-        'Psr\\Log\\NullLogger' => __DIR__ . '/..' . '/psr/log/Psr/Log/NullLogger.php',
-        'Psr\\Log\\Test\\DummyTest' => __DIR__ . '/..' . '/psr/log/Psr/Log/Test/DummyTest.php',
-        'Psr\\Log\\Test\\LoggerInterfaceTest' => __DIR__ . '/..' . '/psr/log/Psr/Log/Test/LoggerInterfaceTest.php',
-        'Psr\\Log\\Test\\TestLogger' => __DIR__ . '/..' . '/psr/log/Psr/Log/Test/TestLogger.php',
+        'Psr\\Log\\AbstractLogger' => __DIR__ . '/..' . '/psr/log/src/AbstractLogger.php',
+        'Psr\\Log\\InvalidArgumentException' => __DIR__ . '/..' . '/psr/log/src/InvalidArgumentException.php',
+        'Psr\\Log\\LogLevel' => __DIR__ . '/..' . '/psr/log/src/LogLevel.php',
+        'Psr\\Log\\LoggerAwareInterface' => __DIR__ . '/..' . '/psr/log/src/LoggerAwareInterface.php',
+        'Psr\\Log\\LoggerAwareTrait' => __DIR__ . '/..' . '/psr/log/src/LoggerAwareTrait.php',
+        'Psr\\Log\\LoggerInterface' => __DIR__ . '/..' . '/psr/log/src/LoggerInterface.php',
+        'Psr\\Log\\LoggerTrait' => __DIR__ . '/..' . '/psr/log/src/LoggerTrait.php',
+        'Psr\\Log\\NullLogger' => __DIR__ . '/..' . '/psr/log/src/NullLogger.php',
         'Slim\\App' => __DIR__ . '/..' . '/slim/slim/Slim/App.php',
         'Slim\\CallableResolver' => __DIR__ . '/..' . '/slim/slim/Slim/CallableResolver.php',
         'Slim\\Error\\AbstractErrorRenderer' => __DIR__ . '/..' . '/slim/slim/Slim/Error/AbstractErrorRenderer.php',
@@ -227,18 +209,20 @@ class ComposerStaticInitAdvancedContentFilterAddon
         'Slim\\Routing\\RouteResolver' => __DIR__ . '/..' . '/slim/slim/Slim/Routing/RouteResolver.php',
         'Slim\\Routing\\RouteRunner' => __DIR__ . '/..' . '/slim/slim/Slim/Routing/RouteRunner.php',
         'Slim\\Routing\\RoutingResults' => __DIR__ . '/..' . '/slim/slim/Slim/Routing/RoutingResults.php',
-        'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
         'Symfony\\Component\\Cache\\Adapter\\AbstractAdapter' => __DIR__ . '/..' . '/symfony/cache/Adapter/AbstractAdapter.php',
         'Symfony\\Component\\Cache\\Adapter\\AbstractTagAwareAdapter' => __DIR__ . '/..' . '/symfony/cache/Adapter/AbstractTagAwareAdapter.php',
         'Symfony\\Component\\Cache\\Adapter\\AdapterInterface' => __DIR__ . '/..' . '/symfony/cache/Adapter/AdapterInterface.php',
         'Symfony\\Component\\Cache\\Adapter\\ApcuAdapter' => __DIR__ . '/..' . '/symfony/cache/Adapter/ApcuAdapter.php',
         'Symfony\\Component\\Cache\\Adapter\\ArrayAdapter' => __DIR__ . '/..' . '/symfony/cache/Adapter/ArrayAdapter.php',
         'Symfony\\Component\\Cache\\Adapter\\ChainAdapter' => __DIR__ . '/..' . '/symfony/cache/Adapter/ChainAdapter.php',
-        'Symfony\\Component\\Cache\\Adapter\\DoctrineAdapter' => __DIR__ . '/..' . '/symfony/cache/Adapter/DoctrineAdapter.php',
+        'Symfony\\Component\\Cache\\Adapter\\CouchbaseBucketAdapter' => __DIR__ . '/..' . '/symfony/cache/Adapter/CouchbaseBucketAdapter.php',
+        'Symfony\\Component\\Cache\\Adapter\\CouchbaseCollectionAdapter' => __DIR__ . '/..' . '/symfony/cache/Adapter/CouchbaseCollectionAdapter.php',
+        'Symfony\\Component\\Cache\\Adapter\\DoctrineDbalAdapter' => __DIR__ . '/..' . '/symfony/cache/Adapter/DoctrineDbalAdapter.php',
         'Symfony\\Component\\Cache\\Adapter\\FilesystemAdapter' => __DIR__ . '/..' . '/symfony/cache/Adapter/FilesystemAdapter.php',
         'Symfony\\Component\\Cache\\Adapter\\FilesystemTagAwareAdapter' => __DIR__ . '/..' . '/symfony/cache/Adapter/FilesystemTagAwareAdapter.php',
         'Symfony\\Component\\Cache\\Adapter\\MemcachedAdapter' => __DIR__ . '/..' . '/symfony/cache/Adapter/MemcachedAdapter.php',
         'Symfony\\Component\\Cache\\Adapter\\NullAdapter' => __DIR__ . '/..' . '/symfony/cache/Adapter/NullAdapter.php',
+        'Symfony\\Component\\Cache\\Adapter\\ParameterNormalizer' => __DIR__ . '/..' . '/symfony/cache/Adapter/ParameterNormalizer.php',
         'Symfony\\Component\\Cache\\Adapter\\PdoAdapter' => __DIR__ . '/..' . '/symfony/cache/Adapter/PdoAdapter.php',
         'Symfony\\Component\\Cache\\Adapter\\PhpArrayAdapter' => __DIR__ . '/..' . '/symfony/cache/Adapter/PhpArrayAdapter.php',
         'Symfony\\Component\\Cache\\Adapter\\PhpFilesAdapter' => __DIR__ . '/..' . '/symfony/cache/Adapter/PhpFilesAdapter.php',
@@ -246,7 +230,6 @@ class ComposerStaticInitAdvancedContentFilterAddon
         'Symfony\\Component\\Cache\\Adapter\\Psr16Adapter' => __DIR__ . '/..' . '/symfony/cache/Adapter/Psr16Adapter.php',
         'Symfony\\Component\\Cache\\Adapter\\RedisAdapter' => __DIR__ . '/..' . '/symfony/cache/Adapter/RedisAdapter.php',
         'Symfony\\Component\\Cache\\Adapter\\RedisTagAwareAdapter' => __DIR__ . '/..' . '/symfony/cache/Adapter/RedisTagAwareAdapter.php',
-        'Symfony\\Component\\Cache\\Adapter\\SimpleCacheAdapter' => __DIR__ . '/..' . '/symfony/cache/Adapter/SimpleCacheAdapter.php',
         'Symfony\\Component\\Cache\\Adapter\\TagAwareAdapter' => __DIR__ . '/..' . '/symfony/cache/Adapter/TagAwareAdapter.php',
         'Symfony\\Component\\Cache\\Adapter\\TagAwareAdapterInterface' => __DIR__ . '/..' . '/symfony/cache/Adapter/TagAwareAdapterInterface.php',
         'Symfony\\Component\\Cache\\Adapter\\TraceableAdapter' => __DIR__ . '/..' . '/symfony/cache/Adapter/TraceableAdapter.php',
@@ -257,7 +240,7 @@ class ComposerStaticInitAdvancedContentFilterAddon
         'Symfony\\Component\\Cache\\DependencyInjection\\CachePoolClearerPass' => __DIR__ . '/..' . '/symfony/cache/DependencyInjection/CachePoolClearerPass.php',
         'Symfony\\Component\\Cache\\DependencyInjection\\CachePoolPass' => __DIR__ . '/..' . '/symfony/cache/DependencyInjection/CachePoolPass.php',
         'Symfony\\Component\\Cache\\DependencyInjection\\CachePoolPrunerPass' => __DIR__ . '/..' . '/symfony/cache/DependencyInjection/CachePoolPrunerPass.php',
-        'Symfony\\Component\\Cache\\DoctrineProvider' => __DIR__ . '/..' . '/symfony/cache/DoctrineProvider.php',
+        'Symfony\\Component\\Cache\\Exception\\BadMethodCallException' => __DIR__ . '/..' . '/symfony/cache/Exception/BadMethodCallException.php',
         'Symfony\\Component\\Cache\\Exception\\CacheException' => __DIR__ . '/..' . '/symfony/cache/Exception/CacheException.php',
         'Symfony\\Component\\Cache\\Exception\\InvalidArgumentException' => __DIR__ . '/..' . '/symfony/cache/Exception/InvalidArgumentException.php',
         'Symfony\\Component\\Cache\\Exception\\LogicException' => __DIR__ . '/..' . '/symfony/cache/Exception/LogicException.php',
@@ -265,41 +248,38 @@ class ComposerStaticInitAdvancedContentFilterAddon
         'Symfony\\Component\\Cache\\Marshaller\\DefaultMarshaller' => __DIR__ . '/..' . '/symfony/cache/Marshaller/DefaultMarshaller.php',
         'Symfony\\Component\\Cache\\Marshaller\\DeflateMarshaller' => __DIR__ . '/..' . '/symfony/cache/Marshaller/DeflateMarshaller.php',
         'Symfony\\Component\\Cache\\Marshaller\\MarshallerInterface' => __DIR__ . '/..' . '/symfony/cache/Marshaller/MarshallerInterface.php',
+        'Symfony\\Component\\Cache\\Marshaller\\SodiumMarshaller' => __DIR__ . '/..' . '/symfony/cache/Marshaller/SodiumMarshaller.php',
         'Symfony\\Component\\Cache\\Marshaller\\TagAwareMarshaller' => __DIR__ . '/..' . '/symfony/cache/Marshaller/TagAwareMarshaller.php',
+        'Symfony\\Component\\Cache\\Messenger\\EarlyExpirationDispatcher' => __DIR__ . '/..' . '/symfony/cache/Messenger/EarlyExpirationDispatcher.php',
+        'Symfony\\Component\\Cache\\Messenger\\EarlyExpirationHandler' => __DIR__ . '/..' . '/symfony/cache/Messenger/EarlyExpirationHandler.php',
+        'Symfony\\Component\\Cache\\Messenger\\EarlyExpirationMessage' => __DIR__ . '/..' . '/symfony/cache/Messenger/EarlyExpirationMessage.php',
         'Symfony\\Component\\Cache\\PruneableInterface' => __DIR__ . '/..' . '/symfony/cache/PruneableInterface.php',
         'Symfony\\Component\\Cache\\Psr16Cache' => __DIR__ . '/..' . '/symfony/cache/Psr16Cache.php',
         'Symfony\\Component\\Cache\\ResettableInterface' => __DIR__ . '/..' . '/symfony/cache/ResettableInterface.php',
-        'Symfony\\Component\\Cache\\Simple\\AbstractCache' => __DIR__ . '/..' . '/symfony/cache/Simple/AbstractCache.php',
-        'Symfony\\Component\\Cache\\Simple\\ApcuCache' => __DIR__ . '/..' . '/symfony/cache/Simple/ApcuCache.php',
-        'Symfony\\Component\\Cache\\Simple\\ArrayCache' => __DIR__ . '/..' . '/symfony/cache/Simple/ArrayCache.php',
-        'Symfony\\Component\\Cache\\Simple\\ChainCache' => __DIR__ . '/..' . '/symfony/cache/Simple/ChainCache.php',
-        'Symfony\\Component\\Cache\\Simple\\DoctrineCache' => __DIR__ . '/..' . '/symfony/cache/Simple/DoctrineCache.php',
-        'Symfony\\Component\\Cache\\Simple\\FilesystemCache' => __DIR__ . '/..' . '/symfony/cache/Simple/FilesystemCache.php',
-        'Symfony\\Component\\Cache\\Simple\\MemcachedCache' => __DIR__ . '/..' . '/symfony/cache/Simple/MemcachedCache.php',
-        'Symfony\\Component\\Cache\\Simple\\NullCache' => __DIR__ . '/..' . '/symfony/cache/Simple/NullCache.php',
-        'Symfony\\Component\\Cache\\Simple\\PdoCache' => __DIR__ . '/..' . '/symfony/cache/Simple/PdoCache.php',
-        'Symfony\\Component\\Cache\\Simple\\PhpArrayCache' => __DIR__ . '/..' . '/symfony/cache/Simple/PhpArrayCache.php',
-        'Symfony\\Component\\Cache\\Simple\\PhpFilesCache' => __DIR__ . '/..' . '/symfony/cache/Simple/PhpFilesCache.php',
-        'Symfony\\Component\\Cache\\Simple\\Psr6Cache' => __DIR__ . '/..' . '/symfony/cache/Simple/Psr6Cache.php',
-        'Symfony\\Component\\Cache\\Simple\\RedisCache' => __DIR__ . '/..' . '/symfony/cache/Simple/RedisCache.php',
-        'Symfony\\Component\\Cache\\Simple\\TraceableCache' => __DIR__ . '/..' . '/symfony/cache/Simple/TraceableCache.php',
         'Symfony\\Component\\Cache\\Traits\\AbstractAdapterTrait' => __DIR__ . '/..' . '/symfony/cache/Traits/AbstractAdapterTrait.php',
-        'Symfony\\Component\\Cache\\Traits\\AbstractTrait' => __DIR__ . '/..' . '/symfony/cache/Traits/AbstractTrait.php',
-        'Symfony\\Component\\Cache\\Traits\\ApcuTrait' => __DIR__ . '/..' . '/symfony/cache/Traits/ApcuTrait.php',
-        'Symfony\\Component\\Cache\\Traits\\ArrayTrait' => __DIR__ . '/..' . '/symfony/cache/Traits/ArrayTrait.php',
+        'Symfony\\Component\\Cache\\Traits\\CachedValueInterface' => __DIR__ . '/..' . '/symfony/cache/Traits/CachedValueInterface.php',
         'Symfony\\Component\\Cache\\Traits\\ContractsTrait' => __DIR__ . '/..' . '/symfony/cache/Traits/ContractsTrait.php',
-        'Symfony\\Component\\Cache\\Traits\\DoctrineTrait' => __DIR__ . '/..' . '/symfony/cache/Traits/DoctrineTrait.php',
         'Symfony\\Component\\Cache\\Traits\\FilesystemCommonTrait' => __DIR__ . '/..' . '/symfony/cache/Traits/FilesystemCommonTrait.php',
         'Symfony\\Component\\Cache\\Traits\\FilesystemTrait' => __DIR__ . '/..' . '/symfony/cache/Traits/FilesystemTrait.php',
-        'Symfony\\Component\\Cache\\Traits\\MemcachedTrait' => __DIR__ . '/..' . '/symfony/cache/Traits/MemcachedTrait.php',
-        'Symfony\\Component\\Cache\\Traits\\PdoTrait' => __DIR__ . '/..' . '/symfony/cache/Traits/PdoTrait.php',
-        'Symfony\\Component\\Cache\\Traits\\PhpArrayTrait' => __DIR__ . '/..' . '/symfony/cache/Traits/PhpArrayTrait.php',
-        'Symfony\\Component\\Cache\\Traits\\PhpFilesTrait' => __DIR__ . '/..' . '/symfony/cache/Traits/PhpFilesTrait.php',
         'Symfony\\Component\\Cache\\Traits\\ProxyTrait' => __DIR__ . '/..' . '/symfony/cache/Traits/ProxyTrait.php',
+        'Symfony\\Component\\Cache\\Traits\\Redis62ProxyTrait' => __DIR__ . '/..' . '/symfony/cache/Traits/Redis62ProxyTrait.php',
+        'Symfony\\Component\\Cache\\Traits\\Redis63ProxyTrait' => __DIR__ . '/..' . '/symfony/cache/Traits/Redis63ProxyTrait.php',
+        'Symfony\\Component\\Cache\\Traits\\RedisCluster62ProxyTrait' => __DIR__ . '/..' . '/symfony/cache/Traits/RedisCluster62ProxyTrait.php',
+        'Symfony\\Component\\Cache\\Traits\\RedisCluster63ProxyTrait' => __DIR__ . '/..' . '/symfony/cache/Traits/RedisCluster63ProxyTrait.php',
         'Symfony\\Component\\Cache\\Traits\\RedisClusterNodeProxy' => __DIR__ . '/..' . '/symfony/cache/Traits/RedisClusterNodeProxy.php',
         'Symfony\\Component\\Cache\\Traits\\RedisClusterProxy' => __DIR__ . '/..' . '/symfony/cache/Traits/RedisClusterProxy.php',
         'Symfony\\Component\\Cache\\Traits\\RedisProxy' => __DIR__ . '/..' . '/symfony/cache/Traits/RedisProxy.php',
+        'Symfony\\Component\\Cache\\Traits\\RedisProxyTrait' => __DIR__ . '/..' . '/symfony/cache/Traits/RedisProxyTrait.php',
         'Symfony\\Component\\Cache\\Traits\\RedisTrait' => __DIR__ . '/..' . '/symfony/cache/Traits/RedisTrait.php',
+        'Symfony\\Component\\Cache\\Traits\\RelayClusterProxy' => __DIR__ . '/..' . '/symfony/cache/Traits/RelayClusterProxy.php',
+        'Symfony\\Component\\Cache\\Traits\\RelayProxy' => __DIR__ . '/..' . '/symfony/cache/Traits/RelayProxy.php',
+        'Symfony\\Component\\Cache\\Traits\\Relay\\Relay20Trait' => __DIR__ . '/..' . '/symfony/cache/Traits/Relay/Relay20Trait.php',
+        'Symfony\\Component\\Cache\\Traits\\Relay\\Relay21Trait' => __DIR__ . '/..' . '/symfony/cache/Traits/Relay/Relay21Trait.php',
+        'Symfony\\Component\\Cache\\Traits\\Relay\\Relay22Trait' => __DIR__ . '/..' . '/symfony/cache/Traits/Relay/Relay22Trait.php',
+        'Symfony\\Component\\Cache\\Traits\\Relay\\Relay30Trait' => __DIR__ . '/..' . '/symfony/cache/Traits/Relay/Relay30Trait.php',
+        'Symfony\\Component\\Cache\\Traits\\Relay\\RelayCluster20Trait' => __DIR__ . '/..' . '/symfony/cache/Traits/Relay/RelayCluster20Trait.php',
+        'Symfony\\Component\\Cache\\Traits\\Relay\\RelayCluster21Trait' => __DIR__ . '/..' . '/symfony/cache/Traits/Relay/RelayCluster21Trait.php',
+        'Symfony\\Component\\Cache\\Traits\\Relay\\RelayCluster30Trait' => __DIR__ . '/..' . '/symfony/cache/Traits/Relay/RelayCluster30Trait.php',
         'Symfony\\Component\\ExpressionLanguage\\Compiler' => __DIR__ . '/..' . '/symfony/expression-language/Compiler.php',
         'Symfony\\Component\\ExpressionLanguage\\Expression' => __DIR__ . '/..' . '/symfony/expression-language/Expression.php',
         'Symfony\\Component\\ExpressionLanguage\\ExpressionFunction' => __DIR__ . '/..' . '/symfony/expression-language/ExpressionFunction.php',
@@ -315,44 +295,54 @@ class ComposerStaticInitAdvancedContentFilterAddon
         'Symfony\\Component\\ExpressionLanguage\\Node\\GetAttrNode' => __DIR__ . '/..' . '/symfony/expression-language/Node/GetAttrNode.php',
         'Symfony\\Component\\ExpressionLanguage\\Node\\NameNode' => __DIR__ . '/..' . '/symfony/expression-language/Node/NameNode.php',
         'Symfony\\Component\\ExpressionLanguage\\Node\\Node' => __DIR__ . '/..' . '/symfony/expression-language/Node/Node.php',
+        'Symfony\\Component\\ExpressionLanguage\\Node\\NullCoalesceNode' => __DIR__ . '/..' . '/symfony/expression-language/Node/NullCoalesceNode.php',
+        'Symfony\\Component\\ExpressionLanguage\\Node\\NullCoalescedNameNode' => __DIR__ . '/..' . '/symfony/expression-language/Node/NullCoalescedNameNode.php',
         'Symfony\\Component\\ExpressionLanguage\\Node\\UnaryNode' => __DIR__ . '/..' . '/symfony/expression-language/Node/UnaryNode.php',
         'Symfony\\Component\\ExpressionLanguage\\ParsedExpression' => __DIR__ . '/..' . '/symfony/expression-language/ParsedExpression.php',
         'Symfony\\Component\\ExpressionLanguage\\Parser' => __DIR__ . '/..' . '/symfony/expression-language/Parser.php',
-        'Symfony\\Component\\ExpressionLanguage\\ParserCache\\ArrayParserCache' => __DIR__ . '/..' . '/symfony/expression-language/ParserCache/ArrayParserCache.php',
-        'Symfony\\Component\\ExpressionLanguage\\ParserCache\\ParserCacheAdapter' => __DIR__ . '/..' . '/symfony/expression-language/ParserCache/ParserCacheAdapter.php',
-        'Symfony\\Component\\ExpressionLanguage\\ParserCache\\ParserCacheInterface' => __DIR__ . '/..' . '/symfony/expression-language/ParserCache/ParserCacheInterface.php',
         'Symfony\\Component\\ExpressionLanguage\\SerializedParsedExpression' => __DIR__ . '/..' . '/symfony/expression-language/SerializedParsedExpression.php',
         'Symfony\\Component\\ExpressionLanguage\\SyntaxError' => __DIR__ . '/..' . '/symfony/expression-language/SyntaxError.php',
         'Symfony\\Component\\ExpressionLanguage\\Token' => __DIR__ . '/..' . '/symfony/expression-language/Token.php',
         'Symfony\\Component\\ExpressionLanguage\\TokenStream' => __DIR__ . '/..' . '/symfony/expression-language/TokenStream.php',
         'Symfony\\Component\\VarExporter\\Exception\\ClassNotFoundException' => __DIR__ . '/..' . '/symfony/var-exporter/Exception/ClassNotFoundException.php',
         'Symfony\\Component\\VarExporter\\Exception\\ExceptionInterface' => __DIR__ . '/..' . '/symfony/var-exporter/Exception/ExceptionInterface.php',
+        'Symfony\\Component\\VarExporter\\Exception\\LogicException' => __DIR__ . '/..' . '/symfony/var-exporter/Exception/LogicException.php',
         'Symfony\\Component\\VarExporter\\Exception\\NotInstantiableTypeException' => __DIR__ . '/..' . '/symfony/var-exporter/Exception/NotInstantiableTypeException.php',
+        'Symfony\\Component\\VarExporter\\Hydrator' => __DIR__ . '/..' . '/symfony/var-exporter/Hydrator.php',
         'Symfony\\Component\\VarExporter\\Instantiator' => __DIR__ . '/..' . '/symfony/var-exporter/Instantiator.php',
         'Symfony\\Component\\VarExporter\\Internal\\Exporter' => __DIR__ . '/..' . '/symfony/var-exporter/Internal/Exporter.php',
         'Symfony\\Component\\VarExporter\\Internal\\Hydrator' => __DIR__ . '/..' . '/symfony/var-exporter/Internal/Hydrator.php',
+        'Symfony\\Component\\VarExporter\\Internal\\LazyDecoratorTrait' => __DIR__ . '/..' . '/symfony/var-exporter/Internal/LazyDecoratorTrait.php',
+        'Symfony\\Component\\VarExporter\\Internal\\LazyObjectRegistry' => __DIR__ . '/..' . '/symfony/var-exporter/Internal/LazyObjectRegistry.php',
+        'Symfony\\Component\\VarExporter\\Internal\\LazyObjectState' => __DIR__ . '/..' . '/symfony/var-exporter/Internal/LazyObjectState.php',
+        'Symfony\\Component\\VarExporter\\Internal\\LazyObjectTrait' => __DIR__ . '/..' . '/symfony/var-exporter/Internal/LazyObjectTrait.php',
+        'Symfony\\Component\\VarExporter\\Internal\\NamedClosure' => __DIR__ . '/..' . '/symfony/var-exporter/Internal/NamedClosure.php',
         'Symfony\\Component\\VarExporter\\Internal\\Reference' => __DIR__ . '/..' . '/symfony/var-exporter/Internal/Reference.php',
         'Symfony\\Component\\VarExporter\\Internal\\Registry' => __DIR__ . '/..' . '/symfony/var-exporter/Internal/Registry.php',
         'Symfony\\Component\\VarExporter\\Internal\\Values' => __DIR__ . '/..' . '/symfony/var-exporter/Internal/Values.php',
+        'Symfony\\Component\\VarExporter\\LazyGhostTrait' => __DIR__ . '/..' . '/symfony/var-exporter/LazyGhostTrait.php',
+        'Symfony\\Component\\VarExporter\\LazyObjectInterface' => __DIR__ . '/..' . '/symfony/var-exporter/LazyObjectInterface.php',
+        'Symfony\\Component\\VarExporter\\LazyProxyTrait' => __DIR__ . '/..' . '/symfony/var-exporter/LazyProxyTrait.php',
+        'Symfony\\Component\\VarExporter\\ProxyHelper' => __DIR__ . '/..' . '/symfony/var-exporter/ProxyHelper.php',
         'Symfony\\Component\\VarExporter\\VarExporter' => __DIR__ . '/..' . '/symfony/var-exporter/VarExporter.php',
         'Symfony\\Contracts\\Cache\\CacheInterface' => __DIR__ . '/..' . '/symfony/cache-contracts/CacheInterface.php',
         'Symfony\\Contracts\\Cache\\CacheTrait' => __DIR__ . '/..' . '/symfony/cache-contracts/CacheTrait.php',
         'Symfony\\Contracts\\Cache\\CallbackInterface' => __DIR__ . '/..' . '/symfony/cache-contracts/CallbackInterface.php',
         'Symfony\\Contracts\\Cache\\ItemInterface' => __DIR__ . '/..' . '/symfony/cache-contracts/ItemInterface.php',
+        'Symfony\\Contracts\\Cache\\NamespacedPoolInterface' => __DIR__ . '/..' . '/symfony/cache-contracts/NamespacedPoolInterface.php',
         'Symfony\\Contracts\\Cache\\TagAwareCacheInterface' => __DIR__ . '/..' . '/symfony/cache-contracts/TagAwareCacheInterface.php',
         'Symfony\\Contracts\\Service\\Attribute\\Required' => __DIR__ . '/..' . '/symfony/service-contracts/Attribute/Required.php',
         'Symfony\\Contracts\\Service\\Attribute\\SubscribedService' => __DIR__ . '/..' . '/symfony/service-contracts/Attribute/SubscribedService.php',
+        'Symfony\\Contracts\\Service\\ContainerAwareInterface' => __DIR__ . '/..' . '/symfony/service-contracts/ContainerAwareInterface.php',
+        'Symfony\\Contracts\\Service\\ContainerProviderInterface' => __DIR__ . '/..' . '/symfony/service-contracts/ContainerProviderInterface.php',
         'Symfony\\Contracts\\Service\\ResetInterface' => __DIR__ . '/..' . '/symfony/service-contracts/ResetInterface.php',
+        'Symfony\\Contracts\\Service\\ServiceCollectionInterface' => __DIR__ . '/..' . '/symfony/service-contracts/ServiceCollectionInterface.php',
         'Symfony\\Contracts\\Service\\ServiceLocatorTrait' => __DIR__ . '/..' . '/symfony/service-contracts/ServiceLocatorTrait.php',
+        'Symfony\\Contracts\\Service\\ServiceMethodsSubscriberTrait' => __DIR__ . '/..' . '/symfony/service-contracts/ServiceMethodsSubscriberTrait.php',
         'Symfony\\Contracts\\Service\\ServiceProviderInterface' => __DIR__ . '/..' . '/symfony/service-contracts/ServiceProviderInterface.php',
         'Symfony\\Contracts\\Service\\ServiceSubscriberInterface' => __DIR__ . '/..' . '/symfony/service-contracts/ServiceSubscriberInterface.php',
         'Symfony\\Contracts\\Service\\ServiceSubscriberTrait' => __DIR__ . '/..' . '/symfony/service-contracts/ServiceSubscriberTrait.php',
-        'Symfony\\Contracts\\Service\\Test\\ServiceLocatorTest' => __DIR__ . '/..' . '/symfony/service-contracts/Test/ServiceLocatorTest.php',
-        'Symfony\\Polyfill\\Php73\\Php73' => __DIR__ . '/..' . '/symfony/polyfill-php73/Php73.php',
-        'Symfony\\Polyfill\\Php80\\Php80' => __DIR__ . '/..' . '/symfony/polyfill-php80/Php80.php',
-        'Symfony\\Polyfill\\Php80\\PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/PhpToken.php',
-        'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
-        'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
+        '©' => __DIR__ . '/..' . '/symfony/cache/Traits/ValueWrapper.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
