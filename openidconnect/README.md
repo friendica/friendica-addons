@@ -28,8 +28,6 @@ This addon enables authentication and registration of users via OpenID Connect (
 2. Enable the addon in the Friendica admin interface under `Admin -> Addons`
 3. Configure the addon under `Admin -> Addons -> OpenID Connect`
 
-For a canonical Authentik-specific setup guide, see `AUTHENTIK_SETUP.md`.
-
 ## Configuration
 
 The following options are available in the admin panel:
@@ -244,3 +242,14 @@ Notes:
 - Check whether the provider returned `error=login_required`, `interaction_required`, `consent_required`, or `account_selection_required` (some providers may also map these via `err`)
 - Confirm `transparent_sso_prompt_none` is only enabled when the IdP supports silent auth for the current browser session
 - Confirm the fallback URL contains `openidconnect_no_auto=1`; that disables repeated auto-redirect attempts on the login page
+
+## Development layout
+
+`openidconnect.php` is the Friendica hook/module adapter. Addon behaviour lives in focused PSR-4 classes under `src/`:
+
+- `Auth/` handles OAuth browser flow and redirect policy.
+- `Provider/` handles discovery, tokens, and JWT validation.
+- `Identity/` and `Account/` map provider identity to local users.
+- `Presentation/` renders Friendica hooks.
+
+Run `composer run qa` from this directory before submitting changes.

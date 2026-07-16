@@ -7,19 +7,4 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
-    'Friendica\\Addon\\openidconnect\\src\\AdminSettings' => $baseDir . '/src/AdminSettings.php',
-    'Friendica\\Addon\\openidconnect\\src\\AvatarManager' => $baseDir . '/src/AvatarManager.php',
-    'Friendica\\Addon\\openidconnect\\src\\ProviderConfig' => $baseDir . '/src/ProviderConfig.php',
-    'Friendica\\Addon\\openidconnect\\src\\TokenHandler' => $baseDir . '/src/TokenHandler.php',
-    'Friendica\\Addon\\openidconnect\\src\\UserInfo' => $baseDir . '/src/UserInfo.php',
-    'Friendica\\Addon\\openidconnect\\src\\UserManager' => $baseDir . '/src/UserManager.php',
-    'Friendica\\Addon\\openidconnect\\src\\Utilities' => $baseDir . '/src/Utilities.php',
-    'Firebase\\JWT\\BeforeValidException' => $vendorDir . '/firebase/php-jwt/src/BeforeValidException.php',
-    'Firebase\\JWT\\CachedKeySet' => $vendorDir . '/firebase/php-jwt/src/CachedKeySet.php',
-    'Firebase\\JWT\\ExpiredException' => $vendorDir . '/firebase/php-jwt/src/ExpiredException.php',
-    'Firebase\\JWT\\JWK' => $vendorDir . '/firebase/php-jwt/src/JWK.php',
-    'Firebase\\JWT\\JWT' => $vendorDir . '/firebase/php-jwt/src/JWT.php',
-    'Firebase\\JWT\\JWTExceptionWithPayloadInterface' => $vendorDir . '/firebase/php-jwt/src/JWTExceptionWithPayloadInterface.php',
-    'Firebase\\JWT\\Key' => $vendorDir . '/firebase/php-jwt/src/Key.php',
-    'Firebase\\JWT\\SignatureInvalidException' => $vendorDir . '/firebase/php-jwt/src/SignatureInvalidException.php',
 );
