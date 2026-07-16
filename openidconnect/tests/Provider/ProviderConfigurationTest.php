@@ -518,7 +518,6 @@ final class ProviderConfigurationTest extends AddonTestCase
     {
         $ref = new \ReflectionClass(ProviderConfiguration::class);
         $method = $ref->getMethod('sanitizeSensitiveString');
-        $method->setAccessible(true);
 
         return $method->invoke(new ProviderConfiguration(), $input);
     }

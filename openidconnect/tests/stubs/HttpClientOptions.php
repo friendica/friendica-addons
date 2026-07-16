@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Friendica\Core\Network\HTTPClient\Client;
+namespace Friendica\Addon\OpenIdConnect\Tests\Doubles\Core\Network\HTTPClient\Client;
 
 final class HttpClientOptions
 {

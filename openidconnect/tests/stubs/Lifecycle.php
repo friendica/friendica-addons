@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Friendica\Core;
+namespace Friendica\Addon\OpenIdConnect\Tests\Doubles\Core;
 
 final class Hook
 {
@@ -33,7 +33,7 @@ final class Hook
 	}
 }
 
-namespace Friendica\Core\Config\Util;
+namespace Friendica\Addon\OpenIdConnect\Tests\Doubles\Core\Config\Util;
 
 class ConfigFileManager
 {
@@ -55,7 +55,7 @@ class ConfigFileManager
 	}
 }
 
-namespace Friendica\Core\Config\ValueObject;
+namespace Friendica\Addon\OpenIdConnect\Tests\Doubles\Core\Config\ValueObject;
 
 final class Cache
 {

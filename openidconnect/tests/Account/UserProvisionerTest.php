@@ -477,7 +477,6 @@ final class UserProvisionerTest extends AddonTestCase
         };
 
         $method = new \ReflectionMethod(UserProvisioner::class, 'createUser');
-        $method->setAccessible(true);
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('upstream unavailable');

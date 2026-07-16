@@ -206,6 +206,7 @@ Notes:
 - `vendor-dev/` is used for test tooling (PHPUnit and related packages)
 - runtime addon dependencies remain in `vendor/` and are kept clean for Friendica installs
 - this separation prevents accidental commits of local test tooling into runtime vendor files
+- class-based Friendica test doubles stay on addon-owned test namespaces and are exposed to PHPUnit through explicit bootstrap aliases only; shipped test files must not declare runtime `Friendica\...` classes directly
 
 ## Troubleshooting
 

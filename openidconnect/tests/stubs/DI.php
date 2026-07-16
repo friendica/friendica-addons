@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Friendica;
+namespace Friendica\Addon\OpenIdConnect\Tests\Doubles;
 
 final class BaseModule
 {

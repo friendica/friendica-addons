@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Friendica\Database;
+namespace Friendica\Addon\OpenIdConnect\Tests\Doubles\Database;
 
 final class DBA
 {

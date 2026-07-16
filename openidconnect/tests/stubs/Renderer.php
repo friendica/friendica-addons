@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Friendica\Core;
+namespace Friendica\Addon\OpenIdConnect\Tests\Doubles\Core;
 
 final class Renderer
 {

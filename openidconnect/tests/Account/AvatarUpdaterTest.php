@@ -266,7 +266,6 @@ final class AvatarUpdaterTest extends AddonTestCase
     {
         $updater = new AvatarUpdater();
         $ref = new \ReflectionMethod(AvatarUpdater::class, 'writeAvatarPayloadToTempFile');
-        $ref->setAccessible(true);
 
         $GLOBALS['forceTempnamFalse'] = true;
 
@@ -283,7 +282,6 @@ final class AvatarUpdaterTest extends AddonTestCase
     {
         $updater = new AvatarUpdater();
         $ref = new \ReflectionMethod(AvatarUpdater::class, 'writeAvatarPayloadToTempFile');
-        $ref->setAccessible(true);
 
         $before = glob(sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'avatar_*') ?: [];
 
@@ -303,7 +301,6 @@ final class AvatarUpdaterTest extends AddonTestCase
     {
         $updater = new AvatarUpdater();
         $ref = new \ReflectionMethod(AvatarUpdater::class, 'sanitizeSensitiveUrl');
-        $ref->setAccessible(true);
 
         $value = $ref->invoke($updater, 'http://:80');
 
@@ -314,7 +311,6 @@ final class AvatarUpdaterTest extends AddonTestCase
     {
         $updater = new AvatarUpdater();
         $ref = new \ReflectionMethod(AvatarUpdater::class, 'sanitizeSensitiveUrl');
-        $ref->setAccessible(true);
 
         $sanitized = $ref->invoke($updater, 'https://user:secret@example.com/avatar.jpg?token=abc123');
 
@@ -329,7 +325,6 @@ final class AvatarUpdaterTest extends AddonTestCase
 
         $updater = new AvatarUpdater(static fn(string $host): array => ['1.1.1.1']);
         $ref = new \ReflectionMethod(AvatarUpdater::class, 'passesAvatarUrlGuards');
-        $ref->setAccessible(true);
 
         $GLOBALS['__test_get_headers_result'] = ['Content-Length' => (string)((5 * 1024 * 1024) + 1)];
 

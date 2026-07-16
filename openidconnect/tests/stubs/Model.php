@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Friendica\Model;
+namespace Friendica\Addon\OpenIdConnect\Tests\Doubles\Model;
 
-use Friendica\Database\DBA;
+use Friendica\Addon\OpenIdConnect\Tests\Doubles\Database\DBA;
 
 final class User
 {

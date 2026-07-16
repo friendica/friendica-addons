@@ -21,7 +21,7 @@ final class AccountLinkRoutes
 		?ProviderConfiguration $providerConfiguration = null,
 		?AuthorizationRequest $authorizationRequest = null,
 		?AccountLinker $accountLinker = null,
-		callable $authorizationRedirectFn = null,
+		?callable $authorizationRedirectFn = null,
 	) {
 		$this->providerConfiguration = $providerConfiguration ?? new ProviderConfiguration();
 		$this->authorizationRequest = $authorizationRequest ?? new AuthorizationRequest($this->providerConfiguration);
