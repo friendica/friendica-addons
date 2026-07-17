@@ -58,7 +58,7 @@ function invidious_settings(array &$data)
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/invidious/');
 	$html = Renderer::replaceMacros($t, [
-		'$enabled' => ['enabled', DI::l10n()->t('Replace Youtube links with links to an Invidious server'), $enabled, DI::l10n()->t('If enabled, Youtube links are replaced with the links to the specified Invidious server.')],
+		'$enabled' => ['invidious', DI::l10n()->t('Replace Youtube links with links to an Invidious server'), $enabled, DI::l10n()->t('If enabled, Youtube links are replaced with the links to the specified Invidious server.')],
 		'$server'  => ['server', DI::l10n()->t('Invidious server'), $server, DI::l10n()->t('See %s for a list of available Invidious servers.', '<a href="https://api.invidious.io/">https://api.invidious.io/</a>')],
 	]);
 
@@ -75,7 +75,7 @@ function invidious_settings_post(array &$b)
 		return;
 	}
 
-	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'invidious', 'enabled', (bool) $_POST['enabled']);
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'invidious', 'enabled', (bool) $_POST['invidious']);
 
 	$server = trim($_POST['server'], " \n\r\t\v\x00/");
 	// Sanitize and validate the server URL before saving

@@ -13,9 +13,11 @@ namespace Symfony\Component\Cache\Adapter;
 
 use Psr\Cache\CacheItemInterface;
 use Symfony\Component\Cache\CacheItem;
+use Symfony\Component\Cache\Exception\BadMethodCallException;
 use Symfony\Component\Cache\PruneableInterface;
 use Symfony\Component\Cache\ResettableInterface;
 use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\NamespacedPoolInterface;
 use Symfony\Contracts\Service\ResetInterface;
 
 /**
@@ -25,27 +27,31 @@ use Symfony\Contracts\Service\ResetInterface;
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  * @author Nicolas Grekas <p@tchwork.com>
  */
-class TraceableAdapter implements AdapterInterface, CacheInterface, PruneableInterface, ResettableInterface
+class TraceableAdapter implements AdapterInterface, CacheInterface, NamespacedPoolInterface, PruneableInterface, ResettableInterface
 {
-    protected $pool;
-    private $calls = [];
+    private string $namespace = '';
+    private array $calls = [];
 
-    public function __construct(AdapterInterface $pool)
-    {
-        $this->pool = $pool;
+    public function __construct(
+        protected AdapterInterface $pool,
+        protected readonly ?\Closure $disabled = null,
+    ) {
     }
 
     /**
-     * {@inheritdoc}
+     * @throws BadMethodCallException When the item pool is not a CacheInterface
      */
-    public function get(string $key, callable $callback, float $beta = null, array &$metadata = null)
+    public function get(string $key, callable $callback, ?float $beta = null, ?array &$metadata = null): mixed
     {
         if (!$this->pool instanceof CacheInterface) {
-            throw new \BadMethodCallException(sprintf('Cannot call "%s::get()": this class doesn\'t implement "%s".', \get_class($this->pool), CacheInterface::class));
+            throw new BadMethodCallException(\sprintf('Cannot call "%s::get()": this class doesn\'t implement "%s".', get_debug_type($this->pool), CacheInterface::class));
+        }
+        if ($this->disabled?->__invoke()) {
+            return $this->pool->get($key, $callback, $beta, $metadata);
         }
 
         $isHit = true;
-        $callback = function (CacheItem $item, bool &$save) use ($callback, &$isHit) {
+        $callback = static function (CacheItem $item, bool &$save) use ($callback, &$isHit) {
             $isHit = $item->isHit();
 
             return $callback($item, $save);
@@ -54,7 +60,7 @@ class TraceableAdapter implements AdapterInterface, CacheInterface, PruneableInt
         $event = $this->start(__FUNCTION__);
         try {
             $value = $this->pool->get($key, $callback, $beta, $metadata);
-            $event->result[$key] = \is_object($value) ? \get_class($value) : \gettype($value);
+            $event->result[$key] = get_debug_type($value);
         } finally {
             $event->end = microtime(true);
         }
@@ -67,11 +73,11 @@ class TraceableAdapter implements AdapterInterface, CacheInterface, PruneableInt
         return $value;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getItem($key)
+    public function getItem(mixed $key): CacheItem
     {
+        if ($this->disabled?->__invoke()) {
+            return $this->pool->getItem($key);
+        }
         $event = $this->start(__FUNCTION__);
         try {
             $item = $this->pool->getItem($key);
@@ -87,13 +93,11 @@ class TraceableAdapter implements AdapterInterface, CacheInterface, PruneableInt
         return $item;
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @return bool
-     */
-    public function hasItem($key)
+    public function hasItem(mixed $key): bool
     {
+        if ($this->disabled?->__invoke()) {
+            return $this->pool->hasItem($key);
+        }
         $event = $this->start(__FUNCTION__);
         try {
             return $event->result[$key] = $this->pool->hasItem($key);
@@ -102,13 +106,11 @@ class TraceableAdapter implements AdapterInterface, CacheInterface, PruneableInt
         }
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @return bool
-     */
-    public function deleteItem($key)
+    public function deleteItem(mixed $key): bool
     {
+        if ($this->disabled?->__invoke()) {
+            return $this->pool->deleteItem($key);
+        }
         $event = $this->start(__FUNCTION__);
         try {
             return $event->result[$key] = $this->pool->deleteItem($key);
@@ -117,13 +119,11 @@ class TraceableAdapter implements AdapterInterface, CacheInterface, PruneableInt
         }
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @return bool
-     */
-    public function save(CacheItemInterface $item)
+    public function save(CacheItemInterface $item): bool
     {
+        if ($this->disabled?->__invoke()) {
+            return $this->pool->save($item);
+        }
         $event = $this->start(__FUNCTION__);
         try {
             return $event->result[$item->getKey()] = $this->pool->save($item);
@@ -132,13 +132,11 @@ class TraceableAdapter implements AdapterInterface, CacheInterface, PruneableInt
         }
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @return bool
-     */
-    public function saveDeferred(CacheItemInterface $item)
+    public function saveDeferred(CacheItemInterface $item): bool
     {
+        if ($this->disabled?->__invoke()) {
+            return $this->pool->saveDeferred($item);
+        }
         $event = $this->start(__FUNCTION__);
         try {
             return $event->result[$item->getKey()] = $this->pool->saveDeferred($item);
@@ -147,18 +145,18 @@ class TraceableAdapter implements AdapterInterface, CacheInterface, PruneableInt
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getItems(array $keys = [])
+    public function getItems(array $keys = []): iterable
     {
+        if ($this->disabled?->__invoke()) {
+            return $this->pool->getItems($keys);
+        }
         $event = $this->start(__FUNCTION__);
         try {
             $result = $this->pool->getItems($keys);
         } finally {
             $event->end = microtime(true);
         }
-        $f = function () use ($result, $event) {
+        $f = static function () use ($result, $event) {
             $event->result = [];
             foreach ($result as $key => $item) {
                 if ($event->result[$key] = $item->isHit()) {
@@ -173,16 +171,11 @@ class TraceableAdapter implements AdapterInterface, CacheInterface, PruneableInt
         return $f();
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @param string $prefix
-     *
-     * @return bool
-     */
-    public function clear(/* string $prefix = '' */)
+    public function clear(string $prefix = ''): bool
     {
-        $prefix = 0 < \func_num_args() ? (string) func_get_arg(0) : '';
+        if ($this->disabled?->__invoke()) {
+            return $this->pool->clear($prefix);
+        }
         $event = $this->start(__FUNCTION__);
         try {
             if ($this->pool instanceof AdapterInterface) {
@@ -195,13 +188,11 @@ class TraceableAdapter implements AdapterInterface, CacheInterface, PruneableInt
         }
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @return bool
-     */
-    public function deleteItems(array $keys)
+    public function deleteItems(array $keys): bool
     {
+        if ($this->disabled?->__invoke()) {
+            return $this->pool->deleteItems($keys);
+        }
         $event = $this->start(__FUNCTION__);
         $event->result['keys'] = $keys;
         try {
@@ -211,13 +202,11 @@ class TraceableAdapter implements AdapterInterface, CacheInterface, PruneableInt
         }
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @return bool
-     */
-    public function commit()
+    public function commit(): bool
     {
+        if ($this->disabled?->__invoke()) {
+            return $this->pool->commit();
+        }
         $event = $this->start(__FUNCTION__);
         try {
             return $event->result = $this->pool->commit();
@@ -226,13 +215,13 @@ class TraceableAdapter implements AdapterInterface, CacheInterface, PruneableInt
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function prune()
+    public function prune(): bool
     {
         if (!$this->pool instanceof PruneableInterface) {
             return false;
+        }
+        if ($this->disabled?->__invoke()) {
+            return $this->pool->prune();
         }
         $event = $this->start(__FUNCTION__);
         try {
@@ -242,10 +231,7 @@ class TraceableAdapter implements AdapterInterface, CacheInterface, PruneableInt
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function reset()
+    public function reset(): void
     {
         if ($this->pool instanceof ResetInterface) {
             $this->pool->reset();
@@ -254,11 +240,11 @@ class TraceableAdapter implements AdapterInterface, CacheInterface, PruneableInt
         $this->clearCalls();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function delete(string $key): bool
     {
+        if ($this->disabled?->__invoke()) {
+            return $this->pool->deleteItem($key);
+        }
         $event = $this->start(__FUNCTION__);
         try {
             return $event->result[$key] = $this->pool->deleteItem($key);
@@ -267,32 +253,59 @@ class TraceableAdapter implements AdapterInterface, CacheInterface, PruneableInt
         }
     }
 
-    public function getCalls()
+    public function getCalls(): array
     {
         return $this->calls;
     }
 
-    public function clearCalls()
+    public function clearCalls(): void
     {
         $this->calls = [];
     }
 
-    protected function start($name)
+    public function getPool(): AdapterInterface
+    {
+        return $this->pool;
+    }
+
+    /**
+     * @throws BadMethodCallException When the item pool is not a NamespacedPoolInterface
+     */
+    public function withSubNamespace(string $namespace): static
+    {
+        if (!$this->pool instanceof NamespacedPoolInterface) {
+            throw new BadMethodCallException(\sprintf('Cannot call "%s::withSubNamespace()": this class doesn\'t implement "%s".', get_debug_type($this->pool), NamespacedPoolInterface::class));
+        }
+
+        $calls = &$this->calls; // ensures clones share the same array
+        $clone = clone $this;
+        $clone->namespace .= CacheItem::validateKey($namespace).':';
+        $clone->pool = $this->pool->withSubNamespace($namespace);
+
+        return $clone;
+    }
+
+    protected function start(string $name): TraceableAdapterEvent
     {
         $this->calls[] = $event = new TraceableAdapterEvent();
         $event->name = $name;
         $event->start = microtime(true);
+        $event->namespace = $this->namespace;
 
         return $event;
     }
 }
 
+/**
+ * @internal
+ */
 class TraceableAdapterEvent
 {
-    public $name;
-    public $start;
-    public $end;
-    public $result;
-    public $hits = 0;
-    public $misses = 0;
+    public string $name;
+    public float $start;
+    public float $end;
+    public array|bool $result;
+    public int $hits = 0;
+    public int $misses = 0;
+    public string $namespace;
 }

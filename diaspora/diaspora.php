@@ -99,7 +99,7 @@ function diaspora_settings(array &$data)
 		'$info'  => $info,
 		'$error' => $error,
 
-		'$enabled'         => ['enabled', DI::l10n()->t('Enable Diaspora Post Addon'), $enabled],
+		'$enabled'         => ['diaspora', DI::l10n()->t('Enable Diaspora Post Addon'), $enabled],
 		'$handle'          => ['handle', DI::l10n()->t('Diaspora handle'), $handle, null, null, 'placeholder="user@domain.tld"'],
 		'$password'        => ['password', DI::l10n()->t('Diaspora password'), '', DI::l10n()->t('Privacy notice: Your Diaspora password will be stored unencrypted to authenticate you with your Diaspora pod. This means your Friendica node administrator can have access to it.')],
 		'$aspect_select'   => $aspect_select,
@@ -119,8 +119,8 @@ function diaspora_settings(array &$data)
 function diaspora_settings_post(array &$b)
 {
 	if (!empty($_POST['diaspora-submit'])) {
-		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'diaspora', 'post', intval($_POST['enabled']));
-		if (intval($_POST['enabled'])) {
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'diaspora', 'post', intval($_POST['diaspora']));
+		if (intval($_POST['diaspora'])) {
 			if (isset($_POST['handle'])) {
 				DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'diaspora', 'handle', trim($_POST['handle']));
 				DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'diaspora', 'password', trim($_POST['password']));
