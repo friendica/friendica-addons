@@ -82,7 +82,7 @@ function irc_content()
 		if (!$sitechats) {
 			$sitechats = DI::config()->get('irc', 'sitechats');
 		}
-		$usernick = "nick=" . DI::userSession()->getLocalUserNickname() . "&";
+		$usernick = "nick=" . urlencode(DI::userSession()->getLocalUserNickname()) . "&";
 	} else {
 		$sitechats = DI::config()->get('irc','sitechats');
 	}
@@ -96,7 +96,7 @@ function irc_content()
 
 	DI::page()['aside'] .= '<div class="widget"><h3>' . DI::l10n()->t('Popular Channels') . '</h3><ul>';
 	foreach ($chats as $chat) {
-		DI::page()['aside'] .= '<li><a href="' . DI::baseUrl() . '/irc?channels=' . $chat . '" >' . '#' . $chat . '</a></li>';
+		DI::page()['aside'] .= '<li><a href="' . DI::baseUrl() . '/irc?channels=' . urlencode($chat) . '" >' . '#' . htmlspecialchars($chat, ENT_QUOTES, 'UTF-8') . '</a></li>';
 	}
 	DI::page()['aside'] .= '</ul></div>';
 
@@ -114,6 +114,8 @@ function irc_content()
 	} else {
 		$channels = ($_GET['channels'] ?? '') ?: 'friendica';
 	}
+
+	$channels = htmlspecialchars($channels, ENT_QUOTES, 'UTF-8');
 
 /* add the chatroom frame and some html */
   $o .= <<< EOT
