@@ -22,11 +22,11 @@ class RatioedPanel extends Active
 
 		if (isset(DI::args()->getArgv()[1]) and DI::args()->getArgv()[1] === 'help') {
 			$template = Renderer::getMarkupTemplate('/help.tpl', 'addon/ratioed/');
-			return Renderer::replaceMacros($template, array('$config' => DI::baseUrl() . '/settings/addon'));
+			return Renderer::replaceMacros($template, ['$config' => DI::baseUrl() . '/settings/addon']);
 		}
 
-		$uid	= $this->parameters['uid']	?? 0;
-		$user   = [];
+		$uid  = $this->parameters['uid'] ?? 0;
+		$user = [];
 
 		if ($uid) {
 			$user = User::getById($uid, ['username', 'blocked']);
@@ -47,13 +47,13 @@ class RatioedPanel extends Active
 			'page-flags',
 		];
 
-		$order		   = 'last-item';
+		$order           = 'last-item';
 		$order_direction = '-';
 		if (!empty($_REQUEST['o'])) {
 			$new_order = $_REQUEST['o'];
 			if ($new_order[0] !== '-') {
 				$order_direction = '+';
-				$new_order	   = substr($new_order, 1);
+				$new_order       = substr($new_order, 1);
 			}
 
 			if (in_array($new_order, $valid_orders)) {
@@ -106,28 +106,28 @@ class RatioedPanel extends Active
 		$t = Renderer::getMarkupTemplate('ratioed.tpl', 'addon/ratioed');
 		return self::getTabsHTML('ratioed') . Renderer::replaceMacros($t, [
 			// strings //
-			'$title'		  => $this->t('Moderation'),
-			'$help_url'		  => $this->baseUrl . '/ratioed/help',
-			'$page'		   => $this->t('Behaviour'),
-			'$select_all'	 => $this->t('select all'),
-			'$delete'		 => $this->t('Delete'),
-			'$block'		  => $this->t('Block'),
-			'$blocked'		=> $this->t('User blocked'),
-			'$siteadmin'	  => $this->t('Site admin'),
+			'$title'          => $this->t('Moderation'),
+			'$help_url'       => $this->baseUrl . '/ratioed/help',
+			'$page'           => $this->t('Behaviour'),
+			'$select_all'     => $this->t('select all'),
+			'$delete'         => $this->t('Delete'),
+			'$block'          => $this->t('Block'),
+			'$blocked'        => $this->t('User blocked'),
+			'$siteadmin'      => $this->t('Site admin'),
 			'$accountexpired' => $this->t('Account expired'),
-			'$h_newuser'	  => $this->t('Create a new user'),
+			'$h_newuser'      => $this->t('Create a new user'),
 
-			'$th_users'			  => $th_users,
-			'$order_users'		   => $order,
+			'$th_users'              => $th_users,
+			'$order_users'           => $order,
 			'$order_direction_users' => $order_direction,
 
 			'$confirm_delete_multi' => $this->t('Selected users will be deleted!\n\nEverything these users had posted on this site will be permanently deleted!\n\nAre you sure?'),
-			'$confirm_delete'	   => $this->t('The user {0} will be deleted!\n\nEverything this user has posted on this site will be permanently deleted!\n\nAre you sure?'),
+			'$confirm_delete'       => $this->t('The user {0} will be deleted!\n\nEverything this user has posted on this site will be permanently deleted!\n\nAre you sure?'),
 
 			'$form_security_token' => self::getFormSecurityToken('moderation_users_active'),
 
 			// values //
-			'$baseurl'	  => $this->baseUrl,
+			'$baseurl'      => $this->baseUrl,
 			'$query_string' => $this->args->getQueryString(),
 
 			'$users' => $users,
@@ -220,8 +220,8 @@ FROM (
 			$decimalPlaces = $digits - floor(log10($value)) - 1;
 		}
 
-		$answer = ($decimalPlaces > 0) ?
-			number_format($value, $decimalPlaces) : round($value, $decimalPlaces);
+		$answer = ($decimalPlaces > 0)
+			? number_format($value, $decimalPlaces) : round($value, $decimalPlaces);
 		return $answer;
 	}
 
@@ -229,31 +229,31 @@ FROM (
 	{
 		$reply_guy_result = $this->getReplyGuyRow($user['user_contact_uid']);
 		if (DBA::isResult($reply_guy_result)) {
-			$reply_guy_result_row = DBA::fetch($reply_guy_result);
-			$user['reply_count'] = (int) $reply_guy_result_row['replies_total'] ?? 0;
-			$user['reply_likes'] = (int) $reply_guy_result_row['like_total'] ?? 0;
-			$user['reply_respondee_likes'] = (int) $reply_guy_result_row['target_like_total'] ?? 0;
-			$user['reply_op_likes'] = (int) $reply_guy_result_row['original_like_total'] ?? 0;
+			$reply_guy_result_row          = DBA::fetch($reply_guy_result);
+			$user['reply_count']           = (int) $reply_guy_result_row['replies_total']       ?? 0;
+			$user['reply_likes']           = (int) $reply_guy_result_row['like_total']          ?? 0;
+			$user['reply_respondee_likes'] = (int) $reply_guy_result_row['target_like_total']   ?? 0;
+			$user['reply_op_likes']        = (int) $reply_guy_result_row['original_like_total'] ?? 0;
 
 			$denominator = $user['reply_likes'] + $user['reply_respondee_likes'] + $user['reply_op_likes'];
 			if ($user['reply_count'] === 0) {
-				$user['reply_guy'] = false;
+				$user['reply_guy']       = false;
 				$user['reply_guy_score'] = 0;
 			} elseif ($denominator == 0) {
-				$user['reply_guy'] = true;
+				$user['reply_guy']       = true;
 				$user['reply_guy_score'] = '∞';
 			} else {
-				$reply_guy_score = $user['reply_count'] / $denominator;
-				$user['reply_guy'] = $reply_guy_score >= 1.0;
+				$reply_guy_score         = $user['reply_count'] / $denominator;
+				$user['reply_guy']       = $reply_guy_score >= 1.0;
 				$user['reply_guy_score'] = $this->sigFig($reply_guy_score, 2);
 			}
 		} else {
-			$user['reply_count'] = "error";
-			$user['reply_likes'] = "error";
+			$user['reply_count']           = "error";
+			$user['reply_likes']           = "error";
 			$user['reply_respondee_likes'] = "error";
-			$user['reply_op_likes'] = "error";
-			$user['reply_guy'] = false;
-			$user['reply_guy_score'] = 0;
+			$user['reply_op_likes']        = "error";
+			$user['reply_guy']             = false;
+			$user['reply_guy_score']       = 0;
 		}
 	}
 
@@ -262,12 +262,12 @@ FROM (
 		DI::logger()->debug("ratioed: setupUserCallback");
 		$parentCallback = parent::setupUserCallback();
 		return function ($user) use ($parentCallback) {
-			$blocked_count = DBA::count('user-contact', ['uid' => $user['uid'], 'is-blocked' => 1]);
+			$blocked_count      = DBA::count('user-contact', ['uid' => $user['uid'], 'is-blocked' => 1]);
 			$user['blocked_by'] = $blocked_count;
 
 			$self_contact_result = DBA::p('SELECT admin_contact.id AS user_contact_uid FROM contact AS admin_contact JOIN contact AS user_contact ON admin_contact.`uri-id` = user_contact.`uri-id` AND admin_contact.self = 0 AND user_contact.self = 1 WHERE user_contact.uid = ?', $user['uid']);
 			if (DBA::isResult($self_contact_result)) {
-				$self_contact_result_row = DBA::fetch($self_contact_result);
+				$self_contact_result_row  = DBA::fetch($self_contact_result);
 				$user['user_contact_uid'] = $self_contact_result_row['user_contact_uid'];
 			} else {
 				$user['user_contact_uid'] = null;
@@ -277,45 +277,45 @@ FROM (
 				$post_engagement_result = DBA::p('SELECT SUM(`comments`) AS `comment_count`, SUM(`activities`) AS `activities_count` FROM `post-engagement` WHERE `post-engagement`.created > DATE_SUB(now(), INTERVAL 1 DAY) AND `post-engagement`.`owner-id` = ?', $user['user_contact_uid']);
 				if (DBA::isResult($post_engagement_result)) {
 					$post_engagement_result_row = DBA::fetch($post_engagement_result);
-					$user['comments'] = $post_engagement_result_row['comment_count'];
-					$user['reactions'] = $post_engagement_result_row['activities_count'];
+					$user['comments']           = $post_engagement_result_row['comment_count'];
+					$user['reactions']          = $post_engagement_result_row['activities_count'];
 					if ($user['reactions'] > 0) {
-						$user['ratio'] = number_format($user['comments'] / $user['reactions'], 1, '.', '');
-						$user['ratioed'] = (float)($user['ratio']) >= 2.0;
+						$user['ratio']   = number_format($user['comments'] / $user['reactions'], 1, '.', '');
+						$user['ratioed'] = (float) ($user['ratio']) >= 2.0;
 					} else {
 						$user['reactions'] = 0;
 						if ($user['comments'] == 0) {
 							$user['comments'] = 0;
-							$user['ratio'] = 0;
-							$user['ratioed'] = false;
+							$user['ratio']    = 0;
+							$user['ratioed']  = false;
 						} else {
-							$user['ratio'] = '∞';
+							$user['ratio']   = '∞';
 							$user['ratioed'] = false;
 						}
 					}
 				} else {
-					$user['comments'] = 'error';
+					$user['comments']  = 'error';
 					$user['reactions'] = 'error';
-					$user['ratio'] = 'error';
-					$user['ratioed'] = false;
+					$user['ratio']     = 'error';
+					$user['ratioed']   = false;
 				}
 			} else {
-				$user['comments'] = 'error';
+				$user['comments']  = 'error';
 				$user['reactions'] = 'error';
-				$user['ratio'] = 'error';
-				$user['ratioed'] = false;
+				$user['ratio']     = 'error';
+				$user['ratioed']   = false;
 			}
 
 			$this->fillReplyGuyData($user);
 
 			$user = $parentCallback($user);
 			DI::logger()->debug("ratioed: setupUserCallback", [
-				'uid' => $user['uid'],
+				'uid'        => $user['uid'],
 				'blocked_by' => $user['blocked_by'],
-				'comments' => $user['comments'],
-				'reactions' => $user['reactions'],
-				'ratio' => $user['ratio'],
-				'ratioed' => $user['ratioed'],
+				'comments'   => $user['comments'],
+				'reactions'  => $user['reactions'],
+				'ratio'      => $user['ratio'],
+				'ratioed'    => $user['ratioed'],
 			]);
 			return $user;
 		};

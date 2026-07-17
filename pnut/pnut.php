@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Pnut Connector
  * Description: Post to pnut.io
@@ -25,12 +26,12 @@ const PNUT_LIMIT = 256;
 
 function pnut_install()
 {
-	Hook::register('load_config',             __FILE__, 'pnut_load_config');
-	Hook::register('hook_fork',               __FILE__, 'pnut_hook_fork');
-	Hook::register('post_local',              __FILE__, 'pnut_post_local');
-	Hook::register('notifier_normal',         __FILE__, 'pnut_post_hook');
-	Hook::register('jot_networks',            __FILE__, 'pnut_jot_nets');
-	Hook::register('connector_settings',      __FILE__, 'pnut_settings');
+	Hook::register('load_config', __FILE__, 'pnut_load_config');
+	Hook::register('hook_fork', __FILE__, 'pnut_hook_fork');
+	Hook::register('post_local', __FILE__, 'pnut_post_local');
+	Hook::register('notifier_normal', __FILE__, 'pnut_post_hook');
+	Hook::register('jot_networks', __FILE__, 'pnut_jot_nets');
+	Hook::register('connector_settings', __FILE__, 'pnut_settings');
 	Hook::register('connector_settings_post', __FILE__, 'pnut_settings_post');
 }
 
@@ -108,7 +109,7 @@ function pnut_addon_admin(string &$o)
 
 function pnut_addon_admin_post()
 {
-	DI::config()->set('pnut', 'client_id',     $_POST['pnut_client_id']);
+	DI::config()->set('pnut', 'client_id', $_POST['pnut_client_id']);
 	DI::config()->set('pnut', 'client_secret', $_POST['pnut_client_secret']);
 }
 
@@ -118,10 +119,10 @@ function pnut_settings(array &$data)
 		return;
 	}
 
-	$redirectUri  = DI::baseUrl() . '/pnut/connect';
-	$scope        = ['write_post', 'files'];
+	$redirectUri = DI::baseUrl() . '/pnut/connect';
+	$scope       = ['write_post', 'files'];
 
-	$enabled       = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'pnut', 'post') ?? false;
+	$enabled       = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'pnut', 'post')            ?? false;
 	$def_enabled   = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'pnut', 'post_by_default') ?? false;
 	$client_id     = DI::config()->get('pnut', 'client_id');
 	$client_secret = DI::config()->get('pnut', 'client_secret');
@@ -134,8 +135,8 @@ function pnut_settings(array &$data)
 	}
 
 	if (!empty($client_id) && !empty($client_secret) && empty($token)) {
-		$nut = new phpnut\phpnut($client_id, $client_secret);
-		$authorize_url = $nut->getAuthUrl($redirectUri, $scope);
+		$nut            = new phpnut\phpnut($client_id, $client_secret);
+		$authorize_url  = $nut->getAuthUrl($redirectUri, $scope);
 		$authorize_text = DI::l10n()->t('Authenticate with pnut.io');
 	}
 
@@ -150,9 +151,9 @@ function pnut_settings(array &$data)
 		'$client_id'      => ['pnut_client_id', DI::l10n()->t('Client ID'), $client_id],
 		'$client_secret'  => ['pnut_client_secret', DI::l10n()->t('Client Secret'), $client_secret],
 		'$access_token'   => ['pnut_access_token', DI::l10n()->t('Access Token'), $token, '', '', 'readonly'],
-		'$authorize_url'  => $authorize_url ?? '',
+		'$authorize_url'  => $authorize_url  ?? '',
 		'$authorize_text' => $authorize_text ?? '',
-		'$disconn_btn'    => $disconn_btn ?? '',
+		'$disconn_btn'    => $disconn_btn    ?? '',
 		'user_client'     => $user_client,
 	]);
 
@@ -178,10 +179,10 @@ function pnut_settings_post(array &$b)
 		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'pnut', 'client_secret');
 		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'pnut', 'access_token');
 	} else {
-		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'pnut', 'post',            intval($_POST['pnut']));
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'pnut', 'post', intval($_POST['pnut']));
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'pnut', 'post_by_default', intval($_POST['pnut_bydefault']));
 		if (!empty($_POST['pnut_client_id'])) {
-			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'pnut', 'client_id',     $_POST['pnut_client_id']);
+			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'pnut', 'client_id', $_POST['pnut_client_id']);
 		}
 		if (!empty($_POST['pnut_client_secret'])) {
 			DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'pnut', 'client_secret', $_POST['pnut_client_secret']);
@@ -201,8 +202,8 @@ function pnut_jot_nets(array &$jotnets_fields)
 			'field' => [
 				'pnut_enable',
 				DI::l10n()->t('Post to Pnut'),
-				DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'pnut', 'post_by_default')
-			]
+				DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'pnut', 'post_by_default'),
+			],
 		];
 	}
 }
@@ -273,18 +274,18 @@ function pnut_post_hook(array &$b)
 	DI::logger()->debug('PNUT array', $b);
 
 	$token = DI::pConfig()->get($b['uid'], 'pnut', 'access_token');
-	$nut = new phpnut\phpnut($token);
+	$nut   = new phpnut\phpnut($token);
 
 	$msgarr = Plaintext::getPost($b, PNUT_LIMIT, true, BBCode::EXTERNAL);
-	$text = $msgarr['text'];
-	$raw = [];
+	$text   = $msgarr['text'];
+	$raw    = [];
 
 	DI::logger()->debug('PNUT msgarr', $msgarr);
 
 	if (count($msgarr['parts']) > 1) {
-		$tstamp = time();
+		$tstamp                         = time();
 		$raw['nl.chimpnut.blog.post'][] = ['body' => $b['body'], 'tstamp' => $tstamp];
-		$text = Plaintext::shorten($text, 252 - strlen($b['plink']), $b['uid']);
+		$text                           = Plaintext::shorten($text, 252 - strlen($b['plink']), $b['uid']);
 		$text .= "\n" . $b['plink'];
 	}
 

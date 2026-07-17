@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Group Directory
  * Description: Add a directory of groups hosted on your server, with verbose descriptions.
@@ -99,10 +100,13 @@ function groupdirectory_content()
 	$publish = DI::config()->get('system', 'publish_all') ? '' : "`publish` = 1";
 
 	$total = 0;
-	$cnt   = DBA::fetchFirst("SELECT COUNT(*) AS `total` FROM `profile`
+	$cnt   = DBA::fetchFirst(
+		"SELECT COUNT(*) AS `total` FROM `profile`
 				INNER JOIN `user` ON `user`.`uid` = `profile`.`uid`
 				WHERE $publish AND NOT `user`.`blocked` AND NOT `user`.`account_removed` AND `user`.`page-flags` IN (?, ?) $sql_extra",
-		User::PAGE_FLAGS_COMMUNITY, User::PAGE_FLAGS_COMM_MAN);
+		User::PAGE_FLAGS_COMMUNITY,
+		User::PAGE_FLAGS_COMM_MAN,
+	);
 	if (DBA::isResult($cnt)) {
 		$total = $cnt['total'];
 	}
@@ -113,12 +117,15 @@ function groupdirectory_content()
 
 	$limit = $pager->getStart() . "," . $pager->getItemsPerPage();
 
-	$r = DBA::p("SELECT `profile`.*, `user`.`nickname`, `user`.`timezone` , `user`.`page-flags`,
+	$r = DBA::p(
+		"SELECT `profile`.*, `user`.`nickname`, `user`.`timezone` , `user`.`page-flags`,
 			`contact`.`addr`, `contact`.`url` FROM `profile`
 			INNER JOIN `user` ON `user`.`uid` = `profile`.`uid`
 			INNER JOIN `contact` ON `contact`.`uid` = `user`.`uid`
 			WHERE $publish AND NOT `user`.`blocked` AND NOT `user`.`account_removed` AND `user`.`page-flags` IN (?, ?)  AND `contact`.`self`
-			$sql_extra $order LIMIT $limit", User::PAGE_FLAGS_COMMUNITY, User::PAGE_FLAGS_COMM_MAN
+			$sql_extra $order LIMIT $limit",
+		User::PAGE_FLAGS_COMMUNITY,
+		User::PAGE_FLAGS_COMM_MAN,
 	);
 
 	if (DBA::isResult($r)) {
@@ -137,7 +144,7 @@ function groupdirectory_content()
 	}
 
 	$tpl = Renderer::getMarkupTemplate('directory_header.tpl');
-	$o   .= Renderer::replaceMacros($tpl, [
+	$o .= Renderer::replaceMacros($tpl, [
 		'$search'     => $search,
 		'$globaldir'  => DI::l10n()->t('Global Directory'),
 		'$gdirpath'   => $gdirpath,

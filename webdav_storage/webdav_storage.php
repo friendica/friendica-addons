@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Name: WebDAV Storage
  * Description: Adds the possibility to use WebDAV as a selectable storage backend
@@ -13,8 +14,8 @@ use Friendica\DI;
 
 function webdav_storage_install()
 {
-	Hook::register('storage_instance' , __FILE__, 'webdav_storage_instance');
-	Hook::register('storage_config' , __FILE__, 'webdav_storage_config');
+	Hook::register('storage_instance', __FILE__, 'webdav_storage_instance');
+	Hook::register('storage_config', __FILE__, 'webdav_storage_config');
 	DI::storageManager()->register(WebDav::class);
 }
 

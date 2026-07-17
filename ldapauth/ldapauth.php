@@ -37,7 +37,7 @@ use Friendica\Core\Config\Util\ConfigFileManager;
 
 function ldapauth_install()
 {
-	Hook::register('load_config',  'addon/ldapauth/ldapauth.php', 'ldapauth_load_config');
+	Hook::register('load_config', 'addon/ldapauth/ldapauth.php', 'ldapauth_load_config');
 	Hook::register('authenticate', 'addon/ldapauth/ldapauth.php', 'ldapauth_hook_authenticate');
 }
 
@@ -50,20 +50,20 @@ function ldapauth_hook_authenticate(array &$b)
 {
 	$user = ldapauth_authenticate($b['username'], $b['password']);
 	if (!empty($user['uid'])) {
-		$b['user_record'] = User::getById($user['uid']);
+		$b['user_record']   = User::getById($user['uid']);
 		$b['authenticated'] = 1;
 	}
 }
 
 function ldapauth_authenticate($username, $password)
 {
-	$ldap_server   = DI::config()->get('ldapauth', 'ldap_server');
-	$ldap_binddn   = DI::config()->get('ldapauth', 'ldap_binddn');
-	$ldap_bindpw   = DI::config()->get('ldapauth', 'ldap_bindpw');
-	$ldap_searchdn = DI::config()->get('ldapauth', 'ldap_searchdn');
-	$ldap_userattr = DI::config()->get('ldapauth', 'ldap_userattr');
-	$ldap_group    = DI::config()->get('ldapauth', 'ldap_group');
-	$ldap_autocreateaccount = DI::config()->get('ldapauth', 'ldap_autocreateaccount');
+	$ldap_server                           = DI::config()->get('ldapauth', 'ldap_server');
+	$ldap_binddn                           = DI::config()->get('ldapauth', 'ldap_binddn');
+	$ldap_bindpw                           = DI::config()->get('ldapauth', 'ldap_bindpw');
+	$ldap_searchdn                         = DI::config()->get('ldapauth', 'ldap_searchdn');
+	$ldap_userattr                         = DI::config()->get('ldapauth', 'ldap_userattr');
+	$ldap_group                            = DI::config()->get('ldapauth', 'ldap_group');
+	$ldap_autocreateaccount                = DI::config()->get('ldapauth', 'ldap_autocreateaccount');
 	$ldap_autocreateaccount_emailattribute = DI::config()->get('ldapauth', 'ldap_autocreateaccount_emailattribute');
 	$ldap_autocreateaccount_nameattribute  = DI::config()->get('ldapauth', 'ldap_autocreateaccount_nameattribute');
 
@@ -130,7 +130,7 @@ function ldapauth_authenticate($username, $password)
 			$ldap_autocreateaccount_nameattribute = 'givenName';
 		}
 		$email_values = @ldap_get_values($connect, $id, $ldap_autocreateaccount_emailattribute);
-		$name_values = @ldap_get_values($connect, $id, $ldap_autocreateaccount_nameattribute);
+		$name_values  = @ldap_get_values($connect, $id, $ldap_autocreateaccount_nameattribute);
 
 		return ldap_createaccount($username, $password, $email_values[0] ?? '', $name_values[0] ?? '');
 	}
@@ -157,7 +157,7 @@ function ldap_createaccount($username, $password, $email, $name)
 			'nickname' => $username,
 			'email'    => $email,
 			'password' => $password,
-			'verified' => 1
+			'verified' => 1,
 		]);
 		DI::logger()->info('Local user created from LDAP data', ['username' => $username, 'name' => $name]);
 		return $user;

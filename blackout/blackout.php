@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: blackout
  * Description: Blackout your ~friendica node during a given period
@@ -49,11 +50,12 @@ use Friendica\Core\Renderer;
 use Friendica\Core\System;
 use Friendica\DI;
 
-function blackout_install() {
+function blackout_install()
+{
 	Hook::register('page_header', 'addon/blackout/blackout.php', 'blackout_redirect');
 }
 
-function blackout_redirect ($b)
+function blackout_redirect($b)
 {
 	// if we have a logged in user, don't throw her out
 	if (DI::userSession()->getLocalUserId()) {
@@ -61,12 +63,12 @@ function blackout_redirect ($b)
 	}
 
 	// else...
-	$mystart = DI::config()->get('blackout','begindate');
-	$myend   = DI::config()->get('blackout','enddate');
-	$myurl   = DI::config()->get('blackout','url');
-	$now = time();
-	$date1 = DateTime::createFromFormat('Y-m-d G:i', $mystart);
-	$date2 = DateTime::createFromFormat('Y-m-d G:i', $myend);
+	$mystart = DI::config()->get('blackout', 'begindate');
+	$myend   = DI::config()->get('blackout', 'enddate');
+	$myurl   = DI::config()->get('blackout', 'url');
+	$now     = time();
+	$date1   = DateTime::createFromFormat('Y-m-d G:i', $mystart);
+	$date2   = DateTime::createFromFormat('Y-m-d G:i', $myend);
 	if ($date1 && $date2) {
 		$date1 = DateTime::createFromFormat('Y-m-d G:i', $mystart)->format('U');
 		$date2 = DateTime::createFromFormat('Y-m-d G:i', $myend)->format('U');
@@ -75,7 +77,7 @@ function blackout_redirect ($b)
 		$date2 = 0;
 	}
 
-	if (( $date1 <= $now ) && ( $now <= $date2 )) {
+	if (($date1 <= $now) && ($now <= $date2)) {
 		DI::logger()->notice('redirecting user to blackout page');
 		System::externalRedirect($myurl);
 	}
@@ -83,13 +85,19 @@ function blackout_redirect ($b)
 
 function blackout_addon_admin(string &$o)
 {
-	$mystart = DI::config()->get('blackout','begindate');
-	if (! is_string($mystart)) { $mystart = 'YYYY-MM-DD hh:mm'; }
-	$myend   = DI::config()->get('blackout','enddate');
-	if (! is_string($myend)) { $myend = 'YYYY-MM-DD hh:mm'; }
-	$myurl   = DI::config()->get('blackout','url');
-	if (! is_string($myurl)) { $myurl = 'https://www.example.com'; }
-	$t = Renderer::getMarkupTemplate( 'admin.tpl', 'addon/blackout/' );
+	$mystart = DI::config()->get('blackout', 'begindate');
+	if (! is_string($mystart)) {
+		$mystart = 'YYYY-MM-DD hh:mm';
+	}
+	$myend = DI::config()->get('blackout', 'enddate');
+	if (! is_string($myend)) {
+		$myend = 'YYYY-MM-DD hh:mm';
+	}
+	$myurl = DI::config()->get('blackout', 'url');
+	if (! is_string($myurl)) {
+		$myurl = 'https://www.example.com';
+	}
+	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/blackout/');
 
 	$date1 = DateTime::createFromFormat('Y-m-d G:i', $mystart);
 	$date2 = DateTime::createFromFormat('Y-m-d G:i', $myend);
@@ -101,16 +109,16 @@ function blackout_addon_admin(string &$o)
 		$adminnote = DI::l10n()->t("Please double check the current settings for the blackout. It will begin on <strong>%s</strong> and end on <strong>%s</strong>.", $mystart, $myend);
 	}
 	$o = Renderer::replaceMacros($t, [
-		'$submit' => DI::l10n()->t('Save Settings'),
-		'$rurl' => ['rurl', DI::l10n()->t("Redirect URL"), $myurl, DI::l10n()->t("All your visitors from the web will be redirected to this URL."), '', '', 'url'],
-		'$startdate' => ['startdate', DI::l10n()->t("Begin of the Blackout"), $mystart, DI::l10n()->t("Format is <tt>YYYY-MM-DD hh:mm</tt>; <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute.")],
-		'$enddate' => ['enddate', DI::l10n()->t("End of the Blackout"), $myend, ''],
-		'$adminnote' => $adminnote,
+		'$submit'        => DI::l10n()->t('Save Settings'),
+		'$rurl'          => ['rurl', DI::l10n()->t("Redirect URL"), $myurl, DI::l10n()->t("All your visitors from the web will be redirected to this URL."), '', '', 'url'],
+		'$startdate'     => ['startdate', DI::l10n()->t("Begin of the Blackout"), $mystart, DI::l10n()->t("Format is <tt>YYYY-MM-DD hh:mm</tt>; <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute.")],
+		'$enddate'       => ['enddate', DI::l10n()->t("End of the Blackout"), $myend, ''],
+		'$adminnote'     => $adminnote,
 		'$aboutredirect' => DI::l10n()->t("<strong>Note</strong>: The redirect will be active from the moment you press the submit button. Users currently logged in will <strong>not</strong> be thrown out but can't login again after logging out while the blackout is still in place."),
 	]);
 }
 
-function blackout_addon_admin_post ()
+function blackout_addon_admin_post()
 {
 	DI::config()->set('blackout', 'begindate', trim($_POST['startdate']));
 	DI::config()->set('blackout', 'enddate', trim($_POST['enddate']));

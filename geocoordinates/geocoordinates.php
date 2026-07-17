@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Geocoordinates
  * Description: Use the OpenCage Geocoder http://geocoder.opencagedata.com to resolve nearest populated location for given latitude, longitude. Derived from "geonames"
@@ -71,7 +72,7 @@ function geocoordinates_resolve_item(array &$item)
 	DI::logger()->info('Got location for coordinates ' . $coords[0] . '-' . $coords[1] . ': ' . $item['location']);
 
 	if ($item['location'] != '') {
-		DI::cache()->set('geocoordinates:' . $language.':' . $coords[0] . '-' . $coords[1], $item['location']);
+		DI::cache()->set('geocoordinates:' . $language . ':' . $coords[0] . '-' . $coords[1], $item['location']);
 	}
 }
 
@@ -85,8 +86,8 @@ function geocoordinates_addon_admin(string &$o)
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/geocoordinates/');
 
 	$o = Renderer::replaceMacros($t, [
-		'$submit' => DI::l10n()->t('Save Settings'),
-		'$api_key' => ['api_key', DI::l10n()->t('API Key'), DI::config()->get('geocoordinates', 'api_key'), ''],
+		'$submit'   => DI::l10n()->t('Save Settings'),
+		'$api_key'  => ['api_key', DI::l10n()->t('API Key'), DI::config()->get('geocoordinates', 'api_key'), ''],
 		'$language' => ['language', DI::l10n()->t('Language code (IETF format)'), DI::config()->get('geocoordinates', 'language'), ''],
 	]);
 }

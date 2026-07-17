@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Gnot
  * Description: Thread email comment notifications on Gmail and anonymise them
@@ -28,11 +29,13 @@ function gnot_install()
  * We will make sure we've got a valid user account
  * and if so set our configuration setting for this person.
  */
-function gnot_settings_post($post) {
-	if(! DI::userSession()->getLocalUserId() || empty($_POST['gnot-submit']))
+function gnot_settings_post($post)
+{
+	if (! DI::userSession()->getLocalUserId() || empty($_POST['gnot-submit'])) {
 		return;
+	}
 
-	DI::pConfig()->set(DI::userSession()->getLocalUserId(),'gnot','enable',intval($_POST['gnot']));
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'gnot', 'enable', intval($_POST['gnot']));
 }
 
 /**
@@ -62,7 +65,7 @@ function gnot_settings(array &$data)
 
 function gnot_enotify_mail(array &$b)
 {
-	if ((!$b['uid']) || (! intval(DI::pConfig()->get($b['uid'], 'gnot','enable')))) {
+	if ((!$b['uid']) || (! intval(DI::pConfig()->get($b['uid'], 'gnot', 'enable')))) {
 		return;
 	}
 

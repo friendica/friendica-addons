@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Fancybox
  * Description: Open media attachments of posts into a fancybox overlay.
@@ -28,7 +29,8 @@ function fancybox_footer(string &$str)
 	DI::page()->registerFooterScript(__DIR__ . '/asset/fancybox/fancybox.config.js');
 }
 
-function fancybox_render(array &$b){
+function fancybox_render(array &$b)
+{
 	$gallery = 'gallery-' . $b['item']['uri-id'] ?? random_int(1000000, 10000000);
 
 	// performWithEscapedBlocks escapes block defined with 2nd par pattern that won't be processed.
@@ -43,7 +45,8 @@ function fancybox_render(array &$b){
 			$text = preg_replace(
 				'#<a[^>]*href="([^"]*)"[^>]*>(<img[^>]*src="[^"]*"[^>]*>)</a>#',
 				'<a data-fancybox="' . $gallery . '" href="$1">$2</a>',
-				$text);
+				$text,
+			);
 
 			// Local content images attached:
 			$text = preg_replace_callback(
@@ -51,10 +54,10 @@ function fancybox_render(array &$b){
 				function ($matches) use ($gallery) {
 					return str_replace('<a href', '<a data-fancybox="' . $gallery . '" href', $matches[0]);
 				},
-				$text
+				$text,
 			);
 
 			return $text;
-		}
+		},
 	);
 }

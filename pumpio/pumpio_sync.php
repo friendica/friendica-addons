@@ -2,7 +2,8 @@
 
 use Friendica\DI;
 
-function pumpio_sync_run(array $argv, int $argc) {
+function pumpio_sync_run(array $argv, int $argc)
+{
 	require_once 'addon/pumpio/pumpio.php';
 
 	if (function_exists('sys_getloadavg')) {

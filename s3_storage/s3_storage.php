@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Name: S3 Storage
  * Description: Adds the possibility to use Amazon S3 as a selectable storage backend
@@ -15,8 +16,8 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'a
 
 function s3_storage_install()
 {
-	Hook::register('storage_instance' , __FILE__, 's3_storage_instance');
-	Hook::register('storage_config' , __FILE__, 's3_storage_config');
+	Hook::register('storage_instance', __FILE__, 's3_storage_instance');
+	Hook::register('storage_config', __FILE__, 's3_storage_config');
 	DI::storageManager()->register(S3Client::class);
 }
 

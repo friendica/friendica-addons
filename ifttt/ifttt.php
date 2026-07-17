@@ -44,7 +44,7 @@ function ifttt_settings(array &$data)
 
 	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/ifttt/');
 	$html = Renderer::replaceMacros($t, [
-		'$l10n'                    => [
+		'$l10n' => [
 			'intro'                   => DI::l10n()->t('Create an account at <a href="http://www.ifttt.com">IFTTT</a>. Create three Facebook recipes that are connected with <a href="https://ifttt.com/maker">Maker</a> (In the form "if Facebook then Maker") with the following parameters:'),
 			'url'                     => DI::l10n()->t('URL'),
 			'method'                  => DI::l10n()->t('Method'),
@@ -148,11 +148,11 @@ function ifttt_post()
 
 function ifttt_message($uid, $item)
 {
-	$post = [];
-	$post['uid'] = $uid;
-	$post['app'] = 'IFTTT';
+	$post          = [];
+	$post['uid']   = $uid;
+	$post['app']   = 'IFTTT';
 	$post['title'] = '';
-	$post['body'] = $item['msg'];
+	$post['body']  = $item['msg'];
 	//$post['date'] = $item['date'];
 	//$post['uri'] = $item['url'];
 

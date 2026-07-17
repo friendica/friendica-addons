@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright (C) 2010-2023, the Friendica project
  *

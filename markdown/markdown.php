@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Markdown
  * Description: Parse Markdown code when creating new items
@@ -10,10 +11,11 @@ use Friendica\Content\Text\Markdown;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
-function markdown_install() {
-	Hook::register('post_local_start',      __FILE__, 'markdown_post_local_start');
-	Hook::register('addon_settings',        __FILE__, 'markdown_addon_settings');
-	Hook::register('addon_settings_post',   __FILE__, 'markdown_addon_settings_post');
+function markdown_install()
+{
+	Hook::register('post_local_start', __FILE__, 'markdown_post_local_start');
+	Hook::register('addon_settings', __FILE__, 'markdown_addon_settings');
+	Hook::register('addon_settings_post', __FILE__, 'markdown_addon_settings_post');
 }
 
 function markdown_addon_settings(array &$data)
@@ -45,7 +47,8 @@ function markdown_addon_settings_post(array &$b)
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'markdown', 'enabled', intval($_POST['markdown-enabled']));
 }
 
-function markdown_post_local_start(&$request) {
+function markdown_post_local_start(&$request)
+{
 	if (empty($request['body']) || !DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'markdown', 'enabled')) {
 		return;
 	}
@@ -67,6 +70,6 @@ function markdown_post_local_start(&$request) {
 
 				return Markdown::toBBCode($text);
 			});
-		}
+		},
 	);
 }

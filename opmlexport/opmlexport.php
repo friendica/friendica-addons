@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: OPML Export
  * Description: Export user's RSS/Atom contacts as OPML
@@ -15,8 +16,8 @@ use Friendica\Model\User;
 
 function opmlexport_install()
 {
-	Hook::register('addon_settings',        __FILE__, 'opmlexport_addon_settings');
-	Hook::register('addon_settings_post',   __FILE__, 'opmlexport_addon_settings_post');
+	Hook::register('addon_settings', __FILE__, 'opmlexport_addon_settings');
+	Hook::register('addon_settings_post', __FILE__, 'opmlexport_addon_settings_post');
 	DI::logger()->notice('installed opmlexport Addon');
 }
 
@@ -24,29 +25,29 @@ function opmlexport_install()
 function opmlexport()
 {
 	$condition = [
-		'uid' => DI::userSession()->getLocalUserId(),
-		'self' => false,
+		'uid'     => DI::userSession()->getLocalUserId(),
+		'self'    => false,
 		'deleted' => false,
 		'archive' => false,
 		'blocked' => false,
 		'pending' => false,
-		'network' => Protocol::FEED
+		'network' => Protocol::FEED,
 	];
 	$data = Contact::selectToArray([], $condition, ['order' => ['name']]);
 	$user = User::getById(DI::userSession()->getLocalUserId());
 
-	$xml = new \DOMDocument( '1.0', 'utf-8' );
-	$opml = $xml->createElement('opml');
-	$head = $xml->createElement('head');
-	$body = $xml->createElement('body');
+	$xml     = new \DOMDocument('1.0', 'utf-8');
+	$opml    = $xml->createElement('opml');
+	$head    = $xml->createElement('head');
+	$body    = $xml->createElement('body');
 	$outline = $xml->createElement('outline');
 	$outline->setAttribute('title', $user['username'] . '\'s RSS/Atom contacts');
 	$outline->setAttribute('text', $user['username'] . '\'s RSS/Atom contacts');
 
-	foreach($data as $c) {
+	foreach ($data as $c) {
 		$entry = $xml->createElement('outline');
-		$entry->setAttribute('title',  $c['name']);
-		$entry->setAttribute('text',   $c['name']);
+		$entry->setAttribute('title', $c['name']);
+		$entry->setAttribute('text', $c['name']);
 		$entry->setAttribute('xmlUrl', $c['url']);
 		$outline->appendChild($entry);
 	}

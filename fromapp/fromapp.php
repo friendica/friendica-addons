@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: FromApp
  * Description: Change the displayed application you are posting from
@@ -61,7 +62,7 @@ function fromapp_post_hook(&$item)
 		return;
 	}
 
-	$app = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'fromapp', 'app');
+	$app   = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'fromapp', 'app');
 	$force = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'fromapp', 'force'));
 
 	if (is_null($app) || (! strlen($app))) {
@@ -72,8 +73,8 @@ function fromapp_post_hook(&$item)
 		return;
 	}
 
-	$apps = explode(',', $app);
-	$item['app'] = trim($apps[mt_rand(0, count($apps)-1)]);
+	$apps        = explode(',', $app);
+	$item['app'] = trim($apps[mt_rand(0, count($apps) - 1)]);
 
 	return;
 }

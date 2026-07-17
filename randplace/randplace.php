@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Random place
  * Description: Sample Friendica addon. Set a random place when posting.
@@ -95,10 +96,10 @@ function randplace_post_hook(&$item)
 	 */
 
 	$cities = [];
-	$zones = timezone_identifiers_list();
-	foreach($zones as $zone) {
+	$zones  = timezone_identifiers_list();
+	foreach ($zones as $zone) {
 		if ((strpos($zone, '/')) && (! stristr($zone, 'US/')) && (! stristr($zone, 'Etc/'))) {
-			$cities[] = str_replace('_', ' ',substr($zone, strpos($zone, '/') + 1));
+			$cities[] = str_replace('_', ' ', substr($zone, strpos($zone, '/') + 1));
 		}
 	}
 
@@ -106,7 +107,7 @@ function randplace_post_hook(&$item)
 		return;
 	}
 
-	$city = array_rand($cities,1);
+	$city             = array_rand($cities, 1);
 	$item['location'] = $cities[$city];
 
 	return;
@@ -136,11 +137,11 @@ function randplace_settings_post($post)
  */
 function randplace_settings(array &$data)
 {
-	if(!DI::userSession()->getLocalUserId()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
-	$enabled = DI::pConfig()->get(DI::userSession()->getLocalUserId(),'randplace','enable');
+	$enabled = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'randplace', 'enable');
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/randplace/');
 	$html = Renderer::replaceMacros($t, [

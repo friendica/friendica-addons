@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Random Planet, Empirial Version
  * Description: Sample Friendica addon. Set a random planet from the Emprire when posting.
@@ -73,7 +74,7 @@ function planets_post_hook(&$item)
 
 	$planets = ['Alderaan','Tatooine','Dagobah','Polis Massa','Coruscant','Hoth','Endor','Kamino','Rattatak','Mustafar','Iego','Geonosis','Felucia','Dantooine','Ansion','Artaru','Bespin','Boz Pity','Cato Neimoidia','Christophsis','Kashyyyk','Kessel','Malastare','Mygeeto','Nar Shaddaa','Ord Mantell','Saleucami','Subterrel','Death Star','Teth','Tund','Utapau','Yavin'];
 
-	$planet = array_rand($planets,1);
+	$planet           = array_rand($planets, 1);
 	$item['location'] = $planets[$planet];
 
 	return;
@@ -97,7 +98,7 @@ function planets_settings_post($post)
 		return;
 	}
 	if ($_POST['planets-submit']) {
-		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'planets', 'enable' ,intval($_POST['planets']));
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'planets', 'enable', intval($_POST['planets']));
 	}
 }
 
@@ -113,11 +114,11 @@ function planets_settings_post($post)
 
 function planets_settings(array &$data)
 {
-	if(!DI::userSession()->getLocalUserId()) {
+	if (!DI::userSession()->getLocalUserId()) {
 		return;
 	}
 
-	$enabled = DI::pConfig()->get(DI::userSession()->getLocalUserId(),'planets','enable');
+	$enabled = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'planets', 'enable');
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/planets/');
 	$html = Renderer::replaceMacros($t, [

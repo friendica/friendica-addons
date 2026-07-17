@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Name: nitter
  * Description: Replaces links to twitter.com to a nitter server in all displays of postings on a node.
@@ -47,11 +48,11 @@ function nitter_addon_admin_post()
 function nitter_addon_admin(string &$o)
 {
 	$nitterserver = DI::config()->get('nitter', 'server');
-	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/nitter/');
-	$o = Renderer::replaceMacros($t, [
+	$t            = Renderer::getMarkupTemplate('admin.tpl', 'addon/nitter/');
+	$o            = Renderer::replaceMacros($t, [
 		'$settingdescription' => DI::l10n()->t('Which nitter server shall be used for the replacements in the post bodies? Use the URL with servername and protocol.  See %s for a list of available public Nitter servers.', 'https://github.com/zedeus/nitter/wiki/Instances'),
-		'$nitterserver' => ['nitterserver', DI::l10n()->t('Nitter server'), $nitterserver, 'https://example.com'],
-		'$submit' => DI::l10n()->t('Save Settings'),
+		'$nitterserver'       => ['nitterserver', DI::l10n()->t('Nitter server'), $nitterserver, 'https://example.com'],
+		'$submit'             => DI::l10n()->t('Save Settings'),
 	]);
 }
 
@@ -62,14 +63,14 @@ function nitter_render(array &$b)
 {
 	// this needs to be a system setting
 	$replaced = false;
-	$nitter = DI::config()->get('nitter', 'server', 'https://nitter.net');
+	$nitter   = DI::config()->get('nitter', 'server', 'https://nitter.net');
 	if (strstr($b['html'], 'https://mobile.twitter.com')) {
 		$b['html'] = str_replace('https://mobile.twitter.com', $nitter, $b['html']);
-		$replaced = true;
+		$replaced  = true;
 	}
 	if (strstr($b['html'], 'https://twitter.com')) {
 		$b['html'] = str_replace('https://twitter.com', $nitter, $b['html']);
-		$replaced = true;
+		$replaced  = true;
 	}
 	if ($replaced) {
 		$b['html'] .= '<hr><p><small>' . DI::l10n()->t('(Nitter addon enabled: Twitter links via %s)', $nitter) . '</small></p>';

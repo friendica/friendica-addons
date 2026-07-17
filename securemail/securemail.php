@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Secure Mail
  * Description: Send notification mail encrypted with user-defined public GPG key
@@ -43,7 +44,7 @@ function securemail_settings(array &$data)
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/securemail/');
 	$html = Renderer::replaceMacros($t, [
 		'$enabled'   => ['securemail-enable', DI::l10n()->t('Enable Secure Mail'), $enabled],
-		'$publickey' => ['securemail-pkey', DI::l10n()->t('Public key'), $publickey, DI::l10n()->t('Your public PGP key, ascii armored format')]
+		'$publickey' => ['securemail-pkey', DI::l10n()->t('Public key'), $publickey, DI::l10n()->t('Your public PGP key, ascii armored format')],
 	]);
 
 	$data = [
@@ -114,23 +115,23 @@ function securemail_emailer_send_prepare(IEmail &$email)
 	$public_key_ascii = DI::pConfig()->get($uid, 'securemail', 'pkey');
 
 	preg_match('/-----BEGIN ([A-Za-z ]+)-----/', $public_key_ascii, $matches);
-	$marker = empty($matches[1]) ? 'MESSAGE' : $matches[1];
+	$marker     = empty($matches[1]) ? 'MESSAGE' : $matches[1];
 	$public_key = OpenPGP::unarmor($public_key_ascii, $marker);
 
 	$key = OpenPGP_Message::parse($public_key);
 
 	$data = new OpenPGP_LiteralDataPacket($email->getMessage(true), [
-		'format' => 'u',
-		'filename' => 'encrypted.gpg'
+		'format'   => 'u',
+		'filename' => 'encrypted.gpg',
 	]);
 
 	try {
-		$encrypted = OpenPGP_Crypt_Symmetric::encrypt($key, new OpenPGP_Message([$data]));
+		$encrypted         = OpenPGP_Crypt_Symmetric::encrypt($key, new OpenPGP_Message([$data]));
 		$armored_encrypted = wordwrap(
 			OpenPGP::enarmor($encrypted->to_bytes(), 'PGP MESSAGE'),
 			64,
 			"\n",
-			true
+			true,
 		);
 
 		$email = $email->withMessage($armored_encrypted, null);
