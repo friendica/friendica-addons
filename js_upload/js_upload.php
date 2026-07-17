@@ -138,7 +138,7 @@ class js_upload_qqUploadedFileXhr
 
 	function getName()
 	{
-		return $_GET['qqfile'];
+		return basename($_GET['qqfile']);
 	}
 
 	function getSize()
@@ -173,7 +173,7 @@ class js_upload_qqUploadedFileForm
 
 	function getName()
 	{
-		return $_FILES['qqfile']['name'];
+		return basename($_FILES['qqfile']['name']);
 	}
 
 	function getSize()
