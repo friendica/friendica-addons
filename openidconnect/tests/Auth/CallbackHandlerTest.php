@@ -52,7 +52,7 @@ final class CallbackHandlerTest extends AddonTestCase
     {
         (new CallbackHandler($this->dependencies()))->handle([]);
 
-        self::assertSame('login', DI::baseUrl()->lastRedirect());
+        self::assertSame('login?openidconnect_no_auto=1', DI::baseUrl()->lastRedirect());
     }
 
     public function testExpiredStateRedirectsToLoginWithNotice(): void
@@ -62,7 +62,7 @@ final class CallbackHandlerTest extends AddonTestCase
             'state' => 'missing-state',
         ]);
 
-        self::assertSame('login', DI::baseUrl()->lastRedirect());
+        self::assertSame('login?openidconnect_no_auto=1', DI::baseUrl()->lastRedirect());
         self::assertNotEmpty(DI::sysmsg()->notices);
         self::assertStringContainsString(
             'invalid or expired state',

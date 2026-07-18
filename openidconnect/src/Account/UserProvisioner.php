@@ -7,6 +7,7 @@ namespace Friendica\Addon\OpenIdConnect\Account;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\User;
+use Friendica\Addon\OpenIdConnect\Auth\LoginPolicy;
 
 final class UserProvisioner
 {
@@ -167,7 +168,7 @@ final class UserProvisioner
             $errorMsg = $e->getMessage();
             DI::logger()->error('openidconnect: create_user exception', ['exception' => $errorMsg]);
             DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect: Account creation failed: %s', $errorMsg));
-            DI::baseUrl()->redirect('login');
+            DI::baseUrl()->redirect(LoginPolicy::buildFallbackPath(''));
             return null;
         }
 
