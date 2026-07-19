@@ -123,4 +123,36 @@ final class LoginHookTest extends AddonTestCase
             json_encode(['warnings' => DI::logger()->warnings, 'errors' => DI::logger()->errors], JSON_THROW_ON_ERROR)
         );
     }
+
+    public function testAppendSkipsAutoRedirectWhenNoAutoFlagOnlyExistsInGetParameters(): void
+    {
+        DI::config()->set('openidconnect', 'client_id', 'client-id');
+        DI::config()->set('openidconnect', 'client_secret', 'secret');
+        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
+        DI::config()->set('openidconnect', 'transparent_sso', true);
+        DI::cache()->set('openidconnect:provider_config', ['issuer' => 'https://id.example'], 600);
+        $_GET['openidconnect_no_auto'] = '1';
+
+        $output = '';
+        (new LoginHook())->append($output);
+
+        self::assertEmpty(DI::sysmsg()->notices);
+        self::assertStringContainsString('/openidconnect/auth', $output);
+    }
+
+    public function testAppendPrefersQueryStringOverGetFallbackForReturnPath(): void
+    {
+        DI::config()->set('openidconnect', 'client_id', 'client-id');
+        DI::config()->set('openidconnect', 'client_secret', 'secret');
+        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
+
+        DI::args()->setQueryString('return_path=settings/account');
+        $_GET['return_path'] = 'network';
+
+        $output = '';
+        (new LoginHook())->append($output);
+
+        self::assertStringContainsString('return_path=settings%2Faccount', $output);
+        self::assertStringNotContainsString('return_path=network', $output);
+    }
 }

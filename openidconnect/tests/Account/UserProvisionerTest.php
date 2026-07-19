@@ -344,7 +344,7 @@ final class UserProvisionerTest extends AddonTestCase
         $result = $service->findOrCreate($sub, $email, $name, $nickname, '');
 
         self::assertNull($result);
-        self::assertSame('login', DI::baseUrl()->lastRedirect());
+        self::assertSame('login?openidconnect_no_auto=1', DI::baseUrl()->lastRedirect());
         self::assertNotEmpty(DI::sysmsg()->notices);
 
         self::assertNotEmpty(DI::logger()->errors);
@@ -424,7 +424,7 @@ final class UserProvisionerTest extends AddonTestCase
         $result = $service->findOrCreate('sub-exhaust', 'exhaust@example.test', 'Exhaust', 'exhaust', '');
 
         self::assertNull($result);
-        self::assertSame('login', DI::baseUrl()->lastRedirect());
+        self::assertSame('login?openidconnect_no_auto=1', DI::baseUrl()->lastRedirect());
         self::assertNotEmpty(DI::sysmsg()->notices);
         self::assertStringContainsString('Account creation failed', DI::sysmsg()->notices[array_key_last(DI::sysmsg()->notices)]);
     }

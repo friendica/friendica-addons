@@ -66,13 +66,21 @@ final class LoginHook
      */
     private function queryParams(): array
     {
+        $query = [];
+
         $queryString = DI::args()->getQueryString();
-        if (!is_string($queryString) || $queryString === '') {
-            return [];
+        if (is_string($queryString) && $queryString !== '') {
+            parse_str($queryString, $query);
         }
 
-        $query = [];
-        parse_str($queryString, $query);
+        // Friendica's rewritten login flow can populate $_GET even when the
+        // reconstructed query string no longer carries the original parameters.
+        // Only accept string keys and values here to avoid array injection.
+        foreach ($_GET as $key => $value) {
+            if (is_string($key) && is_string($value) && !array_key_exists($key, $query)) {
+                $query[$key] = $value;
+            }
+        }
 
         $result = [];
         foreach ($query as $key => $value) {

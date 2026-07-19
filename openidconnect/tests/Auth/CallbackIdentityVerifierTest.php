@@ -34,7 +34,7 @@ final class CallbackIdentityVerifierTest extends AddonTestCase
             ->verify(['access_token' => 'access-token'], []);
 
         self::assertSame([], $result);
-        self::assertSame('login', DI::baseUrl()->lastRedirect());
+        self::assertSame('login?openidconnect_no_auto=1', DI::baseUrl()->lastRedirect());
         self::assertNotEmpty(DI::sysmsg()->notices);
         self::assertStringContainsString('not been verified', implode(' ', DI::sysmsg()->notices));
     }
@@ -81,7 +81,7 @@ final class CallbackIdentityVerifierTest extends AddonTestCase
             ->verify(['access_token' => 'access-token'], []);
 
         self::assertSame([], $result);
-        self::assertSame('login', DI::baseUrl()->lastRedirect());
+        self::assertSame('login?openidconnect_no_auto=1', DI::baseUrl()->lastRedirect());
         self::assertNotEmpty(DI::sysmsg()->notices);
         self::assertStringContainsString('Email address not provided', implode(' ', DI::sysmsg()->notices));
     }
@@ -132,7 +132,7 @@ final class CallbackIdentityVerifierTest extends AddonTestCase
             ]);
 
         self::assertSame([], $result);
-        self::assertSame('login', DI::baseUrl()->lastRedirect());
+        self::assertSame('login?openidconnect_no_auto=1', DI::baseUrl()->lastRedirect());
         self::assertStringContainsString('invalid identity token', implode(' ', DI::sysmsg()->notices));
 
         $this->assertNoSensitiveValuesInLogs($rawEmail, $rawSub, $rawAccessToken);
@@ -191,7 +191,7 @@ final class CallbackIdentityVerifierTest extends AddonTestCase
             ], []);
 
         self::assertSame([], $result);
-        self::assertSame('login', DI::baseUrl()->lastRedirect());
+        self::assertSame('login?openidconnect_no_auto=1', DI::baseUrl()->lastRedirect());
         self::assertStringContainsString('could not retrieve user info', implode(' ', DI::sysmsg()->notices));
 
         $this->assertNoSensitiveValuesInLogs($rawEmail, $rawSub, $rawAccessToken, $rawIp);
@@ -257,7 +257,7 @@ final class CallbackIdentityVerifierTest extends AddonTestCase
             ]);
 
         self::assertSame([], $result);
-        self::assertSame('login', DI::baseUrl()->lastRedirect());
+        self::assertSame('login?openidconnect_no_auto=1', DI::baseUrl()->lastRedirect());
         self::assertStringContainsString('inconsistent provider identity', implode(' ', DI::sysmsg()->notices));
 
         self::assertNotEmpty(DI::logger()->warnings);
@@ -286,7 +286,7 @@ final class CallbackIdentityVerifierTest extends AddonTestCase
 
         $rejectedResult = (new CallbackIdentityVerifier())->verify(['access_token' => 'access-token'], []);
         self::assertSame([], $rejectedResult);
-        self::assertSame('login', DI::baseUrl()->lastRedirect());
+        self::assertSame('login?openidconnect_no_auto=1', DI::baseUrl()->lastRedirect());
 
         DI::resetTestState();
 

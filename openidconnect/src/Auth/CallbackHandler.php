@@ -35,7 +35,7 @@ final class CallbackHandler
         if ($code === '' || $state === '') {
             DI::logger()->error('Missing code or state parameter');
             DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect authentication failed: missing parameters.'));
-            DI::baseUrl()->redirect('login');
+            $this->redirectToFallback('');
             return;
         }
 
@@ -43,7 +43,7 @@ final class CallbackHandler
         if (empty($stateData)) {
             DI::logger()->warning('openidconnect: state not found in cache (expired or replay attempt)');
             DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect authentication failed: invalid or expired state.'));
-            DI::baseUrl()->redirect('login');
+            $this->redirectToFallback('');
             return;
         }
 
@@ -63,7 +63,7 @@ final class CallbackHandler
         if (!$tokens) {
             DI::logger()->error('Failed to exchange authorization code');
             DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect authentication failed: token exchange error.'));
-            DI::baseUrl()->redirect('login');
+            $this->redirectToFallback($returnPath);
             return;
         }
 
@@ -71,7 +71,7 @@ final class CallbackHandler
         if (empty($userinfo)) {
             DI::logger()->warning('openidconnect: identity verification returned empty user info payload in callback');
             DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect authentication failed: could not verify your identity.'));
-            DI::baseUrl()->redirect(LoginPolicy::buildFallbackPath($returnPath));
+            $this->redirectToFallback($returnPath);
             return;
         }
 
@@ -109,7 +109,7 @@ final class CallbackHandler
         }
 
         DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect login failed: No matching account found and registration is not available. Please contact the administrator.'));
-        DI::baseUrl()->redirect('login');
+        $this->redirectToFallback($returnPath);
     }
 
     private function handleAuthorizationError(array $query): bool
@@ -133,12 +133,12 @@ final class CallbackHandler
         ]);
 
         if ($isSilentAuth && $this->shouldFallbackToManualLogin($error)) {
-            DI::baseUrl()->redirect(LoginPolicy::buildFallbackPath($returnPath));
+            $this->redirectToFallback($returnPath);
             return true;
         }
 
         DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect authentication failed: %s', $error));
-        DI::baseUrl()->redirect(LoginPolicy::buildFallbackPath($returnPath));
+        $this->redirectToFallback($returnPath);
         return true;
     }
 
@@ -150,5 +150,10 @@ final class CallbackHandler
             'consent_required',
             'account_selection_required',
         ], true);
+    }
+
+    private function redirectToFallback(string $returnPath): void
+    {
+        DI::baseUrl()->redirect(LoginPolicy::buildFallbackPath($returnPath));
     }
 }

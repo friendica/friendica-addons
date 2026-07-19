@@ -49,7 +49,7 @@ function openidconnect_init(): void
 			'trace' => $e->getTraceAsString(),
 		]);
 		DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect encountered an unexpected error. Please try again.'));
-		DI::baseUrl()->redirect('login');
+		DI::baseUrl()->redirect(\Friendica\Addon\OpenIdConnect\Auth\LoginPolicy::buildFallbackPath(''));
 	}
 	exit();
 }

@@ -39,7 +39,7 @@ final class CallbackIdentityVerifier
 
         if (!empty($tokens['id_token']) && !$validatedIdToken) {
             DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect authentication failed: invalid identity token.'));
-            DI::baseUrl()->redirect('login');
+            DI::baseUrl()->redirect(LoginPolicy::buildFallbackPath(''));
             return [];
         }
 
@@ -63,7 +63,7 @@ final class CallbackIdentityVerifier
         if (!$userinfo) {
             DI::logger()->error('Failed to fetch userinfo');
             DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect authentication failed: could not retrieve user info.'));
-            DI::baseUrl()->redirect('login');
+            DI::baseUrl()->redirect(LoginPolicy::buildFallbackPath(''));
             return [];
         }
 
@@ -91,7 +91,7 @@ final class CallbackIdentityVerifier
                 'has_email' => !empty($userinfo['email']),
             ]);
             DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect: Your email address has not been verified by the identity provider.'));
-            DI::baseUrl()->redirect('login');
+            DI::baseUrl()->redirect(LoginPolicy::buildFallbackPath(''));
             return [];
         }
 
@@ -104,13 +104,13 @@ final class CallbackIdentityVerifier
                 'has_userinfo_sub' => $sub !== '',
             ]);
             DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect authentication failed: inconsistent provider identity.'));
-            DI::baseUrl()->redirect('login');
+            DI::baseUrl()->redirect(LoginPolicy::buildFallbackPath(''));
             return [];
         }
 
         if (empty($email)) {
             DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect: Email address not provided by the identity provider.'));
-            DI::baseUrl()->redirect('login');
+            DI::baseUrl()->redirect(LoginPolicy::buildFallbackPath(''));
             return [];
         }
 
