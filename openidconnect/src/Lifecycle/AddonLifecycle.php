@@ -7,24 +7,10 @@ namespace Friendica\Addon\OpenIdConnect\Lifecycle;
 use Friendica\Core\Config\Util\ConfigFileManager;
 use Friendica\Core\Config\ValueObject\Cache;
 use Friendica\Core\Hook;
-use Friendica\Database\DBA;
 use Friendica\DI;
 
 final class AddonLifecycle
 {
-	private const CONFIG_KEYS = [
-		'discovery_url',
-		'client_id',
-		'client_secret',
-		'scopes',
-		'button_text',
-		'auto_create_accounts',
-		'allow_unverified_email',
-		'idp_signout',
-		'transparent_sso',
-		'transparent_sso_prompt_none',
-	];
-
 	private function addonEntrypoint(): string
 	{
 		return dirname(__DIR__, 2) . '/openidconnect.php';
@@ -51,16 +37,11 @@ final class AddonLifecycle
 		Hook::unregister('page_end', $entrypoint, 'openidconnect_page_end');
 		Hook::unregister('addon_settings', $entrypoint, 'openidconnect_addon_settings');
 
-		DBA::delete('pconfig', ['cat' => 'openidconnect']);
-
-		foreach (self::CONFIG_KEYS as $key) {
-			DI::config()->delete('openidconnect', $key);
-		}
-
 		DI::cache()->delete('openidconnect:provider_config');
 		DI::cache()->delete('openidconnect:jwks');
 
-		DI::logger()->info('openidconnect: uninstall complete — hooks, pconfig, and global config cleared');
+		// Preserve stored config and account-link data so a disable/re-enable cycle does not break SSO recovery.
+		DI::logger()->info('openidconnect: uninstall complete — hooks removed, stored config preserved');
 	}
 
 	public function loadConfig(ConfigFileManager $loader): void

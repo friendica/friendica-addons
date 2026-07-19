@@ -30,7 +30,7 @@ final class AddonLifecycleTest extends AddonTestCase
 		], Hook::$registerCalls);
 	}
 
-	public function testUninstallRemovesHooksAndSensitiveConfiguration(): void
+	public function testUninstallRemovesHooksButPreservesStoredConfiguration(): void
 	{
 		$lifecycle = new AddonLifecycle();
 		$entrypoint = dirname(__DIR__, 2) . '/openidconnect.php';
@@ -45,29 +45,16 @@ final class AddonLifecycleTest extends AddonTestCase
 			['hook' => 'addon_settings', 'file' => $entrypoint, 'callback' => 'openidconnect_addon_settings'],
 		], Hook::$unregisterCalls);
 
-		self::assertSame([
-			['table' => 'pconfig', 'condition' => ['cat' => 'openidconnect']],
-		], DBA::$deleteCalls);
+		self::assertSame([], DBA::$deleteCalls);
 
-		self::assertSame([
-			['openidconnect', 'discovery_url'],
-			['openidconnect', 'client_id'],
-			['openidconnect', 'client_secret'],
-			['openidconnect', 'scopes'],
-			['openidconnect', 'button_text'],
-			['openidconnect', 'auto_create_accounts'],
-			['openidconnect', 'allow_unverified_email'],
-			['openidconnect', 'idp_signout'],
-			['openidconnect', 'transparent_sso'],
-			['openidconnect', 'transparent_sso_prompt_none'],
-		], DI::config()->deleteCalls);
+		self::assertSame([], DI::config()->deleteCalls);
 
 		self::assertSame([
 			'openidconnect:provider_config',
 			'openidconnect:jwks',
 		], DI::cache()->deleteCalls);
 
-		self::assertSame('openidconnect: uninstall complete — hooks, pconfig, and global config cleared', DI::logger()->infos[0][0]);
+		self::assertSame('openidconnect: uninstall complete — hooks removed, stored config preserved', DI::logger()->infos[0][0]);
 	}
 
 	public function testLoadConfigLoadsStaticAddonConfigurationIntoConfigCache(): void
