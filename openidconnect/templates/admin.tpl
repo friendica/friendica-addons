@@ -18,6 +18,7 @@
 		<label for="id_client_secret">{{$client_secret.1}}</label>
 		<input type="password" name="client_secret" id="id_client_secret" class="form-control" value="{{$client_secret.2}}" {{if $client_secret.4}}readonly="readonly"{{/if}} />
 		<span class="help-block">{{$client_secret.3}}</span>
+		{{if $client_secret.5}}<span class="help-block">{{$client_secret.5}}</span>{{/if}}
 	</div>
 
 	<div class="form-group">

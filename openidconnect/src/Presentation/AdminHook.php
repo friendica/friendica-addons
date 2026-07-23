@@ -40,7 +40,7 @@ final class AdminHook
         return $source >= Cache::SOURCE_ENV;
     }
 
-    private function buildField(string $key, string $label, mixed $value, string $description): array
+    private function buildField(string $key, string $label, mixed $value, string $description, string $extraHelp = ''): array
     {
         $readOnly = $this->isReadOnly($key);
 
@@ -50,7 +50,13 @@ final class AdminHook
             $value,
             $description,
             $readOnly,
+            $extraHelp,
         ];
+    }
+
+    private function hasStoredClientSecret(): bool
+    {
+        return trim((string)(DI::config()->get('openidconnect', 'client_secret') ?? '')) !== '';
     }
 
     public function render(string &$output): void
@@ -75,7 +81,10 @@ final class AdminHook
                 'client_secret',
                 DI::l10n()->t('Client Secret'),
                 '',
-                DI::l10n()->t('The OAuth2 client secret from your identity provider')
+                DI::l10n()->t('The OAuth2 client secret from your identity provider'),
+                $this->hasStoredClientSecret()
+                    ? DI::l10n()->t('A client secret is already configured. Leave this field blank to keep the current value.')
+                    : ''
             ),
             '$scopes' => $this->buildField(
                 'scopes',

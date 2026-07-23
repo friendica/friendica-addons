@@ -110,6 +110,19 @@ final class AdminHookTest extends AddonTestCase
 
         $decoded = json_decode($output, true, 512, JSON_THROW_ON_ERROR);
         self::assertSame('', $decoded['vars']['$client_secret'][2]);
+        self::assertSame(
+            'A client secret is already configured. Leave this field blank to keep the current value.',
+            $decoded['vars']['$client_secret'][5]
+        );
+    }
+
+    public function testRenderDoesNotShowConfiguredHintWhenClientSecretIsMissing(): void
+    {
+        $output = '';
+        (new AdminHook())->render($output);
+
+        $decoded = json_decode($output, true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame('', $decoded['vars']['$client_secret'][5]);
     }
 
     #[DataProvider('sourceLabelProvider')]
