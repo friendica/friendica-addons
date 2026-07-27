@@ -22,7 +22,7 @@ return \Rector\Config\RectorConfig::configure()
 	->withIndent("\t", 4)
 	->withPhpVersion(80200)
 	->withPhpLevel(0)
-	// ->withTypeCoverageLevel(0)
+	->withTypeCoverageLevel(0)
 	// ->withDeadCodeLevel(0)
 	// ->withCodeQualityLevel(0)
 	->withSets([
