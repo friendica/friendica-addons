@@ -23,7 +23,7 @@ return \Rector\Config\RectorConfig::configure()
 	->withPhpVersion(80200)
 	->withPhpLevel(0)
 	->withTypeCoverageLevel(0)
-	// ->withDeadCodeLevel(0)
+	->withDeadCodeLevel(0)
 	// ->withCodeQualityLevel(0)
 	->withSets([
 		//\Rector\Set\ValueObject\LevelSetList::UP_TO_PHP_85,
