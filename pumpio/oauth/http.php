@@ -233,7 +233,7 @@ class http_class
 	{
 		if($this->debug)
 			$this->OutputDebug("C $line");
-		if(!fputs($this->connection,$line."\r\n"))
+		if(!fwrite($this->connection,$line."\r\n"))
 		{
 			$this->SetDataAccessError("it was not possible to send a line to the HTTP server");
 			return(0);
@@ -247,7 +247,7 @@ class http_class
 		{
 			if($this->debug)
 				$this->OutputDebug('C '.$data);
-			if(!fputs($this->connection,$data))
+			if(!fwrite($this->connection,$data))
 			{
 				$this->SetDataAccessError("it was not possible to send data to the HTTP server");
 				return(0);
@@ -453,7 +453,7 @@ class http_class
 					case 4:
 						$command = 1;
 						$user = '';
-						if(!fputs($this->connection, chr($version).chr($command).pack('nN', $host_port, ip2long($host_ip)).$user.Chr(0)))
+						if(!fwrite($this->connection, chr($version).chr($command).pack('nN', $host_port, ip2long($host_ip)).$user.Chr(0)))
 							$error = $this->SetDataAccessError($send_error);
 						else
 						{
@@ -480,7 +480,7 @@ class http_class
 							$this->OutputDebug('Negotiating the authentication method ...');
 						$methods = 1;
 						$method = 0;
-						if(!fputs($this->connection, chr($version).chr($methods).chr($method)))
+						if(!fwrite($this->connection, chr($version).chr($methods).chr($method)))
 							$error = $this->SetDataAccessError($send_error);
 						else
 						{
@@ -495,7 +495,7 @@ class http_class
 									$this->OutputDebug('Connecting to '.$host_server_type.' server IP '.$host_ip.' port '.$host_port.'...');
 								$command = 1;
 								$address_type = 1;
-								if(!fputs($this->connection, chr($version).chr($command)."\x00".chr($address_type).pack('Nn', ip2long($host_ip), $host_port)))
+								if(!fwrite($this->connection, chr($version).chr($command)."\x00".chr($address_type).pack('Nn', ip2long($host_ip), $host_port)))
 									$error = $this->SetDataAccessError($send_error);
 								else
 								{
@@ -1554,7 +1554,7 @@ class http_class
 				break;
 			}
 			$header_name=strtolower($this->Tokenize($line,":"));
-			$header_value=Trim(Chop($this->Tokenize("\r\n")));
+			$header_value=Trim(rtrim($this->Tokenize("\r\n")));
 			if(IsSet($headers[$header_name]))
 			{
 				if(GetType($headers[$header_name])=="string")

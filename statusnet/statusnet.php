@@ -136,7 +136,7 @@ function statusnet_settings_post($post)
 					//DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'statusnet', 'application_name', $_POST['statusnet-applicationname'] );
 				} else {
 					//  the API path is not correct, maybe missing trailing / ?
-					$apibase = $apibase . '/';
+					$apibase .= '/';
 					$c       = DI::httpClient()->fetch($apibase . 'statusnet/version.xml');
 					if (strlen($c) > 0) {
 						//  ok the API path is now correct, let's save the settings
@@ -439,7 +439,7 @@ function statusnet_addon_admin_post()
 		$sitename = trim($sitename);
 		$apiurl   = trim($_POST['apiurl'][$id]);
 		if (!(substr($apiurl, -1) == '/')) {
-			$apiurl = $apiurl . '/';
+			$apiurl .= '/';
 		}
 		$secret = trim($_POST['secret'][$id]);
 		$key    = trim($_POST['key'][$id]);
