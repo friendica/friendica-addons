@@ -137,7 +137,7 @@ function statusnet_settings_post($post)
 				} else {
 					//  the API path is not correct, maybe missing trailing / ?
 					$apibase .= '/';
-					$c       = DI::httpClient()->fetch($apibase . 'statusnet/version.xml');
+					$c = DI::httpClient()->fetch($apibase . 'statusnet/version.xml');
 					if (strlen($c) > 0) {
 						//  ok the API path is now correct, let's save the settings
 						DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'statusnet', 'consumerkey', $_POST['statusnet-consumerkey']);
