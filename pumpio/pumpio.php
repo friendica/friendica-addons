@@ -18,6 +18,7 @@ use Friendica\DI;
 use Friendica\Model\Contact;
 use Friendica\Model\Circle;
 use Friendica\Model\Item;
+use Friendica\Post\UriGenerator;
 use Friendica\Model\Post;
 use Friendica\Model\User;
 use Friendica\Network\HTTPClient\Client\HttpClientAccept;
@@ -916,7 +917,7 @@ function pumpio_dolike(int $uid, array $self, $post, string $own_id, $threadcomp
 	$likedata['uid']         = $uid;
 	$likedata['wall']        = 0;
 	$likedata['network']     = Protocol::PUMPIO;
-	$likedata['uri']         = Item::newURI();
+	$likedata['uri']         = DI::postUriGenerator()->newURI();
 	$likedata['thr-parent']  = $orig_post['uri'];
 	$likedata['contact-id']  = $contactid;
 	$likedata['app']         = $post->generator->displayName;

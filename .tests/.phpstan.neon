@@ -2,6 +2,9 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
+includes:
+    - ../../vendor/phpstan/phpstan-deprecation-rules/rules.neon
+
 parameters:
     level: 3
 
@@ -31,4 +34,9 @@ parameters:
     dynamicConstantNames:
         - DB_UPDATE_VERSION
 
-    ignoreErrors: []
+    ignoreErrors:
+        -
+            message: '#Call to method createFromArray\(\) of deprecated class Friendica\\Navigation\\Notifications\\Repository\\Notify#'
+            identifier: method.deprecatedClass
+            path: ../
+            count: 2

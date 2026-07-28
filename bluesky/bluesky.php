@@ -39,6 +39,7 @@ use Friendica\DI;
 use Friendica\Model\Contact;
 use Friendica\Model\Conversation;
 use Friendica\Model\Item;
+use Friendica\Post\UriGenerator;
 use Friendica\Model\Photo;
 use Friendica\Model\Post;
 use Friendica\Model\User;
@@ -1028,7 +1029,7 @@ function bluesky_process_reason(stdClass $reason, string $uri, int $uid)
 		return;
 	}
 
-	$item['guid']         = Item::guidFromUri($item['uri'], $contact['alias']);
+	$item['guid']         = DI::postUriGenerator()->guidFromUri($item['uri'], $contact['alias']);
 	$item['owner-name']   = $item['author-name'];
 	$item['owner-link']   = $item['author-link'];
 	$item['owner-avatar'] = $item['author-avatar'];
