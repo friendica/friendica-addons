@@ -37,6 +37,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Subscriber\Oauth\Oauth1;
+use Friendica\Content\Post\Entity\PostMedia;
 
 define('TUMBLR_DEFAULT_POLL_INTERVAL', 10); // given in minutes
 define('TUMBLR_DEFAULT_MAXIMUM_TAGS', 10);
@@ -595,12 +596,12 @@ function tumblr_send_legacy(array $b)
 
 	$title = trim($b['title']);
 
-	$media = Post\Media::getByURIId($b['uri-id'], [Post\Media::HTML, Post\Media::AUDIO, Post\Media::VIDEO, Post\Media::IMAGE]);
+	$media = Post\Media::getByURIId($b['uri-id'], [PostMedia::TYPE_HTML, PostMedia::TYPE_AUDIO, PostMedia::TYPE_VIDEO, PostMedia::TYPE_IMAGE]);
 
-	$photo = array_search(Post\Media::IMAGE, array_column($media, 'type'));
-	$link  = array_search(Post\Media::HTML, array_column($media, 'type'));
-	$audio = array_search(Post\Media::AUDIO, array_column($media, 'type'));
-	$video = array_search(Post\Media::VIDEO, array_column($media, 'type'));
+	$photo = array_search(PostMedia::TYPE_IMAGE, array_column($media, 'type'));
+	$link  = array_search(PostMedia::TYPE_HTML, array_column($media, 'type'));
+	$audio = array_search(PostMedia::TYPE_AUDIO, array_column($media, 'type'));
+	$video = array_search(PostMedia::TYPE_VIDEO, array_column($media, 'type'));
 
 	$params = [
 		'state'  => 'published',
@@ -626,7 +627,7 @@ function tumblr_send_legacy(array $b)
 		$params['caption'] = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
 		$params['data']    = [];
 		foreach ($media as $photo) {
-			if ($photo['type'] == Post\Media::IMAGE) {
+			if ($photo['type'] == PostMedia::TYPE_IMAGE) {
 				if (DI::baseUrl()->isLocalUrl($photo['url']) && ($data = Photo::getResourceData($photo['url']))) {
 					$photo = Photo::selectFirst([], ["`resource-id` = ? AND `scale` > ?", $data['guid'], 0]);
 					if (!empty($photo)) {
@@ -690,7 +691,7 @@ function tumblr_send_npf(array $post): bool
 		return true;
 	}
 
-	$post['body'] = Post\Media::addAttachmentsToBody($post['uri-id'], $post['body'], [Post\Media::IMAGE, Post\Media::AUDIO, Post\Media::VIDEO, Post\Media::ACTIVITY]);
+	$post['body'] = Post\Media::addAttachmentsToBody($post['uri-id'], $post['body'], [PostMedia::TYPE_IMAGE, PostMedia::TYPE_AUDIO, PostMedia::TYPE_VIDEO, PostMedia::TYPE_ACTIVITY]);
 	if (!empty($post['title'])) {
 		$post['body'] = '[h1]' . $post['title'] . "[/h1]\n" . $post['body'];
 	}
