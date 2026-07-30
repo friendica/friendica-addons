@@ -17,79 +17,79 @@ define('HTTP_CLIENT_ERROR_INVALID_PARAMETERS',       6);
 
 class http_class
 {
-	var $host_name="";
-	var $host_port=0;
-	var $proxy_host_name="";
-	var $proxy_host_port=80;
-	var $socks_host_name = '';
-	var $socks_host_port = 1080;
-	var $socks_version = '5';
+	public $host_name="";
+	public $host_port=0;
+	public $proxy_host_name="";
+	public $proxy_host_port=80;
+	public $socks_host_name = '';
+	public $socks_host_port = 1080;
+	public $socks_version = '5';
 
-	var $protocol="http";
-	var $request_method="GET";
-	var $user_agent='httpclient (http://www.phpclasses.org/httpclient $Revision: 1.90 $)';
-	var $accept='';
-	var $authentication_mechanism="";
-	var $user;
-	var $password;
-	var $realm;
-	var $workstation;
-	var $proxy_authentication_mechanism="";
-	var $proxy_user;
-	var $proxy_password;
-	var $proxy_realm;
-	var $proxy_workstation;
-	var $request_uri="";
-	var $request="";
-	var $request_headers=array();
-	var $request_user;
-	var $request_password;
-	var $request_realm;
-	var $request_workstation;
-	var $proxy_request_user;
-	var $proxy_request_password;
-	var $proxy_request_realm;
-	var $proxy_request_workstation;
-	var $request_body="";
-	var $request_arguments=array();
-	var $protocol_version="1.1";
-	var $timeout=0;
-	var $data_timeout=0;
-	var $debug=0;
-	var $log_debug=0;
-	var $debug_response_body=1;
-	var $html_debug=0;
-	var $support_cookies=1;
-	var $cookies=array();
-	var $error="";
-	var $error_code = HTTP_CLIENT_ERROR_NO_ERROR;
-	var $exclude_address="";
-	var $follow_redirect=0;
-	var $redirection_limit=5;
-	var $response_status="";
-	var $response_message="";
-	var $file_buffer_length=8000;
-	var $force_multipart_form_post=0;
-	var $prefer_curl = 0;
-	var $keep_alive = 1;
-	var $sasl_authenticate = 1;
+	public $protocol="http";
+	public $request_method="GET";
+	public $user_agent='httpclient (http://www.phpclasses.org/httpclient $Revision: 1.90 $)';
+	public $accept='';
+	public $authentication_mechanism="";
+	public $user;
+	public $password;
+	public $realm;
+	public $workstation;
+	public $proxy_authentication_mechanism="";
+	public $proxy_user;
+	public $proxy_password;
+	public $proxy_realm;
+	public $proxy_workstation;
+	public $request_uri="";
+	public $request="";
+	public $request_headers=array();
+	public $request_user;
+	public $request_password;
+	public $request_realm;
+	public $request_workstation;
+	public $proxy_request_user;
+	public $proxy_request_password;
+	public $proxy_request_realm;
+	public $proxy_request_workstation;
+	public $request_body="";
+	public $request_arguments=array();
+	public $protocol_version="1.1";
+	public $timeout=0;
+	public $data_timeout=0;
+	public $debug=0;
+	public $log_debug=0;
+	public $debug_response_body=1;
+	public $html_debug=0;
+	public $support_cookies=1;
+	public $cookies=array();
+	public $error="";
+	public $error_code = HTTP_CLIENT_ERROR_NO_ERROR;
+	public $exclude_address="";
+	public $follow_redirect=0;
+	public $redirection_limit=5;
+	public $response_status="";
+	public $response_message="";
+	public $file_buffer_length=8000;
+	public $force_multipart_form_post=0;
+	public $prefer_curl = 0;
+	public $keep_alive = 1;
+	public $sasl_authenticate = 1;
 
 	/* private variables - DO NOT ACCESS */
 
-	var $state="Disconnected";
-	var $use_curl=0;
-	var $connection=0;
-	var $content_length=0;
-	var $response="";
-	var $read_response=0;
-	var $read_length=0;
-	var $request_host="";
-	var $next_token="";
-	var $redirection_level=0;
-	var $chunked=0;
-	var $remaining_chunk=0;
-	var $last_chunk_read=0;
-	var $months=array(
+	public $state="Disconnected";
+	public $use_curl=0;
+	public $connection=0;
+	public $content_length=0;
+	public $response="";
+	public $read_response=0;
+	public $read_length=0;
+	public $request_host="";
+	public $next_token="";
+	public $redirection_level=0;
+	public $chunked=0;
+	public $remaining_chunk=0;
+	public $last_chunk_read=0;
+	public $months=array(
 		"Jan"=>"01",
 		"Feb"=>"02",
 		"Mar"=>"03",
@@ -102,12 +102,12 @@ class http_class
 		"Oct"=>"10",
 		"Nov"=>"11",
 		"Dec"=>"12");
-	var $session='';
-	var $connection_close=0;
-	var $force_close = 0;
-	var $connected_host = '';
-	var $connected_port = -1;
-	var $connected_ssl = 0;
+	public $session='';
+	public $connection_close=0;
+	public $force_close = 0;
+	public $connected_host = '';
+	public $connected_port = -1;
+	public $connected_ssl = 0;
 
 	private $content_length_set;
 
@@ -233,7 +233,7 @@ class http_class
 	{
 		if($this->debug)
 			$this->OutputDebug("C $line");
-		if(!fputs($this->connection,$line."\r\n"))
+		if(!fwrite($this->connection,$line."\r\n"))
 		{
 			$this->SetDataAccessError("it was not possible to send a line to the HTTP server");
 			return(0);
@@ -247,7 +247,7 @@ class http_class
 		{
 			if($this->debug)
 				$this->OutputDebug('C '.$data);
-			if(!fputs($this->connection,$data))
+			if(!fwrite($this->connection,$data))
 			{
 				$this->SetDataAccessError("it was not possible to send data to the HTTP server");
 				return(0);
@@ -453,7 +453,7 @@ class http_class
 					case 4:
 						$command = 1;
 						$user = '';
-						if(!fputs($this->connection, chr($version).chr($command).pack('nN', $host_port, ip2long($host_ip)).$user.Chr(0)))
+						if(!fwrite($this->connection, chr($version).chr($command).pack('nN', $host_port, ip2long($host_ip)).$user.Chr(0)))
 							$error = $this->SetDataAccessError($send_error);
 						else
 						{
@@ -480,7 +480,7 @@ class http_class
 							$this->OutputDebug('Negotiating the authentication method ...');
 						$methods = 1;
 						$method = 0;
-						if(!fputs($this->connection, chr($version).chr($methods).chr($method)))
+						if(!fwrite($this->connection, chr($version).chr($methods).chr($method)))
 							$error = $this->SetDataAccessError($send_error);
 						else
 						{
@@ -495,7 +495,7 @@ class http_class
 									$this->OutputDebug('Connecting to '.$host_server_type.' server IP '.$host_ip.' port '.$host_port.'...');
 								$command = 1;
 								$address_type = 1;
-								if(!fputs($this->connection, chr($version).chr($command)."\x00".chr($address_type).pack('Nn', ip2long($host_ip), $host_port)))
+								if(!fwrite($this->connection, chr($version).chr($command)."\x00".chr($address_type).pack('Nn', ip2long($host_ip), $host_port)))
 									$error = $this->SetDataAccessError($send_error);
 								else
 								{
@@ -1554,7 +1554,7 @@ class http_class
 				break;
 			}
 			$header_name=strtolower($this->Tokenize($line,":"));
-			$header_value=Trim(Chop($this->Tokenize("\r\n")));
+			$header_value=Trim(rtrim($this->Tokenize("\r\n")));
 			if(IsSet($headers[$header_name]))
 			{
 				if(GetType($headers[$header_name])=="string")

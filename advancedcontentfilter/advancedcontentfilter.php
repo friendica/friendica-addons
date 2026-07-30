@@ -200,8 +200,8 @@ function advancedcontentfilter_init()
 		$slim->addErrorMiddleware(true, true, true, DI::logger());
 
 		// register routes
-		$slim->group('/advancedcontentfilter/api', function (\Slim\Routing\RouteCollectorProxy $app) {
-			$app->group('/rules', function (\Slim\Routing\RouteCollectorProxy $app) {
+		$slim->group('/advancedcontentfilter/api', function (\Slim\Routing\RouteCollectorProxy $app): void {
+			$app->group('/rules', function (\Slim\Routing\RouteCollectorProxy $app): void {
 				$app->get('', 'advancedcontentfilter_get_rules');
 				$app->post('', 'advancedcontentfilter_post_rules');
 
@@ -210,7 +210,7 @@ function advancedcontentfilter_init()
 				$app->delete('/{id}', 'advancedcontentfilter_delete_rules_id');
 			});
 
-			$app->group('/variables', function (\Slim\Routing\RouteCollectorProxy $app) {
+			$app->group('/variables', function (\Slim\Routing\RouteCollectorProxy $app): void {
 				$app->get('/{guid}', 'advancedcontentfilter_get_variables_guid');
 			});
 		});

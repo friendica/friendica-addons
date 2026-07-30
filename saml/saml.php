@@ -298,7 +298,7 @@ function saml_addon_admin(string &$o)
 
 function saml_addon_admin_post()
 {
-	$set = function ($key) {
+	$set = function ($key): void {
 		$val = (!empty($_POST[$key]) ? trim($_POST[$key]) : '');
 		DI::config()->set('saml', $key, $val);
 	};

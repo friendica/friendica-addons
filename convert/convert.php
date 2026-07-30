@@ -203,7 +203,7 @@ function convert_content()
 
 	foreach ($list as $key => $val) {
 		$o .= "\n\t<optgroup label=\"$key\">";
-		foreach ($val as $ukey => $uval) {
+		foreach ($val as $uval) {
 			$selected = (($uval == $_POST['from_unit']) ? ' selected="selected" ' : '');
 			$o .= "\n\t\t<option value=\"$uval\" $selected >$uval</option>";
 		}

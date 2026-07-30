@@ -493,7 +493,7 @@ function mailstream_send(string $message_id, array $item, array $user, bool $col
 			$mail->addCustomHeader('X-Friendica-Mailstream-Plink: ' . $item['plink']);
 		}
 		$encoding = 'base64';
-		foreach ($attachments as $url => $image) {
+		foreach ($attachments as $image) {
 			$mail->AddStringEmbeddedImage(
 				$image['data'],
 				$image['guid'],

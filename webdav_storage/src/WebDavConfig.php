@@ -122,7 +122,7 @@ class WebDavConfig implements ICanConfigureStorage
 		];
 
 		$authType = $data['auth_type'] ?? '';
-		if (!key_exists($authType, $auths)) {
+		if (!array_key_exists($authType, $auths)) {
 			return [
 				'auth_type' => $this->l10n->t('Authentication type is invalid.'),
 			];

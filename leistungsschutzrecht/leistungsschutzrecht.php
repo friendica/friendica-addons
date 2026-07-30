@@ -63,7 +63,7 @@ function leistungsschutzrecht_cuttext(string $text): string
 		$text .= $word;
 
 		if (++$count >= $limit) {
-			if (sizeof($words) > $limit) {
+			if (count($words) > $limit) {
 				$text .= ' ...';
 			}
 
@@ -123,7 +123,7 @@ function leistungsschutzrecht_fetchsites()
 		}
 	*/
 
-	if (sizeof($sites)) {
+	if (count($sites)) {
 		DI::config()->set('leistungsschutzrecht', 'sites', $sites);
 	}
 }
@@ -136,7 +136,7 @@ function leistungsschutzrecht_is_member_site(string $url): bool
 		return false;
 	}
 
-	if (sizeof($sites) == 0) {
+	if (count($sites) == 0) {
 		return false;
 	}
 
@@ -157,7 +157,7 @@ function leistungsschutzrecht_is_member_site(string $url): bool
 		return false;
 	}
 
-	$site = $hostname[sizeof($hostname) - 2] . '.' . $hostname[sizeof($hostname) - 1];
+	$site = $hostname[count($hostname) - 2] . '.' . $hostname[count($hostname) - 1];
 
 	return isset($sites[$site]);
 }

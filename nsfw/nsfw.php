@@ -35,7 +35,7 @@ function nsfw_extract_photos($body)
 
 	while ($img_end !== false) {
 		$img_end += $img_start;
-		$new_body = $new_body . substr($body, 0, $img_start);
+		$new_body .= substr($body, 0, $img_start);
 
 		$cnt++;
 		$body = substr($body, 0, $img_end);

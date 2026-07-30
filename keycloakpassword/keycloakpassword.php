@@ -145,7 +145,7 @@ function keycloakpassword_addon_admin_post()
 		return;
 	}
 
-	$set = function ($key) {
+	$set = function ($key): void {
 		$val = (!empty($_POST[$key]) ? trim($_POST[$key]) : '');
 		DI::config()->set('keycloakpassword', $key, $val);
 	};
