@@ -15,7 +15,7 @@ use Friendica\DI;
 
 function ft_replace_install()
 {
-    Hook::register('prepare_body_final', 'addon/ft_replace/ft_replace.php', 'ft_replace_render');
+    Hook::register('prepare_body_final', __FILE__, 'ft_replace_render');
     Hook::register('addon_settings', __FILE__, 'ft_replace_settings');
     Hook::register('addon_settings_post', __FILE__, 'ft_replace_settings_post');
 }
