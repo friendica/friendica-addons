@@ -39,7 +39,6 @@ use Friendica\DI;
 use Friendica\Model\Contact;
 use Friendica\Model\Conversation;
 use Friendica\Model\Item;
-use Friendica\Post\UriGenerator;
 use Friendica\Model\Photo;
 use Friendica\Model\Post;
 use Friendica\Model\User;

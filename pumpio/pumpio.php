@@ -18,7 +18,6 @@ use Friendica\DI;
 use Friendica\Model\Contact;
 use Friendica\Model\Circle;
 use Friendica\Model\Item;
-use Friendica\Post\UriGenerator;
 use Friendica\Model\Post;
 use Friendica\Model\User;
 use Friendica\Network\HTTPClient\Client\HttpClientAccept;
