@@ -229,19 +229,9 @@ function mailstream_post_hook(array &$item)
 		DI::logger()->debug('no uri', ['item' => $item['id']]);
 		return;
 	}
-	if ($item['verb'] == Activity::ANNOUNCE) {
-		DI::logger()->debug('ignoring announce', ['item' => $item['id']]);
+	if (!in_array($item['verb'], array(Activity::POST, Activity::UPDATE, Activity::SHARE))) {
+		DI::logger()->debug('ignoring activity', ['item' => $item['id'], 'verb' => $item['verb']]);
 		return;
-	}
-	if (DI::pConfig()->get($item['uid'], 'mailstream', 'nolikes')) {
-		if ($item['verb'] == Activity::LIKE) {
-			DI::logger()->debug('ignoring like', ['item' => $item['id']]);
-			return;
-		}
-		if ($item['verb'] == Activity::DISLIKE) {
-			DI::logger()->debug('ignoring dislike', ['item' => $item['id']]);
-			return;
-		}
 	}
 
 	$message_id = mailstream_generate_id($item['uri']);
@@ -560,7 +550,6 @@ function mailstream_addon_settings(array &$data)
 {
 	$enabled   = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'mailstream', 'enabled');
 	$address   = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'mailstream', 'address');
-	$nolikes   = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'mailstream', 'nolikes');
 	$attachimg = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'mailstream', 'attachimg');
 
 	$template = Renderer::getMarkupTemplate('settings.tpl', 'addon/mailstream/');
@@ -575,12 +564,6 @@ function mailstream_addon_settings(array &$data)
 			DI::l10n()->t('Email Address'),
 			$address,
 			DI::l10n()->t('Leave blank to use your account email address'),
-		],
-		'$nolikes' => [
-			'mailstream_nolikes',
-			DI::l10n()->t('Exclude Likes'),
-			$nolikes,
-			DI::l10n()->t('Check this to omit mailing "Like" notifications'),
 		],
 		'$attachimg' => [
 			'mailstream_attachimg',
@@ -613,11 +596,6 @@ function mailstream_addon_settings_post(array $post)
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'mailstream', 'address', $post['mailstream_address']);
 	} else {
 		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'mailstream', 'address');
-	}
-	if ($post['mailstream_nolikes']) {
-		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'mailstream', 'nolikes', $post['mailstream_enabled']);
-	} else {
-		DI::pConfig()->delete(DI::userSession()->getLocalUserId(), 'mailstream', 'nolikes');
 	}
 	if ($post['mailstream_enabled']) {
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'mailstream', 'enabled', $post['mailstream_enabled']);
