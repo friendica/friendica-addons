@@ -1,0 +1,55 @@
+.qp-edit-bar {
+    display: none;
+    margin: 10px 0;
+    padding: 12px;
+    background: var(--background-color);
+    font-family: var(--global-font-family);
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    align-items: center;
+    gap: 15px;
+}
+
+.qp-edit-bar.active {
+    display: flex;
+}
+
+.qp-thumb-container {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+    background: var(--nav-bg) !important;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.qp-preview-thumb {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+}
+
+.qp-input-wrapper {
+    flex-grow: 1;
+}
+
+.qp-label {
+    font-family: var(--global-font-family);
+    display: block;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.qp-alt-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 1.4rem;
+}
+
