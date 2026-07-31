@@ -49,6 +49,7 @@ use Friendica\Protocol\Relay;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\ParseUrl;
 use Friendica\Util\Strings;
+use Friendica\Content\Post\Entity\PostMedia;
 
 const BLUESKY_DEFAULT_POLL_INTERVAL = 10; // given in minutes
 const BLUESKY_IMAGE_SIZE            = [1000000, 500000, 100000, 50000];
@@ -658,7 +659,7 @@ function bluesky_create_post(array $item, stdClass $root = null, stdClass $paren
 
 	$item['body'] = Post\Media::removeFromBody($item['body']);
 
-	foreach (Post\Media::getByURIId($item['uri-id'], [Post\Media::AUDIO, Post\Media::VIDEO, Post\Media::ACTIVITY]) as $media) {
+	foreach (Post\Media::getByURIId($item['uri-id'], [PostMedia::TYPE_AUDIO, PostMedia::TYPE_VIDEO, PostMedia::TYPE_ACTIVITY]) as $media) {
 		if (strpos($item['body'], $media['url']) === false) {
 			$item['body'] .= "\n[url]" . $media['url'] . "[/url]\n";
 		}
@@ -1027,7 +1028,7 @@ function bluesky_process_reason(stdClass $reason, string $uri, int $uid)
 		return;
 	}
 
-	$item['guid']         = Item::guidFromUri($item['uri'], $contact['alias']);
+	$item['guid']         = DI::postUriGenerator()->guidFromUri($item['uri'], $contact['alias']);
 	$item['owner-name']   = $item['author-name'];
 	$item['owner-link']   = $item['author-link'];
 	$item['owner-avatar'] = $item['author-avatar'];

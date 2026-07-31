@@ -17,6 +17,7 @@ use Friendica\Model\Item;
 use Friendica\Model\Post;
 use Friendica\Model\User;
 use Friendica\Util\XML;
+use Friendica\Content\Post\Entity\PostMedia;
 
 function wppost_install()
 {
@@ -186,7 +187,7 @@ function wppost_send(array &$b)
 
 		if (intval(DI::pConfig()->get($b['uid'], 'wppost', 'shortcheck'))) {
 			// Checking, if its a post that is worth a blog post
-			$postentry = (bool) Post\Media::getByURIId($b['uri-id'], [Post\Media::HTML, Post\Media::AUDIO, Post\Media::VIDEO, Post\Media::IMAGE]);
+			$postentry = (bool) Post\Media::getByURIId($b['uri-id'], [PostMedia::TYPE_HTML, PostMedia::TYPE_AUDIO, PostMedia::TYPE_VIDEO, PostMedia::TYPE_IMAGE]);
 
 			// Does it have a title?
 			if ($wptitle != "") {
@@ -206,7 +207,7 @@ function wppost_send(array &$b)
 		// If the title is empty then try to guess
 		if ($wptitle == '') {
 			// Fetch information about the post
-			$media = Post\Media::getByURIId($b['uri-id'], [Post\Media::HTML]);
+			$media = Post\Media::getByURIId($b['uri-id'], [PostMedia::TYPE_HTML]);
 			if (!empty($media) && !empty($media[0]['name']) && ($media[0]['name'] != $media[0]['url'])) {
 				$wptitle = $media[0]['name'];
 			}
