@@ -11,7 +11,7 @@ msgstr ""
 "POT-Creation-Date: 2021-11-21 19:15-0500\n"
 "PO-Revision-Date: 2014-06-23 09:54+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: Danish (Denmark) (http://app.transifex.com/Friendica/friendica/language/da_DK/)\n"
+"Language-Team: Danish (Denmark) (http://www.transifex.com/Friendica/friendica/language/da_DK/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -30,72 +30,68 @@ msgstr ""
 msgid "Save Settings"
 msgstr ""
 
-#: mailstream.php:311
+#: mailstream.php:301
 msgid "Re:"
 msgstr ""
 
-#: mailstream.php:324 mailstream.php:327
+#: mailstream.php:314 mailstream.php:317
 msgid "Friendica post"
 msgstr ""
 
-#: mailstream.php:330
+#: mailstream.php:320
 msgid "Diaspora post"
 msgstr ""
 
-#: mailstream.php:340
+#: mailstream.php:330
 msgid "Feed item"
 msgstr ""
 
-#: mailstream.php:343
+#: mailstream.php:333
 msgid "Email"
 msgstr ""
 
-#: mailstream.php:345
+#: mailstream.php:335
 msgid "Friendica Item"
 msgstr ""
 
-#: mailstream.php:419
+#: mailstream.php:404
 msgid "Upstream"
 msgstr ""
 
-#: mailstream.php:420
-msgid "URI"
-msgstr ""
-
-#: mailstream.php:421
+#: mailstream.php:405
 msgid "Local"
 msgstr ""
 
-#: mailstream.php:499
+#: mailstream.php:481
 msgid "Enabled"
 msgstr ""
 
-#: mailstream.php:504
+#: mailstream.php:486
 msgid "Email Address"
 msgstr ""
 
-#: mailstream.php:506
+#: mailstream.php:488
 msgid "Leave blank to use your account email address"
 msgstr ""
 
-#: mailstream.php:510
+#: mailstream.php:492
 msgid "Exclude Likes"
 msgstr ""
 
-#: mailstream.php:512
+#: mailstream.php:494
 msgid "Check this to omit mailing \"Like\" notifications"
 msgstr ""
 
-#: mailstream.php:516
+#: mailstream.php:498
 msgid "Attach Images"
 msgstr ""
 
-#: mailstream.php:518
+#: mailstream.php:500
 msgid ""
 "Download images in posts and attach them to the email.  Useful for reading "
 "email while offline."
 msgstr ""
 
-#: mailstream.php:525
+#: mailstream.php:507
 msgid "Mail Stream Settings"
 msgstr ""

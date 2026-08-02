@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @copyright Copyright (C) 2020, Friendica
  *
@@ -56,16 +55,8 @@ class SecureTestEmail extends Email
 		// enable addon for test
 		$pConfig->set(DI::userSession()->getLocalUserId(), 'securemail', 'enable', 1);
 
-		parent::__construct(
-			$sitename,
-			$sender_email,
-			$sender_email,
-			$user['email'],
-			$subject,
-			"<p>{$message}</p>",
-			$message,
-			[],
-			DI::userSession()->getLocalUserId(),
-		);
+		parent::__construct($sitename, $sender_email, $sender_email, $user['email'],
+			$subject, "<p>{$message}</p>", $message,
+			[], DI::userSession()->getLocalUserId());
 	}
 }

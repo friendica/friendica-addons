@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Name: Geonames
  * Description: Use Geonames service to resolve nearest populated location for given latitude, longitude
@@ -45,7 +44,7 @@ function geonames_post_hook(array &$item)
 	 *      - The profile owner must have allowed our addon
 	 */
 
-	DI::logger()->notice('geonames invoked');
+	 DI::logger()->notice('geonames invoked');
 
 	if (!DI::userSession()->getLocalUserId()) {   /* non-zero if this is a logged in user of this system */
 		return;
@@ -62,7 +61,7 @@ function geonames_post_hook(array &$item)
 	/* Retrieve our personal config setting */
 
 	$geo_account = DI::config()->get('geonames', 'username');
-	$active      = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'geonames', 'enable');
+	$active = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'geonames', 'enable');
 
 	if (!$geo_account || !$active) {
 		return;

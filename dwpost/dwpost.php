@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Name: Dreamwidth Post Connector
  * Description: Post to dreamwidth
@@ -22,10 +21,10 @@ use Friendica\Util\XML;
 
 function dwpost_install()
 {
-	Hook::register('post_local', 'addon/dwpost/dwpost.php', 'dwpost_post_local');
-	Hook::register('notifier_normal', 'addon/dwpost/dwpost.php', 'dwpost_send');
-	Hook::register('jot_networks', 'addon/dwpost/dwpost.php', 'dwpost_jot_nets');
-	Hook::register('connector_settings', 'addon/dwpost/dwpost.php', 'dwpost_settings');
+	Hook::register('post_local',              'addon/dwpost/dwpost.php', 'dwpost_post_local');
+	Hook::register('notifier_normal',         'addon/dwpost/dwpost.php', 'dwpost_send');
+	Hook::register('jot_networks',            'addon/dwpost/dwpost.php', 'dwpost_jot_nets');
+	Hook::register('connector_settings',      'addon/dwpost/dwpost.php', 'dwpost_settings');
 	Hook::register('connector_settings_post', 'addon/dwpost/dwpost.php', 'dwpost_settings_post');
 }
 
@@ -37,12 +36,12 @@ function dwpost_jot_nets(array &$jotnets_fields)
 
 	if (DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'dwpost', 'post')) {
 		$jotnets_fields[] = [
-			'type'  => 'checkbox',
+			'type' => 'checkbox',
 			'field' => [
 				'dwpost_enable',
 				DI::l10n()->t('Post to Dreamwidth'),
-				DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'dwpost', 'post_by_default'),
-			],
+				DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'dwpost', 'post_by_default')
+			]
 		];
 	}
 }
@@ -79,10 +78,10 @@ function dwpost_settings(array &$data)
 function dwpost_settings_post(array &$b)
 {
 	if (!empty($_POST['dwpost-submit'])) {
-		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'dwpost', 'post', intval($_POST['dwpost']));
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'dwpost', 'post',            intval($_POST['dwpost']));
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'dwpost', 'post_by_default', intval($_POST['dw_bydefault']));
-		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'dwpost', 'dw_username', trim($_POST['dw_username']));
-		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'dwpost', 'dw_password', trim($_POST['dw_password']));
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'dwpost', 'dw_username',     trim($_POST['dw_username']));
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'dwpost', 'dw_password',     trim($_POST['dw_password']));
 	}
 }
 
@@ -143,17 +142,17 @@ function dwpost_send(array &$b)
 	 */
 
 	$user = User::getById($b['uid']);
-	$tz   = $user['timezone'] ?: 'UTC';
+	$tz = $user['timezone'] ?: 'UTC';
 
 	$dw_username = DI::pConfig()->get($b['uid'], 'dwpost', 'dw_username');
 	$dw_password = DI::pConfig()->get($b['uid'], 'dwpost', 'dw_password');
-	$dw_blog     = 'http://www.dreamwidth.org/interface/xmlrpc';
+	$dw_blog = 'http://www.dreamwidth.org/interface/xmlrpc';
 
 	if ($dw_username && $dw_password && $dw_blog) {
 		$title = $b['title'];
-		$post  = BBCode::convertForUriId($b['uri-id'], $b['body'], BBCode::CONNECTORS);
-		$post  = XML::escape($post);
-		$tags  = Tag::getCSVByURIId($b['uri-id'], [Tag::HASHTAG]);
+		$post = BBCode::convertForUriId($b['uri-id'], $b['body'], BBCode::CONNECTORS);
+		$post = XML::escape($post);
+		$tags = Tag::getCSVByURIId($b['uri-id'], [Tag::HASHTAG]);
 
 		$date = DateTimeFormat::convert($b['created'], $tz);
 		$year = intval(substr($date, 0, 4));

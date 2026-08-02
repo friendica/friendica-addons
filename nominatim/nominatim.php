@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Name: Nominatim
  * Description: Use Nominatim from OpenStreetMap to resolve the location for the given latitude and longitude. Derived from "geocoordinates"
@@ -19,7 +18,7 @@ function nominatim_install()
 
 function nominatim_resolve_item(array &$item)
 {
-	if (empty($item['coord']) || !empty($item['location'])) {
+	if(empty($item['coord']) || !empty($item['location'])) {
 		return;
 	}
 
@@ -28,7 +27,7 @@ function nominatim_resolve_item(array &$item)
 		$language = 'en';
 	}
 
-	$coords = explode(' ', $item['coord']);
+	$coords = explode(' ',$item['coord']);
 
 	if (count($coords) < 2) {
 		return;
@@ -75,7 +74,7 @@ function nominatim_addon_admin(string &$o)
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/nominatim/');
 
 	$o = Renderer::replaceMacros($t, [
-		'$submit'   => DI::l10n()->t('Save Settings'),
+		'$submit' => DI::l10n()->t('Save Settings'),
 		'$language' => ['language', DI::l10n()->t('Language code (IETF format)'), DI::config()->get('nominatim', 'language'), ''],
 	]);
 }

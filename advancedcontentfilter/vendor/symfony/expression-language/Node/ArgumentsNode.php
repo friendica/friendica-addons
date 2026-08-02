@@ -20,12 +20,12 @@ use Symfony\Component\ExpressionLanguage\Compiler;
  */
 class ArgumentsNode extends ArrayNode
 {
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         $this->compileArguments($compiler, false);
     }
 
-    public function toArray(): array
+    public function toArray()
     {
         $array = [];
 

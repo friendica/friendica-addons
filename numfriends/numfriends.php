@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Name: Numfriends
  * Description: Change number of contacts shown of profile sidebar
@@ -11,8 +10,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
-function numfriends_install()
-{
+function numfriends_install() {
 
 	Hook::register('addon_settings', 'addon/numfriends/numfriends.php', 'numfriends_settings');
 	Hook::register('addon_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
@@ -28,8 +26,7 @@ function numfriends_install()
  * and if so set our configuration setting for this person.
  *
  */
-function numfriends_settings_post($post)
-{
+function numfriends_settings_post($post) {
 	if (! DI::userSession()->getLocalUserId() || empty($_POST['numfriends-submit'])) {
 		return;
 	}

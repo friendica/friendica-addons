@@ -1,7 +1,6 @@
 <?php
 
-if(! function_exists("string_plural_select_nb_NO")) {
-function string_plural_select_nb_NO($n){
-	$n = intval($n);
-	return intval($n != 1);
-}}
+$a->strings["Startpage Settings"] = "";
+$a->strings["Home page to load after login  - leave blank for profile wall"] = "";
+$a->strings["Examples: &quot;network&quot; or &quot;notifications/system&quot;"] = "";
+$a->strings["Submit"] = "Lagre";

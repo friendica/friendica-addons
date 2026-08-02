@@ -11,13 +11,12 @@
 
 namespace Monolog\Handler;
 
-use MongoDB\Client;
-use MongoDB\Collection;
 use MongoDB\Driver\BulkWrite;
 use MongoDB\Driver\Manager;
+use MongoDB\Client;
+use Monolog\Logger;
 use Monolog\Formatter\FormatterInterface;
 use Monolog\Formatter\MongoDBFormatter;
-use Monolog\Logger;
 
 /**
  * Logs to a MongoDB database.
@@ -34,12 +33,12 @@ use Monolog\Logger;
  */
 class MongoDBHandler extends AbstractProcessingHandler
 {
-    /** @var Collection */
+    /** @var \MongoDB\Collection */
     private $collection;
     /** @var Client|Manager */
     private $manager;
-    /** @var string|null */
-    private $namespace = null;
+    /** @var string */
+    private $namespace;
 
     /**
      * Constructor.
@@ -55,7 +54,7 @@ class MongoDBHandler extends AbstractProcessingHandler
         }
 
         if ($mongodb instanceof Client) {
-            $this->collection = method_exists($mongodb, 'getCollection') ? $mongodb->getCollection($database, $collection) : $mongodb->selectCollection($database, $collection);
+            $this->collection = $mongodb->selectCollection($database, $collection);
         } else {
             $this->manager = $mongodb;
             $this->namespace = $database . '.' . $collection;

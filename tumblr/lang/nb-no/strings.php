@@ -1,7 +1,8 @@
 <?php
 
-if(! function_exists("string_plural_select_nb_NO")) {
-function string_plural_select_nb_NO($n){
-	$n = intval($n);
-	return intval($n != 1);
-}}
+$a->strings["Permission denied."] = "Ingen tilgang.";
+$a->strings["Post to Tumblr"] = "";
+$a->strings["Tumblr Post Settings"] = "";
+$a->strings["Enable Tumblr Post Addon"] = "";
+$a->strings["Post to Tumblr by default"] = "";
+$a->strings["Submit"] = "Lagre";

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Name: Compact Language Detector
  * Description: Improved language detection

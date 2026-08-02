@@ -12,7 +12,6 @@
 namespace Symfony\Component\Cache\Traits;
 
 use Symfony\Component\Cache\Exception\CacheException;
-use Symfony\Component\Cache\Marshaller\MarshallerInterface;
 
 /**
  * @author Nicolas Grekas <p@tchwork.com>
@@ -24,9 +23,12 @@ trait FilesystemTrait
 {
     use FilesystemCommonTrait;
 
-    private MarshallerInterface $marshaller;
+    private $marshaller;
 
-    public function prune(): bool
+    /**
+     * @return bool
+     */
+    public function prune()
     {
         $time = time();
         $pruned = true;
@@ -38,7 +40,7 @@ trait FilesystemTrait
 
             if (($expiresAt = (int) fgets($h)) && $time >= $expiresAt) {
                 fclose($h);
-                $pruned = (@unlink($file) || !file_exists($file)) && $pruned;
+                $pruned = @unlink($file) && !file_exists($file) && $pruned;
             } else {
                 fclose($h);
             }
@@ -47,14 +49,17 @@ trait FilesystemTrait
         return $pruned;
     }
 
-    protected function doFetch(array $ids): iterable
+    /**
+     * {@inheritdoc}
+     */
+    protected function doFetch(array $ids)
     {
         $values = [];
         $now = time();
 
         foreach ($ids as $id) {
             $file = $this->getFile($id);
-            if (!is_file($file) || !$h = @fopen($file, 'r')) {
+            if (!file_exists($file) || !$h = @fopen($file, 'r')) {
                 continue;
             }
             if (($expiresAt = (int) fgets($h)) && $now >= $expiresAt) {
@@ -73,14 +78,20 @@ trait FilesystemTrait
         return $values;
     }
 
-    protected function doHave(string $id): bool
+    /**
+     * {@inheritdoc}
+     */
+    protected function doHave($id)
     {
         $file = $this->getFile($id);
 
-        return is_file($file) && (@filemtime($file) > time() || $this->doFetch([$id]));
+        return file_exists($file) && (@filemtime($file) > time() || $this->doFetch([$id]));
     }
 
-    protected function doSave(array $values, int $lifetime): array|bool
+    /**
+     * {@inheritdoc}
+     */
+    protected function doSave(array $values, int $lifetime)
     {
         $expiresAt = $lifetime ? (time() + $lifetime) : 0;
         $values = $this->marshaller->marshall($values, $failed);
@@ -92,7 +103,7 @@ trait FilesystemTrait
         }
 
         if ($failed && !is_writable($this->directory)) {
-            throw new CacheException(\sprintf('Cache directory is not writable (%s).', $this->directory));
+            throw new CacheException(sprintf('Cache directory is not writable (%s).', $this->directory));
         }
 
         return $failed;

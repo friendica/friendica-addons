@@ -1,0 +1,121 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the openidconnect package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: openidconnect\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-12\n"
+"PO-Revision-Date: 2026-05-12\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+msgid "OpenID Connect (OAuth2) Configuration"
+msgstr ""
+
+msgid "Discovery URL"
+msgstr ""
+
+msgid "URL to the OpenID Connect discovery document (e.g., https://example.com/.well-known/openid-configuration)"
+msgstr ""
+
+msgid "Client ID"
+msgstr ""
+
+msgid "The OAuth2 client ID from your identity provider"
+msgstr ""
+
+msgid "Client Secret"
+msgstr ""
+
+msgid "The OAuth2 client secret from your identity provider"
+msgstr ""
+
+msgid "Scopes"
+msgstr ""
+
+msgid "Space-separated list of scopes to request"
+msgstr ""
+
+msgid "Button Text"
+msgstr ""
+
+msgid "Text for the SSO button on the login page"
+msgstr ""
+
+msgid "Sign in with OpenID Connect"
+msgstr ""
+
+msgid "OIDC Mode"
+msgstr ""
+
+msgid "'sub' = match by OpenID subject, 'email' = match by email only"
+msgstr ""
+
+msgid "OpenID Subject (sub)"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Auto-create accounts"
+msgstr ""
+
+msgid "Automatically create local accounts for users authenticating via OIDC"
+msgstr ""
+
+msgid "Save Settings"
+msgstr ""
+
+msgid "OpenID Connect settings saved."
+msgstr ""
+
+msgid "OpenID Connect provider configuration error."
+msgstr ""
+
+msgid "OpenID Connect authentication failed: missing parameters."
+msgstr ""
+
+msgid "OpenID Connect authentication failed: invalid state."
+msgstr ""
+
+msgid "OpenID Connect authentication failed: token exchange error."
+msgstr ""
+
+msgid "OpenID Connect authentication failed: could not retrieve user info."
+msgstr ""
+
+msgid "OpenID Connect: Email address not provided by the identity provider."
+msgstr ""
+
+msgid "You must be logged in to link your account."
+msgstr ""
+
+msgid "OpenID Connect account successfully linked."
+msgstr ""
+
+msgid "OpenID Connect account link removed."
+msgstr ""
+
+msgid "OpenID Connect is not configured."
+msgstr ""
+
+msgid "Unlink Account"
+msgstr ""
+
+msgid "Link OpenID Connect Account"
+msgstr ""
+
+msgid "Are you sure you want to unlink your OpenID Connect account?"
+msgstr ""
+
+msgid "OpenID Connect"
+msgstr ""

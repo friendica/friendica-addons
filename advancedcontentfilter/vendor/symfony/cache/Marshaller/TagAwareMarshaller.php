@@ -18,13 +18,16 @@ namespace Symfony\Component\Cache\Marshaller;
  */
 class TagAwareMarshaller implements MarshallerInterface
 {
-    private MarshallerInterface $marshaller;
+    private $marshaller;
 
-    public function __construct(?MarshallerInterface $marshaller = null)
+    public function __construct(MarshallerInterface $marshaller = null)
     {
         $this->marshaller = $marshaller ?? new DefaultMarshaller();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function marshall(array $values, ?array &$failed): array
     {
         $failed = $notSerialized = $serialized = [];
@@ -48,7 +51,7 @@ class TagAwareMarshaller implements MarshallerInterface
                     $serialized[$id][9] = "\x5F";
                 }
             } else {
-                // other arbitrary values are serialized using the decorated marshaller below
+                // other arbitratry values are serialized using the decorated marshaller below
                 $notSerialized[$id] = $value;
             }
         }
@@ -61,7 +64,10 @@ class TagAwareMarshaller implements MarshallerInterface
         return $serialized;
     }
 
-    public function unmarshall(string $value): mixed
+    /**
+     * {@inheritdoc}
+     */
+    public function unmarshall(string $value)
     {
         // detect the compact format used in marshall() using magic numbers in the form 9D-..-..-..-..-00-..-..-..-5F
         if (13 >= \strlen($value) || "\x9D" !== $value[0] || "\0" !== $value[5] || "\x5F" !== $value[9]) {

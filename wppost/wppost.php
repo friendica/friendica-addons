@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Name: WordPress Post Connector
  * Description: Post to WordPress (or anything else which uses blogger XMLRPC API)
@@ -17,15 +16,14 @@ use Friendica\Model\Item;
 use Friendica\Model\Post;
 use Friendica\Model\User;
 use Friendica\Util\XML;
-use Friendica\Content\Post\Entity\PostMedia;
 
 function wppost_install()
 {
-	Hook::register('hook_fork', 'addon/wppost/wppost.php', 'wppost_hook_fork');
-	Hook::register('post_local', 'addon/wppost/wppost.php', 'wppost_post_local');
-	Hook::register('notifier_normal', 'addon/wppost/wppost.php', 'wppost_send');
-	Hook::register('jot_networks', 'addon/wppost/wppost.php', 'wppost_jot_nets');
-	Hook::register('connector_settings', 'addon/wppost/wppost.php', 'wppost_settings');
+	Hook::register('hook_fork',            'addon/wppost/wppost.php', 'wppost_hook_fork');
+	Hook::register('post_local',           'addon/wppost/wppost.php', 'wppost_post_local');
+	Hook::register('notifier_normal',      'addon/wppost/wppost.php', 'wppost_send');
+	Hook::register('jot_networks',         'addon/wppost/wppost.php', 'wppost_jot_nets');
+	Hook::register('connector_settings',      'addon/wppost/wppost.php', 'wppost_settings');
 	Hook::register('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
 }
 
@@ -37,12 +35,12 @@ function wppost_jot_nets(array &$jotnets_fields)
 
 	if (DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'wppost', 'post')) {
 		$jotnets_fields[] = [
-			'type'  => 'checkbox',
+			'type' => 'checkbox',
 			'field' => [
 				'wppost_enable',
 				DI::l10n()->t('Post to Wordpress'),
-				DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'wppost', 'post_by_default'),
-			],
+				DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'wppost', 'post_by_default')
+			]
 		];
 	}
 }
@@ -89,9 +87,9 @@ function wppost_settings_post(array &$b)
 	if (!empty($_POST['wppost-submit'])) {
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'post', intval($_POST['wppost']));
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'post_by_default', intval($_POST['wp_bydefault']));
-		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'wp_username', trim($_POST['wp_username']));
-		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'wp_password', trim($_POST['wp_password']));
-		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'wp_blog', trim($_POST['wp_blog']));
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'wp_username',   trim($_POST['wp_username']));
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'wp_password',   trim($_POST['wp_password']));
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'wp_blog',   trim($_POST['wp_blog']));
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'backlink', intval($_POST['wp_backlink']));
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'wppost', 'shortcheck', intval($_POST['wp_shortcheck']));
 		$wp_backlink_text = BBCode::convertForUriId(User::getSystemUriId(), trim($_POST['wp_backlink_text']), BBCode::BACKLINK);
@@ -109,8 +107,8 @@ function wppost_hook_fork(array &$b)
 	$post = $b['data'];
 
 	if (
-		$post['deleted'] || ($post['private'] == Item::PRIVATE) || ($post['created'] !== $post['edited'])
-		|| !strstr($post['postopts'] ?? '', 'wppost') || ($post['gravity'] != Item::GRAVITY_PARENT)
+		$post['deleted'] || ($post['private'] == Item::PRIVATE) || ($post['created'] !== $post['edited']) ||
+		!strstr($post['postopts'] ?? '', 'wppost') || ($post['gravity'] != Item::GRAVITY_PARENT)
 	) {
 		$b['execute'] = false;
 		return;
@@ -128,7 +126,7 @@ function wppost_post_local(array &$b)
 		return;
 	}
 
-	$wp_post = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'wppost', 'post'));
+	$wp_post   = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'wppost', 'post'));
 
 	$wp_enable = (($wp_post && !empty($_REQUEST['wppost_enable'])) ? intval($_REQUEST['wppost_enable']) : 0);
 
@@ -174,9 +172,9 @@ function wppost_send(array &$b)
 
 	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], DI::contentItem()->addSharedPost($b));
 
-	$wp_username      = XML::escape(DI::pConfig()->get($b['uid'], 'wppost', 'wp_username'));
-	$wp_password      = XML::escape(DI::pConfig()->get($b['uid'], 'wppost', 'wp_password'));
-	$wp_blog          = DI::pConfig()->get($b['uid'], 'wppost', 'wp_blog');
+	$wp_username = XML::escape(DI::pConfig()->get($b['uid'], 'wppost', 'wp_username'));
+	$wp_password = XML::escape(DI::pConfig()->get($b['uid'], 'wppost', 'wp_password'));
+	$wp_blog = DI::pConfig()->get($b['uid'], 'wppost', 'wp_blog');
 	$wp_backlink_text = DI::pConfig()->get($b['uid'], 'wppost', 'wp_backlink_text');
 	if ($wp_backlink_text == '') {
 		$wp_backlink_text = DI::l10n()->t('Read the orig­i­nal post and com­ment stream on Friendica');
@@ -187,7 +185,7 @@ function wppost_send(array &$b)
 
 		if (intval(DI::pConfig()->get($b['uid'], 'wppost', 'shortcheck'))) {
 			// Checking, if its a post that is worth a blog post
-			$postentry = (bool) Post\Media::getByURIId($b['uri-id'], [PostMedia::TYPE_HTML, PostMedia::TYPE_AUDIO, PostMedia::TYPE_VIDEO, PostMedia::TYPE_IMAGE]);
+			$postentry = (bool)Post\Media::getByURIId($b['uri-id'], [Post\Media::HTML, Post\Media::AUDIO, Post\Media::VIDEO, Post\Media::IMAGE]);
 
 			// Does it have a title?
 			if ($wptitle != "") {
@@ -207,7 +205,7 @@ function wppost_send(array &$b)
 		// If the title is empty then try to guess
 		if ($wptitle == '') {
 			// Fetch information about the post
-			$media = Post\Media::getByURIId($b['uri-id'], [PostMedia::TYPE_HTML]);
+			$media = Post\Media::getByURIId($b['uri-id'], [Post\Media::HTML]);
 			if (!empty($media) && !empty($media[0]['name']) && ($media[0]['name'] != $media[0]['url'])) {
 				$wptitle = $media[0]['name'];
 			}
@@ -217,11 +215,11 @@ function wppost_send(array &$b)
 				// Remove the share element before fetching the first line
 				$title = trim(preg_replace("/\[share.*?\](.*?)\[\/share\]/ism", "\n$1\n", $b['body']));
 
-				$title   = BBCode::toPlaintext($title) . "\n";
-				$pos     = strpos($title, "\n");
+				$title = BBCode::toPlaintext($title) . "\n";
+				$pos = strpos($title, "\n");
 				$trailer = "";
 				if (($pos == 0) || ($pos > 100)) {
-					$pos     = 100;
+					$pos = 100;
 					$trailer = "...";
 				}
 
@@ -230,7 +228,7 @@ function wppost_send(array &$b)
 		}
 
 		$title = '<title>' . (($wptitle) ? $wptitle : DI::l10n()->t('Post from Friendica')) . '</title>';
-		$post  = BBCode::convertForUriId($b['uri-id'], $b['body'], BBCode::CONNECTORS);
+		$post = BBCode::convertForUriId($b['uri-id'], $b['body'], BBCode::CONNECTORS);
 
 		// If a link goes to youtube then remove the stuff around it. Wordpress detects youtube links and embeds it
 		$post = preg_replace('/<a.*?href="(https?:\/\/www.youtube.com\/.*?)".*?>(.*?)<\/a>/ism', "\n$1\n", $post);

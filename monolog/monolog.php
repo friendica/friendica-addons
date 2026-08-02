@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Name: Monolog
  * Description: A Logging framework with lots of additions, customized for Friendica.

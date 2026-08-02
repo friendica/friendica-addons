@@ -1,7 +1,8 @@
 <?php
 
-if(! function_exists("string_plural_select_nb_NO")) {
-function string_plural_select_nb_NO($n){
-	$n = intval($n);
-	return intval($n != 1);
-}}
+$a->strings["\"Show more\" Settings"] = "";
+$a->strings["Enable Show More"] = "";
+$a->strings["Cutting posts after how much characters"] = "";
+$a->strings["Submit"] = "Lagre";
+$a->strings["Show More Settings saved."] = "";
+$a->strings["show more"] = "";

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Name: viewsrc
  * Description: Add "View Source" link to item context
@@ -36,5 +35,5 @@ function viewsrc_item_photo_menu(array &$b)
 		return;
 	}
 
-	$b['menu'] = array_merge([DI::l10n()->t('View Source') => DI::baseUrl() . '/viewsrc/' . $b['item']['uri-id']], $b['menu']);
+	$b['menu'] = array_merge([DI::l10n()->t('View Source') => DI::baseUrl() . '/viewsrc/'. $b['item']['uri-id']], $b['menu']);
 }

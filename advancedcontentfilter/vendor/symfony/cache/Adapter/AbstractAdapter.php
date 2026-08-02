@@ -19,12 +19,11 @@ use Symfony\Component\Cache\ResettableInterface;
 use Symfony\Component\Cache\Traits\AbstractAdapterTrait;
 use Symfony\Component\Cache\Traits\ContractsTrait;
 use Symfony\Contracts\Cache\CacheInterface;
-use Symfony\Contracts\Cache\NamespacedPoolInterface;
 
 /**
  * @author Nicolas Grekas <p@tchwork.com>
  */
-abstract class AbstractAdapter implements AdapterInterface, CacheInterface, NamespacedPoolInterface, LoggerAwareInterface, ResettableInterface
+abstract class AbstractAdapter implements AdapterInterface, CacheInterface, LoggerAwareInterface, ResettableInterface
 {
     use AbstractAdapterTrait;
     use ContractsTrait;
@@ -34,42 +33,39 @@ abstract class AbstractAdapter implements AdapterInterface, CacheInterface, Name
      */
     protected const NS_SEPARATOR = ':';
 
-    private static bool $apcuSupported;
+    private static $apcuSupported;
+    private static $phpFilesSupported;
 
     protected function __construct(string $namespace = '', int $defaultLifetime = 0)
     {
-        if ('' !== $namespace) {
-            if (str_contains($namespace, static::NS_SEPARATOR)) {
-                if (str_contains($namespace, static::NS_SEPARATOR.static::NS_SEPARATOR)) {
-                    throw new InvalidArgumentException(\sprintf('Cache namespace "%s" contains empty sub-namespace.', $namespace));
-                }
-                CacheItem::validateKey(str_replace(static::NS_SEPARATOR, '', $namespace));
-            } else {
-                CacheItem::validateKey($namespace);
-            }
-            $this->namespace = $namespace.static::NS_SEPARATOR;
-        }
-        $this->rootNamespace = $this->namespace;
-
-        $this->defaultLifetime = $defaultLifetime;
+        $this->namespace = '' === $namespace ? '' : CacheItem::validateKey($namespace).static::NS_SEPARATOR;
         if (null !== $this->maxIdLength && \strlen($namespace) > $this->maxIdLength - 24) {
-            throw new InvalidArgumentException(\sprintf('Namespace must be %d chars max, %d given ("%s").', $this->maxIdLength - 24, \strlen($namespace), $namespace));
+            throw new InvalidArgumentException(sprintf('Namespace must be %d chars max, %d given ("%s").', $this->maxIdLength - 24, \strlen($namespace), $namespace));
         }
-        self::$createCacheItem ??= \Closure::bind(
+        $this->createCacheItem = \Closure::bind(
             static function ($key, $value, $isHit) {
                 $item = new CacheItem();
                 $item->key = $key;
-                $item->value = $value;
+                $item->value = $v = $value;
                 $item->isHit = $isHit;
-                $item->unpack();
+                // Detect wrapped values that encode for their expiry and creation duration
+                // For compactness, these values are packed in the key of an array using
+                // magic numbers in the form 9D-..-..-..-..-00-..-..-..-5F
+                if (\is_array($v) && 1 === \count($v) && 10 === \strlen($k = (string) array_key_first($v)) && "\x9D" === $k[0] && "\0" === $k[5] && "\x5F" === $k[9]) {
+                    $item->value = $v[$k];
+                    $v = unpack('Ve/Nc', substr($k, 1, -1));
+                    $item->metadata[CacheItem::METADATA_EXPIRY] = $v['e'] + CacheItem::METADATA_EXPIRY_OFFSET;
+                    $item->metadata[CacheItem::METADATA_CTIME] = $v['c'];
+                }
 
                 return $item;
             },
             null,
             CacheItem::class
         );
-        self::$mergeByLifetime ??= \Closure::bind(
-            static function ($deferred, $namespace, &$expiredIds, $getId, $defaultLifetime) {
+        $getId = \Closure::fromCallable([$this, 'getId']);
+        $this->mergeByLifetime = \Closure::bind(
+            static function ($deferred, $namespace, &$expiredIds) use ($getId, $defaultLifetime) {
                 $byLifetime = [];
                 $now = microtime(true);
                 $expiredIds = [];
@@ -84,7 +80,11 @@ abstract class AbstractAdapter implements AdapterInterface, CacheInterface, Name
                         $expiredIds[] = $getId($key);
                         continue;
                     }
-                    $byLifetime[$ttl][$getId($key)] = $item->pack();
+                    if (isset(($metadata = $item->newMetadata)[CacheItem::METADATA_TAGS])) {
+                        unset($metadata[CacheItem::METADATA_TAGS]);
+                    }
+                    // For compactness, expiry and creation duration are packed in the key of an array, using magic numbers as separators
+                    $byLifetime[$ttl][$getId($key)] = $metadata ? ["\x9D".pack('VN', (int) (0.1 + $metadata[self::METADATA_EXPIRY] - self::METADATA_EXPIRY_OFFSET), $metadata[self::METADATA_CTIME])."\x5F" => $item->value] : $item->value;
                 }
 
                 return $byLifetime;
@@ -98,19 +98,26 @@ abstract class AbstractAdapter implements AdapterInterface, CacheInterface, Name
      * Returns the best possible adapter that your runtime supports.
      *
      * Using ApcuAdapter makes system caches compatible with read-only filesystems.
+     *
+     * @param string $namespace
+     * @param int    $defaultLifetime
+     * @param string $version
+     * @param string $directory
+     *
+     * @return AdapterInterface
      */
-    public static function createSystemCache(string $namespace, int $defaultLifetime, string $version, string $directory, ?LoggerInterface $logger = null): AdapterInterface
+    public static function createSystemCache($namespace, $defaultLifetime, $version, $directory, LoggerInterface $logger = null)
     {
         $opcache = new PhpFilesAdapter($namespace, $defaultLifetime, $directory, true);
         if (null !== $logger) {
             $opcache->setLogger($logger);
         }
 
-        if (!self::$apcuSupported ??= ApcuAdapter::isSupported()) {
+        if (!self::$apcuSupported = self::$apcuSupported ?? ApcuAdapter::isSupported()) {
             return $opcache;
         }
 
-        if ('cli' === \PHP_SAPI && !filter_var(\ini_get('apc.enable_cli'), \FILTER_VALIDATE_BOOL)) {
+        if (\in_array(\PHP_SAPI, ['cli', 'phpdbg'], true) && !filter_var(\ini_get('apc.enable_cli'), \FILTER_VALIDATE_BOOLEAN)) {
             return $opcache;
         }
 
@@ -122,32 +129,31 @@ abstract class AbstractAdapter implements AdapterInterface, CacheInterface, Name
         return new ChainAdapter([$apcu, $opcache]);
     }
 
-    public static function createConnection(#[\SensitiveParameter] string $dsn, array $options = []): mixed
+    public static function createConnection($dsn, array $options = [])
     {
-        if (str_starts_with($dsn, 'redis:') || str_starts_with($dsn, 'rediss:') || str_starts_with($dsn, 'valkey:') || str_starts_with($dsn, 'valkeys:')) {
+        if (!\is_string($dsn)) {
+            throw new InvalidArgumentException(sprintf('The "%s()" method expect argument #1 to be string, "%s" given.', __METHOD__, \gettype($dsn)));
+        }
+        if (str_starts_with($dsn, 'redis:') || str_starts_with($dsn, 'rediss:')) {
             return RedisAdapter::createConnection($dsn, $options);
         }
         if (str_starts_with($dsn, 'memcached:')) {
             return MemcachedAdapter::createConnection($dsn, $options);
         }
-        if (str_starts_with($dsn, 'couchbase:')) {
-            if (class_exists(\CouchbaseBucket::class) && CouchbaseBucketAdapter::isSupported()) {
-                return CouchbaseBucketAdapter::createConnection($dsn, $options);
-            }
 
-            return CouchbaseCollectionAdapter::createConnection($dsn, $options);
-        }
-        if (preg_match('/^(mysql|oci|pgsql|sqlsrv|sqlite):/', $dsn)) {
-            return PdoAdapter::createConnection($dsn, $options);
-        }
-
-        throw new InvalidArgumentException('Unsupported DSN: it does not start with "redis[s]:", "valkey[s]:", "memcached:", "couchbase:", "mysql:", "oci:", "pgsql:", "sqlsrv:" nor "sqlite:".');
+        throw new InvalidArgumentException(sprintf('Unsupported DSN: "%s".', $dsn));
     }
 
-    public function commit(): bool
+    /**
+     * {@inheritdoc}
+     *
+     * @return bool
+     */
+    public function commit()
     {
         $ok = true;
-        $byLifetime = (self::$mergeByLifetime)($this->deferred, $this->namespace, $expiredIds, $this->getId(...), $this->defaultLifetime);
+        $byLifetime = $this->mergeByLifetime;
+        $byLifetime = $byLifetime($this->deferred, $this->namespace, $expiredIds);
         $retry = $this->deferred = [];
 
         if ($expiredIds) {
@@ -170,9 +176,9 @@ abstract class AbstractAdapter implements AdapterInterface, CacheInterface, Name
                 foreach (\is_array($e) ? $e : array_keys($values) as $id) {
                     $ok = false;
                     $v = $values[$id];
-                    $type = get_debug_type($v);
-                    $message = \sprintf('Failed to save key "{key}" of type %s%s', $type, $e instanceof \Exception ? ': '.$e->getMessage() : '.');
-                    CacheItem::log($this->logger, $message, ['key' => substr($id, \strlen($this->rootNamespace)), 'exception' => $e instanceof \Exception ? $e : null, 'cache-adapter' => get_debug_type($this)]);
+                    $type = \is_object($v) ? \get_class($v) : \gettype($v);
+                    $message = sprintf('Failed to save key "{key}" of type %s%s', $type, $e instanceof \Exception ? ': '.$e->getMessage() : '.');
+                    CacheItem::log($this->logger, $message, ['key' => substr($id, \strlen($this->namespace)), 'exception' => $e instanceof \Exception ? $e : null]);
                 }
             } else {
                 foreach ($values as $id => $v) {
@@ -193,9 +199,9 @@ abstract class AbstractAdapter implements AdapterInterface, CacheInterface, Name
                     continue;
                 }
                 $ok = false;
-                $type = get_debug_type($v);
-                $message = \sprintf('Failed to save key "{key}" of type %s%s', $type, $e instanceof \Exception ? ': '.$e->getMessage() : '.');
-                CacheItem::log($this->logger, $message, ['key' => substr($id, \strlen($this->rootNamespace)), 'exception' => $e instanceof \Exception ? $e : null, 'cache-adapter' => get_debug_type($this)]);
+                $type = \is_object($v) ? \get_class($v) : \gettype($v);
+                $message = sprintf('Failed to save key "{key}" of type %s%s', $type, $e instanceof \Exception ? ': '.$e->getMessage() : '.');
+                CacheItem::log($this->logger, $message, ['key' => substr($id, \strlen($this->namespace)), 'exception' => $e instanceof \Exception ? $e : null]);
             }
         }
 

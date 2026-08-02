@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Name: Cat Avatar Generator
  * Description: Generate a default avatar based on David Revoy's cat-avatar-generator https://framagit.org/Deevad/cat-avatar-generator
@@ -79,7 +78,7 @@ function catavatar_addon_settings_post(&$s)
 		Photo::importProfilePhoto($url, DI::userSession()->getLocalUserId(), $self['id']);
 
 		$condition = ['uid' => DI::userSession()->getLocalUserId(), 'contact-id' => $self['id']];
-		$photo     = DBA::selectFirst('photo', ['resource-id'], $condition);
+		$photo = DBA::selectFirst('photo', ['resource-id'], $condition);
 		if (!DBA::isResult($photo)) {
 			DI::sysmsg()->addNotice(DI::l10n()->t('There was an error, the cat ran away.'));
 			return;
@@ -124,16 +123,13 @@ function catavatar_lookup(array &$b)
 		$url = DI::baseUrl() . '/catavatar/' . md5(trim(strtolower($b['email'])));
 	}
 
-	switch ($b['size']) {
-		case 300: $url .= "/4";
-			break;
-		case 80: $url .= "/5";
-			break;
-		case 48: $url .= "/6";
-			break;
+	switch($b['size']) {
+		case 300: $url .= "/4"; break;
+		case 80: $url .= "/5"; break;
+		case 48: $url .= "/6"; break;
 	}
 
-	$b['url']     = $url;
+	$b['url'] = $url;
 	$b['success'] = true;
 }
 
@@ -157,9 +153,9 @@ function catavatar_content()
 	}
 
 	if (is_numeric(DI::args()->getArgv()[1])) {
-		$uid       = intval(DI::args()->getArgv()[1]);
+		$uid = intval(DI::args()->getArgv()[1]);
 		$condition = ['uid' => $uid,
-			'account_expired'  => false, 'account_removed' => false];
+				'account_expired' => false, 'account_removed' => false];
 		$user = DBA::selectFirst('user', ['email'], $condition);
 
 		if ($user === false) {
@@ -199,7 +195,7 @@ function catavatar_content()
  * This PHP is licensed under the short and simple permissive:
  * [MIT License](https://en.wikipedia.org/wiki/MIT_License)
  *
- **/
+**/
 
 function build_cat($seed = '', $size = 0)
 {
@@ -209,13 +205,13 @@ function build_cat($seed = '', $size = 0)
 	}
 
 	// throw the dice for body parts
-	$parts = [
-		'body'       => rand(1, 15),
-		'fur'        => rand(1, 10),
-		'eyes'       => rand(1, 15),
-		'mouth'      => rand(1, 10),
-		'accessorie' => rand(1, 20),
-	];
+	$parts = array(
+		'body' => rand(1, 15),
+		'fur' => rand(1, 10),
+		'eyes' => rand(1, 15),
+		'mouth' => rand(1, 10),
+		'accessorie' => rand(1, 20)
+	);
 
 	// create backgound
 	$cat = @imagecreatetruecolor(CATAVATAR_SIZE, CATAVATAR_SIZE)
@@ -267,6 +263,6 @@ function build_cat($seed = '', $size = 0)
 	header('Cache-Control: max-age=86400');
 	header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 86400));
 	header('Content-Type: image/jpg');
-	imagejpeg($cat, null, 90);
+	imagejpeg($cat, NULL, 90);
 	imagedestroy($cat);
 }

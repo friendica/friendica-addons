@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Name: Quick Comment
  * Description: Two click comments
@@ -26,9 +25,9 @@ use Friendica\Util\XML;
 
 function qcomment_install()
 {
-	Hook::register('addon_settings', __FILE__, 'qcomment_addon_settings');
+	Hook::register('addon_settings'     , __FILE__, 'qcomment_addon_settings');
 	Hook::register('addon_settings_post', __FILE__, 'qcomment_addon_settings_post');
-	Hook::register('footer', __FILE__, 'qcomment_footer');
+	Hook::register('footer'             , __FILE__, 'qcomment_footer');
 }
 
 function qcomment_footer(string &$body)

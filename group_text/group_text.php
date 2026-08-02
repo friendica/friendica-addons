@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Name: Group Text
  * Description: Disable images in group edit menu

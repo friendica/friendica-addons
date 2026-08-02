@@ -20,8 +20,8 @@ use Symfony\Component\ExpressionLanguage\Compiler;
  */
 class Node
 {
-    public array $nodes = [];
-    public array $attributes = [];
+    public $nodes = [];
+    public $attributes = [];
 
     /**
      * @param array $nodes      An array of nodes
@@ -33,11 +33,11 @@ class Node
         $this->attributes = $attributes;
     }
 
-    public function __toString(): string
+    public function __toString()
     {
         $attributes = [];
         foreach ($this->attributes as $name => $value) {
-            $attributes[] = \sprintf('%s: %s', $name, str_replace("\n", '', var_export($value, true)));
+            $attributes[] = sprintf('%s: %s', $name, str_replace("\n", '', var_export($value, true)));
         }
 
         $repr = [str_replace('Symfony\Component\ExpressionLanguage\Node\\', '', static::class).'('.implode(', ', $attributes)];
@@ -57,14 +57,14 @@ class Node
         return implode("\n", $repr);
     }
 
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         foreach ($this->nodes as $node) {
             $node->compile($compiler);
         }
     }
 
-    public function evaluate(array $functions, array $values): mixed
+    public function evaluate($functions, $values)
     {
         $results = [];
         foreach ($this->nodes as $node) {
@@ -74,31 +74,28 @@ class Node
         return $results;
     }
 
-    /**
-     * @throws \BadMethodCallException when this node cannot be transformed to an array
-     */
-    public function toArray(): array
+    public function toArray()
     {
-        throw new \BadMethodCallException(\sprintf('Dumping a "%s" instance is not supported yet.', static::class));
+        throw new \BadMethodCallException(sprintf('Dumping a "%s" instance is not supported yet.', static::class));
     }
 
-    public function dump(): string
+    public function dump()
     {
         $dump = '';
 
         foreach ($this->toArray() as $v) {
-            $dump .= \is_scalar($v) ? $v : $v->dump();
+            $dump .= is_scalar($v) ? $v : $v->dump();
         }
 
         return $dump;
     }
 
-    protected function dumpString(string $value): string
+    protected function dumpString($value)
     {
-        return \sprintf('"%s"', addcslashes($value, "\0\t\"\\"));
+        return sprintf('"%s"', addcslashes($value, "\0\t\"\\"));
     }
 
-    protected function isHash(array $value): bool
+    protected function isHash(array $value)
     {
         $expectedKey = 0;
 

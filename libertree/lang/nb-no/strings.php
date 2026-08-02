@@ -1,7 +1,9 @@
 <?php
 
-if(! function_exists("string_plural_select_nb_NO")) {
-function string_plural_select_nb_NO($n){
-	$n = intval($n);
-	return intval($n != 1);
-}}
+$a->strings["Post to libertree"] = "";
+$a->strings["libertree Post Settings"] = "";
+$a->strings["Enable Libertree Post Addon"] = "";
+$a->strings["Libertree API token"] = "";
+$a->strings["Libertree site URL"] = "";
+$a->strings["Post to Libertree by default"] = "";
+$a->strings["Submit"] = "Lagre";

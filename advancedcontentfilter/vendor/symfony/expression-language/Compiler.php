@@ -11,39 +11,37 @@
 
 namespace Symfony\Component\ExpressionLanguage;
 
-use Symfony\Contracts\Service\ResetInterface;
-
 /**
  * Compiles a node to PHP code.
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class Compiler implements ResetInterface
+class Compiler
 {
-    private string $source = '';
+    private $source;
+    private $functions;
 
-    public function __construct(
-        private array $functions,
-    ) {
+    public function __construct(array $functions)
+    {
+        $this->functions = $functions;
     }
 
-    public function getFunction(string $name): array
+    public function getFunction($name)
     {
         return $this->functions[$name];
     }
 
     /**
      * Gets the current PHP code after compilation.
+     *
+     * @return string The PHP code
      */
-    public function getSource(): string
+    public function getSource()
     {
         return $this->source;
     }
 
-    /**
-     * @return $this
-     */
-    public function reset(): static
+    public function reset()
     {
         $this->source = '';
 
@@ -55,14 +53,14 @@ class Compiler implements ResetInterface
      *
      * @return $this
      */
-    public function compile(Node\Node $node): static
+    public function compile(Node\Node $node)
     {
         $node->compile($this);
 
         return $this;
     }
 
-    public function subcompile(Node\Node $node): string
+    public function subcompile(Node\Node $node)
     {
         $current = $this->source;
         $this->source = '';
@@ -78,9 +76,11 @@ class Compiler implements ResetInterface
     /**
      * Adds a raw string to the compiled code.
      *
+     * @param string $string The string
+     *
      * @return $this
      */
-    public function raw(string $string): static
+    public function raw($string)
     {
         $this->source .= $string;
 
@@ -90,11 +90,13 @@ class Compiler implements ResetInterface
     /**
      * Adds a quoted string to the compiled code.
      *
+     * @param string $value The string
+     *
      * @return $this
      */
-    public function string(string $value): static
+    public function string($value)
     {
-        $this->source .= \sprintf('"%s"', addcslashes($value, "\0\t\"\$\\"));
+        $this->source .= sprintf('"%s"', addcslashes($value, "\0\t\"\$\\"));
 
         return $this;
     }
@@ -102,12 +104,22 @@ class Compiler implements ResetInterface
     /**
      * Returns a PHP representation of a given value.
      *
+     * @param mixed $value The value to convert
+     *
      * @return $this
      */
-    public function repr(mixed $value): static
+    public function repr($value)
     {
         if (\is_int($value) || \is_float($value)) {
-            $this->raw(var_export($value, true));
+            if (false !== $locale = setlocale(\LC_NUMERIC, 0)) {
+                setlocale(\LC_NUMERIC, 'C');
+            }
+
+            $this->raw($value);
+
+            if (false !== $locale) {
+                setlocale(\LC_NUMERIC, $locale);
+            }
         } elseif (null === $value) {
             $this->raw('null');
         } elseif (\is_bool($value)) {

@@ -1,9 +1,11 @@
 <?php
 
-if(! function_exists("string_plural_select_pt_BR")) {
-function string_plural_select_pt_BR($n){
+if(! function_exists("string_plural_select_pt_br")) {
+function string_plural_select_pt_br($n){
 	$n = intval($n);
-	if (($n == 0 || $n == 1)) { return 0; } else if ($n != 0 && $n % 1000000 == 0) { return 1; } else  { return 2; }
+	return intval($n > 1);
 }}
+$a->strings['Could NOT install Libravatar successfully.<br>It requires PHP >= 5.3'] = 'Não foi possível instalar o Libravatar.<br>Ele requer PHP >= 5.3';
 $a->strings['monster face'] = 'careta';
 $a->strings['retro arcade style face'] = 'rosto de personagem de fliperama';
+$a->strings['Submit'] = 'Enviar';

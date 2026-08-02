@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Name: Show More
  * Description: Collapse posts
@@ -53,8 +52,8 @@ function showmore_addon_settings_post(array &$b)
 
 	if (!empty($_POST['showmore-submit'])) {
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'showmore', 'chars', trim($_POST['showmore-chars']));
-		$enable  = (!empty($_POST['showmore-enable']) ? intval($_POST['showmore-enable']) : 0);
-		$disable = 1 - $enable;
+		$enable = (!empty($_POST['showmore-enable']) ? intval($_POST['showmore-enable']) : 0);
+		$disable = 1-$enable;
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'showmore', 'disable', $disable);
 	}
 }
@@ -82,7 +81,7 @@ function get_body_length($body)
 	/** @var DOMNodeList $xr */
 	$xr = $xpath->query('//*[@style]');
 	foreach ($xr as $node) {
-		if ($node instanceof DOMElement && preg_match('/.*display: *none *;.*/', $node->getAttribute('style'))) {
+		if ($node instanceof DOMElement && preg_match('/.*display: *none *;.*/',$node->getAttribute('style'))) {
 			// Hidden, remove it from its parent
 			$node->parentNode->removeChild($node);
 		}
@@ -108,17 +107,17 @@ function showmore_prepare_body(&$hook_data)
 	$chars = (int) DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'showmore', 'chars', 1100);
 
 	if (get_body_length($hook_data['html']) > $chars) {
-		$found     = true;
+		$found = true;
 		$shortened = trim(showmore_cutitem($hook_data['html'], $chars)) . "...";
 	} else {
 		$found = false;
 	}
 
 	if ($found) {
-		$rnd               = Strings::getRandomHex(8);
-		$hook_data['html'] = '<span id="showmore-teaser-' . $rnd . '" class="showmore-teaser" style="display: block;" aria-hidden="true" dir="auto">' . $shortened . " "
-			. '<span id="showmore-wrap-' . $rnd . '" style="white-space:nowrap;" class="showmore-wrap fakelink" onclick="openClose(\'showmore-' . $rnd . '\'); openClose(\'showmore-teaser-' . $rnd . '\');">' . DI::l10n()->t('show more') . '</span></span>'
-			. '<div id="showmore-' . $rnd . '" class="showmore-content" style="display: none;" aria-hidden="false" dir="auto">' . $hook_data['html'] . '</div>';
+		$rnd = Strings::getRandomHex(8);
+		$hook_data['html'] = '<span id="showmore-teaser-' . $rnd . '" class="showmore-teaser" style="display: block;" aria-hidden="true" dir="auto">' . $shortened . " " .
+			'<span id="showmore-wrap-' . $rnd . '" style="white-space:nowrap;" class="showmore-wrap fakelink" onclick="openClose(\'showmore-' . $rnd . '\'); openClose(\'showmore-teaser-' . $rnd . '\');">' . DI::l10n()->t('show more') . '</span></span>' .
+			'<div id="showmore-' . $rnd . '" class="showmore-content" style="display: none;" aria-hidden="false" dir="auto">' . $hook_data['html'] . '</div>';
 	}
 }
 
@@ -136,20 +135,18 @@ function showmore_cutitem($text, $limit)
 	$pos4 = strrpos($text, ";");
 
 	if ($pos1 > $pos3) {
-		if ($pos1 > $pos2) {
+		if ($pos1 > $pos2)
 			$text = substr($text, 0, $pos1);
-		}
 	} else {
-		if ($pos3 > $pos4) {
+		if ($pos3 > $pos4)
 			$text = substr($text, 0, $pos3);
-		}
 	}
 
-	$doc                     = new DOMDocument();
+	$doc = new DOMDocument();
 	$doc->preserveWhiteSpace = false;
 
 	$doctype = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">';
-	@$doc->loadHTML($doctype . "<html><body>" . $text . "</body></html>");
+	@$doc->loadHTML($doctype."<html><body>".$text."</body></html>");
 
 	$text = $doc->saveHTML();
 	$text = str_replace(["<html><body>", "</body></html>", $doctype], ["", "", ""], $text);

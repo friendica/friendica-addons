@@ -24,12 +24,26 @@ class_exists(CacheItem::class);
  */
 interface AdapterInterface extends CacheItemPoolInterface
 {
-    public function getItem(mixed $key): CacheItem;
+    /**
+     * {@inheritdoc}
+     *
+     * @return CacheItem
+     */
+    public function getItem($key);
 
     /**
-     * @return iterable<string, CacheItem>
+     * {@inheritdoc}
+     *
+     * @return \Traversable|CacheItem[]
      */
-    public function getItems(array $keys = []): iterable;
+    public function getItems(array $keys = []);
 
-    public function clear(string $prefix = ''): bool;
+    /**
+     * {@inheritdoc}
+     *
+     * @param string $prefix
+     *
+     * @return bool
+     */
+    public function clear(/* string $prefix = '' */);
 }

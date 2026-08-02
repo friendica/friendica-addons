@@ -56,8 +56,8 @@ steps:
     image: friendicaci/php${PHP_MAJOR_VERSION}:php${PHP_VERSION}
     commands:
       - export COMPOSER_HOME=.composer
-      - ./bin/composer.phar validate
-      - ./bin/composer.phar install --no-dev --optimize-autoloader
+      - composer validate
+      - composer install --no-dev --optimize-autoloader
     volumes:
       - /etc/hosts:/etc/hosts
     when:

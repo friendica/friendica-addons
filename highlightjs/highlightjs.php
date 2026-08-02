@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Name: Syntax Highlighting
  * Description: Highlights syntax of code blocks with highlight.js
@@ -12,7 +11,7 @@ use Friendica\DI;
 
 function highlightjs_install()
 {
-	Hook::register('head', __FILE__, 'highlightjs_head');
+	Hook::register('head'  , __FILE__, 'highlightjs_head');
 	Hook::register('footer', __FILE__, 'highlightjs_footer');
 }
 

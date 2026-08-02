@@ -17,7 +17,7 @@ use Friendica\Util\Strings;
  */
 class S3Client implements ICanWriteToStorage
 {
-	public const NAME = 'S3';
+	const NAME = 'S3';
 
 	/** @var Connector */
 	protected $connector;

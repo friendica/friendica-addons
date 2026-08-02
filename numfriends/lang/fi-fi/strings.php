@@ -1,9 +1,11 @@
 <?php
 
-if(! function_exists("string_plural_select_fi_FI")) {
-function string_plural_select_fi_FI($n){
+if(! function_exists("string_plural_select_fi_fi")) {
+function string_plural_select_fi_fi($n){
 	$n = intval($n);
 	return intval($n != 1);
 }}
-$a->strings['How many contacts to display on profile sidebar'] = 'Montako yhteystietoa näytetään profiilin sivupalkissa';
-$a->strings['Numfriends Settings'] = 'Ystävien määrä -asetukset';
+$a->strings['Numfriends settings updated.'] = 'Numfriends -asetukset päivitetty.';
+$a->strings['Numfriends Settings'] = 'Numfriends -asetukset';
+$a->strings['How many contacts to display on profile sidebar'] = 'Kuinka monta kontaktia näytetään profiilin sivupalkissa';
+$a->strings['Submit'] = 'Lähetä';

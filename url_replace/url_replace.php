@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Name: URL Replace
  * Description: Replaces occurrences of specified URLs with the address of alternative servers in all displays of postings on a node.
@@ -57,7 +56,7 @@ function url_replace_addon_admin_post()
 	// Ensure a protocol and default to HTTPS
 	$twelvefeet_sites = array_map(
 		fn ($value): string => substr($value, 0, 4) !== 'http' ? 'https://' . $value : $value,
-		$twelvefeet_sites,
+		$twelvefeet_sites
 	);
 	asort($twelvefeet_sites);
 	DI::config()->set('url_replace', 'twelvefeet_sites', $twelvefeet_sites);
@@ -124,7 +123,7 @@ function url_replace_addon_admin(string &$o)
 			$twelvefeet_sites,
 			DI::l10n()->t('Specify the URLs with protocol, one per line.'),
 			null,
-			'rows="6"',
+			'rows="6"'
 		],
 		'$submit' => DI::l10n()->t('Save settings'),
 	]);

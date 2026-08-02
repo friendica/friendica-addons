@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Name: Adult Smilies
  * Description: Smily icons that could or should not be included in core
@@ -13,8 +12,7 @@
 use Friendica\Core\Hook;
 use Friendica\DI;
 
-function smilies_adult_install()
-{
+function smilies_adult_install() {
 	Hook::register('smilie', 'addon/smilies_adult/smilies_adult.php', 'smilies_adult_smilies');
 }
 

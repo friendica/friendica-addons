@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Name: JS Uploader
  * Description: JavaScript photo/image uploader. Helpful for uploading multiple files at once. Uses Valum 'qq' Uploader.
@@ -20,9 +19,9 @@ global $js_upload_result;
 function js_upload_install()
 {
 	Hook::register('photo_upload_form', __FILE__, 'js_upload_form');
-	Hook::register('photo_post_init', __FILE__, 'js_upload_post_init');
-	Hook::register('photo_post_file', __FILE__, 'js_upload_post_file');
-	Hook::register('photo_post_end', __FILE__, 'js_upload_post_end');
+	Hook::register('photo_post_init',   __FILE__, 'js_upload_post_init');
+	Hook::register('photo_post_file',   __FILE__, 'js_upload_post_file');
+	Hook::register('photo_post_end',    __FILE__, 'js_upload_post_end');
 }
 
 function js_upload_form(array &$b)
@@ -110,18 +109,17 @@ class js_upload_qqUploadedFileXhr
 	 *
 	 * @return boolean TRUE on success
 	 */
-	public function save()
+	function save()
 	{
 		$input = fopen('php://input', 'r');
 
 		$upload_dir = DI::config()->get('system', 'tempdir');
-		if (!$upload_dir) {
+		if (!$upload_dir)
 			$upload_dir = sys_get_temp_dir();
-		}
 
 		$this->pathnm = tempnam($upload_dir, 'frn');
 
-		$temp     = fopen($this->pathnm, 'w');
+		$temp = fopen($this->pathnm, 'w');
 		$realSize = stream_copy_to_stream($input, $temp);
 
 		fclose($input);
@@ -133,20 +131,20 @@ class js_upload_qqUploadedFileXhr
 		return true;
 	}
 
-	public function getPath()
+	function getPath()
 	{
 		return $this->pathnm;
 	}
 
-	public function getName()
+	function getName()
 	{
 		return $_GET['qqfile'];
 	}
 
-	public function getSize()
+	function getSize()
 	{
 		if (isset($_SERVER['CONTENT_LENGTH'])) {
-			return (int) $_SERVER['CONTENT_LENGTH'];
+			return (int)$_SERVER['CONTENT_LENGTH'];
 		} else {
 			throw new Exception('Getting content length is not supported.');
 		}
@@ -163,22 +161,22 @@ class js_upload_qqUploadedFileForm
 	 *
 	 * @return boolean TRUE on success
 	 */
-	public function save()
+	function save()
 	{
 		return true;
 	}
 
-	public function getPath()
+	function getPath()
 	{
 		return $_FILES['qqfile']['tmp_name'];
 	}
 
-	public function getName()
+	function getName()
 	{
 		return $_FILES['qqfile']['name'];
 	}
 
-	public function getSize()
+	function getSize()
 	{
 		return $_FILES['qqfile']['size'];
 	}
@@ -194,12 +192,12 @@ class js_upload_qqFileUploader
 	 */
 	private $file;
 
-	public function __construct(array $allowedExtensions, $sizeLimit)
+	function __construct(array $allowedExtensions, $sizeLimit)
 	{
 		$allowedExtensions = array_map('strtolower', $allowedExtensions);
 
 		$this->allowedExtensions = $allowedExtensions;
-		$this->sizeLimit         = $sizeLimit;
+		$this->sizeLimit = $sizeLimit;
 
 		if (isset($_GET['qqfile'])) {
 			$this->file = new js_upload_qqUploadedFileXhr();
@@ -213,7 +211,7 @@ class js_upload_qqFileUploader
 	/**
 	 * Returns array('success'=>true) or array('error'=>'error message')
 	 */
-	public function handleUpload()
+	function handleUpload()
 	{
 		if (!$this->file) {
 			return ['error' => DI::l10n()->t('No files were uploaded.')];
@@ -251,13 +249,13 @@ class js_upload_qqFileUploader
 			return [
 				'success'  => true,
 				'path'     => $this->file->getPath(),
-				'filename' => $filename . '.' . $ext,
+				'filename' => $filename . '.' . $ext
 			];
 		} else {
 			return [
 				'error'    => DI::l10n()->t('Upload was cancelled, or server error encountered'),
 				'path'     => $this->file->getPath(),
-				'filename' => $filename . '.' . $ext,
+				'filename' => $filename . '.' . $ext
 			];
 		}
 	}

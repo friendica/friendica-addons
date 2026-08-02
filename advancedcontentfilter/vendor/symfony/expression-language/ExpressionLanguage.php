@@ -13,9 +13,8 @@ namespace Symfony\Component\ExpressionLanguage;
 
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
-
-// Help opcache.preload discover always-needed symbols
-class_exists(ParsedExpression::class);
+use Symfony\Component\ExpressionLanguage\ParserCache\ParserCacheAdapter;
+use Symfony\Component\ExpressionLanguage\ParserCache\ParserCacheInterface;
 
 /**
  * Allows to compile and evaluate expressions written in your own DSL.
@@ -24,19 +23,29 @@ class_exists(ParsedExpression::class);
  */
 class ExpressionLanguage
 {
-    private CacheItemPoolInterface $cache;
-    private Lexer $lexer;
-    private Parser $parser;
-    private Compiler $compiler;
+    private $cache;
+    private $lexer;
+    private $parser;
+    private $compiler;
 
-    protected array $functions = [];
+    protected $functions = [];
 
     /**
-     * @param iterable<ExpressionFunctionProviderInterface> $providers
+     * @param CacheItemPoolInterface                $cache
+     * @param ExpressionFunctionProviderInterface[] $providers
      */
-    public function __construct(?CacheItemPoolInterface $cache = null, iterable $providers = [])
+    public function __construct($cache = null, array $providers = [])
     {
-        $this->cache = $cache ?? new ArrayAdapter();
+        if (null !== $cache) {
+            if ($cache instanceof ParserCacheInterface) {
+                @trigger_error(sprintf('Passing an instance of %s as constructor argument for %s is deprecated as of 3.2 and will be removed in 4.0. Pass an instance of %s instead.', ParserCacheInterface::class, self::class, CacheItemPoolInterface::class), \E_USER_DEPRECATED);
+                $cache = new ParserCacheAdapter($cache);
+            } elseif (!$cache instanceof CacheItemPoolInterface) {
+                throw new \InvalidArgumentException(sprintf('Cache argument has to implement "%s".', CacheItemPoolInterface::class));
+            }
+        }
+
+        $this->cache = $cache ?: new ArrayAdapter();
         $this->registerFunctions();
         foreach ($providers as $provider) {
             $this->registerProvider($provider);
@@ -45,16 +54,26 @@ class ExpressionLanguage
 
     /**
      * Compiles an expression source code.
+     *
+     * @param Expression|string $expression The expression to compile
+     * @param array             $names      An array of valid names
+     *
+     * @return string The compiled PHP source code
      */
-    public function compile(Expression|string $expression, array $names = []): string
+    public function compile($expression, $names = [])
     {
         return $this->getCompiler()->compile($this->parse($expression, $names)->getNodes())->getSource();
     }
 
     /**
      * Evaluate an expression.
+     *
+     * @param Expression|string $expression The expression to compile
+     * @param array             $values     An array of values
+     *
+     * @return mixed The result of the evaluation of the expression
      */
-    public function evaluate(Expression|string $expression, array $values = []): mixed
+    public function evaluate($expression, $values = [])
     {
         return $this->parse($expression, array_keys($values))->getNodes()->evaluate($this->functions, $values);
     }
@@ -62,9 +81,12 @@ class ExpressionLanguage
     /**
      * Parses an expression.
      *
-     * @param int-mask-of<Parser::IGNORE_*> $flags
+     * @param Expression|string $expression The expression to parse
+     * @param array             $names      An array of valid names
+     *
+     * @return ParsedExpression A ParsedExpression instance
      */
-    public function parse(Expression|string $expression, array $names, int $flags = 0): ParsedExpression
+    public function parse($expression, $names)
     {
         if ($expression instanceof ParsedExpression) {
             return $expression;
@@ -80,7 +102,7 @@ class ExpressionLanguage
         $cacheItem = $this->cache->getItem(rawurlencode($expression.'//'.implode('|', $cacheKeyItems)));
 
         if (null === $parsedExpression = $cacheItem->get()) {
-            $nodes = $this->getParser()->parse($this->getLexer()->tokenize((string) $expression), $names, $flags);
+            $nodes = $this->getParser()->parse($this->getLexer()->tokenize((string) $expression), $names);
             $parsedExpression = new ParsedExpression((string) $expression, $nodes);
 
             $cacheItem->set($parsedExpression);
@@ -91,32 +113,9 @@ class ExpressionLanguage
     }
 
     /**
-     * Validates the syntax of an expression.
-     *
-     * @param array|null                    $names The list of acceptable variable names in the expression
-     * @param int-mask-of<Parser::IGNORE_*> $flags
-     *
-     * @throws SyntaxError When the passed expression is invalid
-     */
-    public function lint(Expression|string $expression, ?array $names, int $flags = 0): void
-    {
-        if (null === $names) {
-            trigger_deprecation('symfony/expression-language', '7.1', 'Passing "null" as the second argument of "%s()" is deprecated, pass "%s\Parser::IGNORE_UNKNOWN_VARIABLES" instead as a third argument.', __METHOD__, __NAMESPACE__);
-
-            $flags |= Parser::IGNORE_UNKNOWN_VARIABLES;
-            $names = [];
-        }
-
-        if ($expression instanceof ParsedExpression) {
-            return;
-        }
-
-        $this->getParser()->lint($this->getLexer()->tokenize((string) $expression), $names, $flags);
-    }
-
-    /**
      * Registers a function.
      *
+     * @param string   $name      The function name
      * @param callable $compiler  A callable able to compile the function
      * @param callable $evaluator A callable able to evaluate the function
      *
@@ -124,64 +123,55 @@ class ExpressionLanguage
      *
      * @see ExpressionFunction
      */
-    public function register(string $name, callable $compiler, callable $evaluator): void
+    public function register($name, callable $compiler, callable $evaluator)
     {
-        if (isset($this->parser)) {
+        if (null !== $this->parser) {
             throw new \LogicException('Registering functions after calling evaluate(), compile() or parse() is not supported.');
         }
 
         $this->functions[$name] = ['compiler' => $compiler, 'evaluator' => $evaluator];
     }
 
-    public function addFunction(ExpressionFunction $function): void
+    public function addFunction(ExpressionFunction $function)
     {
         $this->register($function->getName(), $function->getCompiler(), $function->getEvaluator());
     }
 
-    public function registerProvider(ExpressionFunctionProviderInterface $provider): void
+    public function registerProvider(ExpressionFunctionProviderInterface $provider)
     {
         foreach ($provider->getFunctions() as $function) {
             $this->addFunction($function);
         }
     }
 
-    /**
-     * @return void
-     */
     protected function registerFunctions()
     {
-        $basicPhpFunctions = ['constant', 'min', 'max'];
-        foreach ($basicPhpFunctions as $function) {
-            $this->addFunction(ExpressionFunction::fromPhp($function));
+        $this->addFunction(ExpressionFunction::fromPhp('constant'));
+    }
+
+    private function getLexer()
+    {
+        if (null === $this->lexer) {
+            $this->lexer = new Lexer();
         }
 
-        $this->addFunction(new ExpressionFunction('enum',
-            static fn ($str): string => \sprintf("(\constant(\$v = (%s))) instanceof \UnitEnum ? \constant(\$v) : throw new \TypeError(\sprintf('The string \"%%s\" is not the name of a valid enum case.', \$v))", $str),
-            static function ($arguments, $str): \UnitEnum {
-                $value = \constant($str);
-
-                if (!$value instanceof \UnitEnum) {
-                    throw new \TypeError(\sprintf('The string "%s" is not the name of a valid enum case.', $str));
-                }
-
-                return $value;
-            }
-        ));
+        return $this->lexer;
     }
 
-    private function getLexer(): Lexer
+    private function getParser()
     {
-        return $this->lexer ??= new Lexer();
+        if (null === $this->parser) {
+            $this->parser = new Parser($this->functions);
+        }
+
+        return $this->parser;
     }
 
-    private function getParser(): Parser
+    private function getCompiler()
     {
-        return $this->parser ??= new Parser($this->functions);
-    }
-
-    private function getCompiler(): Compiler
-    {
-        $this->compiler ??= new Compiler($this->functions);
+        if (null === $this->compiler) {
+            $this->compiler = new Compiler($this->functions);
+        }
 
         return $this->compiler->reset();
     }

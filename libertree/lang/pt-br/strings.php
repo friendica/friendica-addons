@@ -1,9 +1,12 @@
 <?php
 
-if(! function_exists("string_plural_select_pt_BR")) {
-function string_plural_select_pt_BR($n){
+if(! function_exists("string_plural_select_pt_br")) {
+function string_plural_select_pt_br($n){
 	$n = intval($n);
-	if (($n == 0 || $n == 1)) { return 0; } else if ($n != 0 && $n % 1000000 == 0) { return 1; } else  { return 2; }
+	return intval($n > 1);
 }}
 $a->strings['Post to libertree'] = 'Publicar no Libertree';
+$a->strings['libertree Post Settings'] = 'Configurações de publicação do Libertree';
+$a->strings['Enable Libertree Post Addon'] = 'Habilitar plug-in para publicar no Libertree';
 $a->strings['Post to Libertree by default'] = 'Publicar no Libertree por padrão';
+$a->strings['Submit'] = 'Enviar';

@@ -20,15 +20,14 @@ use Symfony\Component\ExpressionLanguage\Compiler;
  */
 class UnaryNode extends Node
 {
-    private const OPERATORS = [
+    private static $operators = [
         '!' => '!',
         'not' => '!',
         '+' => '+',
         '-' => '-',
-        '~' => '~',
     ];
 
-    public function __construct(string $operator, Node $node)
+    public function __construct($operator, Node $node)
     {
         parent::__construct(
             ['node' => $node],
@@ -36,30 +35,31 @@ class UnaryNode extends Node
         );
     }
 
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         $compiler
             ->raw('(')
-            ->raw(self::OPERATORS[$this->attributes['operator']])
+            ->raw(self::$operators[$this->attributes['operator']])
             ->compile($this->nodes['node'])
             ->raw(')')
         ;
     }
 
-    public function evaluate(array $functions, array $values): mixed
+    public function evaluate($functions, $values)
     {
         $value = $this->nodes['node']->evaluate($functions, $values);
+        switch ($this->attributes['operator']) {
+            case 'not':
+            case '!':
+                return !$value;
+            case '-':
+                return -$value;
+        }
 
-        return match ($this->attributes['operator']) {
-            'not',
-            '!' => !$value,
-            '-' => -$value,
-            '~' => ~$value,
-            default => $value,
-        };
+        return $value;
     }
 
-    public function toArray(): array
+    public function toArray()
     {
         return ['(', $this->attributes['operator'].' ', $this->nodes['node'], ')'];
     }

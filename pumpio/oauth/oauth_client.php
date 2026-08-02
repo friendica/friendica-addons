@@ -122,7 +122,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $error = '';
+	var $error = '';
 
 /*
 {metadocument}
@@ -140,7 +140,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $debug = false;
+	var $debug = false;
 
 /*
 {metadocument}
@@ -157,7 +157,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $debug_http = false;
+	var $debug_http = false;
 
 /*
 {metadocument}
@@ -175,7 +175,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $exit = false;
+	var $exit = false;
 
 /*
 {metadocument}
@@ -191,7 +191,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $debug_output = '';
+	var $debug_output = '';
 
 /*
 {metadocument}
@@ -208,7 +208,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $debug_prefix = 'OAuth client: ';
+	var $debug_prefix = 'OAuth client: ';
 
 /*
 {metadocument}
@@ -251,7 +251,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $server = '';
+	var $server = '';
 
 /*
 {metadocument}
@@ -276,7 +276,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $request_token_url = '';
+	var $request_token_url = '';
 
 /*
 {metadocument}
@@ -304,7 +304,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $dialog_url = '';
+	var $dialog_url = '';
 
 /*
 {metadocument}
@@ -325,7 +325,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $offline_dialog_url = '';
+	var $offline_dialog_url = '';
 
 /*
 {metadocument}
@@ -345,7 +345,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $append_state_to_redirect_uri = '';
+	var $append_state_to_redirect_uri = '';
 
 /*
 {metadocument}
@@ -362,7 +362,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $access_token_url = '';
+	var $access_token_url = '';
 
 
 /*
@@ -381,7 +381,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $oauth_version = '2.0';
+	var $oauth_version = '2.0';
 
 /*
 {metadocument}
@@ -399,7 +399,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $url_parameters = false;
+	var $url_parameters = false;
 
 /*
 {metadocument}
@@ -417,7 +417,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $authorization_header = true;
+	var $authorization_header = true;
 
 /*
 {metadocument}
@@ -435,7 +435,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $token_request_method = 'GET';
+	var $token_request_method = 'GET';
 
 /*
 {metadocument}
@@ -452,7 +452,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $signature_method = 'HMAC-SHA1';
+	var $signature_method = 'HMAC-SHA1';
 
 /*
 {metadocument}
@@ -469,7 +469,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $redirect_uri = '';
+	var $redirect_uri = '';
 
 /*
 {metadocument}
@@ -487,7 +487,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $client_id = '';
+	var $client_id = '';
 
 /*
 {metadocument}
@@ -504,7 +504,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $client_secret = '';
+	var $client_secret = '';
 
 /*
 {metadocument}
@@ -522,7 +522,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $scope = '';
+	var $scope = '';
 
 /*
 {metadocument}
@@ -541,7 +541,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $offline = false;
+	var $offline = false;
 
 /*
 {metadocument}
@@ -557,7 +557,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $access_token = '';
+	var $access_token = '';
 
 /*
 {metadocument}
@@ -574,7 +574,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $access_token_secret = '';
+	var $access_token_secret = '';
 
 /*
 {metadocument}
@@ -592,7 +592,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $access_token_expiry = '';
+	var $access_token_expiry = '';
 
 /*
 {metadocument}
@@ -608,7 +608,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $access_token_type = '';
+	var $access_token_type = '';
 
 /*
 {metadocument}
@@ -624,7 +624,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $refresh_token = '';
+	var $refresh_token = '';
 
 /*
 {metadocument}
@@ -641,7 +641,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $access_token_error = '';
+	var $access_token_error = '';
 
 /*
 {metadocument}
@@ -658,7 +658,7 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $authorization_error = '';
+	var $authorization_error = '';
 
 /*
 {metadocument}
@@ -679,10 +679,10 @@ class oauth_client_class
 	</variable>
 {/metadocument}
 */
-	public $response_status = 0;
+	var $response_status = 0;
 
-	public $oauth_user_agent = 'PHP-OAuth-API (http://www.phpclasses.org/oauth-api $Revision: 1.58 $)';
-	public $session_started = false;
+	var $oauth_user_agent = 'PHP-OAuth-API (http://www.phpclasses.org/oauth-api $Revision: 1.58 $)';
+	var $session_started = false;
 
 	Function SetError($error)
 	{

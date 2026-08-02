@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Name: Audon Application
  * Description: add a Audon instance. Based on webRTC Addon
@@ -28,13 +27,13 @@ function audon_addon_admin(string &$o)
 {
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/audon/');
 	$o = Renderer::replaceMacros($t, [
-		'$submit'   => DI::l10n()->t('Save Settings'),
+		'$submit'   => DI::l10n()->t('Save Settings'), 
 		'$audonurl' => [
-			'audonurl',
-			DI::l10n()->t('Audon Base URL'),
-			DI::config()->get('audon', 'audonurl'),
-			DI::l10n()->t('Page your users will create an Audon audio chat room on. For example you could use https://audon.space.'),
-		],
+			'audonurl', 
+			DI::l10n()->t('Audon Base URL'), 
+			DI::config()->get('audon','audonurl'), 
+			DI::l10n()->t('Page your users will create an Audon audio chat room on. For example you could use https://audon.space.'), 
+		], 
 	]);
 }
 

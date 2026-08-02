@@ -27,7 +27,7 @@ class ConditionalNode extends Node
         );
     }
 
-    public function compile(Compiler $compiler): void
+    public function compile(Compiler $compiler)
     {
         $compiler
             ->raw('((')
@@ -40,7 +40,7 @@ class ConditionalNode extends Node
         ;
     }
 
-    public function evaluate(array $functions, array $values): mixed
+    public function evaluate($functions, $values)
     {
         if ($this->nodes['expr1']->evaluate($functions, $values)) {
             return $this->nodes['expr2']->evaluate($functions, $values);
@@ -49,7 +49,7 @@ class ConditionalNode extends Node
         return $this->nodes['expr3']->evaluate($functions, $values);
     }
 
-    public function toArray(): array
+    public function toArray()
     {
         return ['(', $this->nodes['expr1'], ' ? ', $this->nodes['expr2'], ' : ', $this->nodes['expr3'], ')'];
     }
