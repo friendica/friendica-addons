@@ -1,36 +1,19 @@
-# QuickPhoto Addon for Friendica
+# QuickPhoto for Friendica
 
-**QuickPhoto** is a Friendica addon designed to streamline the post editor by converting lengthy image BBCode structures into a compact, readable shorthand. It ensures a clutter-free writing experience without compromising data integrity or platform compatibility.
+QuickPhoto streamlines the Friendica post editor by converting bulky image BBCodes into a clean, readable shorthand while providing a context-sensitive UI for accessibility.
 
----
+## How it Works
 
-## Features
-
-- **Automatic Simplification**: Instantly converts cumbersome "monster BBCodes" like `[url=...][img=...]...[/img][/url]` into the clean format `[img]filename|description[/img]`.
-- **Hardened Reconstruction**: Uses a high-priority submit listener and jQuery overrides to ensure shorthand code is converted back to valid Friendica BBCode before submission.
-- **Context-Aware Metadata**: Unlike previous versions, image data is now stored directly within the editor's DOM (as `data-` attributes), preventing data loss during device switches, private browsing, or cache clearing.
-- **Server-Side Safety Net**: Includes a PHP fallback hook (`post_post`) to resolve shorthand codes server-side if JavaScript fails, ensuring images are never lost.
-- **Real-Time Processing**: Responds seamlessly to drag-and-drop, copy-paste, and editor button inserts with zero flicker and stable cursor focus.
-- **Internationalization Ready**: Fully compatible with all languages and special characters using secure JSON encoding for translation strings.
-
----
-
-## How It Works
-
-The addon employs a multi-layered **"Fail-Safe" architecture**:
-
-1. **Frontend (UI)**: A JavaScript watcher simplifies complex image links as you type, making long posts easier to navigate.
-2. **Storage**: Metadata (URLs and Resource-IDs) is attached directly to the `textarea` element, ensuring each browser tab maintains its own "source of truth."
-3. **The Handshake**: When clicking "Submit" or "Preview," the script interceptor replaces all shorthand codes with the original URLs.
-4. **The Safety Anchor**: If frontend reconstruction fails, the `quickphoto_post_hook` in PHP attempts a database lookup to restore the link before saving.
-
----
+1.  **Shorthand Conversion**: The addon detects standard Friendica image BBCodes (`[url=...][img=...]...[/img][/url]`) and replaces them with a compact format: `[img]filename|Image description[/img]`.
+2.  **DOM-Based Metadata**: Original image and link URLs are stored as JSON metadata within a `data-` attribute on the textarea. This ensures that no data is lost during editor interactions or dynamic page reloads.
+3.  **Context-Sensitive UI**: When the cursor is placed inside a shorthand tag, a fixed edit bar appears below the editor. This bar displays a preview thumbnail (sourced from metadata) and a dedicated input field for the "Image description" (ALT text).
+4.  **Smart Focus Management**: Typing in the edit bar synchronizes the description in the main editor in real-time. Pressing **ENTER** in the description field prevents form submission and automatically jumps the cursor back into the main text area.
+5.  **Seamless Reconstruction**: Upon form submission, the shorthand code is transparently converted back into valid, full-length Friendica BBCode to ensure platform compatibility.
 
 ## Installation
 
-1. **Download the Addon**: Copy the `quickphoto` folder to the `addon/` directory of your Friendica installation.
-2. **Enable the Addon**: Go to the **Addons** section in your Friendica admin panel and enable **QuickPhoto**.
-3. The addon works immediately and requires no additional configuration.
+1. Copy the `quickphoto` folder to your Friendica `addon/` directory.
+2. Enable the addon in the Admin Panel.
 
 ---
 
