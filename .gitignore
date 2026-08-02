@@ -17,38 +17,9 @@ report/
 .settings
 #ignore OSX .DS_Store files
 .DS_Store
+.tests/.phpunit.result.cache/
 
 /nbproject/
 
 #ignore smarty cache
 /view/smarty3/compiled/
-vendor-dev/
-*/.*.md
-*/.*.cache
-
-# coverage artifacts
-coverage.xml
-coverage-clover.xml
-coverage-xml/
-coverage-attempt.txt
-coverage-final.txt
-coverage-html-run.txt
-coverage-loop-target1.txt
-coverage-loop-target2.txt
-coverage-loop-target3.txt
-coverage-loop-target4.txt
-coverage-loop-target5.txt
-coverage-loop-target6.txt
-coverage-loop-target7.txt
-coverage-loop-target8.txt
-coverage-loop-target9.txt
-coverage-loop-target10.txt
-coverage-loop-target11.txt
-coverage-loop-target12.txt
-coverage-loop-target13.txt
-coverage-loop-target14.txt
-junit.xml
-coverage/
-coverage-html/
-*/**/coverage.xml
-*/**/coverage-*.txt
