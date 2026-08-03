@@ -13,7 +13,7 @@ use Friendica\Network\HTTPClient\Capability\ICanSendHttpRequests;
  */
 class WebDavConfig implements ICanConfigureStorage
 {
-	const NAME = 'WebDav';
+	public const NAME = 'WebDav';
 
 	/** @var L10n */
 	private $l10n;
@@ -57,8 +57,8 @@ class WebDavConfig implements ICanConfigureStorage
 		if (!empty($this->config->get('webdav', 'username'))) {
 			$this->authOptions = [
 				$this->config->get('webdav', 'username'),
-				(string)$this->config->get('webdav', 'password', ''),
-				$this->config->get('webdav', 'auth_type', 'basic')
+				(string) $this->config->get('webdav', 'password', ''),
+				$this->config->get('webdav', 'auth_type', 'basic'),
 			];
 		}
 
@@ -82,19 +82,19 @@ class WebDavConfig implements ICanConfigureStorage
 				$this->l10n->t('URL'),
 				$this->url,
 				$this->l10n->t('URL to the Webdav endpoint, where files can be saved'),
-				true
+				true,
 			],
 			'username' => [
 				'input',
 				$this->l10n->t('Username'),
 				$this->config->get('webdav', 'username', ''),
-				$this->l10n->t('Username to authenticate to the Webdav endpoint')
+				$this->l10n->t('Username to authenticate to the Webdav endpoint'),
 			],
 			'password' => [
 				'password',
 				$this->l10n->t('Password'),
 				$this->config->get('webdav', 'username', ''),
-				$this->l10n->t('Password to authenticate to the Webdav endpoint')
+				$this->l10n->t('Password to authenticate to the Webdav endpoint'),
 			],
 			'auth_type' => [
 				'select',
@@ -102,7 +102,7 @@ class WebDavConfig implements ICanConfigureStorage
 				$this->config->get('webdav', 'auth_type', ''),
 				$this->l10n->t('authentication type to the Webdav endpoint'),
 				$auths,
-			]
+			],
 		];
 	}
 
@@ -122,7 +122,7 @@ class WebDavConfig implements ICanConfigureStorage
 		];
 
 		$authType = $data['auth_type'] ?? '';
-		if (!key_exists($authType, $auths)) {
+		if (!array_key_exists($authType, $auths)) {
 			return [
 				'auth_type' => $this->l10n->t('Authentication type is invalid.'),
 			];
@@ -134,7 +134,7 @@ class WebDavConfig implements ICanConfigureStorage
 			$options = [
 				$username,
 				$password,
-				$authType
+				$authType,
 			];
 		}
 

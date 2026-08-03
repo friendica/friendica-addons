@@ -20,11 +20,11 @@ use Friendica\Model\Post;
 
 function diaspora_install()
 {
-	Hook::register('hook_fork',               'addon/diaspora/diaspora.php', 'diaspora_hook_fork');
-	Hook::register('post_local',              'addon/diaspora/diaspora.php', 'diaspora_post_local');
-	Hook::register('notifier_normal',         'addon/diaspora/diaspora.php', 'diaspora_send');
-	Hook::register('jot_networks',            'addon/diaspora/diaspora.php', 'diaspora_jot_nets');
-	Hook::register('connector_settings',      'addon/diaspora/diaspora.php', 'diaspora_settings');
+	Hook::register('hook_fork', 'addon/diaspora/diaspora.php', 'diaspora_hook_fork');
+	Hook::register('post_local', 'addon/diaspora/diaspora.php', 'diaspora_post_local');
+	Hook::register('notifier_normal', 'addon/diaspora/diaspora.php', 'diaspora_send');
+	Hook::register('jot_networks', 'addon/diaspora/diaspora.php', 'diaspora_jot_nets');
+	Hook::register('connector_settings', 'addon/diaspora/diaspora.php', 'diaspora_settings');
 	Hook::register('connector_settings_post', 'addon/diaspora/diaspora.php', 'diaspora_settings_post');
 }
 
@@ -36,12 +36,12 @@ function diaspora_jot_nets(array &$jotnets_fields)
 
 	if (DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'diaspora', 'post')) {
 		$jotnets_fields[] = [
-			'type' => 'checkbox',
+			'type'  => 'checkbox',
 			'field' => [
 				'diaspora_enable',
 				DI::l10n()->t('Post to Diaspora'),
-				DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'diaspora', 'post_by_default')
-			]
+				DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'diaspora', 'post_by_default'),
+			],
 		];
 	}
 }
@@ -99,7 +99,7 @@ function diaspora_settings(array &$data)
 		'$info'  => $info,
 		'$error' => $error,
 
-		'$enabled'         => ['enabled', DI::l10n()->t('Enable Diaspora Post Addon'), $enabled],
+		'$enabled'         => ['diaspora', DI::l10n()->t('Enable Diaspora Post Addon'), $enabled],
 		'$handle'          => ['handle', DI::l10n()->t('Diaspora handle'), $handle, null, null, 'placeholder="user@domain.tld"'],
 		'$password'        => ['password', DI::l10n()->t('Diaspora password'), '', DI::l10n()->t('Privacy notice: Your Diaspora password will be stored unencrypted to authenticate you with your Diaspora pod. This means your Friendica node administrator can have access to it.')],
 		'$aspect_select'   => $aspect_select,
@@ -119,8 +119,8 @@ function diaspora_settings(array &$data)
 function diaspora_settings_post(array &$b)
 {
 	if (!empty($_POST['diaspora-submit'])) {
-		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'diaspora', 'post', intval($_POST['enabled']));
-		if (intval($_POST['enabled'])) {
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'diaspora', 'post', intval($_POST['diaspora']));
+		if (intval($_POST['diaspora'])) {
 			if (isset($_POST['handle'])) {
 				DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'diaspora', 'handle', trim($_POST['handle']));
 				DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'diaspora', 'password', trim($_POST['password']));
@@ -144,8 +144,8 @@ function diaspora_hook_fork(array &$b)
 	$post = $b['data'];
 
 	if (
-		$post['deleted'] || ($post['private'] == Item::PRIVATE) || ($post['created'] !== $post['edited']) ||
-		!strstr($post['postopts'] ?? '', 'diaspora') || ($post['gravity'] != Item::GRAVITY_PARENT)
+		$post['deleted'] || ($post['private'] == Item::PRIVATE) || ($post['created'] !== $post['edited'])
+		|| !strstr($post['postopts'] ?? '', 'diaspora') || ($post['gravity'] != Item::GRAVITY_PARENT)
 	) {
 		$b['execute'] = false;
 		return;
@@ -162,7 +162,7 @@ function diaspora_post_local(array &$b)
 		return;
 	}
 
-	$diaspora_post   = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'diaspora', 'post'));
+	$diaspora_post = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'diaspora', 'post'));
 
 	$diaspora_enable = (($diaspora_post && !empty($_REQUEST['diaspora_enable'])) ? intval($_REQUEST['diaspora_enable']) : 0);
 
@@ -215,15 +215,15 @@ function diaspora_send(array &$b)
 
 	DI::logger()->info('diaspora_send: prepare posting');
 
-	$handle = DI::pConfig()->get($b['uid'], 'diaspora', 'handle');
+	$handle   = DI::pConfig()->get($b['uid'], 'diaspora', 'handle');
 	$password = DI::pConfig()->get($b['uid'], 'diaspora', 'password');
-	$aspect = DI::pConfig()->get($b['uid'], 'diaspora', 'aspect');
+	$aspect   = DI::pConfig()->get($b['uid'], 'diaspora', 'aspect');
 
 	if ($handle && $password) {
 		DI::logger()->info('diaspora_send: all values seem to be okay');
 
 		$title = $b['title'];
-		$body = $b['body'];
+		$body  = $b['body'];
 		// Insert a newline before and after a quote
 		$body = str_ireplace("[quote", "\n\n[quote", $body);
 		$body = str_ireplace("[/quote]", "[/quote]\n\n", $body);
@@ -237,7 +237,7 @@ function diaspora_send(array &$b)
 		// remove multiple newlines
 		do {
 			$oldbody = $body;
-			$body = str_replace("\n\n\n", "\n\n", $body);
+			$body    = str_replace("\n\n\n", "\n\n", $body);
 		} while ($oldbody != $body);
 
 		// convert to markdown

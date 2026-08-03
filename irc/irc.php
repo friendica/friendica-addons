@@ -1,11 +1,12 @@
 <?php
+
 /**
-* Name: IRC Chat Addon
-* Description: add an Internet Relay Chat chatroom on freenode
-* Version: 1.1
-* Author: tony baldwin <https://free-haven.org/profile/tony>
-* Author: Tobias Diekershoff <https://f.diekershoff.de/u/tobias>
-*/
+ * Name: IRC Chat Addon
+ * Description: add an Internet Relay Chat chatroom on freenode
+ * Version: 1.1
+ * Author: tony baldwin <https://free-haven.org/profile/tony>
+ * Author: Tobias Diekershoff <https://f.diekershoff.de/u/tobias>
+ */
 
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
@@ -72,23 +73,23 @@ function irc_module() {}
 
 function irc_content()
 {
-	$baseurl = DI::baseUrl() . '/addon/irc';
-	$o = '';
+	$baseurl  = DI::baseUrl() . '/addon/irc';
+	$o        = '';
 	$usernick = '';
 
 	/* set the list of popular channels */
 	if (DI::userSession()->getLocalUserId()) {
-		$sitechats = DI::pConfig()->get( DI::userSession()->getLocalUserId(), 'irc', 'sitechats');
+		$sitechats = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'irc', 'sitechats');
 		if (!$sitechats) {
 			$sitechats = DI::config()->get('irc', 'sitechats');
 		}
 		$usernick = "nick=" . DI::userSession()->getLocalUserNickname() . "&";
 	} else {
-		$sitechats = DI::config()->get('irc','sitechats');
+		$sitechats = DI::config()->get('irc', 'sitechats');
 	}
 
 	if ($sitechats) {
-		$chats = explode(',',$sitechats);
+		$chats = explode(',', $sitechats);
 	} else {
 		$chats = ['friendica','chat','chatback','hottub','ircbar','dateroom','debian'];
 	}
@@ -100,13 +101,14 @@ function irc_content()
 	}
 	DI::page()['aside'] .= '</ul></div>';
 
-        /* setting the channel(s) to auto connect */
+	/* setting the channel(s) to auto connect */
 	if (DI::userSession()->getLocalUserId()) {
-	    $autochans = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'irc', 'autochans');
-	    if (!$autochans)
-		$autochans = DI::config()->get('irc','autochans');
+		$autochans = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'irc', 'autochans');
+		if (!$autochans) {
+			$autochans = DI::config()->get('irc', 'autochans');
+		}
 	} else {
-	    $autochans = DI::config()->get('irc','autochans');
+		$autochans = DI::config()->get('irc', 'autochans');
 	}
 
 	if ($autochans) {
@@ -115,8 +117,8 @@ function irc_content()
 		$channels = ($_GET['channels'] ?? '') ?: 'friendica';
 	}
 
-/* add the chatroom frame and some html */
-  $o .= <<< EOT
+	/* add the chatroom frame and some html */
+	$o .= <<< EOT
 <h2>IRC chat</h2>
 <p><a href="https://tldp.org/HOWTO/IRC/beginners.html" target="_blank" rel="noopener noreferrer">A beginner's guide to using IRC. [en]</a></p>
 <iframe src="//web.libera.chat?{$usernick}channels=$channels" style="width:100%; max-width:900px; height: 600px;"></iframe>
@@ -125,7 +127,7 @@ EOT;
 	return $o;
 }
 
-function irc_addon_admin_post ()
+function irc_addon_admin_post()
 {
 	if (!DI::userSession()->isSiteAdmin()) {
 		return;
@@ -136,13 +138,14 @@ function irc_addon_admin_post ()
 		DI::config()->set('irc', 'sitechats', trim($_POST['sitechats']));
 	}
 }
-function irc_addon_admin (string &$o) {
+function irc_addon_admin(string &$o)
+{
 	$sitechats = DI::config()->get('irc', 'sitechats'); /* popular channels */
 	$autochans = DI::config()->get('irc', 'autochans');  /* auto connect chans */
-	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/irc/' );
-	$o = Renderer::replaceMacros($t, [
-		'$submit' => DI::l10n()->t('Save Settings'),
+	$t         = Renderer::getMarkupTemplate('admin.tpl', 'addon/irc/');
+	$o         = Renderer::replaceMacros($t, [
+		'$submit'    => DI::l10n()->t('Save Settings'),
 		'$autochans' => [ 'autochans', DI::l10n()->t('Channel(s) to auto connect (comma separated)'), $autochans, DI::l10n()->t('List of channels that shall automatically connected to when the app is launched.')],
-		'$sitechats' => [ 'sitechats', DI::l10n()->t('Popular Channels (comma separated)'), $sitechats, DI::l10n()->t('List of popular channels, will be displayed at the side and hotlinked for easy joining.') ]
+		'$sitechats' => [ 'sitechats', DI::l10n()->t('Popular Channels (comma separated)'), $sitechats, DI::l10n()->t('List of popular channels, will be displayed at the side and hotlinked for easy joining.') ],
 	]);
 }

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Name: invidious
  * Description: Replaces links to youtube.com to an invidious instance in all displays of postings on a node.
@@ -12,12 +13,12 @@ use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
-CONST INVIDIOUS_DEFAULT = 'https://invidio.us';
+const INVIDIOUS_DEFAULT = 'https://invidio.us';
 
 function invidious_install()
 {
-	Hook::register('prepare_body_final',  __FILE__, 'invidious_render');
-	Hook::register('addon_settings',      __FILE__, 'invidious_settings');
+	Hook::register('prepare_body_final', __FILE__, 'invidious_render');
+	Hook::register('addon_settings', __FILE__, 'invidious_settings');
 	Hook::register('addon_settings_post', __FILE__, 'invidious_settings_post');
 }
 
@@ -38,8 +39,8 @@ function invidious_addon_admin_post()
 function invidious_addon_admin(string &$o)
 {
 	$invidiousserver = DI::config()->get('invidious', 'server', INVIDIOUS_DEFAULT);
-	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/invidious/');
-	$o = Renderer::replaceMacros($t, [
+	$t               = Renderer::getMarkupTemplate('admin.tpl', 'addon/invidious/');
+	$o               = Renderer::replaceMacros($t, [
 		'$settingdescription' => DI::l10n()->t('Which Invidious server shall be used for the replacements in the post bodies? Use the URL with servername and protocol. See %s for a list of available public Invidious servers.', 'https://redirect.invidious.io'),
 		'$invidiousserver'    => ['invidiousserver', DI::l10n()->t('Invidious server'), $invidiousserver, DI::l10n()->t('See %s for a list of available Invidious servers.', '<a href="https://api.invidious.io/">https://api.invidious.io/</a>')],
 		'$submit'             => DI::l10n()->t('Save Settings'),
@@ -57,7 +58,7 @@ function invidious_settings(array &$data)
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/invidious/');
 	$html = Renderer::replaceMacros($t, [
-		'$enabled' => ['enabled', DI::l10n()->t('Replace Youtube links with links to an Invidious server'), $enabled, DI::l10n()->t('If enabled, Youtube links are replaced with the links to the specified Invidious server.')],
+		'$enabled' => ['invidious', DI::l10n()->t('Replace Youtube links with links to an Invidious server'), $enabled, DI::l10n()->t('If enabled, Youtube links are replaced with the links to the specified Invidious server.')],
 		'$server'  => ['server', DI::l10n()->t('Invidious server'), $server, DI::l10n()->t('See %s for a list of available Invidious servers.', '<a href="https://api.invidious.io/">https://api.invidious.io/</a>')],
 	]);
 
@@ -74,7 +75,7 @@ function invidious_settings_post(array &$b)
 		return;
 	}
 
-	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'invidious', 'enabled', (bool)$_POST['enabled']);
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'invidious', 'enabled', (bool) $_POST['invidious']);
 
 	$server = trim($_POST['server'], " \n\r\t\v\x00/");
 	// Sanitize and validate the server URL before saving
@@ -91,37 +92,37 @@ function invidious_settings_post(array &$b)
  */
 function invidious_render(array &$b)
 {
-    if (!DI::userSession()->getLocalUserId() || !DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'invidious', 'enabled')) {
-        return;
-    }
+	if (!DI::userSession()->getLocalUserId() || !DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'invidious', 'enabled')) {
+		return;
+	}
 
-    $original = $b['html'];
+	$original = $b['html'];
 
-    $server = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'invidious', 'server', DI::config()->get('invidious', 'server', INVIDIOUS_DEFAULT));
-    $server = rtrim($server, '/');
+	$server = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'invidious', 'server', DI::config()->get('invidious', 'server', INVIDIOUS_DEFAULT));
+	$server = rtrim($server, '/');
 
-    $pattern = "~https?://(?:(?:www\.|m\.|music\.)?youtube\.com/(?:watch\?v=|embed/|shorts/)|youtu\.be/)([a-zA-Z0-9_-]{11})([^ \n\r\t\v\x00\"<>]*[?&][tT]=[^ \n\r\t\v\x00\"<>]*)?~ism";
+	$pattern = "~https?://(?:(?:www\.|m\.|music\.)?youtube\.com/(?:watch\?v=|embed/|shorts/)|youtu\.be/)([a-zA-Z0-9_-]{11})([^ \n\r\t\v\x00\"<>]*[?&][tT]=[^ \n\r\t\v\x00\"<>]*)?~ism";
 
-    $b['html'] = preg_replace_callback($pattern, function($matches) use ($server) {
-        $videoId = $matches[1];
-        $params  = $matches[2] ?? '';
+	$b['html'] = preg_replace_callback($pattern, function ($matches) use ($server) {
+		$videoId = $matches[1];
+		$params  = $matches[2] ?? '';
 
-        if (!empty($params)) {
-            $params = str_replace('&amp;', '&', $params);
-            if (strpos($params, '?') === false && strpos($params, '&') === 0) {
-                $params = '?' . ltrim($params, '&');
-            }
-        }
+		if (!empty($params)) {
+			$params = str_replace('&amp;', '&', $params);
+			if (strpos($params, '?') === false && strpos($params, '&') === 0) {
+				$params = '?' . ltrim($params, '&');
+			}
+		}
 
-        return $server . '/watch?v=' . $videoId . $params;
-    }, $b['html']);
+		return $server . '/watch?v=' . $videoId . $params;
+	}, $b['html']);
 
-    if ($original != $b['html']) {
-        $displayHost = parse_url($server, PHP_URL_HOST);
-        $serverLink = '<a href="' . $server . '" target="_blank" rel="noopener noreferrer">' . $displayHost . '</a>';
+	if ($original != $b['html']) {
+		$displayHost = parse_url($server, PHP_URL_HOST);
+		$serverLink  = '<a href="' . $server . '" target="_blank" rel="noopener noreferrer">' . $displayHost . '</a>';
 
-        $b['html'] .= '<hr><p><small class="invidious-note">' .
-                      DI::l10n()->t('(Invidious addon enabled: YouTube links via %s)', $serverLink) .
-                      '</small></p>';
-    }
+		$b['html'] .= '<hr><p><small class="invidious-note">'
+					  . DI::l10n()->t('(Invidious addon enabled: YouTube links via %s)', $serverLink)
+					  . '</small></p>';
+	}
 }

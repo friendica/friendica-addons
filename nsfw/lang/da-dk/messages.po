@@ -5,14 +5,15 @@
 # 
 # Translators:
 # Anton <dev@atjn.dk>, 2022
+# Jesper Stocholm, 2025
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-21 19:15-0500\n"
+"POT-Creation-Date: 2022-12-10 14:42-0500\n"
 "PO-Revision-Date: 2014-06-23 10:34+0000\n"
-"Last-Translator: Anton <dev@atjn.dk>, 2022\n"
-"Language-Team: Danish (Denmark) (http://www.transifex.com/Friendica/friendica/language/da_DK/)\n"
+"Last-Translator: Jesper Stocholm, 2025\n"
+"Language-Team: Danish (Denmark) (http://app.transifex.com/Friendica/friendica/language/da_DK/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -36,19 +37,26 @@ msgid "Comma separated list of keywords to hide"
 msgstr "Kommasepareret liste af nøgleord som skal skjules"
 
 #: nsfw.php:67
-msgid "Use /expression/ to provide regular expressions"
-msgstr "Brug /expression/ for at lave regular expressions"
+msgid ""
+"Use /expression/ to provide regular expressions, #tag to specfically match "
+"hashtags (case-insensitive), or regular words (case-sensitive)"
+msgstr "Brug /expression/ for at angive regulære udtryk, #tag for at matche specifikke hashtags (skelner ikke imellem store og små bogstaver) eller almindelige ord (skelner imellem store og små bogstaver)"
 
 #: nsfw.php:72
 msgid "Content Filter (NSFW and more)"
 msgstr "Indholdsfilter (NSFW og mere)"
 
-#: nsfw.php:140
+#: nsfw.php:96
+#, php-format
+msgid "Regular expression \"%s\" fails to compile"
+msgstr "Regulært udtryk \"%s\" kan ikke anvendes"
+
+#: nsfw.php:154
 #, php-format
 msgid "Filtered tag: %s"
 msgstr "Filtreret tag: %s"
 
-#: nsfw.php:142
+#: nsfw.php:156
 #, php-format
 msgid "Filtered word: %s"
 msgstr "Filtreret ord: %s"

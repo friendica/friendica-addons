@@ -1,7 +1,7 @@
 <?php
 
-if(! function_exists("string_plural_select_en_gb")) {
-function string_plural_select_en_gb($n){
+if(! function_exists("string_plural_select_en_GB")) {
+function string_plural_select_en_GB($n){
 	$n = intval($n);
 	return intval($n != 1);
 }}
@@ -10,8 +10,6 @@ $a->strings['Site Owner'] = 'Site Owner';
 $a->strings['Email Address'] = 'Email Address';
 $a->strings['Postal Address'] = 'Postal Address';
 $a->strings['The impressum addon needs to be configured!<br />Please add at least the <tt>owner</tt> variable to your config file. For other variables please refer to the README file of the addon.'] = 'The Impressum addon needs to be configured!<br />Please add at least the <tt>owner</tt> variable to your config file. For other variables, please refer to the addon\'s README file.';
-$a->strings['Settings updated.'] = 'Settings updated.';
-$a->strings['Submit'] = 'Submit';
 $a->strings['The page operators name.'] = 'The site operator\'s name';
 $a->strings['Site Owners Profile'] = 'Site owner\'s profile';
 $a->strings['Profile address of the operator.'] = 'Profile address of the operator.';

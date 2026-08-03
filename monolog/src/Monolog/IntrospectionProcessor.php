@@ -1,6 +1,7 @@
 <?php
+
 /**
- * @copyright Copyright (C) 2010-2023, the Friendica project
+ * @copyright Copyright (C) 2010-2026, the Friendica project
  *
  * @license GNU AGPL version 3 or any later version
  *
@@ -54,7 +55,7 @@ class IntrospectionProcessor implements ProcessorInterface
 		// we should have the call source now
 		$record['extra'] = array_merge(
 			$record['extra'],
-			$this->introspection->getRecord()
+			$this->introspection->getRecord(),
 		);
 
 		return $record;

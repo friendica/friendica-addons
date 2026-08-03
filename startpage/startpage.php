@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Start Page
  * Description: Set a preferred page to load on login from home page
@@ -11,7 +12,8 @@ use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
-function startpage_install() {
+function startpage_install()
+{
 	Hook::register('home_init', 'addon/startpage/startpage.php', 'startpage_home_init');
 	Hook::register('addon_settings', 'addon/startpage/startpage.php', 'startpage_settings');
 	Hook::register('addon_settings_post', 'addon/startpage/startpage.php', 'startpage_settings_post');

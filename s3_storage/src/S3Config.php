@@ -16,12 +16,12 @@ use ParagonIE\HiddenString\HiddenString;
  */
 class S3Config implements ICanConfigureStorage
 {
-	const NAME = 'S3Config';
+	public const NAME = 'S3Config';
 
-	const DEFAULT_REGION    = 'us-east-1';
-	const DEFAULT_ENDPOINT  = 's3.amazonaws.com';
-	const DEFAULT_SIGMETHOD = 'v2';
-	const DEFAULT_BUCKET    = 'friendica';
+	public const DEFAULT_REGION    = 'us-east-1';
+	public const DEFAULT_ENDPOINT  = 's3.amazonaws.com';
+	public const DEFAULT_SIGMETHOD = 'v2';
+	public const DEFAULT_BUCKET    = 'friendica';
 
 	/** @var L10n */
 	private $l10n;
@@ -172,13 +172,13 @@ class S3Config implements ICanConfigureStorage
 
 		if (empty($data['access_key']) || empty($data['secret_key']) || empty($data['bucket'])) {
 			return [
-				'access_key' => $this->l10n->t('Invalid input')
+				'access_key' => $this->l10n->t('Invalid input'),
 			];
 		}
 
 		$s3Config = new Configuration(
 			$data['access_key'],
-			$data['secret_key']
+			$data['secret_key'],
 		);
 
 		$bucket = $data['bucket'];
@@ -199,12 +199,12 @@ class S3Config implements ICanConfigureStorage
 		}
 
 		try {
-			$s3Config->setUseLegacyPathStyle((bool)$data['legacy'] ?? false);
+			$s3Config->setUseLegacyPathStyle((bool) $data['legacy'] ?? false);
 		} catch (\Exception $exception) {
 			$feedback['legacy'] = $exception->getMessage();
 		}
 		try {
-			$s3Config->setUseDualstackUrl((bool)$data['dualstack_url'] ?? false);
+			$s3Config->setUseDualstackUrl((bool) $data['dualstack_url'] ?? false);
 		} catch (\Exception $exception) {
 			$feedback['dualstack_url'] = $exception->getMessage();
 		}
@@ -219,13 +219,13 @@ class S3Config implements ICanConfigureStorage
 			$buckets   = $connector->listBuckets();
 			if (!in_array($bucket, $buckets)) {
 				return [
-					'bucket' => $this->l10n->t('Bucket %s cannot be not found, possible buckets: %s', $bucket, implode(', ', $buckets))
+					'bucket' => $this->l10n->t('Bucket %s cannot be not found, possible buckets: %s', $bucket, implode(', ', $buckets)),
 				];
 			}
 			$connector->getBucket($bucket);
 		} catch (\Exception $exception) {
 			return [
-				'bucket' => $exception->getMessage()
+				'bucket' => $exception->getMessage(),
 			];
 		}
 
@@ -243,7 +243,7 @@ class S3Config implements ICanConfigureStorage
 		} else {
 			$this->config->delete('s3', 'dual_stack');
 		}
-		$this->config->set('s3','signature_method', $s3Config->getSignatureMethod());
+		$this->config->set('s3', 'signature_method', $s3Config->getSignatureMethod());
 
 		if (!empty($data['endpoint'])) {
 			$this->config->set('s3', 'endpoint', $s3Config->getEndpoint());

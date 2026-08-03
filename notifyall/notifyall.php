@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * Name: Notifyall
@@ -34,7 +35,7 @@ function notifyall_post()
 
 	$text = trim($_REQUEST['text']);
 
-	if(! $text) {
+	if (! $text) {
 		return;
 	}
 
@@ -74,11 +75,11 @@ function notifyall_content()
 	$title = DI::l10n()->t('Send email to all members of this Friendica instance.');
 
 	$o = Renderer::replaceMacros(Renderer::getMarkupTemplate('notifyall_form.tpl', 'addon/notifyall/'), [
-		'$title' => $title,
-		'$text' => htmlspecialchars($_REQUEST['text'] ?? ''),
+		'$title'   => $title,
+		'$text'    => htmlspecialchars($_REQUEST['text'] ?? ''),
 		'$subject' => ['subject', DI::l10n()->t('Message subject'), $_REQUEST['subject'] ?? '',''],
-		'$test' => ['test',DI::l10n()->t('Test mode (only send to administrator)'), 0,''],
-		'$submit' => DI::l10n()->t('Submit')
+		'$test'    => ['test',DI::l10n()->t('Test mode (only send to administrator)'), 0,''],
+		'$submit'  => DI::l10n()->t('Submit'),
 	]);
 
 	return $o;

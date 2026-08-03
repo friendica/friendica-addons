@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Libertree Post Connector
  * Description: Post to libertree accounts
@@ -16,11 +17,11 @@ use Friendica\Model\Post;
 
 function libertree_install()
 {
-	Hook::register('hook_fork',            'addon/libertree/libertree.php', 'libertree_hook_fork');
-	Hook::register('post_local',           'addon/libertree/libertree.php', 'libertree_post_local');
-	Hook::register('notifier_normal',      'addon/libertree/libertree.php', 'libertree_send');
-	Hook::register('jot_networks',         'addon/libertree/libertree.php', 'libertree_jot_nets');
-	Hook::register('connector_settings',      'addon/libertree/libertree.php', 'libertree_settings');
+	Hook::register('hook_fork', 'addon/libertree/libertree.php', 'libertree_hook_fork');
+	Hook::register('post_local', 'addon/libertree/libertree.php', 'libertree_post_local');
+	Hook::register('notifier_normal', 'addon/libertree/libertree.php', 'libertree_send');
+	Hook::register('jot_networks', 'addon/libertree/libertree.php', 'libertree_jot_nets');
+	Hook::register('connector_settings', 'addon/libertree/libertree.php', 'libertree_settings');
 	Hook::register('connector_settings_post', 'addon/libertree/libertree.php', 'libertree_settings_post');
 }
 
@@ -32,7 +33,7 @@ function libertree_jot_nets(array &$jotnets_fields)
 
 	if (DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'libertree', 'post')) {
 		$jotnets_fields[] = [
-			'type' => 'checkbox',
+			'type'  => 'checkbox',
 			'field' => [
 				'libertree_enable',
 				DI::l10n()->t('Post to libertree'),
@@ -89,8 +90,8 @@ function libertree_hook_fork(array &$b)
 	$post = $b['data'];
 
 	if (
-		$post['deleted'] || ($post['private'] == Item::PRIVATE) || ($post['created'] !== $post['edited']) ||
-		!strstr($post['postopts'], 'libertree') || ($post['gravity'] != Item::GRAVITY_PARENT)
+		$post['deleted'] || ($post['private'] == Item::PRIVATE) || ($post['created'] !== $post['edited'])
+		|| !strstr($post['postopts'], 'libertree') || ($post['gravity'] != Item::GRAVITY_PARENT)
 	) {
 		$b['execute'] = false;
 		return;
@@ -108,7 +109,7 @@ function libertree_post_local(array &$b)
 		return;
 	}
 
-	$ltree_post   = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'libertree', 'post'));
+	$ltree_post = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'libertree', 'post'));
 
 	$ltree_enable = (($ltree_post && !empty($_REQUEST['libertree_enable'])) ? intval($_REQUEST['libertree_enable']) : 0);
 
@@ -157,16 +158,17 @@ function libertree_send(array &$b)
 	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], DI::contentItem()->addSharedPost($b));
 
 	$ltree_api_token = DI::pConfig()->get($b['uid'], 'libertree', 'libertree_api_token');
-	$ltree_url = DI::pConfig()->get($b['uid'], 'libertree', 'libertree_url');
-	$ltree_blog = "$ltree_url/api/v1/posts/create/?token=$ltree_api_token";
-	$ltree_source = DI::baseUrl()->getHost();
+	$ltree_url       = DI::pConfig()->get($b['uid'], 'libertree', 'libertree_url');
+	$ltree_blog      = "$ltree_url/api/v1/posts/create/?token=$ltree_api_token";
+	$ltree_source    = DI::baseUrl()->getHost();
 
-	if ($b['app'] != "")
+	if ($b['app'] != "") {
 		$ltree_source .= " (" . $b['app'] . ")";
+	}
 
 	if ($ltree_url && $ltree_api_token && $ltree_blog && $ltree_source) {
 		$title = $b['title'];
-		$body = $b['body'];
+		$body  = $b['body'];
 		// Insert a newline before and after a quote
 		$body = str_ireplace("[quote", "\n\n[quote", $body);
 		$body = str_ireplace("[/quote]", "[/quote]\n\n", $body);
@@ -180,7 +182,7 @@ function libertree_send(array &$b)
 		// remove multiple newlines
 		do {
 			$oldbody = $body;
-			$body = str_replace("\n\n\n", "\n\n", $body);
+			$body    = str_replace("\n\n\n", "\n\n", $body);
 		} while ($oldbody != $body);
 
 		// convert to markdown
@@ -193,8 +195,8 @@ function libertree_send(array &$b)
 
 
 		$params = [
-			'text' => $body,
-			'source' => $ltree_source
+			'text'   => $body,
+			'source' => $ltree_source,
 			//	'token' => $ltree_api_token
 		];
 

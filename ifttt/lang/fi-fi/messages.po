@@ -3,26 +3,25 @@
 # This file is distributed under the same license as the Friendica ifttt addon package.
 # 
 # 
+# Translators:
+# Kris, 2018
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-27 09:30+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2021-11-21 19:17-0500\n"
+"PO-Revision-Date: 2017-11-27 10:37+0000\n"
 "Last-Translator: Kris, 2018\n"
-"Language-Team: Finnish (Finland) (https://www.transifex.com/Friendica/teams/12172/fi_FI/)\n"
+"Language-Team: Finnish (Finland) (https://app.transifex.com/Friendica/teams/12172/fi_FI/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fi_FI\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ifttt.php:53 ifttt.php:57
-msgid "IFTTT Mirror"
-msgstr ""
-
-#: ifttt.php:61
+#: ifttt.php:52
 msgid ""
 "Create an account at <a href=\"http://www.ifttt.com\">IFTTT</a>. Create "
 "three Facebook recipes that are connected with <a "
@@ -30,22 +29,34 @@ msgid ""
 "Maker\") with the following parameters:"
 msgstr ""
 
-#: ifttt.php:68
+#: ifttt.php:53
+msgid "URL"
+msgstr ""
+
+#: ifttt.php:54
+msgid "Method"
+msgstr ""
+
+#: ifttt.php:55
+msgid "Content Type"
+msgstr ""
+
+#: ifttt.php:56
 msgid "Body for \"new status message\""
 msgstr ""
 
-#: ifttt.php:70
+#: ifttt.php:57
 msgid "Body for \"new photo upload\""
 msgstr ""
 
-#: ifttt.php:72
+#: ifttt.php:58
 msgid "Body for \"new link post\""
 msgstr ""
 
-#: ifttt.php:77
+#: ifttt.php:68
+msgid "IFTTT Mirror"
+msgstr ""
+
+#: ifttt.php:71
 msgid "Generate new key"
 msgstr "Luo uusi avain"
-
-#: ifttt.php:81
-msgid "Save Settings"
-msgstr "Tallenna asetukset"

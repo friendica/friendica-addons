@@ -1,4 +1,5 @@
 <?php
+
 /**
  * XMPP Chat Addon Configuration
  *

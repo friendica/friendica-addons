@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Name: Mastodon Custom Emojis
  * Description: Replace emojis shortcodes in Mastodon posts with their originating server custom emojis images.
@@ -16,12 +17,12 @@ use Friendica\DI;
 
 function mastodoncustomemojis_install()
 {
-	Hook::register('put_item_in_cache',  __FILE__, 'mastodoncustomemojis_put_item_in_cache');
-	Hook::register('network_mod_init',   __FILE__, 'mastodoncustomemojis_css_hook');
-	Hook::register('display_mod_init',   __FILE__, 'mastodoncustomemojis_css_hook');
-	Hook::register('search_mod_init',    __FILE__, 'mastodoncustomemojis_css_hook');
+	Hook::register('put_item_in_cache', __FILE__, 'mastodoncustomemojis_put_item_in_cache');
+	Hook::register('network_mod_init', __FILE__, 'mastodoncustomemojis_css_hook');
+	Hook::register('display_mod_init', __FILE__, 'mastodoncustomemojis_css_hook');
+	Hook::register('search_mod_init', __FILE__, 'mastodoncustomemojis_css_hook');
 	Hook::register('community_mod_init', __FILE__, 'mastodoncustomemojis_css_hook');
-	Hook::register('contacts_mod_init',  __FILE__, 'mastodoncustomemojis_css_hook');
+	Hook::register('contacts_mod_init', __FILE__, 'mastodoncustomemojis_css_hook');
 }
 
 function mastodoncustomemojis_css_hook()

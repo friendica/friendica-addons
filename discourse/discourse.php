@@ -29,8 +29,8 @@ use Friendica\Util\Strings;
 
 function discourse_install()
 {
-	Hook::register('email_getmessage',        __FILE__, 'discourse_email_getmessage');
-	Hook::register('connector_settings',      __FILE__, 'discourse_settings');
+	Hook::register('email_getmessage', __FILE__, 'discourse_email_getmessage');
+	Hook::register('connector_settings', __FILE__, 'discourse_settings');
 	Hook::register('connector_settings_post', __FILE__, 'discourse_settings_post');
 }
 
@@ -59,8 +59,8 @@ function discourse_settings(array &$data)
 function discourse_settings_post()
 {
 	if (!DI::userSession()->getLocalUserId() || empty($_POST['discourse-submit'])) {
-                return;
-        }
+		return;
+	}
 
 	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'discourse', 'enabled', intval($_POST['enabled']));
 }
@@ -76,14 +76,14 @@ function discourse_email_getmessage(&$message)
 	}
 
 	// We do assume that all Discourse servers are running with SSL
-	if (preg_match('=topic/(.*\d)/(.*\d)@(.*)=', $message['item']['uri'], $matches) &&
-		discourse_fetch_post_from_api($message, $matches[2], $matches[3])) {
+	if (preg_match('=topic/(.*\d)/(.*\d)@(.*)=', $message['item']['uri'], $matches)
+		&& discourse_fetch_post_from_api($message, $matches[2], $matches[3])) {
 		DI::logger()->info('Fetched comment via API (message-id mode)', ['host' => $matches[3], 'topic' => $matches[1], 'post' => $matches[2]]);
 		return;
 	}
 
-	if (preg_match('=topic/(.*\d)@(.*)=', $message['item']['uri'], $matches) &&
-		discourse_fetch_topic_from_api($message, 'https://' . $matches[2], $matches[1], 1)) {
+	if (preg_match('=topic/(.*\d)@(.*)=', $message['item']['uri'], $matches)
+		&& discourse_fetch_topic_from_api($message, 'https://' . $matches[2], $matches[1], 1)) {
 		DI::logger()->info('Fetched starting post via API (message-id mode)', ['host' => $matches[2], 'topic' => $matches[1]]);
 		return;
 	}
@@ -117,17 +117,17 @@ function discourse_email_getmessage(&$message)
 
 function discourse_fetch_post($host, $topic, $pid)
 {
-	$url = $host . '/t/' . $topic . '/' . $pid . '.json';
+	$url        = $host . '/t/' . $topic . '/' . $pid . '.json';
 	$curlResult = DI::httpClient()->get($url);
 	if (!$curlResult->isSuccess()) {
 		DI::logger()->info('No success', ['url' => $url]);
 		return false;
 	}
 
-	$raw = $curlResult->getBodyString();
-	$data = json_decode($raw, true);
+	$raw   = $curlResult->getBodyString();
+	$data  = json_decode($raw, true);
 	$posts = $data['post_stream']['posts'];
-	foreach($posts as $post) {
+	foreach ($posts as $post) {
 		if ($post['post_number'] != $pid) {
 			/// @todo Possibly fetch missing posts here
 			continue;
@@ -153,14 +153,14 @@ function discourse_fetch_topic_from_api(&$message, $host, $topic, $pid)
 
 function discourse_fetch_post_from_api(&$message, $post, $host)
 {
-	$hostaddr = 'https://' . $host;
-	$url = $hostaddr . '/posts/' . $post . '.json';
+	$hostaddr   = 'https://' . $host;
+	$url        = $hostaddr . '/posts/' . $post . '.json';
 	$curlResult = DI::httpClient()->get($url);
 	if (!$curlResult->isSuccess()) {
 		return false;
 	}
 
-	$raw = $curlResult->getBodyString();
+	$raw  = $curlResult->getBodyString();
 	$data = json_decode($raw, true);
 	if (empty($data)) {
 		return false;
@@ -180,10 +180,10 @@ function discourse_get_user($post, $hostaddr)
 	// - display_username
 	// - user_id
 
-	$contact = [];
-	$contact['uid'] = 0;
+	$contact            = [];
+	$contact['uid']     = 0;
 	$contact['network'] = Protocol::DISCOURSE;
-	$contact['name'] = $contact['nick'] = $post['username'];
+	$contact['name']    = $contact['nick'] = $post['username'];
 	if (!empty($post['name'])) {
 		$contact['name'] = $post['name'];
 	}
@@ -196,14 +196,14 @@ function discourse_get_user($post, $hostaddr)
 		$contact['photo'] = $hostaddr . str_replace('{size}', '300', $post['avatar_template']);
 	}
 
-	$contact['addr'] = $contact['nick'] . '@' . $host;
+	$contact['addr']         = $contact['nick'] . '@' . $host;
 	$contact['contact-type'] = Contact::TYPE_PERSON;
-	$contact['url'] = $hostaddr . '/u/' . $contact['nick'];
-	$contact['nurl'] = Strings::normaliseLink($contact['url']);
-	$contact['baseurl'] = $hostaddr;
+	$contact['url']          = $hostaddr . '/u/' . $contact['nick'];
+	$contact['nurl']         = Strings::normaliseLink($contact['url']);
+	$contact['baseurl']      = $hostaddr;
 	DI::logger()->info('Contact', $contact);
 	$contact['id'] = Contact::getIdForURL($contact['url'], 0, false, $contact);
-        if (!empty($contact['id'])) {
+	if (!empty($contact['id'])) {
 		$avatar = $contact['photo'];
 		unset($contact['photo']);
 		DBA::update('contact', $contact, ['id' => $contact['id']]);
@@ -220,13 +220,13 @@ function discourse_process_post($message, $post, $hostaddr)
 
 	$message['html'] = $post['cooked'];
 
-	$contact = discourse_get_user($post, $hostaddr);
-	$message['item']['author-id'] = $contact['id'];
-	$message['item']['author-link'] = $contact['url'];
-	$message['item']['author-name'] = $contact['name'];
+	$contact                          = discourse_get_user($post, $hostaddr);
+	$message['item']['author-id']     = $contact['id'];
+	$message['item']['author-link']   = $contact['url'];
+	$message['item']['author-name']   = $contact['name'];
 	$message['item']['author-avatar'] = $contact['photo'];
-	$message['item']['created'] = DateTimeFormat::utc($post['created_at']);
-	$message['item']['plink'] = $hostaddr . '/t/' . $post['topic_slug'] . '/' . $post['topic_id'] . '/' . $post['post_number'];
+	$message['item']['created']       = DateTimeFormat::utc($post['created_at']);
+	$message['item']['plink']         = $hostaddr . '/t/' . $post['topic_slug'] . '/' . $post['topic_id'] . '/' . $post['post_number'];
 
 	if ($post['post_number'] == 1) {
 		$message['item']['parent-uri'] = $message['item']['uri'] = 'topic/' . $post['topic_id'] . '@' . $host;
@@ -243,7 +243,7 @@ function discourse_process_post($message, $post, $hostaddr)
 		if (empty($post['reply_to_post_number']) || $post['reply_to_post_number'] == 1) {
 			$message['item']['parent-uri'] = 'topic/' . $post['topic_id'] . '@' . $host;
 		} else {
-			$reply = discourse_fetch_post($hostaddr, $post['topic_id'], $post['reply_to_post_number']);
+			$reply                         = discourse_fetch_post($hostaddr, $post['topic_id'], $post['reply_to_post_number']);
 			$message['item']['parent-uri'] = 'topic/' . $post['topic_id'] . '/' . $reply['id'] . '@' . $host;
 		}
 	}
@@ -253,8 +253,8 @@ function discourse_process_post($message, $post, $hostaddr)
 
 function discourse_get_html($message)
 {
-	$doc = new DOMDocument();
-	$doc2 = new DOMDocument();
+	$doc                     = new DOMDocument();
+	$doc2                    = new DOMDocument();
 	$doc->preserveWhiteSpace = false;
 
 	$html = mb_convert_encoding($message['html'], 'HTML-ENTITIES', "UTF-8");
@@ -264,7 +264,7 @@ function discourse_get_html($message)
 
 	// Fetch the first 'div' before the 'hr' - hopefully this fits for all systems
 	$result = $xpath->query("//hr//preceding::div[1]");
-	$div = $doc2->importNode($result->item(0), true);
+	$div    = $doc2->importNode($result->item(0), true);
 	$doc2->appendChild($div);
 	$message['html'] = $doc2->saveHTML();
 	DI::logger()->info('Found html body', ['html' => $message['html']]);
@@ -272,9 +272,9 @@ function discourse_get_html($message)
 	$profile = discourse_get_profile($xpath);
 	if (!empty($profile['url'])) {
 		DI::logger()->info('Found profile', $profile);
-		$message['item']['author-id'] = Contact::getIdForURL($profile['url'], 0, false, $profile);
-		$message['item']['author-link'] = $profile['url'];
-		$message['item']['author-name'] = $profile['name'];
+		$message['item']['author-id']     = Contact::getIdForURL($profile['url'], 0, false, $profile);
+		$message['item']['author-link']   = $profile['url'];
+		$message['item']['author-name']   = $profile['name'];
 		$message['item']['author-avatar'] = $profile['photo'];
 	}
 
@@ -285,7 +285,7 @@ function discourse_get_text($message)
 {
 	$text = $message['text'];
 	$text = str_replace("\r", '', $text);
-	$pos = strpos($text, "\n---\n");
+	$pos  = strpos($text, "\n---\n");
 	if ($pos == 0) {
 		DI::logger()->info('No separator found', ['text' => $text]);
 		return $message;
@@ -309,7 +309,7 @@ function discourse_get_text($message)
 function discourse_get_profile($xpath)
 {
 	$profile = [];
-	$list = $xpath->query("//td//following::img");
+	$list    = $xpath->query("//td//following::img");
 	foreach ($list as $node) {
 		$attr = [];
 		foreach ($node->attributes as $attribute) {

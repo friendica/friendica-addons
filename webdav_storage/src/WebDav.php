@@ -16,7 +16,7 @@ use Psr\Log\LoggerInterface;
  */
 class WebDav implements ICanWriteToStorage
 {
-	const NAME = 'WebDav';
+	public const NAME = 'WebDav';
 
 	/** @var string */
 	private $url;
@@ -110,7 +110,7 @@ class WebDav implements ICanWriteToStorage
 			HttpClientOptions::BODY    => $dom->saveXML(),
 		];
 
-		$response = $this->client->request('propfind', $uri, $opts);
+		$response = $this->client->request('PROPFIND', $uri, $opts);
 
 		$responseDoc = new \DOMDocument();
 		$responseDoc->loadXML($response->getBodyString());
@@ -133,7 +133,7 @@ class WebDav implements ICanWriteToStorage
 	 */
 	protected function mkcol(string $uri): bool
 	{
-		return $this->client->request('mkcol', $uri, [HttpClientOptions::AUTH => $this->authOptions])
+		return $this->client->request('MKCOL', $uri, [HttpClientOptions::AUTH => $this->authOptions])
 							->getReturnCode() == 200;
 	}
 
@@ -177,7 +177,7 @@ class WebDav implements ICanWriteToStorage
 		foreach ($pathParts as $pathPart) {
 			$checkUrl = $this->url . $partURL;
 			if (!empty($partURL) && !$this->hasItems($checkUrl)) {
-				$response = $this->client->request('delete', $checkUrl, [HttpClientOptions::AUTH => $this->authOptions]);
+				$response = $this->client->request('DELETE', $checkUrl, [HttpClientOptions::AUTH => $this->authOptions]);
 
 				if (!$response->isSuccess()) {
 					if ($response->getReturnCode() == "404") {
@@ -199,7 +199,7 @@ class WebDav implements ICanWriteToStorage
 	{
 		$file = $this->pathForRef($reference);
 
-		$response = $this->client->request('get', $this->url . '/' . $file[0], [HttpClientOptions::AUTH => $this->authOptions]);
+		$response = $this->client->request('GET', $this->url . '/' . $file[0], [HttpClientOptions::AUTH => $this->authOptions]);
 
 		if (!$response->isSuccess()) {
 			throw new ReferenceStorageException(sprintf('Invalid reference %s', $reference));
@@ -229,7 +229,7 @@ class WebDav implements ICanWriteToStorage
 			HttpClientOptions::AUTH => $this->authOptions,
 		];
 
-		$this->client->request('put', $this->url . '/' . $file[0], $opts);
+		$this->client->request('PUT', $this->url . '/' . $file[0], $opts);
 
 		return $reference;
 	}
@@ -241,7 +241,7 @@ class WebDav implements ICanWriteToStorage
 	{
 		$file = $this->pathForRef($reference);
 
-		$response = $this->client->request('delete', $this->url . '/' . $file[0], [HttpClientOptions::AUTH => $this->authOptions]);
+		$response = $this->client->request('DELETE', $this->url . '/' . $file[0], [HttpClientOptions::AUTH => $this->authOptions]);
 
 		if (!$response->isSuccess()) {
 			throw new ReferenceStorageException(sprintf('Invalid reference %s', $reference));

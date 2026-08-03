@@ -29,19 +29,19 @@ function nsfw_extract_photos($body)
 	$new_body = '';
 
 	$img_start = strpos($body, 'src="data:');
-	$img_end = (($img_start !== false) ? strpos(substr($body, $img_start), '>') : false);
+	$img_end   = (($img_start !== false) ? strpos(substr($body, $img_start), '>') : false);
 
 	$cnt = 0;
 
 	while ($img_end !== false) {
 		$img_end += $img_start;
-		$new_body = $new_body . substr($body, 0, $img_start);
+		$new_body .= substr($body, 0, $img_start);
 
-		$cnt ++;
+		$cnt++;
 		$body = substr($body, 0, $img_end);
 
 		$img_start = strpos($body, 'src="data:');
-		$img_end = (($img_start !== false) ? strpos(substr($body, $img_start), '>') : false);
+		$img_end   = (($img_start !== false) ? strpos(substr($body, $img_start), '>') : false);
 	}
 
 	if (!$cnt) {
@@ -80,10 +80,10 @@ function nsfw_addon_settings_post(array &$b)
 	}
 
 	if (!empty($_POST['nsfw-submit'])) {
-		$enable = !empty($_POST['nsfw-enable']) ? intval($_POST['nsfw-enable']) : 0;
+		$enable  = !empty($_POST['nsfw-enable']) ? intval($_POST['nsfw-enable']) : 0;
 		$disable = 1 - $enable;
 
-		$words = trim($_POST['nsfw-words']);
+		$words     = trim($_POST['nsfw-words']);
 		$word_list = explode(',', $words);
 		foreach ($word_list as $word) {
 			$word = trim($word);
@@ -104,7 +104,7 @@ function nsfw_addon_settings_post(array &$b)
 function nsfw_prepare_body_content_filter(&$hook_data)
 {
 	$words = null;
-	$uid = $hook_data['uid'] ?? DI::userSession()->getLocalUserId();
+	$uid   = $hook_data['uid'] ?? DI::userSession()->getLocalUserId();
 	if (DI::pConfig()->get($uid, 'nsfw', 'disable')) {
 		return;
 	}
@@ -132,12 +132,12 @@ function nsfw_prepare_body_content_filter(&$hook_data)
 			}
 
 			switch ($word[0]) {
-				case '/'; // Regular expression
+				case '/': // Regular expression
 					$found = @preg_match($word, $body);
 					break;
 				case '#': // Hashtag-only search
 					$tag_search = true;
-					$found = nsfw_find_word_in_item_tags($hook_data['item']['hashtags'] ?? [], substr($word, 1));
+					$found      = nsfw_find_word_in_item_tags($hook_data['item']['hashtags'] ?? [], substr($word, 1));
 					break;
 				default:
 					$found = strpos($body, $word) !== false || nsfw_find_word_in_item_tags($hook_data['item']['tags'] ?? [], $word);

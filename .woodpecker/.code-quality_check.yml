@@ -1,0 +1,78 @@
+skip_clone: true
+
+matrix:
+  include:
+    - PHP_MAJOR_VERSION: 8.5
+      PHP_VERSION: 8.5.5
+
+# The phpmd check is just triggered for PRs and pushes to non-stable branches of Friendica
+when:
+  branch:
+    exclude: [ stable ]
+  event: [ pull_request, push ]
+
+# This forces PHP Unit executions at the "opensocial" labeled location (because of access issues with git.friendi.ca)
+labels:
+  location: opensocial
+
+steps:
+  clone_friendica_base:
+    image: alpine/git
+    commands:
+      - git config --global user.email "no-reply@friendi.ca"
+      - git config --global user.name "Friendica"
+      - git config --global --add safe.directory $CI_WORKSPACE
+      - git clone https://github.com/friendica/friendica.git .
+      - git checkout $CI_COMMIT_BRANCH
+    when:
+      event: pull_request
+
+  clone_friendica_addon:
+    image: alpine/git
+    commands:
+      - git config --global user.email "no-reply@friendi.ca"
+      - git config --global user.name "Friendica"
+      - git clone $CI_REPO_CLONE_URL addon
+      - cd addon/
+      - git checkout $CI_COMMIT_BRANCH
+      - git fetch origin $CI_COMMIT_REF
+      - git merge $CI_COMMIT_SHA
+    when:
+      event: pull_request
+
+  restore_cache:
+    image: meltwater/drone-cache:dev
+    settings:
+      backend: "filesystem"
+      restore: true
+      cache_key: "{{ .Repo.Name }}_php${PHP_MAJOR_VERSION}_{{ arch }}_{{ os }}"
+      archive_format: "gzip"
+      mount:
+        - '.composer'
+    volumes:
+      - /tmp/drone-cache:/tmp/cache
+
+  composer_install:
+    image: friendicaci/php${PHP_MAJOR_VERSION}:php${PHP_VERSION}
+    commands:
+      - export COMPOSER_HOME=.composer
+      - ./bin/composer.phar validate
+      - ./bin/composer.phar install --prefer-dist
+
+  rebuild_cache:
+    image: meltwater/drone-cache:dev
+    settings:
+      backend: "filesystem"
+      rebuild: true
+      cache_key: "{{ .Repo.Name }}_php${PHP_MAJOR_VERSION}_{{ arch }}_{{ os }}"
+      archive_format: "gzip"
+      mount:
+        - '.composer'
+    volumes:
+      - /tmp/drone-cache:/tmp/cache
+
+  phpstan:
+    image: friendicaci/php${PHP_MAJOR_VERSION}:php${PHP_VERSION}
+    commands:
+      - phpstan analyze --memory-limit 1024M --configuration addon/.tests/.phpstan.neon;
+

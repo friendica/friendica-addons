@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Advanced content Filter
  * Description: Expression-based content filter
@@ -54,11 +55,11 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'a
 
 function advancedcontentfilter_install()
 {
-	Hook::register('dbstructure_definition'     , __FILE__, 'advancedcontentfilter_dbstructure_definition');
+	Hook::register('dbstructure_definition', __FILE__, 'advancedcontentfilter_dbstructure_definition');
 	Hook::register('prepare_body_content_filter', __FILE__, 'advancedcontentfilter_prepare_body_content_filter');
-	Hook::register('addon_settings'             , __FILE__, 'advancedcontentfilter_addon_settings');
+	Hook::register('addon_settings', __FILE__, 'advancedcontentfilter_addon_settings');
 
-	Hook::add('dbstructure_definition'          , __FILE__, 'advancedcontentfilter_dbstructure_definition');
+	Hook::add('dbstructure_definition', __FILE__, 'advancedcontentfilter_dbstructure_definition');
 	DBStructure::performUpdate();
 
 	DI::logger()->notice('installed advancedcontentfilter');
@@ -72,7 +73,7 @@ function advancedcontentfilter_dbstructure_definition(&$database)
 {
 	$database['advancedcontentfilter_rules'] = [
 		'comment' => 'Advancedcontentfilter addon rules',
-		'fields' => [
+		'fields'  => [
 			'id'         => ['type' => 'int unsigned', 'not null' => '1', 'extra' => 'auto_increment', 'primary' => '1', 'comment' => 'Auto incremented rule id'],
 			'uid'        => ['type' => 'int unsigned', 'not null' => '1', 'comment' => 'Owner user id'],
 			'name'       => ['type' => 'varchar(255)', 'not null' => '1', 'comment' => 'Rule name'],
@@ -82,9 +83,9 @@ function advancedcontentfilter_dbstructure_definition(&$database)
 			'created'    => ['type' => 'datetime'    , 'not null' => '1', 'default' => DBA::NULL_DATETIME, 'comment' => 'Creation date'],
 		],
 		'indexes' => [
-			'PRIMARY' => ['id'],
+			'PRIMARY'    => ['id'],
 			'uid_active' => ['uid', 'active'],
-		]
+		],
 	];
 }
 
@@ -132,18 +133,18 @@ function advancedcontentfilter_prepare_body_content_filter(&$hook_data)
 		$rules = DBA::toArray(DBA::select(
 			'advancedcontentfilter_rules',
 			['name', 'expression', 'serialized'],
-			['uid' => $uid, 'active' => true]
+			['uid' => $uid, 'active' => true],
 		));
 
 		DI::cache()->set('rules_' . $uid, $rules);
 	}
 
 	if ($rules) {
-		foreach($rules as $rule) {
+		foreach ($rules as $rule) {
 			try {
 				$serializedParsedExpression = new ExpressionLanguage\SerializedParsedExpression(
 					$rule['expression'],
-					$rule['serialized']
+					$rule['serialized'],
 				);
 
 				// The error suppression operator is used because of potentially broken user-supplied regular expressions
@@ -199,8 +200,8 @@ function advancedcontentfilter_init()
 		$slim->addErrorMiddleware(true, true, true, DI::logger());
 
 		// register routes
-		$slim->group('/advancedcontentfilter/api', function (\Slim\Routing\RouteCollectorProxy $app) {
-			$app->group('/rules', function (\Slim\Routing\RouteCollectorProxy $app) {
+		$slim->group('/advancedcontentfilter/api', function (\Slim\Routing\RouteCollectorProxy $app): void {
+			$app->group('/rules', function (\Slim\Routing\RouteCollectorProxy $app): void {
 				$app->get('', 'advancedcontentfilter_get_rules');
 				$app->post('', 'advancedcontentfilter_post_rules');
 
@@ -209,7 +210,7 @@ function advancedcontentfilter_init()
 				$app->delete('/{id}', 'advancedcontentfilter_delete_rules_id');
 			});
 
-			$app->group('/variables', function (\Slim\Routing\RouteCollectorProxy $app) {
+			$app->group('/variables', function (\Slim\Routing\RouteCollectorProxy $app): void {
 				$app->get('/{guid}', 'advancedcontentfilter_get_variables_guid');
 			});
 		});
@@ -232,8 +233,8 @@ function advancedcontentfilter_content()
 		$lang = $user['language'];
 
 		$default_dir = 'addon/advancedcontentfilter/doc/';
-		$help_file = 'advancedcontentfilter.md';
-		$help_path = $default_dir . $help_file;
+		$help_file   = 'advancedcontentfilter.md';
+		$help_path   = $default_dir . $help_file;
 		if (file_exists($default_dir . $lang . '/' . $help_file)) {
 			$help_path = $default_dir . $lang . '/' . $help_file;
 		}
@@ -271,9 +272,9 @@ function advancedcontentfilter_content()
 				'rule_expression'   => DI::l10n()->t('Rule Expression'),
 				'cancel'            => DI::l10n()->t('Cancel'),
 			],
-			'$current_theme' => DI::appHelper()->getCurrentTheme(),
-			'$rules' => DBA::toArray(DBA::select('advancedcontentfilter_rules', [], ['uid' => DI::userSession()->getLocalUserId()])),
-			'$form_security_token' => BaseModule::getFormSecurityToken()
+			'$current_theme'       => DI::appHelper()->getCurrentTheme(),
+			'$rules'               => DBA::toArray(DBA::select('advancedcontentfilter_rules', [], ['uid' => DI::userSession()->getLocalUserId()])),
+			'$form_security_token' => BaseModule::getFormSecurityToken(),
 		]);
 	}
 }
@@ -292,17 +293,17 @@ function advancedcontentfilter_build_fields($data)
 	if (!empty($data['expression'])) {
 		// Using a dummy item to validate the field existence
 		$condition = ["(`uid` = ? OR `uid` = 0)", DI::userSession()->getLocalUserId()];
-		$params = ['order' => ['uid' => true]];
-		$item_row = Post::selectFirstForUser(DI::userSession()->getLocalUserId(), [], $condition, $params);
+		$params    = ['order' => ['uid' => true]];
+		$item_row  = Post::selectFirstForUser(DI::userSession()->getLocalUserId(), [], $condition, $params);
 
 		if (!DBA::isResult($item_row)) {
 			throw new HTTPException\NotFoundException(DI::l10n()->t('This addon requires this node having at least one post'));
 		}
 
 		$expressionLanguage = new ExpressionLanguage\ExpressionLanguage();
-		$parsedExpression = $expressionLanguage->parse(
+		$parsedExpression   = $expressionLanguage->parse(
 			$data['expression'],
-			array_keys(advancedcontentfilter_get_filter_fields(advancedcontentfilter_prepare_item_row($item_row)))
+			array_keys(advancedcontentfilter_get_filter_fields(advancedcontentfilter_prepare_item_row($item_row))),
 		);
 
 		$serialized = serialize($parsedExpression->getNodes());
@@ -370,7 +371,7 @@ function advancedcontentfilter_post_rules(ServerRequestInterface $request, Respo
 		throw new HTTPException\BadRequestException(DI::l10n()->t('The rule name and expression are required.'));
 	}
 
-	$fields['uid'] = DI::userSession()->getLocalUserId();
+	$fields['uid']     = DI::userSession()->getLocalUserId();
 	$fields['created'] = DateTimeFormat::utcNow();
 
 	if (!DBA::insert('advancedcontentfilter_rules', $fields)) {
@@ -452,8 +453,8 @@ function advancedcontentfilter_get_variables_guid(ServerRequestInterface $reques
 	}
 
 	$condition = ["`guid` = ? AND (`uid` = ? OR `uid` = 0)", $args['guid'], DI::userSession()->getLocalUserId()];
-	$params = ['order' => ['uid' => true]];
-	$item_row = Post::selectFirstForUser(DI::userSession()->getLocalUserId(), [], $condition, $params);
+	$params    = ['order' => ['uid' => true]];
+	$item_row  = Post::selectFirstForUser(DI::userSession()->getLocalUserId(), [], $condition, $params);
 
 	if (!DBA::isResult($item_row)) {
 		throw new HTTPException\NotFoundException(DI::l10n()->t('Unknown post with guid: %s', $args['guid']));
@@ -477,9 +478,9 @@ function advancedcontentfilter_prepare_item_row(array $item_row): array
 {
 	$tags = Tag::populateFromItem($item_row);
 
-	$item_row['tags'] = $tags['tags'];
-	$item_row['hashtags'] = $tags['hashtags'];
-	$item_row['mentions'] = $tags['mentions'];
+	$item_row['tags']        = $tags['tags'];
+	$item_row['hashtags']    = $tags['hashtags'];
+	$item_row['mentions']    = $tags['mentions'];
 	$item_row['attachments'] = DI::postMediaRepository()->splitAttachments($item_row['uri-id']);
 
 	return $item_row;

@@ -1,0 +1,58 @@
+# ADDON ft_replace
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica ft_replace addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-14 17:32+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ft_replace.php:43
+msgid "Global 13ft Instance URL"
+msgstr ""
+
+#: ft_replace.php:45
+msgid "The URL of the 13ft instance used node-wide (e.g., https://13ft.example.com)"
+msgstr ""
+
+#: ft_replace.php:49
+msgid "Save settings"
+msgstr ""
+
+#: ft_replace.php:69
+msgid "Enable 13ft Replace Addon"
+msgstr ""
+
+#: ft_replace.php:71
+msgid "If enabled, your specified URLs below will be bypassed using the node's 13ft instance."
+msgstr ""
+
+#: ft_replace.php:75
+msgid "Your personal Paywall Sites"
+msgstr ""
+
+#: ft_replace.php:77
+msgid "Specify the target URLs with protocol (e.g. https://zeit.de), one per line."
+msgstr ""
+
+#: ft_replace.php:81
+msgid "Save Settings"
+msgstr ""
+
+#: ft_replace.php:86
+msgid "13ft Replace Settings"
+msgstr ""
+
+#: ft_replace.php:138
+msgid "(13ft replace addon active for some of your configured news sites.)"
+msgstr ""

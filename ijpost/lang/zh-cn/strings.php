@@ -1,9 +1,12 @@
 <?php
 
-$a->strings["Post to Insanejournal"] = "转播到Insanejournal";
-$a->strings["InsaneJournal Post Settings"] = "Insanejournal转播设置";
-$a->strings["Enable InsaneJournal Post Addon"] = "使InsaneJournal转播插件可用";
-$a->strings["InsaneJournal username"] = "InsaneJournal用户名";
-$a->strings["InsaneJournal password"] = "InsaneJournal密码";
-$a->strings["Post to InsaneJournal by default"] = "默认地转播到InsaneJournal";
-$a->strings["Submit"] = "提交";
+if(! function_exists("string_plural_select_zh_CN")) {
+function string_plural_select_zh_CN($n){
+	$n = intval($n);
+	return intval(0);
+}}
+$a->strings['Post to Insanejournal'] = '发布到Insanejournal';
+$a->strings['Enable InsaneJournal Post Addon'] = '启用 InsaneJournal 插件';
+$a->strings['InsaneJournal username'] = 'Insanejournal用户名';
+$a->strings['InsaneJournal password'] = 'Insanejournal密码';
+$a->strings['Post to InsaneJournal by default'] = '默认发布到 InsaneJournal';
