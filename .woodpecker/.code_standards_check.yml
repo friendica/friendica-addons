@@ -11,6 +11,7 @@ steps:
       - git checkout $CI_COMMIT_BRANCH
     when:
       event: pull_request
+
   clone_friendica_addon:
     image: alpine/git
     commands:
@@ -23,6 +24,7 @@ steps:
       - git merge $CI_COMMIT_SHA
     when:
       event: pull_request
+
   restore_cache:
     image: meltwater/drone-cache:dev
     settings:
@@ -36,6 +38,7 @@ steps:
       - /tmp/drone-cache:/tmp/cache
     when:
       event: pull_request
+
   composer_install:
     image: composer
     commands:
@@ -43,6 +46,7 @@ steps:
       - ./bin/composer.phar run cs:install
     when:
       event: pull_request
+
   rebuild_cache:
     image: meltwater/drone-cache:dev
     settings:
@@ -56,10 +60,7 @@ steps:
       - /tmp/drone-cache:/tmp/cache
     when:
       event: pull_request
-  phpstan:
-    image: friendicaci/php8.3:php8.3.3
-    commands:
-      - ./bin/composer.phar run phpstan;
+
   check:
     image: friendicaci/php-cs
     commands:

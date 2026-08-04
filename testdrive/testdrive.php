@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: testdrive
  * Description: Sample Friendica addon for creating a test drive Friendica site with automatic account expiration.
@@ -17,11 +18,11 @@ use Friendica\Util\DateTimeFormat;
 
 function testdrive_install()
 {
-	Hook::register('load_config',      'addon/testdrive/testdrive.php', 'testdrive_load_config');
+	Hook::register('load_config', 'addon/testdrive/testdrive.php', 'testdrive_load_config');
 	Hook::register('register_account', 'addon/testdrive/testdrive.php', 'testdrive_register_account');
 	Hook::register('cron', 'addon/testdrive/testdrive.php', 'testdrive_cron');
-	Hook::register('enotify','addon/testdrive/testdrive.php', 'testdrive_enotify');
-	Hook::register('globaldir_update','addon/testdrive/testdrive.php', 'testdrive_globaldir_update');
+	Hook::register('enotify', 'addon/testdrive/testdrive.php', 'testdrive_enotify');
+	Hook::register('globaldir_update', 'addon/testdrive/testdrive.php', 'testdrive_globaldir_update');
 }
 
 function testdrive_load_config(ConfigFileManager $loader)
@@ -38,7 +39,7 @@ function testdrive_register_account($b)
 {
 	$uid = $b;
 
-	$days = DI::config()->get('testdrive','expiredays');
+	$days = DI::config()->get('testdrive', 'expiredays');
 	if (!$days) {
 		return;
 	}
@@ -54,9 +55,9 @@ function testdrive_cron($b)
 
 	foreach ($users as $rr) {
 		DI::notify()->createFromArray([
-			'type' => Notification\Type::SYSTEM,
-			'uid' => $rr['uid'],
-			'system_type' => 'testdrive_expire',
+			'type'         => Notification\Type::SYSTEM,
+			'uid'          => $rr['uid'],
+			'system_type'  => 'testdrive_expire',
 			'source_name'  => DI::l10n()->t('Administrator'),
 			'source_link'  => DI::baseUrl(),
 			'source_photo' => DI::baseUrl() . '/images/person-80.jpg',
@@ -66,7 +67,7 @@ function testdrive_cron($b)
 	}
 
 	$users = DBA::selectToArray('user', [], ["`account_expired` AND `account_expires_on` < ?", DateTimeFormat::utc('now - 5 days')]);
-	foreach($users as $rr) {
+	foreach ($users as $rr) {
 		User::remove($rr['uid']);
 	}
 }
@@ -75,9 +76,9 @@ function testdrive_enotify(array &$b)
 {
 	if (!empty($b['params']) && $b['params']['type'] == Notification\Type::SYSTEM
 		&& !empty($b['params']['system_type']) && $b['params']['system_type'] === 'testdrive_expire') {
-		$b['itemlink'] = DI::baseUrl();
+		$b['itemlink']  = DI::baseUrl();
 		$b['epreamble'] = $b['preamble'] = DI::l10n()->t('Your account on %s will expire in a few days.', DI::config()->get('system', 'sitename'));
-		$b['subject'] = DI::l10n()->t('Your Friendica test account is about to expire.');
-		$b['body'] = DI::l10n()->t("Hi %1\$s,\n\nYour test account on %2\$s will expire in less than five days. We hope you enjoyed this test drive and use this opportunity to find a permanent Friendica website for your integrated social communications. A list of public sites is available at %s/siteinfo - and for more information on setting up your own Friendica server please see the Friendica project website at https://friendi.ca.", $b['params']['to_name'], "[url=".DI::config()->get('system', 'url')."]".DI::config()->get('config', 'sitename')."[/url]", Search::getGlobalDirectory());
+		$b['subject']   = DI::l10n()->t('Your Friendica test account is about to expire.');
+		$b['body']      = DI::l10n()->t("Hi %1\$s,\n\nYour test account on %2\$s will expire in less than five days. We hope you enjoyed this test drive and use this opportunity to find a permanent Friendica website for your integrated social communications. A list of public sites is available at %s/siteinfo - and for more information on setting up your own Friendica server please see the Friendica project website at https://friendi.ca.", $b['params']['to_name'], "[url=" . DI::config()->get('system', 'url') . "]" . DI::config()->get('config', 'sitename') . "[/url]", Search::getGlobalDirectory());
 	}
 }

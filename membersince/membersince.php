@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: MemberSince
  * Description: Display membership date in profile
@@ -43,15 +44,15 @@ function membersince_display(&$b)
 		$elm = $doc->getElementById('aprofile-fullname');
 
 		$div = $doc->createElement('div');
-		$div->setAttribute('id','aprofile-membersince');
-		$div->setAttribute('class','col-lg-12 col-md-12 col-sm-12 col-xs-12 aprofile');
+		$div->setAttribute('id', 'aprofile-membersince');
+		$div->setAttribute('class', 'col-lg-12 col-md-12 col-sm-12 col-xs-12 aprofile');
 
 		// The seperator line.
-		$hr = $doc->createElement('hr','');
-		$hr->setAttribute('class','profile-separator');
+		$hr = $doc->createElement('hr', '');
+		$hr->setAttribute('class', 'profile-separator');
 
 		// The label div.
-		$label = $doc->createElement('div', DI::l10n()->t('Member since:'));
+		$label = $doc->createElement('div', DI::l10n()->t('Joined:'));
 		$label->setAttribute('class', 'col-lg-4 col-md-4 col-sm-4 col-xs-12 profile-label-name text-muted');
 
 		// The div for the register date of the profile owner.
@@ -66,6 +67,6 @@ function membersince_display(&$b)
 		$b = (string) $doc->saveHTML();
 	} else {
 		// Works in Vier.
-		$b = preg_replace('/<\/dl>/', "</dl>\n\n\n<dl id=\"aprofile-membersince\" class=\"aprofile\">\n<dt>" . DI::l10n()->t('Member since:') . "</dt>\n<dd>" . DateTimeFormat::local($user['register_date']) . "</dd>\n</dl>", $b, 1);
+		$b = preg_replace('/<\/dl>/', "</dl>\n\n\n<dl id=\"aprofile-membersince\" class=\"aprofile\">\n<dt>" . DI::l10n()->t('Joined:') . "</dt>\n<dd>" . DateTimeFormat::local($user['register_date']) . "</dd>\n</dl>", $b, 1);
 	}
 }

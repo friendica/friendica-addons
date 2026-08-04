@@ -10,28 +10,26 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-08 15:47+0000\n"
-"Last-Translator: Kris\n"
-"Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
+"POT-Creation-Date: 2021-11-21 19:14-0500\n"
+"PO-Revision-Date: 2014-06-23 08:27+0000\n"
+"Last-Translator: Kris, 2018\n"
+"Language-Team: Finnish (Finland) (http://app.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fi_FI\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: geonames.php:143
-msgid "Geonames settings updated."
-msgstr "Geonames -asetukset päivitetty."
+#: geonames.php:135
+msgid ""
+"Replace numerical coordinates by the nearest populated location name in your"
+" posts."
+msgstr ""
 
-#: geonames.php:179
-msgid "Geonames Settings"
-msgstr "Geonames -asetukset"
-
-#: geonames.php:181
+#: geonames.php:136
 msgid "Enable Geonames Addon"
 msgstr "Ota Geonames -lisäosa käyttöön"
 
-#: geonames.php:187
-msgid "Submit"
-msgstr "Lähetä"
+#: geonames.php:141
+msgid "Geonames Settings"
+msgstr "Geonames -asetukset"

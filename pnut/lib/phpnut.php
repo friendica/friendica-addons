@@ -440,7 +440,7 @@ class phpnut
      */
     protected function buildQueryString(array $array): string
     {
-        foreach ($array as $k => &$v) {
+        foreach ($array as &$v) {
             if (is_array($v)) {
                 $v = implode(',', $v);
             } elseif ($v === true) {

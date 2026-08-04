@@ -1,9 +1,12 @@
 <?php
 
-$a->strings["Post to Dreamwidth"] = "转播到Dreamwidth";
-$a->strings["Dreamwidth Post Settings"] = "Dreamwidth转播设置";
-$a->strings["Enable dreamwidth Post Addon"] = "使Dreamwidth转播插件可用";
-$a->strings["dreamwidth username"] = "Dreamwidth用户名";
-$a->strings["dreamwidth password"] = "Dreamwidth密码";
-$a->strings["Post to dreamwidth by default"] = "默认地转播到Dreamwidth";
-$a->strings["Submit"] = "提交";
+if(! function_exists("string_plural_select_zh_CN")) {
+function string_plural_select_zh_CN($n){
+	$n = intval($n);
+	return intval(0);
+}}
+$a->strings['Post to Dreamwidth'] = '发布到 Dreamwidth';
+$a->strings['Enable Dreamwidth Post Addon'] = '启用 Dreamwidth 插件';
+$a->strings['Dreamwidth username'] = 'Dreamwidth 用户名';
+$a->strings['Dreamwidth password'] = 'Dreamwidth密码';
+$a->strings['Post to Dreamwidth by default'] = '默认发布到 Dreamwidth';

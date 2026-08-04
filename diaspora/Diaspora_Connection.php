@@ -9,7 +9,8 @@ use Friendica\Core\System;
  * Modifications by Michael Vogel <heluecht@pirati.ca>
  */
 
-class Diaspora_Connection {
+class Diaspora_Connection
+{
 	private $user;
 	private $host;
 	private $password;
@@ -24,7 +25,8 @@ class Diaspora_Connection {
 
 	public $provider = '*Diaspora Connection';
 
-	public function __construct($diaspora_handle = '', $password = '') {
+	public function __construct($diaspora_handle = '', $password = '')
+	{
 		if (!empty($diaspora_handle)) {
 			$this->setDiasporaID($diaspora_handle);
 		}
@@ -35,18 +37,21 @@ class Diaspora_Connection {
 		$this->cookiejar = tempnam(System::getTempPath(), 'cookies');
 	}
 
-	public function __destruct() {
+	public function __destruct()
+	{
 		if (file_exists($this->cookiejar)) {
 			unlink($this->cookiejar);
 		}
 	}
 
-	public function setDebugLog($log_file) {
+	public function setDebugLog($log_file)
+	{
 		$this->debug_log = $log_file;
 	}
 
-	public function setDiasporaID($id) {
-		$parts = explode('@', $id);
+	public function setDiasporaID($id)
+	{
+		$parts      = explode('@', $id);
 		$this->user = $parts[0];
 		if (count($parts) > 1) {
 			$this->host = $parts[1];
@@ -55,27 +60,33 @@ class Diaspora_Connection {
 		}
 	}
 
-	public function getDiasporaID() {
+	public function getDiasporaID()
+	{
 		return $this->user . '@' . $this->host;
 	}
 
-	public function getPodURL() {
+	public function getPodURL()
+	{
 		return $this->getScheme() . '://' . $this->host;
 	}
 
-	public function setPassword($passwd) {
+	public function setPassword($passwd)
+	{
 		$this->password = $passwd;
 	}
 
-	public function setSecureTransport($is_secure) {
+	public function setSecureTransport($is_secure)
+	{
 		$this->tls = (bool) $is_secure;
 	}
 
-	private function getScheme() {
+	private function getScheme()
+	{
 		return ($this->tls) ? 'https' : 'http';
 	}
 
-	private function doHttpRequest($url, $data = [], $headers = []) {
+	private function doHttpRequest($url, $data = [], $headers = [])
+	{
 		if (0 === strpos($url, '/')) {
 			$url = $this->getScheme() . '://' . $this->host . $url;
 		}
@@ -111,9 +122,9 @@ class Diaspora_Connection {
 				break;
 		}
 
-		$this->last_http_result = new stdClass();
+		$this->last_http_result           = new stdClass();
 		$this->last_http_result->response = curl_exec($ch);
-		$this->last_http_result->info = curl_getinfo($ch);
+		$this->last_http_result->info     = curl_getinfo($ch);
 		curl_close($ch);
 		if (isset($fh)) {
 			fclose($fh);
@@ -128,13 +139,15 @@ class Diaspora_Connection {
 		return $this->last_http_result;
 	}
 
-	private function doHttpDelete($url, $data = [], $headers = []) {
+	private function doHttpDelete($url, $data = [], $headers = [])
+	{
 		$this->http_method = 'DELETE';
 		$this->doHttpRequest($url, $data, $headers);
 		$this->http_method = null; // reset for next request
 	}
 
-	private function parseAuthenticityToken($str) {
+	private function parseAuthenticityToken($str)
+	{
 		$m = [];
 		preg_match('/<meta (?:name="csrf-token" content="(.*?)"|content="(.*?)" name="csrf-token")/', $str, $m);
 		if (empty($m[1]) && !empty($m[2])) {
@@ -145,43 +158,49 @@ class Diaspora_Connection {
 		return !empty($token) ? $token : false;
 	}
 
-	private function readJsonResponse($response) {
+	private function readJsonResponse($response)
+	{
 		$lines = explode("\r\n", $response);
-		$x = array_splice(
-			$lines, array_search('', $lines) + 1 // empty, as "\r\n" was explode()'d
+		$x     = array_splice(
+			$lines,
+			array_search('', $lines) + 1, // empty, as "\r\n" was explode()'d
 		);
 		$http_body = array_pop($x);
 		return json_decode($http_body);
 	}
 
-	public function logIn() {
+	public function logIn()
+	{
 		$this->doHttpRequest('/users/sign_in');
 
 		$params = [
-			'user[username]' => $this->user,
-			'user[password]' => $this->password,
-			'authenticity_token' => $this->csrf_token
+			'user[username]'     => $this->user,
+			'user[password]'     => $this->password,
+			'authenticity_token' => $this->csrf_token,
 		];
 		$this->doHttpRequest('/users/sign_in', $params);
 		$this->doHttpRequest('/stream');
 		return (200 === $this->last_http_result->info['http_code']) ? true : false;
 	}
 
-	public function getAspects() {
+	public function getAspects()
+	{
 		$this->doHttpRequest('/bookmarklet');
 		$m = [];
 		preg_match('/"aspects"\:(\[.+?\])/', $this->last_http_result->response, $m);
 		return !empty($m[1]) ? json_decode($m[1]) : false;
 	}
 
-	public function getServices() {
+	public function getServices()
+	{
 		$this->doHttpRequest('/bookmarklet');
 		$m = [];
 		preg_match('/"configured_services"\:(\[.+?\])/', $this->last_http_result->response, $m);
 		return !empty($m[1]) ? json_decode($m[1]) : false;
 	}
 
-	public function getNotifications($notification_type = '', $show = '') {
+	public function getNotifications($notification_type = '', $show = '')
+	{
 		$url = '/notifications?format=json';
 
 		if (!empty($notification_type)) {
@@ -196,19 +215,21 @@ class Diaspora_Connection {
 		return $this->readJsonResponse($this->last_http_result->response);
 	}
 
-	public function getComments($post_id) {
+	public function getComments($post_id)
+	{
 		$url = "/posts/$post_id/comments?format=json";
 		$this->doHttpRequest($url);
 		return $this->readJsonResponse($this->last_http_result->response);
 	}
 
-	public function postStatusMessage($msg, $aspect_ids = 'all_aspects', $additional_data = []) {
+	public function postStatusMessage($msg, $aspect_ids = 'all_aspects', $additional_data = [])
+	{
 		$data = [
-			'aspect_ids' => $aspect_ids,
+			'aspect_ids'     => $aspect_ids,
 			'status_message' => [
-				'text' => $msg,
-				'provider_display_name' => $this->provider
-			]
+				'text'                  => $msg,
+				'provider_display_name' => $this->provider,
+			],
 		];
 
 		if (!empty($additional_data)) {
@@ -218,7 +239,7 @@ class Diaspora_Connection {
 		$headers = [
 			'Content-Type: application/json',
 			'Accept: application/json',
-			'X-CSRF-Token: ' . $this->csrf_token
+			'X-CSRF-Token: ' . $this->csrf_token,
 		];
 
 		$this->http_method = 'POST';
@@ -233,13 +254,14 @@ class Diaspora_Connection {
 		}
 	}
 
-	public function postPhoto($file) {
+	public function postPhoto($file)
+	{
 		$params = [
 			'photo[pending]' => 'true',
-			'qqfile' => basename($file)
+			'qqfile'         => basename($file),
 		];
 		$query_string = '?' . http_build_query($params);
-		$headers = [
+		$headers      = [
 			'Accept: application/json',
 			'X-Requested-With: XMLHttpRequest',
 			'X-CSRF-Token: ' . $this->csrf_token,
@@ -254,13 +276,15 @@ class Diaspora_Connection {
 		return $this->readJsonResponse($this->last_http_result->response);
 	}
 
-	public function deletePost($id) {
+	public function deletePost($id)
+	{
 		$headers = ['X-CSRF-Token: ' . $this->csrf_token];
 		$this->doHttpDelete("/posts/$id", [], $headers);
 		return (204 === $this->last_http_result->info['http_code']) ? true : false;
 	}
 
-	public function deleteComment($id) {
+	public function deleteComment($id)
+	{
 		$headers = ['X-CSRF-Token: ' . $this->csrf_token];
 		$this->doHttpDelete("/comments/$id", [], $headers);
 		return (204 === $this->last_http_result->info['http_code']) ? true : false;

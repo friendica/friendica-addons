@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Leistungsschutzrecht
  * Description: Only useful in germany: Remove data from snippets from members of the VG Media
@@ -16,7 +17,8 @@ function leistungsschutzrecht_install()
 	Hook::register('page_info_data', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
 }
 
-function leistungsschutzrecht_getsiteinfo(array &$siteinfo) {
+function leistungsschutzrecht_getsiteinfo(array &$siteinfo)
+{
 	if (!isset($siteinfo['url']) || empty($siteinfo['type'])) {
 		return;
 	}
@@ -44,12 +46,12 @@ function leistungsschutzrecht_cuttext(string $text): string
 
 	do {
 		$oldtext = $text;
-		$text = str_replace('  ', ' ', $text);
+		$text    = str_replace('  ', ' ', $text);
 	} while ($oldtext != $text);
 
 	$words = explode(' ', $text);
 
-	$text = '';
+	$text  = '';
 	$count = 0;
 	$limit = 7;
 
@@ -61,7 +63,7 @@ function leistungsschutzrecht_cuttext(string $text): string
 		$text .= $word;
 
 		if (++$count >= $limit) {
-			if (sizeof($words) > $limit) {
+			if (count($words) > $limit) {
 				$text .= ' ...';
 			}
 
@@ -74,7 +76,7 @@ function leistungsschutzrecht_cuttext(string $text): string
 function leistungsschutzrecht_fetchsites()
 {
 	// This list works - but question is how current it is
-	$url = 'https://leistungsschutzrecht-stoppen.d-64.org/blacklist.txt';
+	$url      = 'https://leistungsschutzrecht-stoppen.d-64.org/blacklist.txt';
 	$sitelist = DI::httpClient()->fetch($url);
 	$siteurls = explode(',', $sitelist);
 
@@ -89,40 +91,40 @@ function leistungsschutzrecht_fetchsites()
 
 	// I would prefer parsing the list from the original site, but I haven't found a list.
 	// The following stays here to possibly reenable it in the future without having to reinvent the wheel completely.
-/*
-	$sites = array();
+	/*
+		$sites = array();
 
-	$url = "http://www.vg-media.de/lizenzen/digitale-verlegerische-angebote/wahrnehmungsberechtigte-digitale-verlegerische-angebote.html";
+		$url = "http://www.vg-media.de/lizenzen/digitale-verlegerische-angebote/wahrnehmungsberechtigte-digitale-verlegerische-angebote.html";
 
-	$site = Network::fetchUrl($url);
+		$site = Network::fetchUrl($url);
 
-	$doc = new DOMDocument();
-	@$doc->loadHTML($site);
+		$doc = new DOMDocument();
+		@$doc->loadHTML($site);
 
-	$xpath = new DomXPath($doc);
-	$list = $xpath->query("//td/a");
-	foreach ($list as $node) {
-		$attr = array();
-		if ($node->attributes->length)
-			foreach ($node->attributes as $attribute)
-				$attr[$attribute->name] = $attribute->value;
+		$xpath = new DomXPath($doc);
+		$list = $xpath->query("//td/a");
+		foreach ($list as $node) {
+			$attr = array();
+			if ($node->attributes->length)
+				foreach ($node->attributes as $attribute)
+					$attr[$attribute->name] = $attribute->value;
 
-		if (isset($attr["href"])) {
-			$urldata = parse_url($attr["href"]);
+			if (isset($attr["href"])) {
+				$urldata = parse_url($attr["href"]);
 
-			if (isset($urldata["host"]) && !isset($urldata["path"])) {
-				$cleanedurlpart = explode("%", $urldata["host"]);
+				if (isset($urldata["host"]) && !isset($urldata["path"])) {
+					$cleanedurlpart = explode("%", $urldata["host"]);
 
-				$hostname = explode(".", $cleanedurlpart[0]);
-				$site = $hostname[sizeof($hostname) - 2].".".$hostname[sizeof($hostname) - 1];
-				$sites[$site] = $site;
+					$hostname = explode(".", $cleanedurlpart[0]);
+					$site = $hostname[sizeof($hostname) - 2].".".$hostname[sizeof($hostname) - 1];
+					$sites[$site] = $site;
+				}
 			}
 		}
-	}
-*/
+	*/
 
-	if (sizeof($sites)) {
-		DI::config()->set('leistungsschutzrecht', 'sites',$sites);
+	if (count($sites)) {
+		DI::config()->set('leistungsschutzrecht', 'sites', $sites);
 	}
 }
 
@@ -134,7 +136,7 @@ function leistungsschutzrecht_is_member_site(string $url): bool
 		return false;
 	}
 
-	if (sizeof($sites) == 0) {
+	if (count($sites) == 0) {
 		return false;
 	}
 
@@ -155,7 +157,7 @@ function leistungsschutzrecht_is_member_site(string $url): bool
 		return false;
 	}
 
-	$site = $hostname[sizeof($hostname) - 2] . '.' . $hostname[sizeof($hostname) - 1];
+	$site = $hostname[count($hostname) - 2] . '.' . $hostname[count($hostname) - 1];
 
 	return isset($sites[$site]);
 }

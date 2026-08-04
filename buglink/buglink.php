@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: BugLink
  * Description: Show link to Friendica bug site at bottom of page

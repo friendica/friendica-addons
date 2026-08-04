@@ -1,0 +1,42 @@
+# SPDX-FileCopyrightText: 2010-2026 the Friendica project
+#
+# SPDX-License-Identifier: CC0-1.0
+
+includes:
+    - ../../vendor/phpstan/phpstan-deprecation-rules/rules.neon
+
+parameters:
+    level: 3
+
+    phpVersion: 80200 # PHP 8.2
+
+    paths:
+        - ../
+
+    scanDirectories:
+        - ../../mod
+        - ../../src
+        - ../../static
+        - ../../vendor
+        - ../../view
+
+    excludePaths:
+        analyse:
+            - ../*/lang/*
+            - ../*/vendor/*
+            - ../convert/UnitConvertor.php
+            - ../pumpio/oauth/*
+            - ../mailstream/phpmailer/*
+        analyseAndScan:
+            - ../../vendor/rector/
+            - ../../vendor/phpstan/
+
+    dynamicConstantNames:
+        - DB_UPDATE_VERSION
+
+    ignoreErrors:
+        -
+            message: '#Call to method createFromArray\(\) of deprecated class Friendica\\Navigation\\Notifications\\Repository\\Notify#'
+            identifier: method.deprecatedClass
+            path: ../
+            count: 2

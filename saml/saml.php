@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Name: SAML SSO and SLO
  * Description: replace login and registration with a SAML identity provider.
@@ -50,15 +51,15 @@ function saml_metadata()
 	try {
 		$settings = new \OneLogin\Saml2\Settings(saml_settings());
 		$metadata = $settings->getSPMetadata();
-		$errors = $settings->validateMetadata($metadata);
+		$errors   = $settings->validateMetadata($metadata);
 
 		if (empty($errors)) {
 			header('Content-Type: text/xml');
 			echo $metadata;
 		} else {
 			throw new \OneLogin\Saml2\Error(
-				'Invalid SP metadata: '.implode(', ', $errors),
-				\OneLogin\Saml2\Error::METADATA_SP_INVALID
+				'Invalid SP metadata: ' . implode(', ', $errors),
+				\OneLogin\Saml2\Error::METADATA_SP_INVALID,
 			);
 		}
 	} catch (Exception $e) {
@@ -113,14 +114,14 @@ EOL;
 function saml_is_configured()
 {
 	return
-		DI::config()->get('saml', 'idp_id') &&
-		DI::config()->get('saml', 'client_id') &&
-		DI::config()->get('saml', 'sso_url') &&
-		DI::config()->get('saml', 'slo_request_url') &&
-		DI::config()->get('saml', 'slo_response_url') &&
-		DI::config()->get('saml', 'sp_key') &&
-		DI::config()->get('saml', 'sp_cert') &&
-		DI::config()->get('saml', 'idp_cert');
+		DI::config()->get('saml', 'idp_id')
+		&& DI::config()->get('saml', 'client_id')
+		&& DI::config()->get('saml', 'sso_url')
+		&& DI::config()->get('saml', 'slo_request_url')
+		&& DI::config()->get('saml', 'slo_response_url')
+		&& DI::config()->get('saml', 'sp_key')
+		&& DI::config()->get('saml', 'sp_cert')
+		&& DI::config()->get('saml', 'idp_cert');
 }
 
 function saml_sso_initiate(string &$body)
@@ -130,7 +131,7 @@ function saml_sso_initiate(string &$body)
 		return;
 	}
 
-	$auth = new \OneLogin\Saml2\Auth(saml_settings());
+	$auth        = new \OneLogin\Saml2\Auth(saml_settings());
 	$ssoBuiltUrl = $auth->login(null, [], false, false, true);
 	DI::session()->set('AuthNRequestID', $auth->getLastRequestID());
 	header('Pragma: no-cache');
@@ -141,7 +142,7 @@ function saml_sso_initiate(string &$body)
 
 function saml_sso_reply()
 {
-	$auth = new \OneLogin\Saml2\Auth(saml_settings());
+	$auth      = new \OneLogin\Saml2\Auth(saml_settings());
 	$requestID = null;
 
 	if (DI::session()->exists('AuthNRequestID')) {
@@ -164,9 +165,9 @@ function saml_sso_reply()
 		exit();
 	}
 
-	$username = $auth->getNameId();
-	$email = $auth->getAttributeWithFriendlyName('email')[0];
-	$name = $auth->getAttributeWithFriendlyName('givenName')[0];
+	$username  = $auth->getNameId();
+	$email     = $auth->getAttributeWithFriendlyName('email')[0];
+	$name      = $auth->getAttributeWithFriendlyName('givenName')[0];
 	$last_name = $auth->getAttributeWithFriendlyName('surname')[0];
 
 	if (strlen($last_name)) {
@@ -235,61 +236,61 @@ function saml_input($key, $label, $description)
 			DI::config()->get('saml', $key),
 			$description,
 			true, // all the fields are required
-		]
+		],
 	];
 }
 
 function saml_addon_admin(string &$o)
 {
-	$form =
-		saml_input(
+	$form
+		= saml_input(
 			'settings_statement',
 			DI::l10n()->t('Settings statement'),
 			DI::l10n()->t('A statement on the settings page explaining where the user should go to change '
-					. 'their e-mail and password. BBCode allowed.')
-		) +
-		saml_input(
+					. 'their e-mail and password. BBCode allowed.'),
+		)
+		+ saml_input(
 			'idp_id',
 			DI::l10n()->t('IdP ID'),
-			DI::l10n()->t('Identity provider (IdP) entity URI (e.g., https://example.com/auth/realms/user).')
-		) +
-		saml_input(
+			DI::l10n()->t('Identity provider (IdP) entity URI (e.g., https://example.com/auth/realms/user).'),
+		)
+		+ saml_input(
 			'client_id',
 			DI::l10n()->t('Client ID'),
-			DI::l10n()->t('Identifier assigned to client by the identity provider (IdP).')
-		) +
-		saml_input(
+			DI::l10n()->t('Identifier assigned to client by the identity provider (IdP).'),
+		)
+		+ saml_input(
 			'sso_url',
 			DI::l10n()->t('IdP SSO URL'),
-			DI::l10n()->t('The URL for your identity provider\'s SSO endpoint.')
-		) +
-		saml_input(
+			DI::l10n()->t('The URL for your identity provider\'s SSO endpoint.'),
+		)
+		+ saml_input(
 			'slo_request_url',
 			DI::l10n()->t('IdP SLO request URL'),
-			DI::l10n()->t('The URL for your identity provider\'s SLO request endpoint.')
-		) +
-		saml_input(
+			DI::l10n()->t('The URL for your identity provider\'s SLO request endpoint.'),
+		)
+		+ saml_input(
 			'slo_response_url',
 			DI::l10n()->t('IdP SLO response URL'),
-			DI::l10n()->t('The URL for your identity provider\'s SLO response endpoint.')
-		) +
-		saml_input(
+			DI::l10n()->t('The URL for your identity provider\'s SLO response endpoint.'),
+		)
+		+ saml_input(
 			'sp_key',
 			DI::l10n()->t('SP private key'),
-			DI::l10n()->t('The private key the addon should use to authenticate.')
-		) +
-		saml_input(
+			DI::l10n()->t('The private key the addon should use to authenticate.'),
+		)
+		+ saml_input(
 			'sp_cert',
 			DI::l10n()->t('SP certificate'),
-			DI::l10n()->t('The certficate for the addon\'s private key.')
-		) +
-		saml_input(
+			DI::l10n()->t('The certficate for the addon\'s private key.'),
+		)
+		+ saml_input(
 			'idp_cert',
 			DI::l10n()->t('IdP certificate'),
-			DI::l10n()->t('The x509 certficate for your identity provider.')
-		) +
-		[
-			'$submit'  => DI::l10n()->t('Save Settings'),
+			DI::l10n()->t('The x509 certficate for your identity provider.'),
+		)
+		+ [
+			'$submit' => DI::l10n()->t('Save Settings'),
 		];
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/saml/');
 	$o = Renderer::replaceMacros($t, $form);
@@ -297,7 +298,7 @@ function saml_addon_admin(string &$o)
 
 function saml_addon_admin_post()
 {
-	$set = function ($key) {
+	$set = function ($key): void {
 		$val = (!empty($_POST[$key]) ? trim($_POST[$key]) : '');
 		DI::config()->set('saml', $key, $val);
 	};
@@ -321,7 +322,7 @@ function saml_create_user($username, $email, $name)
 
 	try {
 		$strong = false;
-		$bytes = openssl_random_pseudo_bytes(intval(ceil(PW_LEN * 0.75)), $strong);
+		$bytes  = openssl_random_pseudo_bytes(intval(ceil(PW_LEN * 0.75)), $strong);
 
 		if (!$strong) {
 			throw new Exception('Strong algorithm not available for PRNG.');
@@ -330,9 +331,9 @@ function saml_create_user($username, $email, $name)
 		$user = User::create([
 			'username' => $name,
 			'nickname' => $username,
-			'email'	=> $email,
+			'email'    => $email,
 			'password' => base64_encode($bytes), // should be at least PW_LEN long
-			'verified' => true
+			'verified' => true,
 		]);
 
 		return $user;
@@ -341,11 +342,11 @@ function saml_create_user($username, $email, $name)
 			'Exception while creating user',
 			[
 				'username'  => $username,
-				'email'	 => $email,
-				'name'	  => $name,
+				'email'     => $email,
+				'name'      => $name,
 				'exception' => $e->getMessage(),
-				'trace'	 => $e->getTraceAsString()
-			]
+				'trace'     => $e->getTraceAsString(),
+			],
 		);
 
 		return false;
@@ -394,15 +395,15 @@ function saml_settings()
 			// If you need to specify requested attributes, set a
 			// attributeConsumingService. nameFormat, attributeValue and
 			// friendlyName can be omitted
-			'attributeConsumingService'=> [
-				'serviceName' => 'Friendica SAML SSO and SLO Addon',
-				'serviceDescription' => 'SLO and SSO support for Friendica',
+			'attributeConsumingService' => [
+				'serviceName'         => 'Friendica SAML SSO and SLO Addon',
+				'serviceDescription'  => 'SLO and SSO support for Friendica',
 				'requestedAttributes' => [
 					[
-						'uid' => '',
+						'uid'        => '',
 						'isRequired' => false,
-					]
-				]
+					],
+				],
 			],
 
 			// Specifies info about where and how the <Logout Response> message MUST be
@@ -425,7 +426,7 @@ function saml_settings()
 
 			// Usually x509cert and privateKey of the SP are provided by files placed at
 			// the certs folder. But we can also provide them with the following parameters
-			'x509cert' => DI::config()->get('saml', 'sp_cert'),
+			'x509cert'   => DI::config()->get('saml', 'sp_cert'),
 			'privateKey' => DI::config()->get('saml', 'sp_key'),
 		],
 
@@ -484,6 +485,6 @@ function saml_settings()
 
 			// Sign the Metadata
 			'signMetadata' => true,
-		]
+		],
 	];
 }

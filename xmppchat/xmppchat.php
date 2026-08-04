@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: XMPP Chat
  * Description: Embeds Converse.js XMPP webchat client into Friendica
@@ -83,7 +84,7 @@ function xmppchat_addon_settings(array &$data)
 		'$info'             => DI::l10n()->t('You can connect with any XMPP account from any server. Leave password empty to keep the existing one.'),
 		'$security_title'   => DI::l10n()->t('Security Note'),
 		'$security_text'    => DI::l10n()->t('Your password is stored encrypted on the server. We recommend using a separate password for XMPP.'),
-		'$user_enabled'     => ['enabled', DI::l10n()->t('Enable XMPP Chat'), $user_enabled, DI::l10n()->t('Show the chat widget for your account')],
+		'$user_enabled'     => ['xmppchat', DI::l10n()->t('Enable XMPP Chat'), $user_enabled, DI::l10n()->t('Show the chat widget for your account')],
 		'$use_custom'       => ['use_custom', DI::l10n()->t('Use Custom XMPP Account'), $use_custom, DI::l10n()->t('Enable to use your own XMPP account from any server')],
 		'$custom_jid'       => ['custom_jid', DI::l10n()->t('XMPP Address (JID)'), $custom_jid, DI::l10n()->t('Your full XMPP address (e.g., user@example.org or user@other-server.com)')],
 		'$custom_password'  => ['custom_password', DI::l10n()->t('XMPP Password'), '', DI::l10n()->t('Your XMPP account password (stored encrypted)')],
@@ -107,7 +108,7 @@ function xmppchat_addon_settings_post(array &$b)
 	$uid = DI::userSession()->getLocalUserId();
 
 	if (!empty($b['xmppchat-submit'])) {
-		DI::pConfig()->set($uid, 'xmppchat', 'enabled', !empty($b['enabled']));
+		DI::pConfig()->set($uid, 'xmppchat', 'enabled', !empty($b['xmppchat']));
 		DI::pConfig()->set($uid, 'xmppchat', 'use_custom', !empty($b['use_custom']));
 		DI::pConfig()->set($uid, 'xmppchat', 'custom_jid', trim($b['custom_jid'] ?? ''));
 		DI::pConfig()->set($uid, 'xmppchat', 'custom_websocket_url', trim($b['custom_websocket_url'] ?? ''));

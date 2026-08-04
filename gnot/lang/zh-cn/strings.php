@@ -1,8 +1,11 @@
 <?php
 
-$a->strings["Gnot settings updated."] = "Gnot设置更新了。";
-$a->strings["Gnot Settings"] = "Gnot设置";
-$a->strings["Allows threading of email comment notifications on Gmail and anonymising the subject line."] = "允许邮件评论通知在Gmail和匿名话题行。";
-$a->strings["Enable this addon?"] = "使这个插件／加件可用？";
-$a->strings["Submit"] = "提交";
-$a->strings["[Friendica:Notify] Comment to conversation #%d"] = "[Friendica:Notify]评论在交流#%d";
+if(! function_exists("string_plural_select_zh_CN")) {
+function string_plural_select_zh_CN($n){
+	$n = intval($n);
+	return intval(0);
+}}
+$a->strings['Allows threading of email comment notifications on Gmail and anonymising the subject line.'] = '允许在 Gmail 上发送邮件评论通知并匿名处理。';
+$a->strings['Enable this addon?'] = '启用此插件？';
+$a->strings['Gnot Settings'] = 'Gnot设置';
+$a->strings['[Friendica:Notify] Comment to conversation #%d'] = '[Friendica:通知] 对讨论发表评论#%d';

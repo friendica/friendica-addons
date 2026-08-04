@@ -24,7 +24,7 @@ return [
 		// flagposts (Integer)
 		// flagpostsexpire (Integer)
 		// For users who last logged in over flagposts days ago set post expiry days to flagpostsexpire. 0 to disable.
-		'flagposts' => 0,
+		'flagposts'       => 0,
 		'flagpostsexpire' => 0,
 	],
 ];

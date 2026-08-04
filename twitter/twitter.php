@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Twitter Post Connector
  * Description: Post to Twitter
@@ -77,12 +78,12 @@ function twitter_jot_nets(array &$jotnets_fields)
 
 	if (DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'post')) {
 		$jotnets_fields[] = [
-			'type' => 'checkbox',
+			'type'  => 'checkbox',
 			'field' => [
 				'twitter_enable',
 				DI::l10n()->t('Post to Twitter'),
-				DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'post_by_default')
-			]
+				DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'post_by_default'),
+			],
 		];
 	}
 }
@@ -98,17 +99,17 @@ function twitter_settings_post()
 	$access_token  = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'access_token');
 	$access_secret = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'access_secret');
 
-	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'post',            (bool)$_POST['twitter-enable']);
-	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'post_by_default', (bool)$_POST['twitter-default']);
-	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'api_key',         $_POST['twitter-api-key']);
-	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'api_secret',      $_POST['twitter-api-secret']);
-	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'access_token',    $_POST['twitter-access-token']);
-	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'access_secret',   $_POST['twitter-access-secret']);
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'post', (bool) $_POST['twitter-enable']);
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'post_by_default', (bool) $_POST['twitter-default']);
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'api_key', $_POST['twitter-api-key']);
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'api_secret', $_POST['twitter-api-secret']);
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'access_token', $_POST['twitter-access-token']);
+	DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'twitter', 'access_secret', $_POST['twitter-access-secret']);
 
 	if (
-		empty(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'last_status')) ||
-		($api_key != $_POST['twitter-api-key']) || ($api_secret != $_POST['twitter-api-secret']) ||
-		($access_token != $_POST['twitter-access-token']) || ($access_secret != $_POST['twitter-access-secret'])
+		empty(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'last_status'))
+		|| ($api_key != $_POST['twitter-api-key']) || ($api_secret != $_POST['twitter-api-secret'])
+		|| ($access_token != $_POST['twitter-access-token']) || ($access_secret != $_POST['twitter-access-secret'])
 	) {
 		twitter_test_connection(DI::userSession()->getLocalUserId());
 	}
@@ -120,8 +121,8 @@ function twitter_settings(array &$data)
 		return;
 	}
 
-	$enabled      = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'post') ?? false;
-	$def_enabled  = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'post_by_default') ?? false;
+	$enabled     = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'post')            ?? false;
+	$def_enabled = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'post_by_default') ?? false;
 
 	$api_key       = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'api_key');
 	$api_secret    = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'api_secret');
@@ -169,8 +170,8 @@ function twitter_hook_fork(array &$b)
 	$post = $b['data'];
 
 	if (
-		$post['deleted'] || ($post['private'] == Item::PRIVATE) || ($post['created'] !== $post['edited']) ||
-		!strstr($post['postopts'], 'twitter') || ($post['gravity'] != Item::GRAVITY_PARENT)
+		$post['deleted'] || ($post['private'] == Item::PRIVATE) || ($post['created'] !== $post['edited'])
+		|| !strstr($post['postopts'], 'twitter') || ($post['gravity'] != Item::GRAVITY_PARENT)
 	) {
 		$b['execute'] = false;
 		return;
@@ -187,8 +188,8 @@ function twitter_post_local(array &$b)
 		return;
 	}
 
-	$twitter_post   = (bool)DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'post');
-	$twitter_enable = (($twitter_post && !empty($_REQUEST['twitter_enable'])) ? (bool)$_REQUEST['twitter_enable'] : false);
+	$twitter_post   = (bool) DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'post');
+	$twitter_enable = (($twitter_post && !empty($_REQUEST['twitter_enable'])) ? (bool) $_REQUEST['twitter_enable'] : false);
 
 	// if API is used, default to the chosen settings
 	if ($b['api_source'] && intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'twitter', 'post_by_default'))) {
@@ -272,7 +273,7 @@ function twitter_post_hook(array &$b)
 			$status = [
 				'code'    => $exception->getCode(),
 				'reason'  => $exception->getResponse()->getReasonPhrase(),
-				'content' => $exception->getMessage()
+				'content' => $exception->getMessage(),
 			];
 			DI::pConfig()->set($b['uid'], 'twitter', 'last_status', $status);
 			if ($key == 0) {
@@ -282,7 +283,7 @@ function twitter_post_hook(array &$b)
 		}
 
 		$in_reply_to_tweet_id = $id;
-		$media_ids = [];
+		$media_ids            = [];
 	}
 }
 
@@ -333,8 +334,8 @@ function twitter_upload_image(int $uid, array $image, int $retrial)
 			$data = [
 				'media_id' => $media->media_id_string,
 				'alt_text' => [
-					'text' => substr($image['description'], 0, 1000)
-				]
+					'text' => substr($image['description'], 0, 1000),
+				],
 			];
 			$ret = twitter_post($uid, 'https://upload.twitter.com/1.1/media/metadata/create.json', 'json', $data);
 			DI::logger()->info('Metadata create', ['uid' => $uid, 'data' => $data, 'return' => $ret]);
@@ -361,7 +362,7 @@ function twitter_post(int $uid, string $url, string $type, array $data): stdClas
 	$stack->push($middleware);
 
 	$client = new Client([
-		'handler' => $stack
+		'handler' => $stack,
 	]);
 
 	$response = $client->post($url, ['auth' => 'oauth', $type => $data]);
@@ -370,12 +371,12 @@ function twitter_post(int $uid, string $url, string $type, array $data): stdClas
 	$status = [
 		'code'    => $response->getStatusCode(),
 		'reason'  => $response->getReasonPhrase(),
-		'content' => $body
+		'content' => $body,
 	];
 
 	DI::pConfig()->set($uid, 'twitter', 'last_status', $status);
 
-	$content = json_decode($body) ?? new stdClass;
+	$content = json_decode($body) ?? new stdClass();
 	DI::logger()->debug('Success', ['content' => $content]);
 	return $content;
 }
@@ -394,25 +395,25 @@ function twitter_test_connection(int $uid)
 	$stack->push($middleware);
 
 	$client = new Client([
-		'handler' => $stack
+		'handler' => $stack,
 	]);
 
 	try {
 		$response = $client->get('https://api.twitter.com/2/users/me', ['auth' => 'oauth']);
-		$status = [
-			'code'   => $response->getStatusCode(),
+		$status   = [
+			'code'    => $response->getStatusCode(),
 			'reason'  => $response->getReasonPhrase(),
-			'content' => $response->getBody()->getContents()
+			'content' => $response->getBody()->getContents(),
 		];
-		DI::pConfig()->set(1, 'twitter', 'last_status',  $status);
+		DI::pConfig()->set(1, 'twitter', 'last_status', $status);
 		DI::logger()->info('Test successful', ['uid' => $uid]);
 	} catch (RequestException $exception) {
 		$status = [
 			'code'    => $exception->getCode(),
 			'reason'  => $exception->getResponse()->getReasonPhrase(),
-			'content' => $exception->getMessage()
+			'content' => $exception->getMessage(),
 		];
-		DI::pConfig()->set(1, 'twitter', 'last_status',  $status);
+		DI::pConfig()->set(1, 'twitter', 'last_status', $status);
 		DI::logger()->info('Test failed', ['uid' => $uid]);
 	}
 }

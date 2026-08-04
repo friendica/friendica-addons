@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: blockbot
  * Description: Blocking bots based on detecting bots/crawlers/spiders via the user agent and http_from header.
@@ -29,10 +30,10 @@ function blockbot_addon_admin(string &$o)
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/blockbot/');
 
 	$o = Renderer::replaceMacros($t, [
-		'$submit'             => DI::l10n()->t('Save Settings'),
-		'$security_checker'   => ['security_checker', DI::l10n()->t('Allow security checkers'), DI::config()->get('blockbot', 'security_checker'), DI::l10n()->t("Don't block security checkers. They can be used for good or bad.")],
-		'$http_libraries'     => ['http_libraries', DI::l10n()->t('Allow generic HTTP libraries'), DI::config()->get('blockbot', 'http_libraries'), DI::l10n()->t("Don't block agents from generic HTTP libraries that could be used for good or for bad and that currently can't be traced back to any known Fediverse project.")],
-		'$training'           => ['training', DI::l10n()->t('Training mode'), DI::config()->get('blockbot', 'training'), DI::l10n()->t("Activates the training mode. This is only meant for developing purposes. Don't activate this on a production machine. This can cut communication with some systems.")],
+		'$submit'           => DI::l10n()->t('Save Settings'),
+		'$security_checker' => ['security_checker', DI::l10n()->t('Allow security checkers'), DI::config()->get('blockbot', 'security_checker'), DI::l10n()->t("Don't block security checkers. They can be used for good or bad.")],
+		'$http_libraries'   => ['http_libraries', DI::l10n()->t('Allow generic HTTP libraries'), DI::config()->get('blockbot', 'http_libraries'), DI::l10n()->t("Don't block agents from generic HTTP libraries that could be used for good or for bad and that currently can't be traced back to any known Fediverse project.")],
+		'$training'         => ['training', DI::l10n()->t('Training mode'), DI::config()->get('blockbot', 'training'), DI::l10n()->t("Activates the training mode. This is only meant for developing purposes. Don't activate this on a production machine. This can cut communication with some systems.")],
 	]);
 }
 
@@ -176,7 +177,7 @@ function blockbot_save($database, $userAgent)
 	}
 
 	$resource = dba_open(System::getTempPath() . '/' . $database, 'cl');
-	$result = dba_fetch($userAgent, $resource);
+	$result   = dba_fetch($userAgent, $resource);
 	if ($result === false) {
 		dba_insert($userAgent, true, $resource);
 	}
@@ -257,7 +258,7 @@ function blockbot_is_crawler(array $parts): bool
 {
 	$agents = [
 		'+http://yourls.org', 'adbeat.com/policy', 'https://gtmetrix.com', 'hubspot', 'nutch-',
-		'openwebspider'
+		'openwebspider',
 	];
 	foreach ($parts as $part) {
 		foreach ($agents as $agent) {
@@ -475,6 +476,7 @@ function blockbot_is_social_media(array $parts): bool
 		'ruby, mastodon', 'nextcloud social', 'camo asset proxy', 'smithereen', 'sorasns',
 		'cherrypick', 'bonfire activitypub federation', 'upub+0.1.0', 'plume', 'incestoma',
 		'gyptazyfedi', 'apogee', 'quolibet', 'magpie-crawler', 'redditbot', 'facebookplatform',
+		'activitypub.bot',
 	];
 
 	foreach ($parts as $part) {
@@ -672,23 +674,23 @@ function blockbot_get_parts(string $agent): array
 	$has_brackets = false;
 	for ($pos = 0; $pos < strlen($agent); $pos++) {
 		if ((strpos(substr($agent, $pos), '(') === false) && ($level == 0)) {
-			$part = substr($agent, $pos);
+			$part  = substr($agent, $pos);
 			$parts = array_merge($parts, blockbot_split_parts($part, strpos($part, '/'), !$has_brackets));
 			break;
 		} elseif (substr($agent, $pos, 1) == '(') {
 			$level++;
 			$has_brackets = true;
 			if ($level == 1) {
-				$part = substr($agent, $end, $pos - $end);
+				$part  = substr($agent, $end, $pos - $end);
 				$parts = array_merge($parts, blockbot_split_parts($part, $start != 0, false));
 				$start = $pos + 1;
 			}
 		} elseif (substr($agent, $pos, 1) == ')') {
 			$level--;
 			if ($level == 0) {
-				$part = substr($agent, $start, $pos - $start);
+				$part  = substr($agent, $start, $pos - $start);
 				$parts = array_merge($parts, blockbot_split_parts($part, false, true));
-				$end = $pos + 1;
+				$end   = $pos + 1;
 			}
 		}
 	}
@@ -757,7 +759,7 @@ function blockbot_remove_browser_parts(array $parts): array
 
 function blockbot_clean_part(string $part): string
 {
-	$part = trim($part);
+	$part     = trim($part);
 	$subparts = [];
 	foreach (explode(' ', $part) as $subpart) {
 		$subpart = trim($subpart, ' +,');
@@ -770,20 +772,20 @@ function blockbot_clean_part(string $part): string
 
 function blockbot_split_parts(string $agent, bool $parse_spaces, bool $parse_semicolon): array
 {
-	$agent = strtolower(trim($agent, ' ;'));
+	$agent   = strtolower(trim($agent, ' ;'));
 	$cleaned = [];
 
 	while (preg_match('=\w+[\s\w/\._\-]*/\d+[^;\s]*=', $agent, $matches)) {
 		$part = $matches[0];
 		if (preg_match('=/\d+[^;\s]*=', $part, $matches, PREG_OFFSET_CAPTURE)) {
 			$cleaned[] = substr($part, 0, $matches[0][1]);
-			$part = substr($part, 0, $matches[0][1] +  strlen($matches[0][0]));
+			$part      = substr($part, 0, $matches[0][1] + strlen($matches[0][0]));
 		}
 		$agent = trim(str_replace($part, '', $agent));
 	}
 	if ($parse_semicolon && strpos($agent, ';') !== false) {
 		$parse_spaces = false;
-		$parts = [];
+		$parts        = [];
 		foreach (explode(';', $agent) as $part) {
 			$parts[] = blockbot_clean_part($part);
 		}
@@ -804,10 +806,10 @@ function blockbot_split_parts(string $agent, bool $parse_spaces, bool $parse_sem
 			while (($pos_space = strpos($part, ' ')) !== false && ($pos_slash = strpos($part, '/')) !== false) {
 				if ($pos_space > $pos_slash) {
 					$subparts[] = substr($part, 0, $pos_space);
-					$part = trim(substr($part, $pos_space + 1), ' +,-;');
+					$part       = trim(substr($part, $pos_space + 1), ' +,-;');
 				} else {
 					$subparts[] = $part;
-					$part = '';
+					$part       = '';
 				}
 			}
 			if ($part != '') {

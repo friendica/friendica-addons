@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Smileybutton
  * Description: Adds a smileybutton to the Inputbox
@@ -20,7 +21,7 @@ function smileybutton_jot_tool(string &$body)
 {
 	// this plugin may have smilies mobile devices do not have, disable for mobile by uncommenting return below
 	if (DI::mode()->isMobile() || DI::mode()->isMobile()) {
-//		return;
+		//		return;
 	}
 
 	$texts = [
@@ -72,7 +73,7 @@ function smileybutton_jot_tool(string &$body)
 		'<img class="smiley" src="' . DI::baseUrl() . '/images/like.gif" alt=":like" />',
 		'<img class="smiley" src="' . DI::baseUrl() . '/images/dislike.gif" alt=":dislike" />',
 		'<img class="smiley" src="' . DI::baseUrl() . '/images/friendica-16.png" alt="~friendica" />',
-		'<img class="smiley" src="' . DI::baseUrl() . '/images/rhash-16.png" alt="red" />'
+		'<img class="smiley" src="' . DI::baseUrl() . '/images/rhash-16.png" alt="red" />',
 	];
 
 	// Call hooks to get aditional smileies from other addons
@@ -135,4 +136,3 @@ function smileybutton_jot_tool(string &$body)
 	</script>
 EOT;
 }
-

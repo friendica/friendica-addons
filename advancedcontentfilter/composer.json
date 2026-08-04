@@ -12,13 +12,13 @@
     ],
     "require": {
         "slim/slim": "^4",
-        "symfony/expression-language": "^3.4"
+        "symfony/expression-language": "^7.4"
     },
     "license": "3-clause BSD license",
     "minimum-stability": "stable",
     "config": {
         "platform": {
-            "php": "7.4"
+            "php": "8.2"
         },
         "optimize-autoloader": true,
         "autoloader-suffix": "AdvancedContentFilterAddon",

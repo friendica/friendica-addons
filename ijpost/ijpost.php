@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Insanejournal Post Connector
  * Description: Post to Insanejournal
@@ -20,10 +21,10 @@ use Friendica\Util\XML;
 
 function ijpost_install()
 {
-	Hook::register('post_local',           'addon/ijpost/ijpost.php', 'ijpost_post_local');
-	Hook::register('notifier_normal',      'addon/ijpost/ijpost.php', 'ijpost_send');
-	Hook::register('jot_networks',         'addon/ijpost/ijpost.php', 'ijpost_jot_nets');
-	Hook::register('connector_settings',      'addon/ijpost/ijpost.php', 'ijpost_settings');
+	Hook::register('post_local', 'addon/ijpost/ijpost.php', 'ijpost_post_local');
+	Hook::register('notifier_normal', 'addon/ijpost/ijpost.php', 'ijpost_send');
+	Hook::register('jot_networks', 'addon/ijpost/ijpost.php', 'ijpost_jot_nets');
+	Hook::register('connector_settings', 'addon/ijpost/ijpost.php', 'ijpost_settings');
 	Hook::register('connector_settings_post', 'addon/ijpost/ijpost.php', 'ijpost_settings_post');
 }
 
@@ -35,12 +36,12 @@ function ijpost_jot_nets(array &$jotnets_fields)
 
 	if (DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'ijpost', 'post')) {
 		$jotnets_fields[] = [
-			'type' => 'checkbox',
+			'type'  => 'checkbox',
 			'field' => [
 				'ijpost_enable',
 				DI::l10n()->t('Post to Insanejournal'),
-				DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'ijpost', 'post_by_default')
-			]
+				DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'ijpost', 'post_by_default'),
+			],
 		];
 	}
 }
@@ -93,7 +94,7 @@ function ijpost_post_local(array &$b)
 		return;
 	}
 
-	$ij_post   = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'ijpost', 'post'));
+	$ij_post = intval(DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'ijpost', 'post'));
 
 	$ij_enable = (($ij_post && !empty($_REQUEST['ijpost_enable'])) ? intval($_REQUEST['ijpost_enable']) : 0);
 
@@ -135,17 +136,17 @@ function ijpost_send(array &$b)
 	// will be set to the same thing.
 
 	$user = User::getById($b['uid']);
-	$tz = $user['timezone'] ?: 'UTC';
+	$tz   = $user['timezone'] ?: 'UTC';
 
 	$ij_username = DI::pConfig()->get($b['uid'], 'ijpost', 'ij_username');
 	$ij_password = DI::pConfig()->get($b['uid'], 'ijpost', 'ij_password');
-	$ij_blog = 'http://www.insanejournal.com/interface/xmlrpc';
+	$ij_blog     = 'http://www.insanejournal.com/interface/xmlrpc';
 
 	if ($ij_username && $ij_password && $ij_blog) {
 		$title = $b['title'];
-		$post = BBCode::convertForUriId($b['uri-id'], $b['body'], BBCode::CONNECTORS);
-		$post = XML::escape($post);
-		$tags = Tag::getCSVByURIId($b['uri-id'], [Tag::HASHTAG]);
+		$post  = BBCode::convertForUriId($b['uri-id'], $b['body'], BBCode::CONNECTORS);
+		$post  = XML::escape($post);
+		$tags  = Tag::getCSVByURIId($b['uri-id'], [Tag::HASHTAG]);
 
 		$date = DateTimeFormat::convert($b['created'], $tz);
 		$year = intval(substr($date, 0, 4));

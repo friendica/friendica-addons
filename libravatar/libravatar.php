@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Libravatar Support
  * Description: If there is no avatar image for a new user or contact this addon will look for one at Libravatar. Please disable Gravatar addon if you use this one. (requires PHP >= 5.3)
@@ -16,7 +17,7 @@ use Friendica\Core\Config\Util\ConfigFileManager;
  */
 function libravatar_install()
 {
-	Hook::register('load_config',   'addon/libravatar/libravatar.php', 'libravatar_load_config');
+	Hook::register('load_config', 'addon/libravatar/libravatar.php', 'libravatar_load_config');
 	Hook::register('avatar_lookup', 'addon/libravatar/libravatar.php', 'libravatar_lookup');
 	DI::logger()->notice("registered libravatar in avatar_lookup hook");
 }
@@ -46,7 +47,7 @@ function libravatar_lookup(array &$b)
 	$libravatar->setDefault($default_avatar);
 	$avatar_url = $libravatar->getUrl($b['email']);
 
-	$b['url'] = $avatar_url;
+	$b['url']     = $avatar_url;
 	$b['success'] = true;
 }
 
@@ -61,24 +62,24 @@ function libravatar_addon_admin(string &$o)
 
 	// Available options for the select boxes
 	$default_avatars = [
-		'mm' => DI::l10n()->t('generic profile image'),
+		'mm'        => DI::l10n()->t('generic profile image'),
 		'identicon' => DI::l10n()->t('random geometric pattern'),
 		'monsterid' => DI::l10n()->t('monster face'),
-		'wavatar' => DI::l10n()->t('computer generated face'),
-		'retro' => DI::l10n()->t('retro arcade style face'),
-		'robohash' => DI::l10n()->t('roboter face'),
-		'pagan' => DI::l10n()->t('retro adventure game character'),
+		'wavatar'   => DI::l10n()->t('computer generated face'),
+		'retro'     => DI::l10n()->t('retro arcade style face'),
+		'robohash'  => DI::l10n()->t('roboter face'),
+		'pagan'     => DI::l10n()->t('retro adventure game character'),
 	];
 
 	$addonHelper = DI::addonHelper();
 
 	if ($addonHelper->isAddonEnabled('gravatar')) {
-		$o = '<h5>' .DI::l10n()->t('Information') .'</h5><p>' .DI::l10n()->t('Gravatar addon is installed. Please disable the Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if nothing was found at Libravatar.') .'</p><br><br>';
+		$o = '<h5>' . DI::l10n()->t('Information') . '</h5><p>' . DI::l10n()->t('Gravatar addon is installed. Please disable the Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if nothing was found at Libravatar.') . '</p><br><br>';
 	}
 
 	// output Libravatar settings
-	$o .= Renderer::replaceMacros( $t, [
-		'$submit' => DI::l10n()->t('Save Settings'),
+	$o .= Renderer::replaceMacros($t, [
+		'$submit'         => DI::l10n()->t('Save Settings'),
 		'$default_avatar' => ['avatar', DI::l10n()->t('Default avatar image'), $default_avatar, DI::l10n()->t('Select default avatar image if none was found. See README'), $default_avatars],
 	]);
 }

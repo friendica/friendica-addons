@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: LiveJournal Post Connector
  * Description: Post to LiveJournal
@@ -21,10 +22,10 @@ use Friendica\Util\XML;
 
 function ljpost_install()
 {
-	Hook::register('post_local',   'addon/ljpost/ljpost.php', 'ljpost_post_local');
-	Hook::register('notifier_normal',  'addon/ljpost/ljpost.php', 'ljpost_send');
+	Hook::register('post_local', 'addon/ljpost/ljpost.php', 'ljpost_post_local');
+	Hook::register('notifier_normal', 'addon/ljpost/ljpost.php', 'ljpost_send');
 	Hook::register('jot_networks', 'addon/ljpost/ljpost.php', 'ljpost_jot_nets');
-	Hook::register('connector_settings',  'addon/ljpost/ljpost.php', 'ljpost_settings');
+	Hook::register('connector_settings', 'addon/ljpost/ljpost.php', 'ljpost_settings');
 	Hook::register('connector_settings_post', 'addon/ljpost/ljpost.php', 'ljpost_settings_post');
 }
 
@@ -36,7 +37,7 @@ function ljpost_jot_nets(array &$jotnets_fields)
 
 	if (DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'ljpost', 'post')) {
 		$jotnets_fields[] = [
-			'type' => 'checkbox',
+			'type'  => 'checkbox',
 			'field' => [
 				'ljpost_enable',
 				DI::l10n()->t('Post to LiveJournal'),
@@ -56,7 +57,7 @@ function ljpost_settings(array &$data)
 	$ij_username = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'ljpost', 'ij_username');
 	$def_enabled = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'ljpost', 'post_by_default');
 
-	$t = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/ljpost/');
+	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/ljpost/');
 	$html = Renderer::replaceMacros($t, [
 		'$enabled'   => ['ljpost', DI::l10n()->t('Enable LiveJournal Post Addon'), $enabled],
 		'$username'  => ['ij_username', DI::l10n()->t('LiveJournal username'), $ij_username],
@@ -66,10 +67,10 @@ function ljpost_settings(array &$data)
 
 	$data = [
 		'connector' => 'ljpost',
-		'title' => DI::l10n()->t('LiveJournal Export'),
-		'image' => 'addon/ljpost/livejournal.png',
+		'title'     => DI::l10n()->t('LiveJournal Export'),
+		'image'     => 'addon/ljpost/livejournal.png',
 		'enabled'   => $enabled,
-		'html'  => $html,
+		'html'      => $html,
 	];
 }
 
@@ -136,11 +137,11 @@ function ljpost_send(array &$b)
 	// will be set to the same thing.
 
 	$user = User::getById($b['uid']);
-	$tz = $user['timezone'] ?: 'UTC';
+	$tz   = $user['timezone'] ?: 'UTC';
 
 	$lj_username = XML::escape(DI::pConfig()->get($b['uid'], 'ljpost', 'lj_username'));
 	$lj_password = XML::escape(DI::pConfig()->get($b['uid'], 'ljpost', 'lj_password'));
-	$lj_journal = XML::escape(DI::pConfig()->get($b['uid'], 'ljpost', 'lj_journal'));
+	$lj_journal  = XML::escape(DI::pConfig()->get($b['uid'], 'ljpost', 'lj_journal'));
 	//	if(! $lj_journal)
 	//		$lj_journal = $lj_username;
 
@@ -151,9 +152,9 @@ function ljpost_send(array &$b)
 
 	if ($lj_username && $lj_password && $lj_blog) {
 		$title = XML::escape($b['title']);
-		$post = BBCode::convertForUriId($b['uri-id'], $b['body'], BBCode::CONNECTORS);
-		$post = XML::escape($post);
-		$tags = Tag::getCSVByURIId($b['uri-id'], [Tag::HASHTAG]);
+		$post  = BBCode::convertForUriId($b['uri-id'], $b['body'], BBCode::CONNECTORS);
+		$post  = XML::escape($post);
+		$tags  = Tag::getCSVByURIId($b['uri-id'], [Tag::HASHTAG]);
 
 		$date = DateTimeFormat::convert($b['created'], $tz);
 		$year = intval(substr($date, 0, 4));

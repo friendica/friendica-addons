@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Impressum
  * Description: Addon to add contact information to the about page (/friendica)
@@ -34,7 +35,7 @@ function impressum_content()
 	DI::baseUrl()->redirect('friendica/');
 }
 
-function obfuscate_email (string $s): string
+function obfuscate_email(string $s): string
 {
 	$s = str_replace('@', '(at)', $s);
 	$s = str_replace('.', '(dot)', $s);
@@ -59,7 +60,7 @@ function impressum_load_config(ConfigFileManager $loader)
 
 function impressum_show(string &$body)
 {
-	$body          .= '<h3>' . DI::l10n()->t('Impressum') . '</h3>';
+	$body .= '<h3>' . DI::l10n()->t('Impressum') . '</h3>';
 	$owner         = DI::config()->get('impressum', 'owner');
 	$owner_profile = DI::config()->get('impressum', 'ownerprofile');
 	$postal        = BBCode::convertForUriId(User::getSystemUriId(), DI::config()->get('impressum', 'postal'));
@@ -73,9 +74,9 @@ function impressum_show(string &$body)
 		}
 
 		if ($email = DI::config()->get('impressum', 'email')) {
-			$body .= '<p><strong>' . DI::l10n()->t('Site Owner').'</strong>: ' . $tmp .'<br /><strong>' . DI::l10n()->t('Email Address') . '</strong>: ' . obfuscate_email($email) . '</p>';
+			$body .= '<p><strong>' . DI::l10n()->t('Site Owner') . '</strong>: ' . $tmp . '<br /><strong>' . DI::l10n()->t('Email Address') . '</strong>: ' . obfuscate_email($email) . '</p>';
 		} else {
-			$body .= '<p><strong>' . DI::l10n()->t('Site Owner').'</strong>: ' . $tmp .'</p>';
+			$body .= '<p><strong>' . DI::l10n()->t('Site Owner') . '</strong>: ' . $tmp . '</p>';
 		}
 
 		if ($postal) {
@@ -90,7 +91,7 @@ function impressum_show(string &$body)
 	}
 }
 
-function impressum_addon_admin_post ()
+function impressum_addon_admin_post()
 {
 	DI::config()->set('impressum', 'owner', strip_tags(trim($_POST['owner'] ?? '')));
 	DI::config()->set('impressum', 'ownerprofile', strip_tags(trim($_POST['ownerprofile'] ?? '')));
@@ -100,16 +101,16 @@ function impressum_addon_admin_post ()
 	DI::config()->set('impressum', 'footer_text', strip_tags(trim($_POST['footer_text'] ?? '')));
 }
 
-function impressum_addon_admin (string &$o)
+function impressum_addon_admin(string &$o)
 {
-	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/impressum/' );
+	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/impressum/');
 	$o = Renderer::replaceMacros($t, [
-		'$submit' => DI::l10n()->t('Save Settings'),
-		'$owner' => ['owner', DI::l10n()->t('Site Owner'), DI::config()->get('impressum','owner'), DI::l10n()->t('The page operators name.')],
-		'$ownerprofile' => ['ownerprofile', DI::l10n()->t('Site Owners Profile'), DI::config()->get('impressum','ownerprofile'), DI::l10n()->t('Profile address of the operator.')],
-		'$postal' => ['postal', DI::l10n()->t('Postal Address'), DI::config()->get('impressum','postal'), DI::l10n()->t('How to contact the operator via snail mail. You can use BBCode here.')],
-		'$notes' => ['notes', DI::l10n()->t('Notes'), DI::config()->get('impressum','notes'), DI::l10n()->t('Additional notes that are displayed beneath the contact information. You can use BBCode here.')],
-		'$email' => ['email', DI::l10n()->t('Email Address'), DI::config()->get('impressum','email'), DI::l10n()->t('How to contact the operator via email. (will be displayed obfuscated)')],
-		'$footer_text' => ['footer_text', DI::l10n()->t('Footer note'), DI::config()->get('impressum','footer_text'), DI::l10n()->t('Text for the footer. You can use BBCode here.')],
+		'$submit'       => DI::l10n()->t('Save Settings'),
+		'$owner'        => ['owner', DI::l10n()->t('Site Owner'), DI::config()->get('impressum', 'owner'), DI::l10n()->t('The page operators name.')],
+		'$ownerprofile' => ['ownerprofile', DI::l10n()->t('Site Owners Profile'), DI::config()->get('impressum', 'ownerprofile'), DI::l10n()->t('Profile address of the operator.')],
+		'$postal'       => ['postal', DI::l10n()->t('Postal Address'), DI::config()->get('impressum', 'postal'), DI::l10n()->t('How to contact the operator via snail mail. You can use BBCode here.')],
+		'$notes'        => ['notes', DI::l10n()->t('Notes'), DI::config()->get('impressum', 'notes'), DI::l10n()->t('Additional notes that are displayed beneath the contact information. You can use BBCode here.')],
+		'$email'        => ['email', DI::l10n()->t('Email Address'), DI::config()->get('impressum', 'email'), DI::l10n()->t('How to contact the operator via email. (will be displayed obfuscated)')],
+		'$footer_text'  => ['footer_text', DI::l10n()->t('Footer note'), DI::config()->get('impressum', 'footer_text'), DI::l10n()->t('Text for the footer. You can use BBCode here.')],
 	]);
 }

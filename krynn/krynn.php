@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: Dragonlance Krynn locales
  * Description: Set a random locale from the Dragonlance Realm of Krynn when posting. Based on the planets friendica addon by Mike Macgirvin and Tony Baldwin
@@ -74,7 +75,7 @@ function krynn_post_hook(&$item)
 
 	$krynn = ['Ansalon','Abanasinia','Solace','Haven','Gateway','Qualinost','Ankatavaka','Pax Tharkas','Ergoth','Newsea','Straights of Schallsea','Plains of Dust','Tarsis','Barren Hills','Que Shu','Citadel of Light','Solinari','Hedge Maze','Tower of High Sorcery','Inn of the Last Home','Last Heroes Tomb','Academy of Sorcery','Gods Row','Temple of Majere','Temple of Kiri-Jolith','Temple of Mishakal','Temple of Zeboim','The Trough','Sad Town','Xak Tsaroth','Zhaman','Skullcap','Saifhum','Karthay','Mithas','Kothas','Silver Dragon Mountain','Silvanesti'];
 
-	$planet = array_rand($krynn,1);
+	$planet           = array_rand($krynn, 1);
 	$item['location'] = $krynn[$planet];
 
 	return;
@@ -93,7 +94,7 @@ function krynn_settings_post($post)
 	}
 
 	if ($_POST['krynn-submit']) {
-		DI::pConfig()->set(DI::userSession()->getLocalUserId(),'krynn','enable',intval($_POST['krynn']));
+		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'krynn', 'enable', intval($_POST['krynn']));
 	}
 }
 
@@ -107,7 +108,7 @@ function krynn_settings(array &$data)
 		return;
 	}
 
-	$enabled = DI::pConfig()->get(DI::userSession()->getLocalUserId(),'krynn','enable');
+	$enabled = DI::pConfig()->get(DI::userSession()->getLocalUserId(), 'krynn', 'enable');
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/krynn/');
 	$html = Renderer::replaceMacros($t, [
@@ -120,5 +121,3 @@ function krynn_settings(array &$data)
 		'html'  => $html,
 	];
 }
-
-
