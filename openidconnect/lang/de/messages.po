@@ -1,0 +1,121 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the openidconnect package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: openidconnect\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-12\n"
+"PO-Revision-Date: 2026-05-12\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "OpenID Connect (OAuth2) Configuration"
+msgstr "OpenID Connect (OAuth2) Konfiguration"
+
+msgid "Discovery URL"
+msgstr "Discovery-URL"
+
+msgid "URL to the OpenID Connect discovery document (e.g., https://example.com/.well-known/openid-configuration)"
+msgstr "URL zum OpenID Connect Discovery-Dokument (z.B. https://example.com/.well-known/openid-configuration)"
+
+msgid "Client ID"
+msgstr "Client-ID"
+
+msgid "The OAuth2 client ID from your identity provider"
+msgstr "Die OAuth2-Client-ID von deinem Identitätsprovider"
+
+msgid "Client Secret"
+msgstr "Client-Secret"
+
+msgid "The OAuth2 client secret from your identity provider"
+msgstr "Das OAuth2-Client-Secret von deinem Identitätsprovider"
+
+msgid "Scopes"
+msgstr "Scopes"
+
+msgid "Space-separated list of scopes to request"
+msgstr "Leerzeichen-getrennte Liste der angeforderten Scopes"
+
+msgid "Button Text"
+msgstr "Button-Text"
+
+msgid "Text for the SSO button on the login page"
+msgstr "Text für den SSO-Button auf der Login-Seite"
+
+msgid "Sign in with OpenID Connect"
+msgstr "Mit OpenID Connect anmelden"
+
+msgid "OIDC Mode"
+msgstr "OIDC-Modus"
+
+msgid "'sub' = match by OpenID subject, 'email' = match by email only"
+msgstr "'sub' = Match nach OpenID Subject, 'email' = Match nur nach E-Mail"
+
+msgid "OpenID Subject (sub)"
+msgstr "OpenID Subject (sub)"
+
+msgid "Email"
+msgstr "E-Mail"
+
+msgid "Auto-create accounts"
+msgstr "Konten automatisch erstellen"
+
+msgid "Automatically create local accounts for users authenticating via OIDC"
+msgstr "Automatisch lokale Konten für Benutzer erstellen, die sich über OIDC authentifizieren"
+
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+msgid "OpenID Connect settings saved."
+msgstr "OpenID Connect Einstellungen gespeichert."
+
+msgid "OpenID Connect provider configuration error."
+msgstr "OpenID Connect Provider-Konfigurationsfehler."
+
+msgid "OpenID Connect authentication failed: missing parameters."
+msgstr "OpenID Connect Authentifizierung fehlgeschlagen: fehlende Parameter."
+
+msgid "OpenID Connect authentication failed: invalid state."
+msgstr "OpenID Connect Authentifizierung fehlgeschlagen: ungültiger State."
+
+msgid "OpenID Connect authentication failed: token exchange error."
+msgstr "OpenID Connect Authentifizierung fehlgeschlagen: Token-Austausch-Fehler."
+
+msgid "OpenID Connect authentication failed: could not retrieve user info."
+msgstr "OpenID Connect Authentifizierung fehlgeschlagen: konnte User-Info nicht abrufen."
+
+msgid "OpenID Connect: Email address not provided by the identity provider."
+msgstr "OpenID Connect: E-Mail-Adresse wurde vom Identitätsprovider nicht bereitgestellt."
+
+msgid "You must be logged in to link your account."
+msgstr "Du musst angemeldet sein, um dein Konto zu verknüpfen."
+
+msgid "OpenID Connect account successfully linked."
+msgstr "OpenID Connect Konto erfolgreich verknüpft."
+
+msgid "OpenID Connect account link removed."
+msgstr "OpenID Connect Konto-Verknüpfung entfernt."
+
+msgid "OpenID Connect is not configured."
+msgstr "OpenID Connect ist nicht konfiguriert."
+
+msgid "Unlink Account"
+msgstr "Verknüpfung aufheben"
+
+msgid "Link OpenID Connect Account"
+msgstr "OpenID Connect Konto verknüpfen"
+
+msgid "Are you sure you want to unlink your OpenID Connect account?"
+msgstr "Bist du sicher, dass du die OpenID Connect Konto-Verknüpfung aufheben möchtest?"
+
+msgid "OpenID Connect"
+msgstr "OpenID Connect"

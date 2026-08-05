@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd"
+		bootstrap="tests/bootstrap.php"
+		colors="true"
+		beStrictAboutOutputDuringTests="false"
+		failOnEmptyTestSuite="true"
+		failOnRisky="false"
+		failOnWarning="false"
+>
+	<testsuites>
+		<testsuite name="openidconnect">
+			<directory suffix="Test.php">tests/</directory>
+		</testsuite>
+	</testsuites>
+
+	<source>
+		<include>
+			<directory suffix=".php">src/</directory>
+		</include>
+	</source>
+</phpunit>
