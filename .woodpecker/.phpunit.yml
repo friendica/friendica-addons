@@ -19,8 +19,6 @@ steps:
   clone_friendica_base:
     image: alpine/git
     commands:
-      - git config --global user.email "no-reply@friendi.ca"
-      - git config --global user.name "Friendica"
       - git config --global --add safe.directory $CI_WORKSPACE
       - git clone https://github.com/friendica/friendica.git .
       - git checkout $CI_COMMIT_BRANCH
@@ -28,13 +26,9 @@ steps:
   clone_friendica_addon:
     image: alpine/git
     commands:
-      - git config --global user.email "no-reply@friendi.ca"
-      - git config --global user.name "Friendica"
       - git clone $CI_REPO_CLONE_URL addon
       - cd addon/
       - git checkout $CI_COMMIT_BRANCH
-      - git fetch origin $CI_COMMIT_REF
-      - git merge $CI_COMMIT_SHA
 
   restore_cache:
     image: meltwater/drone-cache:dev
@@ -87,9 +81,9 @@ steps:
       - if [ "${PHP_MAJOR_VERSION}" = "8.2" -a "${CI_REPO}" = "friendica/friendica-addons" ]; then
           phpenmod xdebug;
           export XDEBUG_MODE=coverage;
-          phpunit --configuration addon/.tests/phpunit.xml --coverage-clover clover.xml;
+          bin/composer.phar run addons:test -- --coverage-clover clover.xml;
         else
-          phpunit --configuration addon/.tests/phpunit.xml;
+          bin/composer.phar run addons:test;
         fi
 
   codecov:
