@@ -3,7 +3,7 @@
 /*
  * Name: Unicode Smilies
  * Description: Smilies based on the unicode emojis - On Linux use https://github.com/eosrei/emojione-color-font to see them in color and http://www.unicode.org/emoji/charts/full-emoji-list.html
- * Version: 1.1.3
+ * Version: 1.1.4
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  * Author: Matthias Ebers <https://loma.ml/profile/one>
  */
@@ -1857,5 +1857,142 @@ function unicode_smilies_smilies(array &$b)
 	Smilies::add($b, ':england:', '&#x1F3F4;&#xE0067;&#xE0062;&#xE0065;&#xE006E;&#xE0067;&#xE007F;');
 	Smilies::add($b, ':scotland:', '&#x1F3F4;&#xE0067;&#xE0062;&#xE0073;&#xE0074;&#xE007F;');
 	Smilies::add($b, ':wales:', '&#x1F3F4;&#xE0067;&#xE0062;&#xE0077;&#xE006C;&#xE0073;&#xE007F;');
+
+// Delta: Unicode 13.0
+
+	// Smileys & Emotionen
+	Smilies::add($b, ':smiling face with tear:', '&#x1F972;');
+	Smilies::add($b, ':disguised face:', '&#x1F978;');
+
+	// Personen, Gesten & Anatomie
+	Smilies::add($b, ':pinched fingers:', '&#x1F90F;');
+	Smilies::add($b, ':ninja:', '&#x1F977;');
+	Smilies::add($b, ':people hugging:', '&#x1FAC2;');
+	Smilies::add($b, ':anatomical heart:', '&#x1FAC0;');
+	Smilies::add($b, ':lungs:', '&#x1FAC1;');
+
+	// Tiere & Natur
+	Smilies::add($b, ':bison:', '&#x1F9AC;');
+	Smilies::add($b, ':mammoth:', '&#x1F9A3;');
+	Smilies::add($b, ':beaver:', '&#x1F9AB;');
+	Smilies::add($b, ':dodo:', '&#x1F9A4;');
+	Smilies::add($b, ':seal:', '&#x1F9AD;');
+	Smilies::add($b, ':feather:', '&#x1FAB6;');
+	Smilies::add($b, ':beetle:', '&#x1FAB2;');
+	Smilies::add($b, ':cockroach:', '&#x1FAB3;');
+	Smilies::add($b, ':fly:', '&#x1FAB0;');
+	Smilies::add($b, ':worm:', '&#x1FAB1;');
+	Smilies::add($b, ':potted plant:', '&#x1FAB4;');
+
+	// Essen & Trinken
+	Smilies::add($b, ':bubble tea:', '&#x1F9CB;');
+	Smilies::add($b, ':teapot:', '&#x1FAD6;');
+	Smilies::add($b, ':fondue:', '&#x1FAD5;');
+	Smilies::add($b, ':blueberries:', '&#x1F9C7;');
+	Smilies::add($b, ':olive:', '&#x1FAD2;');
+	Smilies::add($b, ':bell pepper:', '&#x1FAD1;');
+	Smilies::add($b, ':flatbread:', '&#x1FAD3;');
+	Smilies::add($b, ':tamale:', '&#x1FAD4;');
+
+	// Objekte, Haushalt & Freizeit
+	Smilies::add($b, ':roller skate:', '&#x1F6FC;');
+	Smilies::add($b, ':magic wand:', '&#x1FA84;');
+	Smilies::add($b, ':pinata:', '&#x1FA85;');
+	Smilies::add($b, ':nesting dolls:', '&#x1FA86;');
+	Smilies::add($b, ':rock:', '&#x1FAA8;');
+	Smilies::add($b, ':wood:', '&#x1FAA5;');
+	Smilies::add($b, ':hut:', '&#x1F6D6;');
+	Smilies::add($b, ':pickup truck:', '&#x1F6FB;');
+
+// Delta: Unicode 14.0
+
+	// Smileys & Gesichter
+	Smilies::add($b, ':melting face:', '&#x1F979;');
+	Smilies::add($b, ':face with open eyes and hand over mouth:', '&#x1F92D;');
+	Smilies::add($b, ':face with peeking eye:', '&#x1FAE3;');
+	Smilies::add($b, ':saluting face:', '&#x1FAE1;');
+	Smilies::add($b, ':dotted line face:', '&#x1FAE5;');
+	Smilies::add($b, ':face with diagonal mouth:', '&#x1F612;');
+	Smilies::add($b, ':face holding back tears:', '&#x1F97A;');
+
+	// Hände & Gesten
+	Smilies::add($b, ':rightwards hand:', '&#x1FAF1;');
+	Smilies::add($b, ':leftwards hand:', '&#x1FAF2;');
+	Smilies::add($b, ':palm down hand:', '&#x1FAF3;');
+	Smilies::add($b, ':palm up hand:', '&#x1FAF4;');
+	Smilies::add($b, ':hand with index finger and thumb crossed:', '&#x1FAF0;');
+	Smilies::add($b, ':index pointing at the viewer:', '&#x1FAF5;');
+	Smilies::add($b, ':heart hands:', '&#x1FAF6;');
+
+	// Personen, Natur & Objekte
+	Smilies::add($b, ':biting lip:', '&#x1FAE6;');
+	Smilies::add($b, ':person with crown:', '&#x1FADF;');
+	Smilies::add($b, ':coral:', '&#x1FAB8;');
+	Smilies::add($b, ':lotus:', '&#x1FAB7;');
+	Smilies::add($b, ':empty nest:', '&#x1FAB9;');
+	Smilies::add($b, ':nest with eggs:', '&#x1FABA;');
+	Smilies::add($b, ':beans:', '&#x1FAD8;');
+	Smilies::add($b, ':jar:', '&#x1FAD9;');
+	Smilies::add($b, ':playground slide:', '&#x1F6DD;');
+	Smilies::add($b, ':wheel:', '&#x1F6DE;');
+	Smilies::add($b, ':ring buoy:', '&#x1F6DF;');
+	Smilies::add($b, ':mirror ball:', '&#x1FAA9;');
+	Smilies::add($b, ':low battery:', '&#x1FAAB;');
+	Smilies::add($b, ':folding hand fan:', '&#x1FAAD;');
+	Smilies::add($b, ':hair pick:', '&#x1FAAE;');
+	Smilies::add($b, ':identification card:', '&#x1FAAA;');
+
+// Delta: Unicode 15.0
+
+	// Smileys & Emotionen
+	Smilies::add($b, ':shaking face:', '&#x1FAE8;');
+
+	// Herzen
+	Smilies::add($b, ':pink heart:', '&#x1FA77;');
+	Smilies::add($b, ':light blue heart:', '&#x1FA75;');
+	Smilies::add($b, ':grey heart:', '&#x1FA76;');
+
+	// Gestik & Hände
+	Smilies::add($b, ':leftwards pushing hand:', '&#x1FAF7;');
+	Smilies::add($b, ':rightwards pushing hand:', '&#x1FAF8;');
+
+	// Tiere & Natur
+	Smilies::add($b, ':moose:', '&#x1FACE;');
+	Smilies::add($b, ':donkey:', '&#x1FACF;');
+	Smilies::add($b, ':goose:', '&#x1FABF;');
+	Smilies::add($b, ':jellyfish:', '&#x1FABC;');
+	Smilies::add($b, ':wings:', '&#x1FABD;');
+
+	// Essen & Pflanzen
+	Smilies::add($b, ':ginger root:', '&#x1FADA;');
+	Smilies::add($b, ':pea pod:', '&#x1FADB;');
+	Smilies::add($b, ':hyacinth:', '&#x1FAC5;');
+
+	// Musik, Objekte & Symbole
+	Smilies::add($b, ':maracas:', '&#x1FA87;');
+	Smilies::add($b, ':flute:', '&#x1FA88;');
+	Smilies::add($b, ':wireless:', '&#x1F6DC;');
+
+// Delta: Unicode 16.0
+
+	// Smileys & Emotionen
+	Smilies::add($b, ':face with bags under eyes:', '&#x1FAE9;');
+
+	// Personen & Körper
+	Smilies::add($b, ':fingerprint:', '&#x1FAC6;');
+
+	// Tiere & Natur
+	Smilies::add($b, ':leafless tree:', '&#x1FABE;');
+
+	// Essen & Trinken
+	Smilies::add($b, ':root vegetable:', '&#x1FADC;');
+
+	// Objekte & Musik
+	Smilies::add($b, ':harp:', '&#x1FA89;');
+	Smilies::add($b, ':shovel:', '&#x1FA8F;');
+
+	// Symbole & Flaggen
+	Smilies::add($b, ':splatter:', '&#x1FADF;');
+	Smilies::add($b, ':sark flag:', '&#x1F1F8;&#x1F1F0;');
 
 }
