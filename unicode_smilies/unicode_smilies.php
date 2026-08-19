@@ -1858,7 +1858,7 @@ function unicode_smilies_smilies(array &$b)
 	Smilies::add($b, ':scotland:', '&#x1F3F4;&#xE0067;&#xE0062;&#xE0073;&#xE0074;&#xE007F;');
 	Smilies::add($b, ':wales:', '&#x1F3F4;&#xE0067;&#xE0062;&#xE0077;&#xE006C;&#xE0073;&#xE007F;');
 
-// Delta: Unicode 13.0
+	// Delta: Unicode 13.0
 
 	// Smileys & Emotionen
 	Smilies::add($b, ':smiling face with tear:', '&#x1F972;');
@@ -1904,7 +1904,7 @@ function unicode_smilies_smilies(array &$b)
 	Smilies::add($b, ':hut:', '&#x1F6D6;');
 	Smilies::add($b, ':pickup truck:', '&#x1F6FB;');
 
-// Delta: Unicode 14.0
+	// Delta: Unicode 14.0
 
 	// Smileys & Faces
 	Smilies::add($b, ':melting face:', '&#x1F979;');
@@ -1942,7 +1942,7 @@ function unicode_smilies_smilies(array &$b)
 	Smilies::add($b, ':hair pick:', '&#x1FAAE;');
 	Smilies::add($b, ':identification card:', '&#x1FAAA;');
 
-// Delta: Unicode 15.0
+	// Delta: Unicode 15.0
 
 	// Smileys & Emotionen
 	Smilies::add($b, ':shaking face:', '&#x1FAE8;');
@@ -1973,7 +1973,7 @@ function unicode_smilies_smilies(array &$b)
 	Smilies::add($b, ':flute:', '&#x1FA88;');
 	Smilies::add($b, ':wireless:', '&#x1F6DC;');
 
-// Delta: Unicode 16.0
+	// Delta: Unicode 16.0
 
 	// Smileys & Emotionen
 	Smilies::add($b, ':face with bags under eyes:', '&#x1FAE9;');
