@@ -8,6 +8,7 @@
  * Maintainer: Hypolite Petovan <hypolite@friendica.mrpetovan.com>
  */
 
+use Friendica\Core\Config\Capability\IManageConfigValues;
 use Friendica\Core\Hook;
 use Friendica\DI;
 use Friendica\Object\EMail\IEmail;
@@ -29,6 +30,42 @@ function phpmailer_load_config(ConfigFileManager $loader)
 }
 
 /**
+ * Applies the SMTP transport settings to the mailer.
+ *
+ * @return bool True if SMTP relaying is enabled
+ */
+function phpmailer_setup_smtp(PHPMailer $mailer, IManageConfigValues $config): bool
+{
+	if (!$config->get('phpmailer', 'smtp')) {
+		return false;
+	}
+
+	$mailer->isSMTP();
+
+	$mailer->Host = $config->get('phpmailer', 'smtp_server');
+	$mailer->Port = $config->get('phpmailer', 'smtp_port');
+
+	// '' (none), 'ssl' (implicit TLS) or 'tls' (STARTTLS).
+	$smtpSecure = strtolower(trim((string) $config->get('phpmailer', 'smtp_secure', '')));
+	if (in_array($smtpSecure, [PHPMailer::ENCRYPTION_SMTPS, PHPMailer::ENCRYPTION_STARTTLS], true)) {
+		$mailer->SMTPSecure = $smtpSecure;
+
+		// The secure port replaces smtp_port as soon as encryption is enabled.
+		if ($config->get('phpmailer', 'smtp_port_s')) {
+			$mailer->Port = $config->get('phpmailer', 'smtp_port_s');
+		}
+	}
+
+	if ($config->get('phpmailer', 'smtp_username') && $config->get('phpmailer', 'smtp_password')) {
+		$mailer->SMTPAuth = true;
+		$mailer->Username = $config->get('phpmailer', 'smtp_username');
+		$mailer->Password = $config->get('phpmailer', 'smtp_password');
+	}
+
+	return true;
+}
+
+/**
  * @param null|IEmail $email
  */
 function phpmailer_emailer_send_prepare(?IEmail &$email)
@@ -44,27 +81,11 @@ function phpmailer_emailer_send_prepare(?IEmail &$email)
 		$mailer->CharSet  = 'UTF-8';
 		$mailer->Encoding = 'base64';
 
-		if (DI::config()->get('phpmailer', 'smtp')) {
-			// Set mailer to use SMTP
-			$mailer->isSMTP();
-
-			// Specify main and backup SMTP servers
-			$mailer->Host = DI::config()->get('phpmailer', 'smtp_server');
-			$mailer->Port = DI::config()->get('phpmailer', 'smtp_port');
-
-			if (DI::config()->get('system', 'smtp_secure') && DI::config()->get('phpmailer', 'smtp_port_s')) {
-				$mailer->SMTPSecure = DI::config()->get('phpmailer', 'smtp_secure');
-				$mailer->Port       = DI::config()->get('phpmailer', 'smtp_port_s');
-			}
-
-			if (DI::config()->get('phpmailer', 'smtp_username') && DI::config()->get('phpmailer', 'smtp_password')) {
-				$mailer->SMTPAuth = true;
-				$mailer->Username = DI::config()->get('phpmailer', 'smtp_username');
-				$mailer->Password = DI::config()->get('phpmailer', 'smtp_password');
-			}
-
+		if (phpmailer_setup_smtp($mailer, DI::config())) {
 			if (DI::config()->get('phpmailer', 'smtp_from')) {
 				$mailer->setFrom(DI::config()->get('phpmailer', 'smtp_from'), $email->getFromName());
+			} else {
+				$mailer->setFrom($email->getFromAddress(), $email->getFromName());
 			}
 		} else {
 			$mailer->setFrom($email->getFromAddress(), $email->getFromName());
