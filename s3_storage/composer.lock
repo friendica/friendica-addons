@@ -4,26 +4,26 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "380e2e4853de027e64448857e2e9fead",
+    "content-hash": "944ca159b4f74ad660f3ac9e59286a74",
     "packages": [
         {
             "name": "akeeba/s3",
-            "version": "2.3.2",
+            "version": "2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/akeeba/s3.git",
-                "reference": "452fbd3084f1cb581851a1602226224d29d586d4"
+                "reference": "111fdfc7d2a9f9cebedf07a0300f24942f25b42d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/akeeba/s3/zipball/452fbd3084f1cb581851a1602226224d29d586d4",
-                "reference": "452fbd3084f1cb581851a1602226224d29d586d4",
+                "url": "https://api.github.com/repos/akeeba/s3/zipball/111fdfc7d2a9f9cebedf07a0300f24942f25b42d",
+                "reference": "111fdfc7d2a9f9cebedf07a0300f24942f25b42d",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
                 "ext-simplexml": "*",
-                "php": ">=7.1.0 <8.4"
+                "php": "^7.4.0|^8.0"
             },
             "type": "library",
             "autoload": {
@@ -51,18 +51,22 @@
             "keywords": [
                 "s3"
             ],
-            "time": "2024-02-19T10:08:06+00:00"
+            "support": {
+                "issues": "https://github.com/akeeba/s3/issues",
+                "source": "https://github.com/akeeba/s3/tree/2.5.0"
+            },
+            "time": "2026-07-14T08:45:05+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.0"
+        "php": ">=8.2"
     },
-    "platform-dev": [],
-    "plugin-api-version": "1.1.0"
+    "platform-dev": {},
+    "plugin-api-version": "2.9.0"
 }

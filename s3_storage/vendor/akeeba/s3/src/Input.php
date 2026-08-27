@@ -3,7 +3,7 @@
  * Akeeba Engine
  *
  * @package   akeebaengine
- * @copyright Copyright (c)2006-2024 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2006-2026 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -672,11 +672,19 @@ class Input
 		switch ($this->getInputType())
 		{
 			case self::INPUT_DATA:
-				return base64_encode(md5($this->data, true));
+				return base64_encode(
+					function_exists('hash')
+						? hash('md5', $this->data, true)
+						: md5($this->data, true)
+				);
 				break;
 
 			case self::INPUT_FILE:
-				return base64_encode(md5_file($this->file, true));
+				return base64_encode(
+					function_exists('hash_file')
+						? hash_file('md5', $this->file, true)
+						: md5_file($this->file, true)
+				);
 				break;
 
 			case self::INPUT_RESOURCE:

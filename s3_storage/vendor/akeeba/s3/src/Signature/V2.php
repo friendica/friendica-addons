@@ -3,7 +3,7 @@
  * Akeeba Engine
  *
  * @package   akeebaengine
- * @copyright Copyright (c)2006-2024 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2006-2026 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -62,13 +62,10 @@ class V2 extends Signature
 		$protocol  = $https ? 'https' : 'http';
 		$signature = $this->getAuthorizationHeader();
 
-		$search = '/' . $bucket;
-
-		// This does not look right... The bucket name must be included in the URL.
-//		 if (strpos($uri, $search) === 0)
-//		 {
-//		 	$uri = substr($uri, strlen($search));
-//		 }
+		// NOTE: Pre-signed URLs are always generated through Connector::getAuthenticatedURL(), which forces path-style
+		// access. Therefore $uri (the request resource) already starts with "/{bucket}" and matches the resource that
+		// getAuthorizationHeader() signed. We must NOT add the bucket to the path again, or the URL path will not match
+		// the signature and the request will be rejected with a 403 SignatureDoesNotMatch.
 
 		$queryParameters = array_merge($this->request->getParameters(), [
 			'AWSAccessKeyId' => $accessKey,
@@ -85,8 +82,9 @@ class V2 extends Signature
 			$headers['Host'] = 'storage.googleapis.com';
 			// replace "AWSAccessKeyId" with "GoogleAccessId"
 			$query = str_replace('AWSAccessKeyId', 'GoogleAccessId', $query);
-			// add bucket to url
-			$uri = '/' . $bucket . $uri;
+			// NOTE: the bucket is NOT added to the path here. $uri already begins with "/{bucket}" (see the note above),
+			// so prepending it again would produce "/{bucket}/{bucket}/..." which no longer matches the signed resource
+			// and Google Cloud Storage rejects it with 403 SignatureDoesNotMatch.
 		}
 
 		$url = $protocol . '://' . $headers['Host'] . $uri;

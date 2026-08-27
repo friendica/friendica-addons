@@ -1,51 +1,60 @@
-[
-    {
-        "name": "akeeba/s3",
-        "version": "2.3.2",
-        "version_normalized": "2.3.2.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/akeeba/s3.git",
-            "reference": "452fbd3084f1cb581851a1602226224d29d586d4"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/akeeba/s3/zipball/452fbd3084f1cb581851a1602226224d29d586d4",
-            "reference": "452fbd3084f1cb581851a1602226224d29d586d4",
-            "shasum": ""
-        },
-        "require": {
-            "ext-curl": "*",
-            "ext-simplexml": "*",
-            "php": ">=7.1.0 <8.4"
-        },
-        "time": "2024-02-19T10:08:06+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "files": [
-                "src/aliasing.php"
-            ],
-            "psr-4": {
-                "Akeeba\\S3\\": "src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "GPL-3.0-or-later"
+{
+        "packages": [
+                {
+                        "name": "akeeba/s3",
+                        "version": "2.5.0",
+                        "version_normalized": "2.5.0.0",
+                        "source": {
+                                "type": "git",
+                                "url": "https://github.com/akeeba/s3.git",
+                                "reference": "111fdfc7d2a9f9cebedf07a0300f24942f25b42d"
+                        },
+                        "dist": {
+                                "type": "zip",
+                                "url": "https://api.github.com/repos/akeeba/s3/zipball/111fdfc7d2a9f9cebedf07a0300f24942f25b42d",
+                                "reference": "111fdfc7d2a9f9cebedf07a0300f24942f25b42d",
+                                "shasum": ""
+                        },
+                        "require": {
+                                "ext-curl": "*",
+                                "ext-simplexml": "*",
+                                "php": "^7.4.0|^8.0"
+                        },
+                        "time": "2026-07-14T08:45:05+00:00",
+                        "type": "library",
+                        "installation-source": "dist",
+                        "autoload": {
+                                "files": [
+                                        "src/aliasing.php"
+                                ],
+                                "psr-4": {
+                                        "Akeeba\\S3\\": "src"
+                                }
+                        },
+                        "notification-url": "https://packagist.org/downloads/",
+                        "license": [
+                                "GPL-3.0-or-later"
+                        ],
+                        "authors": [
+                                {
+                                        "name": "Nicholas K. Dionysopoulos",
+                                        "email": "nicholas_NO_SPAM_PLEASE@akeeba.com",
+                                        "homepage": "http://www.dionysopoulos.me",
+                                        "role": "Lead Developer"
+                                }
+                        ],
+                        "description": "A compact, dependency-less Amazon S3 API client implementing the most commonly used features",
+                        "homepage": "https://github.com/akeeba/s3",
+                        "keywords": [
+                                "s3"
+                        ],
+                        "support": {
+                                "issues": "https://github.com/akeeba/s3/issues",
+                                "source": "https://github.com/akeeba/s3/tree/2.5.0"
+                        },
+                        "install-path": "../akeeba/s3"
+                }
         ],
-        "authors": [
-            {
-                "name": "Nicholas K. Dionysopoulos",
-                "email": "nicholas_NO_SPAM_PLEASE@akeeba.com",
-                "homepage": "http://www.dionysopoulos.me",
-                "role": "Lead Developer"
-            }
-        ],
-        "description": "A compact, dependency-less Amazon S3 API client implementing the most commonly used features",
-        "homepage": "https://github.com/akeeba/s3",
-        "keywords": [
-            "s3"
-        ]
-    }
-]
+        "dev": true,
+        "dev-package-names": []
+}
