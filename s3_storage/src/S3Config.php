@@ -9,10 +9,9 @@ use Akeeba\S3\Connector;
 use Friendica\Core\Config\Capability\IManageConfigValues;
 use Friendica\Core\L10n;
 use Friendica\Core\Storage\Capability\ICanConfigureStorage;
-use ParagonIE\HiddenString\HiddenString;
 
 /**
- * The WebDav Backend Storage configuration class
+ * The S3 Backend Storage configuration class
  */
 class S3Config implements ICanConfigureStorage
 {
@@ -23,6 +22,9 @@ class S3Config implements ICanConfigureStorage
 	public const DEFAULT_SIGMETHOD = 'v2';
 	public const DEFAULT_BUCKET    = 'friendica';
 
+	/** @var string[] */
+	public const SIGNATURE_METHODS = ['v2', 'v4'];
+
 	/** @var L10n */
 	private $l10n;
 
@@ -32,19 +34,19 @@ class S3Config implements ICanConfigureStorage
 	/** @var string */
 	private $endpoint;
 
-	/** @var HiddenString */
+	/** @var string */
 	private $accessKey;
 
-	/** @var HiddenString */
+	/** @var string */
 	private $secretKey;
 
 	/** @var string */
 	private $signatureMethod;
 
-	/** @var ?string */
+	/** @var string */
 	private $bucket;
 
-	/** @var ?string */
+	/** @var string */
 	private $region;
 
 	/** @var bool */
@@ -58,14 +60,14 @@ class S3Config implements ICanConfigureStorage
 		$this->l10n   = $l10n;
 		$this->config = $config;
 
-		$this->accessKey       = new HiddenString($this->config->get('s3', 'access_key', ''));
-		$this->secretKey       = new HiddenString($this->config->get('s3', 'secret_key', ''));
-		$this->signatureMethod = $this->config->get('s3', 'signature_method', self::DEFAULT_SIGMETHOD);
-		$this->bucket          = $this->config->get('s3', 'bucket', self::DEFAULT_BUCKET);
+		$this->accessKey       = (string) $this->config->get('s3', 'access_key', '');
+		$this->secretKey       = (string) $this->config->get('s3', 'secret_key', '');
+		$this->signatureMethod = (string) $this->config->get('s3', 'signature_method', self::DEFAULT_SIGMETHOD);
+		$this->bucket          = (string) $this->config->get('s3', 'bucket', self::DEFAULT_BUCKET);
 		$this->legacy          = !empty($this->config->get('s3', 'legacy'));
 		$this->dualStack       = !empty($this->config->get('s3', 'dual_stack'));
-		$this->region          = $this->config->get('s3', 'region');
-		$this->endpoint        = $this->config->get('s3', 'endpoint');
+		$this->region          = (string) $this->config->get('s3', 'region', '');
+		$this->endpoint        = (string) $this->config->get('s3', 'endpoint', '');
 	}
 
 	/**
@@ -75,21 +77,50 @@ class S3Config implements ICanConfigureStorage
 	 */
 	public function getConfig(): Configuration
 	{
-		$config = new Configuration($this->accessKey, $this->secretKey);
-		$config->setUseLegacyPathStyle($this->legacy ?? false);
-		$config->setUseDualstackUrl($this->dualStack ?? false);
+		return $this->createConfiguration(
+			$this->accessKey,
+			$this->secretKey,
+			$this->endpoint,
+			$this->signatureMethod,
+			$this->region,
+			$this->legacy,
+			$this->dualStack,
+		);
+	}
 
-		if (!empty($this->region)) {
-			$config->setRegion($this->region);
+	/**
+	 * Builds an Akeeba configuration.
+	 *
+	 * The order of the calls matters, because Akeeba resets values on its own:
+	 * a custom endpoint forces v2 signatures, switching to v2 signatures clears the region,
+	 * and path style access is ignored as long as the endpoint still points to Amazon.
+	 */
+	private function createConfiguration(string $accessKey, string $secretKey, string $endpoint, string $signatureMethod, string $region, bool $legacy, bool $dualStack): Configuration
+	{
+		$config = new Configuration($accessKey, $secretKey);
+
+		if ($endpoint !== '') {
+			$config->setEndpoint($endpoint);
 		}
-		if (!empty($this->endpoint)) {
-			$config->setEndpoint($this->endpoint);
+
+		if ($signatureMethod !== '') {
+			$config->setSignatureMethod($signatureMethod);
 		}
-		if (!empty($this->signatureMethod) && empty($this->endpoint)) {
-			$config->setSignatureMethod($this->signatureMethod);
+
+		// v2 signatures don't use a region at all, v4 signatures don't accept an empty one.
+		if ($config->getSignatureMethod() === 'v4') {
+			$config->setRegion($region !== '' ? $region : self::DEFAULT_REGION);
 		}
+
+		$config->setUseLegacyPathStyle($legacy);
+		$config->setUseDualstackUrl($dualStack);
 
 		return $config;
+	}
+
+	protected function createConnector(Configuration $config): Connector
+	{
+		return new Connector($config);
 	}
 
 	public function getBucket(): string
@@ -102,25 +133,21 @@ class S3Config implements ICanConfigureStorage
 	 */
 	public function getOptions(): array
 	{
-		$sigMethods = [
-			'v2' => 'v2',
-			'v4' => 'v4',
-		];
+		$sigMethods = array_combine(self::SIGNATURE_METHODS, self::SIGNATURE_METHODS);
 
 		return [
 			'access_key' => [
 				'password',
 				$this->l10n->t('Access Key'),
-				$this->accessKey,
-				$this->l10n->t('Set the Access Key of the S3 storage'),
-				true,
+				// Never send the stored credentials back to the browser, an empty field keeps them.
+				'',
+				$this->l10n->t('Set the Access Key of the S3 storage (leave empty to keep the current one)'),
 			],
 			'secret_key' => [
 				'password',
 				$this->l10n->t('Secret Key'),
-				$this->secretKey,
-				$this->l10n->t('Set the Secret Key of the S3 storage'),
-				true,
+				'',
+				$this->l10n->t('Set the Secret Key of the S3 storage (leave empty to keep the current one)'),
 			],
 			'bucket' => [
 				'input',
@@ -133,14 +160,14 @@ class S3Config implements ICanConfigureStorage
 				'select',
 				$this->l10n->t('Signature Method'),
 				$this->signatureMethod,
-				$this->l10n->t('Set the signature method to use (BEWARE: v4 will be automatically set to v2 in case the endpoint isn\'t amazon)'),
+				$this->l10n->t('Set the signature method to use. Most S3 compatible services need v4.'),
 				$sigMethods,
 			],
 			'endpoint' => [
 				'input',
 				$this->l10n->t("Amazon S3 compatible endpoint (leave empty for '%s')", self::DEFAULT_ENDPOINT),
 				$this->endpoint,
-				$this->l10n->t('Set the S3 endpoint. Do NOT use a protocol (You can use a custom endpoint with v2 signatures to access third party services which offer S3 compatibility, e.g. OwnCloud, Google Storage etc.)'),
+				$this->l10n->t('Set the S3 endpoint. Do NOT use a protocol (You can use a custom endpoint to access third party services which offer S3 compatibility, e.g. OwnCloud, Google Storage etc.)'),
 			],
 			'region' => [
 				'input',
@@ -168,95 +195,75 @@ class S3Config implements ICanConfigureStorage
 	 */
 	public function saveOptions(array $data): array
 	{
-		$feedback = [];
+		// An empty credential field means "keep the currently stored one".
+		$accessKey       = ($data['access_key'] ?? '') !== '' ? (string) $data['access_key'] : $this->accessKey;
+		$secretKey       = ($data['secret_key'] ?? '') !== '' ? (string) $data['secret_key'] : $this->secretKey;
+		$bucket          = trim((string) ($data['bucket'] ?? ''));
+		$endpoint        = trim((string) ($data['endpoint'] ?? ''));
+		$region          = trim((string) ($data['region'] ?? ''));
+		$signatureMethod = (string) ($data['signature_method'] ?? self::DEFAULT_SIGMETHOD);
+		$legacy          = !empty($data['legacy']);
+		$dualStack       = !empty($data['dualstack_url']);
 
-		if (empty($data['access_key']) || empty($data['secret_key']) || empty($data['bucket'])) {
-			return [
-				'access_key' => $this->l10n->t('Invalid input'),
-			];
+		if ($accessKey === '') {
+			return ['access_key' => $this->l10n->t('Invalid input')];
 		}
-
-		$s3Config = new Configuration(
-			$data['access_key'],
-			$data['secret_key'],
-		);
-
-		$bucket = $data['bucket'];
-
-		if (!empty($data['endpoint'])) {
-			try {
-				$s3Config->setEndpoint($data['endpoint']);
-			} catch (\Exception $exception) {
-				$feedback['endpoint'] = $exception->getMessage();
-			}
+		if ($secretKey === '') {
+			return ['secret_key' => $this->l10n->t('Invalid input')];
 		}
-		if (!empty($data['region'])) {
-			try {
-				$s3Config->setRegion($data['region']);
-			} catch (\Exception $exception) {
-				$feedback['region'] = $exception->getMessage();
-			}
+		if ($bucket === '') {
+			return ['bucket' => $this->l10n->t('Invalid input')];
+		}
+		if (!in_array($signatureMethod, self::SIGNATURE_METHODS, true)) {
+			return ['signature_method' => $this->l10n->t('Invalid input')];
 		}
 
 		try {
-			$s3Config->setUseLegacyPathStyle((bool) $data['legacy'] ?? false);
+			$s3Config = $this->createConfiguration($accessKey, $secretKey, $endpoint, $signatureMethod, $region, $legacy, $dualStack);
 		} catch (\Exception $exception) {
-			$feedback['legacy'] = $exception->getMessage();
-		}
-		try {
-			$s3Config->setUseDualstackUrl((bool) $data['dualstack_url'] ?? false);
-		} catch (\Exception $exception) {
-			$feedback['dualstack_url'] = $exception->getMessage();
-		}
-		try {
-			$s3Config->setSignatureMethod($data['signature_method'] ?? self::DEFAULT_SIGMETHOD);
-		} catch (\Exception $exception) {
-			$feedback['signature_method'] = $this->l10n->t("error '%s', message '%s'", $exception->getCode(), $exception->getMessage());
+			return ['endpoint' => $exception->getMessage()];
 		}
 
 		try {
-			$connector = new Connector($s3Config);
-			$buckets   = $connector->listBuckets();
-			if (!in_array($bucket, $buckets)) {
-				return [
-					'bucket' => $this->l10n->t('Bucket %s cannot be not found, possible buckets: %s', $bucket, implode(', ', $buckets)),
-				];
-			}
-			$connector->getBucket($bucket);
+			// A single object listing only needs the permissions the storage backend needs anyway.
+			$this->createConnector($s3Config)->getBucket($bucket, null, null, 1);
 		} catch (\Exception $exception) {
-			return [
-				'bucket' => $exception->getMessage(),
-			];
+			return ['bucket' => $exception->getMessage()];
 		}
 
-		$this->config->set('s3', 'access_key', ($this->accessKey = new HiddenString($data['access_key']))->getString());
-		$this->config->set('s3', 'secret_key', ($this->secretKey = new HiddenString($data['secret_key']))->getString());
-		$this->config->set('s3', 'bucket', ($this->bucket = $bucket));
+		$this->config->set('s3', 'access_key', $this->accessKey = $accessKey);
+		$this->config->set('s3', 'secret_key', $this->secretKey = $secretKey);
+		$this->config->set('s3', 'bucket', $this->bucket = $bucket);
+		$this->config->set('s3', 'signature_method', $this->signatureMethod = $s3Config->getSignatureMethod());
 
-		if ($s3Config->getUseLegacyPathStyle()) {
+		$this->legacy = $s3Config->getUseLegacyPathStyle();
+		if ($this->legacy) {
 			$this->config->set('s3', 'legacy', '1');
 		} else {
 			$this->config->delete('s3', 'legacy');
 		}
-		if ($s3Config->getDualstackUrl()) {
+
+		$this->dualStack = $s3Config->getDualstackUrl();
+		if ($this->dualStack) {
 			$this->config->set('s3', 'dual_stack', '1');
 		} else {
 			$this->config->delete('s3', 'dual_stack');
 		}
-		$this->config->set('s3', 'signature_method', $s3Config->getSignatureMethod());
 
-		if (!empty($data['endpoint'])) {
-			$this->config->set('s3', 'endpoint', $s3Config->getEndpoint());
+		$this->endpoint = $endpoint;
+		if ($this->endpoint !== '') {
+			$this->config->set('s3', 'endpoint', $this->endpoint);
 		} else {
 			$this->config->delete('s3', 'endpoint');
 		}
 
-		if (!empty($data['region'])) {
-			$this->config->set('s3', 'region', $s3Config->getRegion());
+		$this->region = $s3Config->getRegion();
+		if ($this->region !== '') {
+			$this->config->set('s3', 'region', $this->region);
 		} else {
 			$this->config->delete('s3', 'region');
 		}
 
-		return $feedback;
+		return [];
 	}
 }
