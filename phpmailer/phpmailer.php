@@ -128,7 +128,13 @@ function phpmailer_emailer_send_prepare(?IEmail &$email)
 		if ($mailer->send()) {
 			$email = null;
 		}
-	} catch (Exception $e) {
-		DI::logger()->error('PHPMailer error', ['email' => $email, 'ErrorInfo' => $mailer->ErrorInfo, 'exception' => $e]);
+	} catch (Exception) {
+		// ErrorInfo carries the SMTP conversation, down to the reply that refused the mail.
+		// The stack trace is the same worker frames every time and says nothing about the failure.
+		DI::logger()->error('The mail could not be sent', [
+			'to'        => $email->getToAddress(),
+			'subject'   => $email->getSubject(),
+			'ErrorInfo' => $mailer->ErrorInfo,
+		]);
 	}
 }
