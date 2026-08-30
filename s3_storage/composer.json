@@ -11,8 +11,13 @@
         }
     ],
     "require": {
-        "php": ">=7.0",
-        "akeeba/s3": "^2.0"
+        "php": ">=8.2",
+        "akeeba/s3": "^2.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Friendica\\Addon\\s3_storage\\src\\": "src/"
+        }
     },
     "license": "3-clause BSD license",
     "config": {

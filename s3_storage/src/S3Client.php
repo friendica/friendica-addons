@@ -6,14 +6,13 @@ defined('AKEEBAENGINE') or define('AKEEBAENGINE', 1);
 
 use Akeeba\S3\Configuration;
 use Akeeba\S3\Connector;
-use Akeeba\S3\Exception\CannotDeleteFile;
 use Akeeba\S3\Input;
 use Friendica\Core\Storage\Capability\ICanWriteToStorage;
 use Friendica\Core\Storage\Exception\StorageException;
 use Friendica\Util\Strings;
 
 /**
- * A WebDav Backend Storage class
+ * An S3 Backend Storage class
  */
 class S3Client implements ICanWriteToStorage
 {
@@ -63,8 +62,8 @@ class S3Client implements ICanWriteToStorage
 	public function get(string $reference): string
 	{
 		try {
-			return $this->connector->getObject($this->bucket, $this->pathForRef($reference), false);
-		} catch (\RuntimeException $exception) {
+			return $this->connector->getObject($this->bucket, $this->pathForRef($reference)) ?? '';
+		} catch (\Exception $exception) {
 			throw new StorageException(sprintf('Cannot get reference %s', $reference), $exception->getCode(), $exception);
 		}
 	}
@@ -94,7 +93,7 @@ class S3Client implements ICanWriteToStorage
 	{
 		try {
 			$this->connector->deleteObject($this->bucket, $this->pathForRef($reference));
-		} catch (CannotDeleteFile $exception) {
+		} catch (\Exception $exception) {
 			throw new StorageException(sprintf('Cannot delete reference %s', $reference), $exception->getCode(), $exception);
 		}
 	}

@@ -3,7 +3,7 @@
  * Akeeba Engine
  *
  * @package   akeebaengine
- * @copyright Copyright (c)2006-2024 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2006-2026 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -31,11 +31,11 @@ class StorageClasses extends AbstractTest
 		return static::upload($s3, $options, static::TEN_KB, 'rrs_test_10kb.dat', StorageClass::INTELLIGENT_TIERING);
 	}
 
-	protected static function upload(Connector $s3, array $options, int $size, string $uri, string $storageClass = null)
+	protected static function upload(Connector $s3, array $options, int $size, string $uri, ?string $storageClass = null)
 	{
 		// Randomize the name. Required for archive buckets where you cannot overwrite data.
 		$dotPos = strrpos($uri, '.');
-		$uri    = substr($uri, 0, $dotPos) . '.' . md5(microtime(false)) . substr($uri, $dotPos);
+		$uri    = substr($uri, 0, $dotPos) . '.' . hash('md5', microtime(false)) . substr($uri, $dotPos);
 
 		// Create some random data to upload
 		$sourceData = static::getRandomData($size);
