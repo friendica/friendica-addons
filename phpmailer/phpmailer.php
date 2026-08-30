@@ -14,7 +14,7 @@ use Friendica\DI;
 use Friendica\Object\EMail\IEmail;
 use Friendica\Core\Config\Util\ConfigFileManager;
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+use Psr\Log\LoggerInterface;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
@@ -75,18 +75,26 @@ function phpmailer_emailer_send_prepare(?IEmail &$email)
 	}
 
 	// Passing `true` enables exceptions
-	$mailer = new PHPMailer(true);
+	if (phpmailer_send(new PHPMailer(true), $email, DI::config(), DI::logger())) {
+		$email = null;
+	}
+}
+
+/**
+ * Composes the mail and hands it to the transport.
+ *
+ * Nothing thrown in here leaves this function.
+ * A single unreachable recipient must not take down the worker that runs the cron hooks.
+ */
+function phpmailer_send(PHPMailer $mailer, IEmail $email, IManageConfigValues $config, LoggerInterface $logger): bool
+{
 	try {
 		// Setup encoding.
 		$mailer->CharSet  = 'UTF-8';
 		$mailer->Encoding = 'base64';
 
-		if (phpmailer_setup_smtp($mailer, DI::config())) {
-			if (DI::config()->get('phpmailer', 'smtp_from')) {
-				$mailer->setFrom(DI::config()->get('phpmailer', 'smtp_from'), $email->getFromName());
-			} else {
-				$mailer->setFrom($email->getFromAddress(), $email->getFromName());
-			}
+		if (phpmailer_setup_smtp($mailer, $config) && $config->get('phpmailer', 'smtp_from')) {
+			$mailer->setFrom($config->get('phpmailer', 'smtp_from'), $email->getFromName());
 		} else {
 			$mailer->setFrom($email->getFromAddress(), $email->getFromName());
 		}
@@ -125,16 +133,17 @@ function phpmailer_emailer_send_prepare(?IEmail &$email)
 			}
 		}
 
-		if ($mailer->send()) {
-			$email = null;
-		}
-	} catch (Exception) {
+		return $mailer->send();
+	} catch (Throwable $throwable) {
 		// ErrorInfo carries the SMTP conversation, down to the reply that refused the mail.
 		// The stack trace is the same worker frames every time and says nothing about the failure.
-		DI::logger()->error('The mail could not be sent', [
+		$logger->error('The mail could not be sent', [
 			'to'        => $email->getToAddress(),
 			'subject'   => $email->getSubject(),
 			'ErrorInfo' => $mailer->ErrorInfo,
+			'message'   => $throwable->getMessage(),
 		]);
+
+		return false;
 	}
 }
