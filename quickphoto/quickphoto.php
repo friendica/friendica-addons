@@ -3,7 +3,7 @@
 /**
  * Name: QuickPhoto
  * Description: Easily edit an image description by replacing the BBCode
- * Version: 1.7
+ * Version: 1.8
  * Author: Matthias Ebers <https://loma.ml/profile/feb>
  */
 
