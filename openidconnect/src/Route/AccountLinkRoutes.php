@@ -6,6 +6,7 @@ namespace Friendica\Addon\OpenIdConnect\Route;
 
 use Friendica\Addon\OpenIdConnect\Account\AccountLinker;
 use Friendica\Addon\OpenIdConnect\Auth\AuthorizationRequest;
+use Friendica\Addon\OpenIdConnect\Presentation\SettingsHook;
 use Friendica\Addon\OpenIdConnect\Provider\ProviderConfiguration;
 use Friendica\BaseModule;
 use Friendica\DI;
@@ -55,7 +56,7 @@ final class AccountLinkRoutes
 
 	public function unlink(): void
 	{
-		if (!BaseModule::checkFormSecurityToken('openidconnect_unlink')) {
+		if (!BaseModule::checkFormSecurityToken('openidconnect_unlink', SettingsHook::UNLINK_TOKEN_FIELD)) {
 			DI::baseUrl()->redirect('settings/account');
 			return;
 		}
