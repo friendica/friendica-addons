@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Friendica\Addon\OpenIdConnect\Identity;
 
 use Friendica\Addon\OpenIdConnect\Provider\ProviderConfiguration;
-use Friendica\Core\Network\HTTPClient\Client\HttpClientOptions;
+use Friendica\Network\HTTPClient\Client\HttpClientOptions;
 use Friendica\DI;
 
 final class UserInfo
