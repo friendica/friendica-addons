@@ -79,31 +79,6 @@ function openidconnect_logout(): void
 	openidconnect_addon()->logout();
 }
 
-function openidconnect_exchange_code(string $code, string $codeVerifier = ''): array
-{
-	return TokenHandler::exchangeCode($code, $codeVerifier);
-}
-
-function openidconnect_validate_id_token(string $idToken, string $expectedNonce = '', string $accessToken = ''): object|false
-{
-	return TokenHandler::validateIdToken($idToken, $expectedNonce, $accessToken);
-}
-
-function openidconnect_get_userinfo(string $accessToken): array
-{
-	return UserInfo::fetchUserinfo($accessToken);
-}
-
-function openidconnect_find_or_create_user(string $sub, string $email, string $name, string $nickname, string $picture): ?array
-{
-	return UserManager::findOrCreateUser($sub, $email, $name, $nickname, $picture);
-}
-
-function openidconnect_create_user(string $sub, string $email, string $name, string $nickname, string $picture): ?array
-{
-	return UserManager::createUser($sub, $email, $name, $nickname, $picture);
-}
-
 function openidconnect_page_end(string &$o): void
 {
 	openidconnect_addon()->pageEnd($o);
