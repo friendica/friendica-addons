@@ -13,12 +13,10 @@ final class UserProvisioner
 {
     private const MAX_CREATE_RETRIES = 5;
 
-    private AccountLinker $linker;
     private AvatarUpdater $avatarUpdater;
 
-    public function __construct(?AccountLinker $linker = null, ?AvatarUpdater $avatarUpdater = null)
+    public function __construct(?AvatarUpdater $avatarUpdater = null)
     {
-        $this->linker = $linker ?? new AccountLinker();
         $this->avatarUpdater = $avatarUpdater ?? new AvatarUpdater();
     }
 
@@ -52,7 +50,7 @@ final class UserProvisioner
         // unnecessarily.  The full row is re-fetched later when actually needed.
         $existingUser = DBA::selectFirst('user', ['uid', 'openid'], ['email' => $email]);
         if ($existingUser) {
-            return $this->resolveExistingEmailMatch($existingUser, $sub, $email, $nickname, $picture);
+            return $this->resolveExistingEmailMatch($existingUser, $sub, $email);
         }
 
         if ($this->autoCreateAccountsEnabled()) {
@@ -91,36 +89,15 @@ final class UserProvisioner
     /**
      * @param array<string, mixed> $existingUser
      */
-    private function resolveExistingEmailMatch(array $existingUser, string $sub, string $email, string $nickname, string $picture): ?array
+    private function resolveExistingEmailMatch(array $existingUser, string $sub, string $email): ?array
     {
-        if (empty($existingUser['openid']) && $this->autoCreateAccountsEnabled()) {
-            return $this->autoLinkExistingUser($existingUser, $sub, $email, $nickname, $picture);
-        }
-
-        DI::logger()->warning('openidconnect: email matches account linked to different sub - REJECTED', [
+        DI::logger()->warning('openidconnect: email matches an existing account that is not linked to this identity - REJECTED', [
             'has_email' => $email !== '',
             'has_existing_openid' => !empty($existingUser['openid']),
             'has_attempted_sub' => $sub !== '',
         ]);
         DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect: This account is not linked to your identity provider. Please link your account in the settings or contact the administrator.'));
         return null;
-    }
-
-    /**
-     * @param array<string, mixed> $existingUser
-     * @return array<string, mixed>
-     */
-    private function autoLinkExistingUser(array $existingUser, string $sub, string $email, string $nickname, string $picture): array
-    {
-        $uid = (int)$existingUser['uid'];
-        DI::logger()->info('openidconnect: auto-linking existing unlinked account by email', ['uid' => $uid, 'sub' => $sub]);
-        $this->linker->link($uid, $sub, $email, $nickname);
-
-        if ($picture !== '') {
-            $this->avatarUpdater->update($uid, $picture);
-        }
-
-        return DBA::selectFirst('user', [], ['uid' => $uid]) ?: [];
     }
 
     private function autoCreateAccountsEnabled(): bool
@@ -204,8 +181,16 @@ final class UserProvisioner
                 DI::pConfig()->set($uid, 'openidconnect', 'oidc_email', $email);
                 DI::pConfig()->set($uid, 'openidconnect', 'oidc_nickname', $candidate);
 
+                $createdUser = DBA::selectFirst('user', [], ['uid' => $uid]) ?: null;
+                if ($createdUser) {
+                    // The user never sees this random password, so unlinking without
+                    // ever setting a real one would lock them out entirely.  Remember
+                    // the generated hash to detect that case later.
+                    DI::pConfig()->set($uid, 'openidconnect', 'oidc_generated_password_hash', $createdUser['password']);
+                }
+
                 DI::logger()->info('OpenID Connect user created', ['nickname' => $candidate, 'email' => $email, 'uid' => $uid]);
-                return DBA::selectFirst('user', [], ['uid' => $uid]) ?: null;
+                return $createdUser;
             } catch (\Throwable $e) {
                 $linked = DBA::selectFirst('user', [], ['openid' => $sub]);
                 if ($linked) {

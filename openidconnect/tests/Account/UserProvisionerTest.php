@@ -64,22 +64,24 @@ final class UserProvisionerTest extends DiTestCase
         self::assertSame('old@example.com', $result['email']);
     }
 
-    public function testFindOrCreateAutoLinksExistingUnlinkedAccountByEmail(): void
+    public function testFindOrCreateRejectsUnlinkedAccountWithMatchingEmail(): void
     {
         $dba = $this->mockDba();
         $dba->method('selectFirst')->willReturnMap([
             ['user', [], ['openid' => 'sub-123'], [], false],
             ['user', ['uid', 'openid'], ['email' => 'user@example.com'], [], ['uid' => 42, 'openid' => '']],
-            ['user', [], ['uid' => 42], [], ['uid' => 42, 'email' => 'user@example.com', 'openid' => 'sub-123']],
         ]);
-        $dba->method('update')->willReturn(true);
+        $dba->expects(self::never())->method('update');
         $this->initDi([Database::class => $dba]);
         $this->config->set('openidconnect', 'auto_create_accounts', true);
 
         $result = (new UserProvisioner())->findOrCreate('sub-123', 'user@example.com', 'Some Name', 'somename', '');
 
-        self::assertSame(42, $result['uid']);
-        self::assertSame('sub-123', $this->pConfig->get(42, 'openidconnect', 'oidc_sub', ''));
+        self::assertNull($result);
+        self::assertSame(
+            ['OpenID Connect: This account is not linked to your identity provider. Please link your account in the settings or contact the administrator.'],
+            $this->sysmsg->getNotices()
+        );
     }
 
     public function testFindOrCreateRejectsEmailMatchAlreadyLinkedToDifferentSub(): void
