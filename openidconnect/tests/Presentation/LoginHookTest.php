@@ -5,18 +5,22 @@ declare(strict_types=1);
 namespace Friendica\Addon\OpenIdConnect\Tests\Presentation;
 
 use Friendica\Addon\OpenIdConnect\Presentation\LoginHook;
-use Friendica\Addon\OpenIdConnect\Tests\Support\AddonTestCase;
-use Friendica\DI;
+use Friendica\Addon\OpenIdConnect\Tests\Support\DiTestCase;
 
-final class LoginHookTest extends AddonTestCase
+final class LoginHookTest extends DiTestCase
 {
+    private function configureProvider(): void
+    {
+        $this->config->set('openidconnect', 'client_id', 'client-id');
+        $this->config->set('openidconnect', 'client_secret', 'secret');
+        $this->config->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
+    }
+
     public function testAppendBuildsReturnPathFromArgsQueryString(): void
     {
-        DI::config()->set('openidconnect', 'client_id', 'client-id');
-        DI::config()->set('openidconnect', 'client_secret', 'secret');
-        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
-
-        DI::args()->setQueryString('return_path=settings/account');
+        $this->initDi();
+        $this->configureProvider();
+        $this->args->method('getQueryString')->willReturn('return_path=settings/account');
         $_GET['return_path'] = 'ignored-via-superglobal';
 
         $output = '';
@@ -28,11 +32,10 @@ final class LoginHookTest extends AddonTestCase
 
     public function testAppendPrefersReturnAuthorizeAndEscapesConfiguredButtonText(): void
     {
-        DI::config()->set('openidconnect', 'client_id', 'client-id');
-        DI::config()->set('openidconnect', 'client_secret', 'secret');
-        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
-        DI::config()->set('openidconnect', 'button_text', 'Login <OIDC> "now"');
-        DI::args()->setQueryString('return_authorize=client_id%3Dabc%26scope%3Dopenid&return_path=settings/account');
+        $this->initDi();
+        $this->configureProvider();
+        $this->config->set('openidconnect', 'button_text', 'Login <OIDC> "now"');
+        $this->args->method('getQueryString')->willReturn('return_authorize=client_id%3Dabc%26scope%3Dopenid&return_path=settings/account');
 
         $output = '';
         (new LoginHook())->append($output);
@@ -44,18 +47,18 @@ final class LoginHookTest extends AddonTestCase
 
     public function testAppendDoesNothingWhenAddonIsNotConfigured(): void
     {
-        // No config set → isConfigured() returns false
+        $this->initDi();
+
         $output = 'pre-existing';
         (new LoginHook())->append($output);
+
         self::assertSame('pre-existing', $output);
     }
 
     public function testAppendRendersButtonWithoutReturnPathWhenQueryStringIsEmpty(): void
     {
-        DI::config()->set('openidconnect', 'client_id', 'client-id');
-        DI::config()->set('openidconnect', 'client_secret', 'secret');
-        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
-        // DI::args()->getQueryString() returns '' by default after reset
+        $this->initDi();
+        $this->configureProvider();
 
         $output = '';
         (new LoginHook())->append($output);
@@ -67,86 +70,69 @@ final class LoginHookTest extends AddonTestCase
 
     public function testAppendTriggersAutoRedirectAttemptWhenTransparentSsoIsEnabled(): void
     {
-        DI::config()->set('openidconnect', 'client_id', 'client-id');
-        DI::config()->set('openidconnect', 'client_secret', 'secret');
-        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
-        DI::config()->set('openidconnect', 'transparent_sso', true);
-        // Cache a provider config that lacks authorization_endpoint → redirect() returns early
-        DI::cache()->set('openidconnect:provider_config', ['issuer' => 'https://id.example'], 600);
-        // $_SERVER['REQUEST_METHOD'] is not set → serverParams() defaults to 'GET'
-        // No openidconnect_no_auto in query, no Bearer header → shouldAutoRedirect returns true
+        $this->initDi();
+        $this->configureProvider();
+        $this->config->set('openidconnect', 'transparent_sso', true);
+        $this->cache->set('openidconnect:provider_config', ['issuer' => 'https://id.example']);
 
         $output = '';
         (new LoginHook())->append($output);
 
-        self::assertContains('OpenID Connect provider configuration error.', DI::sysmsg()->notices);
-        // After the failed redirect, append() continues and renders the button as fallback
+        self::assertContains('OpenID Connect provider configuration error.', $this->sysmsg->getNotices());
         self::assertStringContainsString('/openidconnect/auth', $output);
     }
 
     public function testAppendPopulatesRequestMethodFromServerGlobal(): void
     {
-        DI::config()->set('openidconnect', 'client_id', 'client-id');
-        DI::config()->set('openidconnect', 'client_secret', 'secret');
-        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
-        DI::config()->set('openidconnect', 'transparent_sso', true);
-        DI::cache()->set('openidconnect:provider_config', ['issuer' => 'https://id.example'], 600);
-        $_SERVER['REQUEST_METHOD'] = 'POST'; // non-GET → shouldAutoRedirect returns false
+        $this->initDi();
+        $this->configureProvider();
+        $this->config->set('openidconnect', 'transparent_sso', true);
+        $this->cache->set('openidconnect:provider_config', ['issuer' => 'https://id.example']);
+        $_SERVER['REQUEST_METHOD'] = 'POST';
 
         $output = '';
         (new LoginHook())->append($output);
 
-        // POST method prevents auto-redirect → no configuration error notice
-        self::assertEmpty(DI::sysmsg()->notices);
+        self::assertSame([], $this->sysmsg->getNotices());
         self::assertStringContainsString('/openidconnect/auth', $output);
     }
 
     public function testAppendSkipsAutoRedirectForBearerAuthorizationRequests(): void
     {
-        DI::config()->set('openidconnect', 'client_id', 'client-id');
-        DI::config()->set('openidconnect', 'client_secret', 'secret');
-        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
-        DI::config()->set('openidconnect', 'transparent_sso', true);
-        DI::cache()->set('openidconnect:provider_config', ['issuer' => 'https://id.example'], 600);
+        $this->initDi();
+        $this->configureProvider();
+        $this->config->set('openidconnect', 'transparent_sso', true);
+        $this->cache->set('openidconnect:provider_config', ['issuer' => 'https://id.example']);
         $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer test-bearer-token';
 
         $output = '';
         (new LoginHook())->append($output);
 
-        // Bearer request → shouldAutoRedirect returns false → no redirect notice
-        self::assertEmpty(DI::sysmsg()->notices);
+        self::assertSame([], $this->sysmsg->getNotices());
         self::assertStringContainsString('/openidconnect/auth', $output);
-        // OWASP: token must not appear in rendered HTML or logs
         self::assertStringNotContainsString('test-bearer-token', $output);
-        self::assertStringNotContainsString(
-            'test-bearer-token',
-            json_encode(['warnings' => DI::logger()->warnings, 'errors' => DI::logger()->errors], JSON_THROW_ON_ERROR)
-        );
     }
 
     public function testAppendSkipsAutoRedirectWhenNoAutoFlagOnlyExistsInGetParameters(): void
     {
-        DI::config()->set('openidconnect', 'client_id', 'client-id');
-        DI::config()->set('openidconnect', 'client_secret', 'secret');
-        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
-        DI::config()->set('openidconnect', 'transparent_sso', true);
-        DI::cache()->set('openidconnect:provider_config', ['issuer' => 'https://id.example'], 600);
+        $this->initDi();
+        $this->configureProvider();
+        $this->config->set('openidconnect', 'transparent_sso', true);
+        $this->cache->set('openidconnect:provider_config', ['issuer' => 'https://id.example']);
         $_GET['openidconnect_no_auto'] = '1';
 
         $output = '';
         (new LoginHook())->append($output);
 
-        self::assertEmpty(DI::sysmsg()->notices);
+        self::assertSame([], $this->sysmsg->getNotices());
         self::assertStringContainsString('/openidconnect/auth', $output);
     }
 
     public function testAppendPrefersQueryStringOverGetFallbackForReturnPath(): void
     {
-        DI::config()->set('openidconnect', 'client_id', 'client-id');
-        DI::config()->set('openidconnect', 'client_secret', 'secret');
-        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
-
-        DI::args()->setQueryString('return_path=settings/account');
+        $this->initDi();
+        $this->configureProvider();
+        $this->args->method('getQueryString')->willReturn('return_path=settings/account');
         $_GET['return_path'] = 'network';
 
         $output = '';

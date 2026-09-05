@@ -5,189 +5,184 @@ declare(strict_types=1);
 namespace Friendica\Addon\OpenIdConnect\Tests;
 
 use Friendica\Addon\OpenIdConnect\OpenIdConnectAddon;
-use Friendica\Addon\OpenIdConnect\Tests\Support\AddonTestCase;
-use Friendica\DI;
+use Friendica\Addon\OpenIdConnect\Presentation\SettingsHook;
+use Friendica\Addon\OpenIdConnect\Tests\Support\DiTestCase;
 
-final class OpenIdConnectAddonTest extends AddonTestCase
+/**
+ * dispatch() is a thin router onto AuthorizationRequest/CallbackHandler/
+ * RevokeRoute/AccountLinkRoutes/LogoutHandler, which each already have
+ * focused test suites. This file only covers the routing/glue itself, plus
+ * the config-only parts of addonAdmin()/addonSettings() — their template
+ * rendering needs a fully bootstrapped Smarty engine and is out of scope
+ * for a unit test (see AdminHookTest/SettingsHookTest).
+ */
+final class OpenIdConnectAddonTest extends DiTestCase
 {
-	public function testDispatchAuthReturnsWarningWhenProviderIsNotConfigured(): void
-	{
-		$addon = new OpenIdConnectAddon();
+    private function configureProvider(): void
+    {
+        $this->config->set('openidconnect', 'client_id', 'client-id');
+        $this->config->set('openidconnect', 'client_secret', 'secret');
+        $this->config->set('openidconnect', 'discovery_url', 'https://idp.example/.well-known/openid-configuration');
+    }
 
-		$addon->dispatch('auth');
+    public function testDispatchAuthLogsWarningWhenProviderIsNotConfigured(): void
+    {
+        $this->initDi();
 
-		self::assertSame('OpenID Connect SSO tried to trigger, but the addon is not configured!', DI::logger()->warnings[0][0]);
-	}
+        (new OpenIdConnectAddon())->dispatch('auth');
 
-	public function testUnknownRouteOnlyLogsWarning(): void
-	{
-		$addon = new OpenIdConnectAddon();
-		$addon->dispatch('unknown');
+        self::assertTrue($this->logger->hasRecordMatching('warning', 'OpenID Connect SSO tried to trigger, but the addon is not configured!'));
+    }
 
-		self::assertSame('openidconnect: unknown route requested', DI::logger()->warnings[0][0]);
-	}
+    public function testDispatchUnknownRouteOnlyLogsWarning(): void
+    {
+        $this->initDi();
 
-	public function testDispatchCallbackHandlesCurrentRequestQuery(): void
-	{
-		DI::cache()->set('oidcstate:s', ['silent_auth' => true, 'return_path' => 'oauth/authorize?client_id=test'], 600);
-		$_GET = ['state' => 's', 'error' => 'login_required'];
+        (new OpenIdConnectAddon())->dispatch('unknown');
 
-		$addon = new OpenIdConnectAddon();
-		$addon->dispatch('callback');
+        self::assertTrue($this->logger->hasRecordMatching('warning', 'openidconnect: unknown route requested'));
+    }
 
-		self::assertSame('login?openidconnect_no_auto=1&return_path=oauth%2Fauthorize%3Fclient_id%3Dtest', DI::baseUrl()->lastRedirect());
-	}
+    public function testDispatchCallbackHandlesCurrentRequestQuery(): void
+    {
+        $this->initDi();
+        $this->cache->set('oidcstate:s', ['silent_auth' => true, 'return_path' => 'oauth/authorize?client_id=test']);
+        $_GET = ['state' => 's', 'error' => 'login_required'];
 
-	public function testDispatchRevokeHandlesRouteBranch(): void
-	{
-		DI::session()->set('openidconnect_tokens', ['access_token' => 'access-token']);
-		$_SERVER['REQUEST_METHOD'] = 'GET';
+        (new OpenIdConnectAddon())->dispatch('callback');
 
-		$addon = new OpenIdConnectAddon();
-		$addon->dispatch('revoke');
+        self::assertSame(
+            'login?openidconnect_no_auto=1&return_path=oauth%2Fauthorize%3Fclient_id%3Dtest',
+            $this->lastRedirect
+        );
+    }
 
-		self::assertSame('', DI::baseUrl()->lastRedirect());
-	}
+    public function testDispatchRevokeRedirectsOnGetRequest(): void
+    {
+        $this->initDi();
+        $this->session->set('openidconnect_tokens', ['access_token' => 'access-token']);
+        $_SERVER['REQUEST_METHOD'] = 'GET';
 
-	public function testDispatchLinkHandlesRouteBranch(): void
-	{
-		$addon = new OpenIdConnectAddon();
+        (new OpenIdConnectAddon())->dispatch('revoke');
 
-		$addon->dispatch('link');
+        self::assertSame('', $this->lastRedirect);
+        self::assertSame('access-token', $this->session->get('openidconnect_tokens')['access_token']);
+    }
 
-		self::assertSame('settings/account', DI::baseUrl()->lastRedirect());
-		self::assertContains('OpenID Connect is not configured.', DI::sysmsg()->notices);
-	}
+    public function testDispatchLinkRedirectsToSettingsWhenNotConfigured(): void
+    {
+        $this->initDi();
 
-	public function testDispatchUnlinkHandlesRouteBranch(): void
-	{
-		$_POST['form_security_token'] = \Friendica\BaseModule::getFormSecurityToken('openidconnect_unlink');
-		$_REQUEST['form_security_token'] = $_POST['form_security_token'];
+        (new OpenIdConnectAddon())->dispatch('link');
 
-		$addon = new OpenIdConnectAddon();
-		$addon->dispatch('unlink');
+        self::assertSame('settings/account', $this->lastRedirect);
+        self::assertContains('OpenID Connect is not configured.', $this->sysmsg->getNotices());
+    }
 
-		self::assertSame('login', DI::baseUrl()->lastRedirect());
-	}
+    public function testDispatchUnlinkRedirectsToLoginForAnonymousUser(): void
+    {
+        $this->initDi();
+        $timestamp = time();
+        $_REQUEST[SettingsHook::UNLINK_TOKEN_FIELD] = $timestamp . '.' . hash('whirlpool', session_id() . $timestamp . 'openidconnect_unlink');
 
-	public function testBeginAccountLinkRedirectsToSettingsWhenNotConfigured(): void
-	{
-		$addon = new OpenIdConnectAddon();
+        (new OpenIdConnectAddon())->dispatch('unlink');
 
-		$addon->beginAccountLink();
+        self::assertSame('login', $this->lastRedirect);
+    }
 
-		self::assertSame('settings/account', DI::baseUrl()->lastRedirect());
-		self::assertContains('OpenID Connect is not configured.', DI::sysmsg()->notices);
-	}
+    public function testBeginAccountLinkRedirectsToSettingsWhenNotConfigured(): void
+    {
+        $this->initDi();
 
-	public function testUnlinkAccountRedirectsToLoginForAnonymousUser(): void
-	{
-		$_POST['form_security_token'] = \Friendica\BaseModule::getFormSecurityToken('openidconnect_unlink');
+        (new OpenIdConnectAddon())->beginAccountLink();
 
-		$addon = new OpenIdConnectAddon();
+        self::assertSame('settings/account', $this->lastRedirect);
+        self::assertContains('OpenID Connect is not configured.', $this->sysmsg->getNotices());
+    }
 
-		$addon->unlinkAccount();
+    public function testLogoutClearsTokenSession(): void
+    {
+        $this->initDi();
+        $this->session->set('openidconnect_tokens', ['access_token' => 'access-token']);
 
-		self::assertSame('login', DI::baseUrl()->lastRedirect());
-	}
+        (new OpenIdConnectAddon())->logout();
 
-	public function testLogoutClearsTokenSessionWhenNoIdTokenExists(): void
-	{
-		DI::session()->set('openidconnect_tokens', ['access_token' => 'access-token']);
+        self::assertNull($this->session->get('openidconnect_tokens'));
+    }
 
-		$addon = new OpenIdConnectAddon();
-		$addon->logout();
+    public function testRevokeRejectsGetRequests(): void
+    {
+        $this->initDi();
+        $this->session->set('openidconnect_tokens', ['access_token' => 'access-token']);
+        $_SERVER['REQUEST_METHOD'] = 'GET';
 
-		self::assertNull(DI::session()->get('openidconnect_tokens'));
-	}
+        (new OpenIdConnectAddon())->revoke();
 
-	public function testRevokeRejectsGetRequests(): void
-	{
-		DI::session()->set('openidconnect_tokens', [
-			'access_token' => 'access-token',
-		]);
-		$_SERVER['REQUEST_METHOD'] = 'GET';
+        self::assertSame('access-token', $this->session->get('openidconnect_tokens')['access_token']);
+    }
 
-		$addon = new OpenIdConnectAddon();
-		$addon->revoke();
+    public function testSsoInitiateAppendsLoginButtonWhenConfigured(): void
+    {
+        $this->initDi();
+        $this->configureProvider();
+        $this->args->method('getQueryString')->willReturn('return_path=settings/account');
 
-		self::assertSame('access-token', DI::session()->get('openidconnect_tokens')['access_token']);
-	}
+        $output = '';
+        (new OpenIdConnectAddon())->ssoInitiate($output);
 
-	public function testSsoInitiateAppendsLoginButtonWhenConfigured(): void
-	{
-		DI::config()->set('openidconnect', 'client_id', 'client-id');
-		DI::config()->set('openidconnect', 'client_secret', 'secret');
-		DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
-		DI::args()->setQueryString('return_path=settings/account');
+        self::assertStringContainsString('/openidconnect/auth?return_path=settings%2Faccount', $output);
+    }
 
-		$addon = new OpenIdConnectAddon();
-		$output = '';
-		$addon->ssoInitiate($output);
+    public function testAddonSettingsPassesThroughToSettingsHookForAnonymousUser(): void
+    {
+        $this->initDi();
 
-		self::assertStringContainsString('/openidconnect/auth?return_path=settings%2Faccount', $output);
-	}
+        $data = [];
+        (new OpenIdConnectAddon())->addonSettings($data);
 
-	public function testAddonSettingsPassesThroughToSettingsHook(): void
-	{
-		DI::userSession()->setLocalUserId(23);
-		DI::pConfig()->set(23, 'openidconnect', 'oidc_sub', 'sub-xyz');
+        self::assertSame([], $data);
+    }
 
-		$addon = new OpenIdConnectAddon();
-		$data = [];
-		$addon->addonSettings($data);
+    public function testPageEndReturnsEarlyWhenProviderIsNotConfigured(): void
+    {
+        $this->initDi();
 
-		self::assertArrayHasKey('aside', $data);
-	}
+        $output = 'seed';
+        (new OpenIdConnectAddon())->pageEnd($output);
 
-	public function testPageEndReturnsEarlyWhenProviderIsNotConfigured(): void
-	{
-		$addon = new OpenIdConnectAddon();
-		$output = 'seed';
+        self::assertSame('seed', $output);
+    }
 
-		$addon->pageEnd($output);
+    public function testAddonAdminPostRunsAdminValidation(): void
+    {
+        $this->initDi();
 
-		self::assertSame('seed', $output);
-	}
+        (new OpenIdConnectAddon())->addonAdminPost([
+            'discovery_url' => 'not-a-url',
+            'client_id' => '',
+            'client_secret' => '',
+        ]);
 
-	public function testAddonAdminRendersTemplateOutput(): void
-	{
-		$addon = new OpenIdConnectAddon();
-		$output = '';
-		$addon->addonAdmin($output);
+        self::assertNotEmpty($this->sysmsg->getNotices());
+    }
 
-		self::assertStringContainsString('admin.tpl', $output);
-	}
+    public function testAddonAdminPostRedirectsBackToAddonPageAfterSuccessfulSave(): void
+    {
+        $this->initDi();
 
-	public function testAddonAdminPostRunsAdminValidation(): void
-	{
-		$addon = new OpenIdConnectAddon();
-		$addon->addonAdminPost([
-			'discovery_url' => 'not-a-url',
-			'client_id' => '',
-			'client_secret' => '',
-		]);
+        (new OpenIdConnectAddon())->addonAdminPost([
+            'discovery_url' => 'https://idp.example.com/.well-known/openid-configuration',
+            'client_id' => 'client-id',
+            'client_secret' => 'secret-value',
+            'scopes' => 'openid email profile',
+            'button_text' => 'Sign in with OpenID Connect',
+            'auto_create_accounts' => '1',
+            'allow_unverified_email' => '1',
+            'transparent_sso' => '1',
+            'idp_signout' => '1',
+        ]);
 
-		self::assertNotEmpty(DI::sysmsg()->notices);
-	}
-
-	public function testAddonAdminPostRedirectsBackToAddonPageAfterSuccessfulSave(): void
-	{
-		$addon = new OpenIdConnectAddon();
-
-		$addon->addonAdminPost([
-			'discovery_url' => 'https://id.example.com/.well-known/openid-configuration',
-			'client_id' => 'client-id',
-			'client_secret' => 'secret-value',
-			'scopes' => 'openid email profile',
-			'button_text' => 'Sign in with OpenID Connect',
-			'auto_create_accounts' => '1',
-			'allow_unverified_email' => '1',
-			'transparent_sso' => '1',
-			'idp_signout' => '1',
-		]);
-
-		self::assertSame('admin/addons/openidconnect', DI::baseUrl()->lastRedirect());
-		self::assertContains('OpenID Connect settings saved.', DI::sysmsg()->infos);
-	}
+        self::assertSame('admin/addons/openidconnect', $this->lastRedirect);
+        self::assertContains('OpenID Connect settings saved.', $this->sysmsg->getInfos());
+    }
 }
