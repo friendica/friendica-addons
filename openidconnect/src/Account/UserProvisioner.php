@@ -195,7 +195,7 @@ final class UserProvisioner
                 : $this->resolveUniqueNickname($nickname . $attempt, static fn(string $nameCandidate): bool => DBA::exists('user', ['nickname' => $nameCandidate]));
 
             try {
-                $user = $this->runInTransaction(function () use ($name, $candidate, $email, $password, $sub): array {
+                $user = $this->runInTransaction(function () use ($name, $candidate, $email, $password): array {
                     DI::logger()->debug('openidconnect: calling User::create', ['email' => $email, 'nickname' => $candidate, 'name' => $name]);
                     return User::create([
                         'username' => $name ?: $candidate,
@@ -203,13 +203,12 @@ final class UserProvisioner
                         'email' => $email,
                         'password' => $password,
                         'verified' => true,
-                        'openid' => $sub,
                     ]);
                 });
 
-                DI::logger()->debug('openidconnect: User::create returned', ['uid' => $user['uid'] ?? 'MISSING', 'user_keys' => array_keys($user ?: [])]);
+                DI::logger()->debug('openidconnect: User::create returned', ['uid' => $user['user']['uid'] ?? 'MISSING', 'user_keys' => array_keys($user['user'] ?? [])]);
 
-                $uid = (int)($user['uid'] ?? 0);
+                $uid = (int)($user['user']['uid'] ?? 0);
                 if ($uid <= 0) {
                     $created = DBA::selectFirst('user', ['uid'], ['openid' => $sub]);
                     $uid = (int)($created['uid'] ?? 0);
