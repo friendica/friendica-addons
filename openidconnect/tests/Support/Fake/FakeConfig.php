@@ -15,10 +15,12 @@ use Friendica\Core\Config\ValueObject\Cache;
 final class FakeConfig implements IManageConfigValues
 {
     private array $values = [];
+    private Cache $cache;
 
     public function __construct(array $values = [])
     {
         $this->values = $values;
+        $this->cache = new Cache();
     }
 
     public function reload()
@@ -60,6 +62,6 @@ final class FakeConfig implements IManageConfigValues
 
     public function getCache(): Cache
     {
-        return new Cache();
+        return $this->cache;
     }
 }
