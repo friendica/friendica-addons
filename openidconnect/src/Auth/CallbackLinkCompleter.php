@@ -19,7 +19,7 @@ final class CallbackLinkCompleter
         $this->accountLinker = $accountLinker ?? new AccountLinker();
         $this->ownerLookup = $ownerLookup instanceof Closure
             ? $ownerLookup
-            : Closure::fromCallable($ownerLookup ?? fn(string $sub): ?array => DBA::selectFirst('user', ['uid'], ['openid' => $sub]));
+            : Closure::fromCallable($ownerLookup ?? fn(string $sub): ?array => DBA::selectFirst('user', ['uid'], ['openid' => $sub]) ?: null);
     }
 
     public function complete(string $sub, string $email, string $nickname, string $returnPath, array $tokens): void

@@ -150,7 +150,7 @@ final class UserProvisioner
             $this->avatarUpdater->update($uid, $picture);
         }
 
-        return DBA::selectFirst('user', [], ['uid' => $uid]);
+        return DBA::selectFirst('user', [], ['uid' => $uid]) ?: [];
     }
 
     private function autoCreateAccountsEnabled(): bool
@@ -235,7 +235,7 @@ final class UserProvisioner
                 DI::pConfig()->set($uid, 'openidconnect', 'oidc_nickname', $candidate);
 
                 DI::logger()->info('OpenID Connect user created', ['nickname' => $candidate, 'email' => $email, 'uid' => $uid]);
-                return DBA::selectFirst('user', [], ['uid' => $uid]);
+                return DBA::selectFirst('user', [], ['uid' => $uid]) ?: null;
             } catch (\Throwable $e) {
                 $linked = DBA::selectFirst('user', [], ['openid' => $sub]);
                 if ($linked) {
