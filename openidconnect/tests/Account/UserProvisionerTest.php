@@ -50,28 +50,12 @@ final class UserProvisionerTest extends DiTestCase
         self::assertSame('sub-123', $this->pConfig->get(42, 'openidconnect', 'oidc_sub', ''));
     }
 
-    public function testFindOrCreatePropagatesEmailChangeForLinkedUser(): void
+    public function testFindOrCreateNeverOverwritesLinkedUserEmailFromIdp(): void
     {
         $dba = $this->mockDba();
         $dba->method('selectFirst')->willReturnMap([
             ['user', [], ['openid' => 'sub-123'], [], ['uid' => 42, 'email' => 'old@example.com']],
         ]);
-        $dba->method('exists')->willReturn(false);
-        $dba->expects(self::once())->method('update')->with('user', ['email' => 'new@example.com'], ['uid' => 42])->willReturn(true);
-        $this->initDi([Database::class => $dba]);
-
-        $result = (new UserProvisioner())->findOrCreate('sub-123', 'new@example.com', 'Some Name', 'somename', '');
-
-        self::assertSame('new@example.com', $result['email']);
-    }
-
-    public function testFindOrCreateKeepsOldEmailWhenNewEmailIsAlreadyTaken(): void
-    {
-        $dba = $this->mockDba();
-        $dba->method('selectFirst')->willReturnMap([
-            ['user', [], ['openid' => 'sub-123'], [], ['uid' => 42, 'email' => 'old@example.com']],
-        ]);
-        $dba->method('exists')->willReturn(true);
         $dba->expects(self::never())->method('update');
         $this->initDi([Database::class => $dba]);
 

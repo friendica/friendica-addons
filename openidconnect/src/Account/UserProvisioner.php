@@ -72,37 +72,7 @@ final class UserProvisioner
         $uid = (int)$linkedBySub['uid'];
         DI::logger()->debug('openidconnect: found user by sub (linked)', ['uid' => $uid]);
 
-        $linkedBySub = $this->propagateLinkedUserEmail($linkedBySub, $uid, $email);
         $this->storeLinkedUserMetadata($uid, $sub, $email, $nickname, $picture);
-
-        return $linkedBySub;
-    }
-
-    /**
-     * @param array<string, mixed> $linkedBySub
-     * @return array<string, mixed>
-     */
-    private function propagateLinkedUserEmail(array $linkedBySub, int $uid, string $email): array
-    {
-        if ($email === '' || ($linkedBySub['email'] ?? '') === $email) {
-            return $linkedBySub;
-        }
-
-        if (DBA::exists('user', ['email' => $email])) {
-            DI::logger()->warning('openidconnect: cannot propagate email change — address already in use by another account', [
-                'uid' => $uid,
-                'has_new_email' => $email !== '',
-            ]);
-            return $linkedBySub;
-        }
-
-        DI::logger()->info('openidconnect: propagating email change from IdP', [
-            'uid' => $uid,
-            'has_old_email' => !empty($linkedBySub['email']),
-            'has_new_email' => $email !== '',
-        ]);
-        DBA::update('user', ['email' => $email], ['uid' => $uid]);
-        $linkedBySub['email'] = $email;
 
         return $linkedBySub;
     }
