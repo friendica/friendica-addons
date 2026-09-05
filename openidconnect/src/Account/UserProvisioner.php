@@ -293,22 +293,14 @@ final class UserProvisioner
 
     private function runInTransaction(callable $operation): mixed
     {
-        if (method_exists(DBA::class, 'transaction')) {
-            return DBA::transaction($operation);
+        DBA::transaction();
+        try {
+            $result = $operation();
+            DBA::commit();
+            return $result;
+        } catch (\Throwable $e) {
+            DBA::rollback();
+            throw $e;
         }
-
-        if (method_exists(DBA::class, 'beginTransaction') && method_exists(DBA::class, 'commit') && method_exists(DBA::class, 'rollback')) {
-            DBA::beginTransaction();
-            try {
-                $result = $operation();
-                DBA::commit();
-                return $result;
-            } catch (\Throwable $e) {
-                DBA::rollback();
-                throw $e;
-            }
-        }
-
-        return $operation();
     }
 }
