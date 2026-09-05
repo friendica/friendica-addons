@@ -9,6 +9,7 @@ use Friendica\Addon\OpenIdConnect\Auth\AuthorizationRequest;
 use Friendica\Addon\OpenIdConnect\Presentation\SettingsHook;
 use Friendica\Addon\OpenIdConnect\Provider\ProviderConfiguration;
 use Friendica\BaseModule;
+use Friendica\Database\DBA;
 use Friendica\DI;
 
 final class AccountLinkRoutes
@@ -78,6 +79,12 @@ final class AccountLinkRoutes
 		]);
 
 		if ($linkedAccount) {
+			if ($this->hasOnlyGeneratedPassword($uid)) {
+				DI::sysmsg()->addNotice(DI::l10n()->t('Please set a password for your account before unlinking OpenID Connect, otherwise you will not be able to log in anymore.'));
+				DI::baseUrl()->redirect('settings/account');
+				return;
+			}
+
 			$this->accountLinker->unlink($uid);
 			DI::sysmsg()->addInfo(DI::l10n()->t('OpenID Connect account link removed.'));
 		} else {
@@ -85,5 +92,21 @@ final class AccountLinkRoutes
 		}
 
 		DI::baseUrl()->redirect('settings/account');
+	}
+
+	/**
+	 * True if the account was auto-created by OpenID Connect and the user
+	 * never replaced the random, never-shown password it was created with.
+	 */
+	private function hasOnlyGeneratedPassword(int $uid): bool
+	{
+		$generatedHash = DI::pConfig()->get($uid, 'openidconnect', 'oidc_generated_password_hash', '');
+		if ($generatedHash === '') {
+			return false;
+		}
+
+		$user = DBA::selectFirst('user', ['password'], ['uid' => $uid]);
+
+		return $user && $user['password'] === $generatedHash;
 	}
 }
