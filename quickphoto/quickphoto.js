@@ -1,36 +1,29 @@
 (function() {
     const BBCodePattern = /\[url=(.*?)\]\[img=(.*?)\](.*?)\[\/img\]\[\/url\]/gi;
-    const shorthandPattern = /\[img\](.*?)\|(.*?)\[\/img\]/gi;
+    const shorthandPattern = /\[img\](.*?)\|([\s\S]*?)\[\/img\]/gi;
     let throttleTimer;
     let isSubmitting = false;
 
     window._qpMetadataCache = window._qpMetadataCache || {};
 
-    const i18nDesc = (window.qp_i18n && window.qp_i18n.imageDesc) ? window.qp_i18n.imageDesc : "Image description";
+    const i18nDesc = window.qp_i18n?.imageDesc || "Image description";
 
     const resetSPAState = () => {
         isSubmitting = false;
+        window._qpMetadataCache = {};
         document.querySelectorAll('.qp-edit-bar').forEach(bar => {
-            if (!bar.previousElementSibling || bar.previousElementSibling.tagName !== 'TEXTAREA') {
-                bar.remove();
-            }
+            if (bar.previousElementSibling?.tagName !== 'TEXTAREA') bar.remove();
         });
     };
 
-    document.addEventListener('pjax:end', resetSPAState);
-    document.addEventListener('page-changed', resetSPAState);
-    window.addEventListener('popstate', resetSPAState);
+    ['pjax:end', 'page-changed', 'popstate'].forEach(evt =>
+        document.addEventListener(evt, resetSPAState)
+    );
 
-    const storeMetadata = (fileName, data) => {
-        window._qpMetadataCache[fileName] = data;
-    };
-
-    const getMetadata = (fileName) => {
-        return window._qpMetadataCache[fileName] || null;
-    };
+    const storeMetadata = (imgPath, data) => { window._qpMetadataCache[imgPath] = data; };
+    const getMetadata = (imgPath) => window._qpMetadataCache[imgPath] || null;
 
     const getOrCreateEditBar = (textarea) => {
-        if (!textarea || !document.body.contains(textarea)) return null;
 
         let bar = textarea.parentNode.querySelector('.qp-edit-bar');
 
@@ -39,31 +32,28 @@
             bar.className = 'qp-edit-bar';
 
             // Ensures that the CSS Flexbox layout works correctly in SPA mode
-            bar.style.cssText = 'display: none; align-items: center; gap: 10px; margin-top: 8px; padding: 8px; background: rgba(0,0,0,0.03); border-radius: 4px; border: 1px solid #ccc; width: 100%; box-sizing: border-box;';
+            bar.style.cssText = 'display:none; align-items:center; gap:10px; margin-top:8px; padding:8px; width:100%; box-sizing:border-box; background:var(--nav-bg, rgba(0,0,0,0.03)); border:1px solid var(--border-color, #ccc); border-radius:4px;';
 
             bar.innerHTML = `
-                <div class="qp-thumb-container" style="flex-shrink: 0; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #fff; border: 1px solid #ddd; border-radius: 4px;">
-                    <img class="qp-preview-thumb" src="" alt="Preview" style="max-width: 100%; max-height: 100%; object-fit: cover;">
+                <div class="qp-thumb-container" style="flex-shrink:0; width:48px; height:48px; display:flex; align-items:center; justify-content:center; overflow:hidden; background:var(--background-color, #fff); border:1px solid var(--border-color, #ddd); border-radius:4px;">
+                    <img class="qp-preview-thumb" src="" alt="Preview" style="max-width:100%; max-height:100%; object-fit:cover;">
                 </div>
-                <div class="qp-input-wrapper" style="flex-grow: 1;">
-                    <input type="text" class="qp-alt-input" placeholder="${i18nDesc}" style="width: 100%; padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
-                </div>
-            `;
+                <div class="qp-input-wrapper" style="flex-grow:1;">
+                    <input type="text" class="qp-alt-input" placeholder="${i18nDesc}" style="width:100%; padding:6px 10px; border:1px solid var(--border-color, #ccc); border-radius:4px; box-sizing:border-box; background-color:var(--background-color, #fff); color:var(--main-text-color, inherit);">
+                </div>`;
             textarea.parentNode.insertBefore(bar, textarea.nextSibling);
         }
         return bar;
     };
 
     const checkCursorContext = (textarea) => {
-        if (isSubmitting || !textarea || !document.body.contains(textarea)) return;
+        if (isSubmitting) return;
 
         const text = textarea.value;
+        const bar = textarea.parentNode.querySelector('.qp-edit-bar');
 
         if (!text.includes('[img]')) {
-            const existingBar = textarea.parentNode.querySelector('.qp-edit-bar');
-            if (existingBar) {
-                existingBar.style.display = 'none';
-            }
+            if (bar) bar.style.display = 'none';
             return;
         }
 
@@ -75,22 +65,23 @@
             const tagContent = text.substring(openTag + 5, closeTag);
 
             if (tagContent.includes('|')) {
-                const [fileName, ...descParts] = tagContent.split('|');
+                const [imgPath, ...descParts] = tagContent.split('|');
                 const currentDesc = descParts.join('|');
-                const metadata = getMetadata(fileName);
+                const editBar = getOrCreateEditBar(textarea);
 
-                const bar = getOrCreateEditBar(textarea);
-                if (!bar) return;
+                const img = editBar.querySelector('.qp-preview-thumb');
+                const thumbContainer = editBar.querySelector('.qp-thumb-container');
+                const input = editBar.querySelector('.qp-alt-input');
 
-                const img = bar.querySelector('.qp-preview-thumb');
-                const input = bar.querySelector('.qp-alt-input');
+                editBar.style.display = 'flex';
 
-                bar.style.display = 'flex';
-
-                if (metadata && metadata.img) {
-                    img.src = metadata.img;
+                const isValidUrl = /^(https?:\/\/|\/|data:)/i.test(imgPath.trim());
+                if (isValidUrl) {
+                    img.src = imgPath.trim();
+                    if (thumbContainer) thumbContainer.style.display = 'flex';
                 } else {
-                    img.src = '/photo/' + fileName;
+                    img.src = '';
+                    if (thumbContainer) thumbContainer.style.display = 'none';
                 }
 
                 if (document.activeElement !== input) {
@@ -101,13 +92,13 @@
                     if (e.key === 'Enter') {
                         e.preventDefault();
                         textarea.focus();
-                        bar.style.display = 'none';
+                        editBar.style.display = 'none';
                     }
                 };
 
                 input.oninput = (e) => {
                     const newDesc = e.target.value.replace(/[\[\]]/g, '');
-                    const newTag = `[img]${fileName}|${newDesc || i18nDesc}[/img]`;
+                    const newTag = `[img]${imgPath}|${newDesc || i18nDesc}[/img]`;
 
                     const start = textarea.selectionStart;
                     const end = textarea.selectionEnd;
@@ -119,33 +110,22 @@
             }
         }
 
-        const bar = textarea.parentNode.querySelector('.qp-edit-bar');
-        if (bar) {
-            bar.style.display = 'none';
-        }
+        if (bar) bar.style.display = 'none';
     };
 
     const simplify = (textarea) => {
-        if (!textarea || !document.body.contains(textarea) || !textarea.value.includes('[url=')) return;
+        if (!textarea.value.includes('[url=')) return;
 
         const current = textarea.value;
         const simple = current.replace(BBCodePattern, (match, urlPart, imgPart, existingDesc) => {
-            const fileName = imgPart.split('/').pop();
-
-            storeMetadata(fileName, {
-                url: urlPart,
-                img: imgPart
-            });
-
+            storeMetadata(imgPart, { url: urlPart, img: imgPart });
             let userDesc = existingDesc.trim();
-            if (userDesc === '' || userDesc === i18nDesc) userDesc = i18nDesc;
-
-            return `[img]${fileName}|${userDesc}[/img]`;
+            if (!userDesc || userDesc === i18nDesc) userDesc = i18nDesc;
+            return `[img]${imgPart}|${userDesc}[/img]`;
         });
 
         if (current !== simple) {
-            const start = textarea.selectionStart;
-            const end = textarea.selectionEnd;
+            const { selectionStart: start, selectionEnd: end } = textarea;
             textarea.value = simple;
             textarea.setSelectionRange(start, end);
         }
@@ -153,8 +133,8 @@
 
     const reconstruct = (textarea) => {
         if (!textarea) return '';
-        return textarea.value.replace(shorthandPattern, (match, fileName, desc) => {
-            const metadata = getMetadata(fileName);
+        return textarea.value.replace(shorthandPattern, (match, imgPath, desc) => {
+            const metadata = getMetadata(imgPath);
             if (metadata) {
                 const finalDesc = (desc === i18nDesc) ? '' : desc;
                 return `[url=${metadata.url}][img=${metadata.img}]${finalDesc}[/img][/url]`;
@@ -164,9 +144,7 @@
     };
 
     const applySimplify = (textarea) => {
-        if (!isSubmitting && textarea && document.body.contains(textarea)) {
-            simplify(textarea);
-        }
+        if (!isSubmitting) simplify(textarea);
     };
 
     document.addEventListener('focusin', (e) => {
@@ -175,8 +153,7 @@
 
     document.addEventListener('submit', (e) => {
         isSubmitting = true;
-        const textareas = e.target.querySelectorAll('textarea');
-        textareas.forEach(textarea => {
+        e.target.querySelectorAll('textarea').forEach(textarea => {
             textarea.value = reconstruct(textarea);
         });
     }, true);
@@ -186,37 +163,11 @@
     });
 
     document.addEventListener('click', (e) => {
-        if (e.target.tagName === 'TEXTAREA') checkCursorContext(e.target);
-    });
-
-    if (typeof jQuery !== 'undefined') {
-        const originalVal = jQuery.fn.val;
-        jQuery.fn.val = function(value) {
-            if (arguments.length === 0 && this.is('textarea')) {
-                return reconstruct(this[0]);
-            }
-            if (arguments.length > 0 && this.is('textarea')) {
-                const result = originalVal.call(this, value);
-                if (this[0] && document.body.contains(this[0])) {
-                    simplify(this[0]);
-                }
-                return result;
-            }
-            return originalVal.apply(this, arguments);
-        };
-    }
-
-    document.addEventListener('input', (e) => {
         if (e.target.tagName === 'TEXTAREA') {
-            clearTimeout(throttleTimer);
-            throttleTimer = setTimeout(() => {
-                applySimplify(e.target);
-                checkCursorContext(e.target);
-            }, 300);
+            checkCursorContext(e.target);
+            return;
         }
-    });
 
-    document.addEventListener('click', (e) => {
         const btn = e.target.closest('#wall-submit-preview, [id^="comment-edit-preview-link-"]');
         if (btn) {
             document.querySelectorAll('textarea').forEach(textarea => {
@@ -228,13 +179,34 @@
         }
     }, true);
 
+    if (typeof jQuery !== 'undefined') {
+        const originalVal = jQuery.fn.val;
+        jQuery.fn.val = function(value) {
+            if (!this.is('textarea')) return originalVal.apply(this, arguments);
+
+            if (arguments.length === 0) {
+                return reconstruct(this[0]);
+            }
+            const result = originalVal.call(this, value);
+            if (this[0]) simplify(this[0]);
+            return result;
+        };
+    }
+
+    document.addEventListener('input', (e) => {
+        if (e.target.tagName === 'TEXTAREA') {
+            clearTimeout(throttleTimer);
+            throttleTimer = setTimeout(() => {
+                applySimplify(e.target);
+                checkCursorContext(e.target);
+            }, 500);
+        }
+    });
+
     setInterval(() => {
         if (document.hidden || isSubmitting) return;
         document.querySelectorAll('textarea').forEach(textarea => {
-            if (textarea.offsetParent !== null && document.body.contains(textarea)) {
-                applySimplify(textarea);
-            }
+            if (textarea.offsetParent !== null) applySimplify(textarea);
         });
     }, 2500);
-
 })();
