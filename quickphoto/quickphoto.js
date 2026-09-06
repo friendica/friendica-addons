@@ -31,15 +31,15 @@
             bar = document.createElement('div');
             bar.className = 'qp-edit-bar';
 
-            // Ensures that the CSS Flexbox layout works correctly in SPA mode
-            bar.style.cssText = 'display:none; align-items:center; gap:10px; margin-top:8px; padding:8px; width:100%; box-sizing:border-box; background:var(--nav-bg, rgba(0,0,0,0.03)); border:1px solid var(--border-color, #ccc); border-radius:4px;';
+            // Ensures that the CSS Flexbox layout works correctly in SPA mode and Darkmode
+            bar.style.cssText = 'display:none; align-items:center; gap:10px; margin-top:8px; padding:8px; width:100%; box-sizing:border-box; border:1px solid var(--border-color, #ccc); border-radius:4px;';
 
             bar.innerHTML = `
-                <div class="qp-thumb-container" style="flex-shrink:0; width:48px; height:48px; display:flex; align-items:center; justify-content:center; overflow:hidden; background:var(--background-color, #fff); border:1px solid var(--border-color, #ddd); border-radius:4px;">
-                    <img class="qp-preview-thumb" src="" alt="Preview" style="max-width:100%; max-height:100%; object-fit:cover;">
+                <div class="qp-thumb-container" style="flex-shrink:0; width:48px; height:48px; min-width:48px; min-height:48px; max-width:48px; max-height:48px; display:flex; align-items:center; justify-content:center; overflow:hidden; border:1px solid var(--border-color, #ddd); border-radius:4px;">
+                    <img class="qp-preview-thumb" src="" alt="Preview" style="width:100% !important; height:100% !important; max-width:48px !important; max-height:48px !important; object-fit:cover !important; display:block;">
                 </div>
                 <div class="qp-input-wrapper" style="flex-grow:1;">
-                    <input type="text" class="qp-alt-input" placeholder="${i18nDesc}" style="width:100%; padding:6px 10px; border:1px solid var(--border-color, #ccc); border-radius:4px; box-sizing:border-box; background-color:var(--background-color, #fff); color:var(--main-text-color, inherit);">
+                    <input type="text" class="qp-alt-input" placeholder="${i18nDesc}" style="width:100%; padding:6px 10px; border:1px solid var(--border-color, #ccc); border-radius:4px; box-sizing:border-box; color:inherit;">
                 </div>`;
             textarea.parentNode.insertBefore(bar, textarea.nextSibling);
         }
