@@ -1,13 +1,14 @@
 .qp-edit-bar {
     display: none;
-    margin: 10px 0;
-    padding: 12px;
-    background: var(--background-color);
-    font-family: var(--global-font-family);
-    border: 1px solid #ccc;
-    border-radius: 10px;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
+    margin-top: 8px;
+    padding: 8px;
+    background: var(--nav-bg, rgba(0, 0, 0, 0.03));
+    border: 1px solid var(--border-color, #ccc);
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .qp-edit-bar.active {
@@ -15,15 +16,16 @@
 }
 
 .qp-thumb-container {
-    width: 60px;
-    height: 60px;
     flex-shrink: 0;
-    background: var(--nav-bg) !important;
-    border-radius: 4px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    background: var(--background-color, #fff);
+    border: 1px solid var(--border-color, #ddd);
+    border-radius: 4px;
 }
 
 .qp-preview-thumb {
@@ -36,20 +38,12 @@
     flex-grow: 1;
 }
 
-.qp-label {
-    font-family: var(--global-font-family);
-    display: block;
-    font-size: 0.85rem;
-    font-weight: bold;
-    color: #666;
-    margin-bottom: 4px;
-}
-
 .qp-alt-input {
     width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    font-size: 1.4rem;
+    padding: 6px 10px;
+    border: 1px solid var(--border-color, #ccc);
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: var(--background-color, #fff);
+    color: var(--main-text-color, inherit);
 }
-
