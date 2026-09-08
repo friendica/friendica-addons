@@ -3,7 +3,7 @@
 /**
  * Name: QuickPhoto
  * Description: Easily edit an image description by replacing the BBCode
- * Version: 1.7
+ * Version: 1.8
  * Author: Matthias Ebers <https://loma.ml/profile/feb>
  */
 
@@ -24,11 +24,6 @@ function quickphoto_header(&$header)
 
     $addon_path = '/addon/quickphoto/';
     $local_path = 'addon/quickphoto/';
-
-    if (file_exists($local_path . 'styles.css')) {
-        $v_css = filemtime($local_path . 'styles.css');
-        $header .= "\n" . '<link rel="stylesheet" type="text/css" href="' . $addon_path . 'styles.css?v=' . $v_css . '" media="all" />';
-    }
 
     $header .= "\n" . '<script type="text/javascript">var qp_i18n = { imageDesc: ' . $js_label . ' };</script>';
 
