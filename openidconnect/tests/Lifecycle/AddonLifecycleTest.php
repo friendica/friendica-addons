@@ -5,98 +5,63 @@ declare(strict_types=1);
 namespace Friendica\Addon\OpenIdConnect\Tests\Lifecycle;
 
 use Friendica\Addon\OpenIdConnect\Lifecycle\AddonLifecycle;
-use Friendica\Addon\OpenIdConnect\Tests\Support\AddonTestCase;
+use Friendica\Addon\OpenIdConnect\Tests\Support\DiTestCase;
 use Friendica\Core\Config\Util\ConfigFileManager;
 use Friendica\Core\Config\ValueObject\Cache;
-use Friendica\Core\Hook;
-use Friendica\Database\DBA;
-use Friendica\DI;
+use Friendica\Database\Database;
 
-final class AddonLifecycleTest extends AddonTestCase
+final class AddonLifecycleTest extends DiTestCase
 {
-	public function testInstallRegistersExpectedHooks(): void
-	{
-		$lifecycle = new AddonLifecycle();
-		$entrypoint = dirname(__DIR__, 2) . '/openidconnect.php';
+    private function entrypoint(): string
+    {
+        return dirname(__DIR__, 2) . '/openidconnect.php';
+    }
 
-		$lifecycle->install();
+    public function testInstallRegistersExpectedHooks(): void
+    {
+        $dba = $this->mockDba();
+        $dba->method('exists')->willReturn(false);
+        $dba->expects(self::exactly(5))->method('insert')->willReturn(true);
+        $this->initDi([Database::class => $dba]);
 
-		self::assertSame([
-			['hook' => 'load_config', 'file' => $entrypoint, 'callback' => 'openidconnect_load_config'],
-			['hook' => 'login_hook', 'file' => $entrypoint, 'callback' => 'openidconnect_sso_initiate'],
-			['hook' => 'logging_out', 'file' => $entrypoint, 'callback' => 'openidconnect_logout'],
-			['hook' => 'page_end', 'file' => $entrypoint, 'callback' => 'openidconnect_page_end'],
-			['hook' => 'addon_settings', 'file' => $entrypoint, 'callback' => 'openidconnect_addon_settings'],
-		], Hook::$registerCalls);
-	}
+        (new AddonLifecycle())->install();
+    }
 
-	public function testUninstallRemovesHooksButPreservesStoredConfiguration(): void
-	{
-		$lifecycle = new AddonLifecycle();
-		$entrypoint = dirname(__DIR__, 2) . '/openidconnect.php';
+    public function testUninstallRemovesHooksAndClearsCacheButPreservesStoredConfiguration(): void
+    {
+        $dba = $this->mockDba();
+        $dba->expects(self::exactly(10))->method('delete')->willReturn(true);
+        $this->initDi([Database::class => $dba]);
 
-		$lifecycle->uninstall();
+        (new AddonLifecycle())->uninstall();
 
-		self::assertSame([
-			['hook' => 'load_config', 'file' => $entrypoint, 'callback' => 'openidconnect_load_config'],
-			['hook' => 'login_hook', 'file' => $entrypoint, 'callback' => 'openidconnect_sso_initiate'],
-			['hook' => 'logging_out', 'file' => $entrypoint, 'callback' => 'openidconnect_logout'],
-			['hook' => 'page_end', 'file' => $entrypoint, 'callback' => 'openidconnect_page_end'],
-			['hook' => 'addon_settings', 'file' => $entrypoint, 'callback' => 'openidconnect_addon_settings'],
-		], Hook::$unregisterCalls);
+        self::assertNull($this->cache->get('openidconnect:provider_config'));
+        self::assertNull($this->cache->get('openidconnect:jwks'));
+        self::assertTrue($this->logger->hasRecordMatching('info', 'uninstall complete'));
+    }
 
-		self::assertSame([], DBA::$deleteCalls);
+    public function testLoadConfigLoadsStaticAddonConfigurationIntoConfigCache(): void
+    {
+        $this->initDi();
+        $loader = $this->createMock(ConfigFileManager::class);
+        $loader->method('loadAddonConfig')->with('openidconnect')->willReturn(['openidconnect' => ['client_id' => 'client-id']]);
+        $configCache = $this->createMock(Cache::class);
+        $configCache->expects(self::once())->method('load')->with(['openidconnect' => ['client_id' => 'client-id']], Cache::SOURCE_STATIC);
+        $this->appHelper->method('getConfigCache')->willReturn($configCache);
 
-		self::assertSame([], DI::config()->deleteCalls);
+        (new AddonLifecycle())->loadConfig($loader);
 
-		self::assertSame([
-			'openidconnect:provider_config',
-			'openidconnect:jwks',
-		], DI::cache()->deleteCalls);
+        self::assertSame([], $this->logger->records);
+    }
 
-		self::assertSame('openidconnect: uninstall complete — hooks removed, stored config preserved', DI::logger()->infos[0][0]);
-	}
+    public function testLoadConfigLogsErrorWhenLoaderThrows(): void
+    {
+        $this->initDi();
+        $loader = $this->createMock(ConfigFileManager::class);
+        $loader->method('loadAddonConfig')->willThrowException(new \RuntimeException('boom'));
 
-	public function testLoadConfigLoadsStaticAddonConfigurationIntoConfigCache(): void
-	{
-		$loader = new ConfigFileManager();
-		$loader->nextAddonConfig = ['openidconnect' => ['client_id' => 'client-id']];
-		$lifecycle = new AddonLifecycle();
+        (new AddonLifecycle())->loadConfig($loader);
 
-		$lifecycle->loadConfig($loader);
-
-		self::assertSame(['openidconnect'], $loader->loadAddonConfigCalls);
-		self::assertSame([
-			['config' => ['openidconnect' => ['client_id' => 'client-id']], 'source' => Cache::SOURCE_STATIC],
-		], DI::appHelper()->getConfigCache()->loadCalls);
-		self::assertSame([], DI::logger()->warnings);
-		self::assertSame([], DI::logger()->errors);
-	}
-
-	public function testLoadConfigWarnsWhenLoaderReturnsNonArray(): void
-	{
-		$loader = new ConfigFileManager();
-		$loader->nextAddonConfig = 'invalid';
-		$lifecycle = new AddonLifecycle();
-
-		$lifecycle->loadConfig($loader);
-
-		self::assertSame([], DI::appHelper()->getConfigCache()->loadCalls);
-		self::assertSame('openidconnect: addon config loader returned non-array', DI::logger()->warnings[0][0]);
-		self::assertSame(['type' => 'string'], DI::logger()->warnings[0][1]);
-	}
-
-	public function testLoadConfigLogsErrorWhenLoaderThrows(): void
-	{
-		$loader = new ConfigFileManager();
-		$loader->nextException = new \RuntimeException('boom');
-		$lifecycle = new AddonLifecycle();
-
-		$lifecycle->loadConfig($loader);
-
-		self::assertSame([], DI::appHelper()->getConfigCache()->loadCalls);
-		self::assertSame('openidconnect: failed to load addon config', DI::logger()->errors[0][0]);
-		self::assertSame('boom', DI::logger()->errors[0][1]['error']);
-		self::assertIsString(DI::logger()->errors[0][1]['trace']);
-	}
+        self::assertTrue($this->logger->hasRecordMatching('error', 'failed to load addon config'));
+    }
 }

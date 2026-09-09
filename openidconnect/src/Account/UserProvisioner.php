@@ -13,12 +13,10 @@ final class UserProvisioner
 {
     private const MAX_CREATE_RETRIES = 5;
 
-    private AccountLinker $linker;
     private AvatarUpdater $avatarUpdater;
 
-    public function __construct(?AccountLinker $linker = null, ?AvatarUpdater $avatarUpdater = null)
+    public function __construct(?AvatarUpdater $avatarUpdater = null)
     {
-        $this->linker = $linker ?? new AccountLinker();
         $this->avatarUpdater = $avatarUpdater ?? new AvatarUpdater();
     }
 
@@ -52,7 +50,7 @@ final class UserProvisioner
         // unnecessarily.  The full row is re-fetched later when actually needed.
         $existingUser = DBA::selectFirst('user', ['uid', 'openid'], ['email' => $email]);
         if ($existingUser) {
-            return $this->resolveExistingEmailMatch($existingUser, $sub, $email, $nickname, $picture);
+            return $this->resolveExistingEmailMatch($existingUser, $sub, $email);
         }
 
         if ($this->autoCreateAccountsEnabled()) {
@@ -72,37 +70,7 @@ final class UserProvisioner
         $uid = (int)$linkedBySub['uid'];
         DI::logger()->debug('openidconnect: found user by sub (linked)', ['uid' => $uid]);
 
-        $linkedBySub = $this->propagateLinkedUserEmail($linkedBySub, $uid, $email);
         $this->storeLinkedUserMetadata($uid, $sub, $email, $nickname, $picture);
-
-        return $linkedBySub;
-    }
-
-    /**
-     * @param array<string, mixed> $linkedBySub
-     * @return array<string, mixed>
-     */
-    private function propagateLinkedUserEmail(array $linkedBySub, int $uid, string $email): array
-    {
-        if ($email === '' || ($linkedBySub['email'] ?? '') === $email) {
-            return $linkedBySub;
-        }
-
-        if (DBA::exists('user', ['email' => $email])) {
-            DI::logger()->warning('openidconnect: cannot propagate email change — address already in use by another account', [
-                'uid' => $uid,
-                'has_new_email' => $email !== '',
-            ]);
-            return $linkedBySub;
-        }
-
-        DI::logger()->info('openidconnect: propagating email change from IdP', [
-            'uid' => $uid,
-            'has_old_email' => !empty($linkedBySub['email']),
-            'has_new_email' => $email !== '',
-        ]);
-        DBA::update('user', ['email' => $email], ['uid' => $uid]);
-        $linkedBySub['email'] = $email;
 
         return $linkedBySub;
     }
@@ -121,36 +89,15 @@ final class UserProvisioner
     /**
      * @param array<string, mixed> $existingUser
      */
-    private function resolveExistingEmailMatch(array $existingUser, string $sub, string $email, string $nickname, string $picture): ?array
+    private function resolveExistingEmailMatch(array $existingUser, string $sub, string $email): ?array
     {
-        if (empty($existingUser['openid']) && $this->autoCreateAccountsEnabled()) {
-            return $this->autoLinkExistingUser($existingUser, $sub, $email, $nickname, $picture);
-        }
-
-        DI::logger()->warning('openidconnect: email matches account linked to different sub - REJECTED', [
+        DI::logger()->warning('openidconnect: email matches an existing account that is not linked to this identity - REJECTED', [
             'has_email' => $email !== '',
             'has_existing_openid' => !empty($existingUser['openid']),
             'has_attempted_sub' => $sub !== '',
         ]);
         DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect: This account is not linked to your identity provider. Please link your account in the settings or contact the administrator.'));
         return null;
-    }
-
-    /**
-     * @param array<string, mixed> $existingUser
-     * @return array<string, mixed>
-     */
-    private function autoLinkExistingUser(array $existingUser, string $sub, string $email, string $nickname, string $picture): array
-    {
-        $uid = (int)$existingUser['uid'];
-        DI::logger()->info('openidconnect: auto-linking existing unlinked account by email', ['uid' => $uid, 'sub' => $sub]);
-        $this->linker->link($uid, $sub, $email, $nickname);
-
-        if ($picture !== '') {
-            $this->avatarUpdater->update($uid, $picture);
-        }
-
-        return DBA::selectFirst('user', [], ['uid' => $uid]);
     }
 
     private function autoCreateAccountsEnabled(): bool
@@ -195,7 +142,7 @@ final class UserProvisioner
                 : $this->resolveUniqueNickname($nickname . $attempt, static fn(string $nameCandidate): bool => DBA::exists('user', ['nickname' => $nameCandidate]));
 
             try {
-                $user = $this->runInTransaction(function () use ($name, $candidate, $email, $password, $sub): array {
+                $user = $this->runInTransaction(function () use ($name, $candidate, $email, $password): array {
                     DI::logger()->debug('openidconnect: calling User::create', ['email' => $email, 'nickname' => $candidate, 'name' => $name]);
                     return User::create([
                         'username' => $name ?: $candidate,
@@ -203,13 +150,12 @@ final class UserProvisioner
                         'email' => $email,
                         'password' => $password,
                         'verified' => true,
-                        'openid' => $sub,
                     ]);
                 });
 
-                DI::logger()->debug('openidconnect: User::create returned', ['uid' => $user['uid'] ?? 'MISSING', 'user_keys' => array_keys($user ?: [])]);
+                DI::logger()->debug('openidconnect: User::create returned', ['uid' => $user['user']['uid'] ?? 'MISSING', 'user_keys' => array_keys($user['user'] ?? [])]);
 
-                $uid = (int)($user['uid'] ?? 0);
+                $uid = (int)($user['user']['uid'] ?? 0);
                 if ($uid <= 0) {
                     $created = DBA::selectFirst('user', ['uid'], ['openid' => $sub]);
                     $uid = (int)($created['uid'] ?? 0);
@@ -235,8 +181,16 @@ final class UserProvisioner
                 DI::pConfig()->set($uid, 'openidconnect', 'oidc_email', $email);
                 DI::pConfig()->set($uid, 'openidconnect', 'oidc_nickname', $candidate);
 
+                $createdUser = DBA::selectFirst('user', [], ['uid' => $uid]) ?: null;
+                if ($createdUser) {
+                    // The user never sees this random password, so unlinking without
+                    // ever setting a real one would lock them out entirely.  Remember
+                    // the generated hash to detect that case later.
+                    DI::pConfig()->set($uid, 'openidconnect', 'oidc_generated_password_hash', $createdUser['password']);
+                }
+
                 DI::logger()->info('OpenID Connect user created', ['nickname' => $candidate, 'email' => $email, 'uid' => $uid]);
-                return DBA::selectFirst('user', [], ['uid' => $uid]);
+                return $createdUser;
             } catch (\Throwable $e) {
                 $linked = DBA::selectFirst('user', [], ['openid' => $sub]);
                 if ($linked) {
@@ -293,22 +247,14 @@ final class UserProvisioner
 
     private function runInTransaction(callable $operation): mixed
     {
-        if (method_exists(DBA::class, 'transaction')) {
-            return DBA::transaction($operation);
+        DBA::transaction();
+        try {
+            $result = $operation();
+            DBA::commit();
+            return $result;
+        } catch (\Throwable $e) {
+            DBA::rollback();
+            throw $e;
         }
-
-        if (method_exists(DBA::class, 'beginTransaction') && method_exists(DBA::class, 'commit') && method_exists(DBA::class, 'rollback')) {
-            DBA::beginTransaction();
-            try {
-                $result = $operation();
-                DBA::commit();
-                return $result;
-            } catch (\Throwable $e) {
-                DBA::rollback();
-                throw $e;
-            }
-        }
-
-        return $operation();
     }
 }

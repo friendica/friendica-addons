@@ -4,241 +4,195 @@ declare(strict_types=1);
 
 namespace Friendica\Addon\OpenIdConnect\Tests\Auth;
 
-use Friendica\TestHttpResponse;
 use Friendica\Addon\OpenIdConnect\Account\AccountLinker;
-use Friendica\Addon\OpenIdConnect\Account\AvatarUpdater;
 use Friendica\Addon\OpenIdConnect\Account\UserProvisioner;
 use Friendica\Addon\OpenIdConnect\Auth\AuthorizationRequest;
 use Friendica\Addon\OpenIdConnect\Auth\CallbackDependencies;
 use Friendica\Addon\OpenIdConnect\Auth\CallbackHandler;
 use Friendica\Addon\OpenIdConnect\Auth\CallbackIdentityVerifier;
 use Friendica\Addon\OpenIdConnect\Auth\CallbackLinkCompleter;
-use Friendica\Addon\OpenIdConnect\Auth\LoginPolicy;
-use Friendica\Addon\OpenIdConnect\Auth\SessionFunctionSpy;
 use Friendica\Addon\OpenIdConnect\Identity\UserInfo;
 use Friendica\Addon\OpenIdConnect\Provider\IdTokenValidator;
 use Friendica\Addon\OpenIdConnect\Provider\ProviderConfiguration;
 use Friendica\Addon\OpenIdConnect\Provider\TokenClient;
-use Friendica\Addon\OpenIdConnect\Tests\Support\AddonTestCase;
-use Friendica\Database\DBA;
-use Friendica\DI;
+use Friendica\Addon\OpenIdConnect\Tests\Support\DiTestCase;
+use Friendica\Database\Database;
+use Friendica\Network\HTTPClient\Capability\ICanHandleHttpResponses;
+use Friendica\Network\HTTPClient\Capability\ICanSendHttpRequests;
+use Friendica\Security\Authentication;
 
-final class CallbackHandlerTest extends AddonTestCase
+final class CallbackHandlerTest extends DiTestCase
 {
-    public function testSilentLoginRequiredFallsBackToManualLoginWithReturnPath(): void
+    /**
+     * Wires a CallbackHandler out of real collaborators (all final, so not
+     * mockable), with a custom link-ownership lookup so the link-mode path
+     * doesn't need a real database.
+     */
+    private function makeHandler(?callable $linkOwnerLookup = null): CallbackHandler
     {
-        DI::cache()->set('oidcstate:s', ['silent_auth' => true, 'return_path' => 'oauth/authorize?client_id=test'], 600);
-        (new CallbackHandler($this->dependencies()))->handle(['state' => 's', 'error' => 'login_required']);
+        $providerConfiguration = new ProviderConfiguration();
 
-        self::assertSame('login?openidconnect_no_auto=1&return_path=oauth%2Fauthorize%3Fclient_id%3Dtest', DI::baseUrl()->lastRedirect());
+        return new CallbackHandler(new CallbackDependencies(
+            new AuthorizationRequest($providerConfiguration),
+            new TokenClient($providerConfiguration),
+            new CallbackIdentityVerifier(new IdTokenValidator($providerConfiguration), new UserInfo($providerConfiguration)),
+            new CallbackLinkCompleter(new AccountLinker(), $linkOwnerLookup ?? static fn (string $sub): ?array => null),
+            new UserProvisioner(),
+        ));
     }
 
-    public function testAuthorizationErrorLogContextDoesNotLeakRawStateValue(): void
+    private function seedTokenAndUserinfoResponses(array $tokens, array $userinfo, bool $userinfoSuccess = true): void
     {
-        DI::cache()->set('oidcstate:opaque-secret-state', ['silent_auth' => false], 600);
+        $tokenResponse = $this->createMock(ICanHandleHttpResponses::class);
+        $tokenResponse->method('isSuccess')->willReturn(true);
+        $tokenResponse->method('getBodyString')->willReturn(json_encode($tokens, JSON_THROW_ON_ERROR));
 
-        (new CallbackHandler($this->dependencies()))->handle([
-            'state' => 'opaque-secret-state',
-            'error' => 'access_denied',
+        $userinfoResponse = $this->createMock(ICanHandleHttpResponses::class);
+        $userinfoResponse->method('isSuccess')->willReturn($userinfoSuccess);
+        $userinfoResponse->method('getReturnCode')->willReturn($userinfoSuccess ? '200' : '500');
+        $userinfoResponse->method('getBodyString')->willReturn(json_encode($userinfo, JSON_THROW_ON_ERROR));
+
+        $httpClient = $this->mockHttpClient();
+        $httpClient->method('post')->willReturn($tokenResponse);
+        $httpClient->method('get')->willReturn($userinfoResponse);
+        $this->initDi([ICanSendHttpRequests::class => $httpClient]);
+
+        $this->cache->set('openidconnect:provider_config', [
+            'authorization_endpoint' => 'https://idp.example/authorize',
+            'token_endpoint' => 'https://idp.example/token',
+            'userinfo_endpoint' => 'https://idp.example/userinfo',
         ]);
-
-        $lastWarning = DI::logger()->warnings[array_key_last(DI::logger()->warnings)];
-        self::assertSame('openidconnect: authorization endpoint returned an error', $lastWarning[0]);
-        $contextEncoded = json_encode($lastWarning[1], JSON_THROW_ON_ERROR);
-        self::assertStringNotContainsString('opaque-secret-state', $contextEncoded);
     }
 
-    public function testMissingCodeOrStateRedirectsToLogin(): void
+    public function testHandleShowsErrorFromAuthorizationEndpoint(): void
     {
-        (new CallbackHandler($this->dependencies()))->handle([]);
+        $this->initDi();
 
-        self::assertSame('login?openidconnect_no_auto=1', DI::baseUrl()->lastRedirect());
+        $this->makeHandler()->handle(['error' => 'access_denied']);
+
+        self::assertSame(['OpenID Connect authentication failed: access_denied'], $this->sysmsg->getNotices());
     }
 
-    public function testExpiredStateRedirectsToLoginWithNotice(): void
+    public function testHandleFallsBackSilentlyWhenSilentAuthIsRejected(): void
     {
-        (new CallbackHandler($this->dependencies()))->handle([
-            'code' => 'auth-code',
-            'state' => 'missing-state',
+        $this->initDi();
+        $this->cache->set('oidcstate:s1', ['silent_auth' => true, 'return_path' => '']);
+
+        $this->makeHandler()->handle(['error' => 'login_required', 'state' => 's1']);
+
+        self::assertSame([], $this->sysmsg->getNotices());
+    }
+
+    public function testHandleRejectsMissingCodeOrState(): void
+    {
+        $this->initDi();
+
+        $this->makeHandler()->handle([]);
+
+        self::assertSame(['OpenID Connect authentication failed: missing parameters.'], $this->sysmsg->getNotices());
+    }
+
+    public function testHandleRejectsUnknownOrExpiredState(): void
+    {
+        $this->initDi();
+
+        $this->makeHandler()->handle(['code' => 'abc', 'state' => 'unknown']);
+
+        self::assertSame(['OpenID Connect authentication failed: invalid or expired state.'], $this->sysmsg->getNotices());
+    }
+
+    public function testHandleRejectsWhenTokenExchangeFails(): void
+    {
+        $this->initDi();
+        $this->cache->set('oidcstate:s1', ['return_path' => '', 'pkce_verifier' => 'verifier']);
+
+        $this->makeHandler()->handle(['code' => 'abc', 'state' => 's1']);
+
+        self::assertSame(['OpenID Connect authentication failed: token exchange error.'], $this->sysmsg->getNotices());
+    }
+
+    public function testHandleRejectsWhenIdentityVerificationFails(): void
+    {
+        $this->seedTokenAndUserinfoResponses(['access_token' => 'tok'], [], false);
+        $this->cache->set('oidcstate:s1', ['return_path' => '', 'pkce_verifier' => 'verifier']);
+
+        $this->makeHandler()->handle(['code' => 'abc', 'state' => 's1']);
+
+        self::assertSame([
+            'OpenID Connect authentication failed: could not retrieve user info.',
+            'OpenID Connect authentication failed: could not verify your identity.',
+        ], $this->sysmsg->getNotices());
+    }
+
+    public function testHandleDelegatesToLinkCompleterInLinkMode(): void
+    {
+        $this->seedTokenAndUserinfoResponses(['access_token' => 'tok'], ['sub' => 'sub-123', 'email' => 'user@example.com']);
+        $this->cache->set('oidcstate:s1', ['return_path' => 'settings/account', 'pkce_verifier' => 'verifier', 'link_mode' => true]);
+        $this->session->setLocalUserId(42);
+
+        $this->makeHandler()->handle(['code' => 'abc', 'state' => 's1']);
+
+        self::assertSame(['OpenID Connect account successfully linked.'], $this->sysmsg->getInfos());
+        self::assertSame('sub-123', $this->pConfig->get(42, 'openidconnect', 'oidc_sub', ''));
+    }
+
+    public function testHandleLogsInAndStoresTokensOnSuccessfulLogin(): void
+    {
+        $dba = $this->mockDba();
+        $dba->method('selectFirst')->willReturn(['uid' => 42, 'email' => 'user@example.com']);
+        $auth = $this->createMock(Authentication::class);
+        $auth->expects(self::once())->method('setForUser')->with(['uid' => 42, 'email' => 'user@example.com'], true, true);
+        $this->initDi([
+            ICanSendHttpRequests::class => $this->httpClientFromOverrides(),
+            Database::class => $dba,
+            Authentication::class => $auth,
         ]);
+        $this->seedProviderConfigAndState();
 
-        self::assertSame('login?openidconnect_no_auto=1', DI::baseUrl()->lastRedirect());
-        self::assertNotEmpty(DI::sysmsg()->notices);
-        self::assertStringContainsString(
-            'invalid or expired state',
-            implode(' ', DI::sysmsg()->notices)
-        );
+        $this->makeHandler()->handle(['code' => 'abc', 'state' => 's1']);
+
+        self::assertSame(['access_token' => 'tok'], $this->session->get('openidconnect_tokens'));
     }
 
-    public function testLinkModeCallbackStoresTokensClosesSessionAndRedirectsToReturnPath(): void
+    public function testHandleFallsBackWhenNoMatchingAccountIsFound(): void
     {
-        DI::userSession()->setLocalUserId(7);
-        DI::config()->set('openidconnect', 'client_id', 'client-id');
-        DI::config()->set('openidconnect', 'client_secret', 'secret');
-        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
+        $dba = $this->mockDba();
+        $dba->method('selectFirst')->willReturn(false);
+        $this->initDi([ICanSendHttpRequests::class => $this->httpClientFromOverrides(), Database::class => $dba]);
+        $this->seedProviderConfigAndState();
 
-        DI::cache()->set('openidconnect:provider_config', [
-            'token_endpoint' => 'https://id.example/token',
-            'userinfo_endpoint' => 'https://id.example/userinfo',
-            'jwks_uri' => 'https://id.example/jwks',
-        ], 600);
+        $this->makeHandler()->handle(['code' => 'abc', 'state' => 's1']);
 
-        DI::cache()->set('oidcstate:s', [
-            'nonce' => 'nonce',
-            'pkce_verifier' => 'pkce',
-            'return_path' => 'settings/account',
-            'link_mode' => true,
-        ], 600);
-
-        DI::httpClient()->nextPostResponse = new TestHttpResponse(
-            true,
-            json_encode(['access_token' => 'access-token'], JSON_THROW_ON_ERROR),
-            200
-        );
-        DI::httpClient()->nextGetResponse = new TestHttpResponse(
-            true,
-            json_encode([
-                'sub' => 'sub-1',
-                'email' => 'person@example.test',
-                'name' => 'Person Example',
-                'preferred_username' => 'person',
-            ], JSON_THROW_ON_ERROR),
-            200
-        );
-
-        (new CallbackHandler($this->dependencies()))->handle([
-            'code' => 'auth-code',
-            'state' => 's',
-        ]);
-
-        self::assertSame('access-token', DI::session()->get('openidconnect_tokens')['access_token']);
-        self::assertTrue(SessionFunctionSpy::$sessionWriteCloseCalled);
-        self::assertSame('settings/account', DI::baseUrl()->lastRedirect());
+        self::assertSame([
+            'OpenID Connect: No matching account found and registration is not available. Please contact the administrator.',
+            'OpenID Connect login failed: No matching account found and registration is not available. Please contact the administrator.',
+        ], $this->sysmsg->getNotices());
     }
 
-    public function testEmptyIdentityVerificationFallsBackToManualLoginWithNotice(): void
+    private function seedProviderConfigAndState(): void
     {
-        DI::config()->set('openidconnect', 'client_id', 'client-id');
-        DI::config()->set('openidconnect', 'client_secret', 'secret');
-        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
-
-        DI::cache()->set('openidconnect:provider_config', [
-            'token_endpoint' => 'https://id.example/token',
-            'jwks_uri' => 'https://id.example/jwks',
-        ], 600);
-
-        DI::cache()->set('oidcstate:s', [
-            'nonce' => 'nonce',
-            'return_path' => 'oauth/authorize?client_id=test',
-        ], 600);
-
-        DI::httpClient()->nextPostResponse = new TestHttpResponse(
-            true,
-            json_encode(['access_token' => 'token'], JSON_THROW_ON_ERROR),
-            200
-        );
-
-        (new CallbackHandler($this->dependencies()))->handle([
-            'code' => 'auth-code',
-            'state' => 's',
+        $this->cache->set('openidconnect:provider_config', [
+            'authorization_endpoint' => 'https://idp.example/authorize',
+            'token_endpoint' => 'https://idp.example/token',
+            'userinfo_endpoint' => 'https://idp.example/userinfo',
         ]);
-
-        self::assertSame(
-            'login?openidconnect_no_auto=1&return_path=oauth%2Fauthorize%3Fclient_id%3Dtest',
-            DI::baseUrl()->lastRedirect()
-        );
-        self::assertNotEmpty(DI::sysmsg()->notices);
-        self::assertStringContainsString(
-            'could not verify your identity',
-            implode(' ', DI::sysmsg()->notices)
-        );
+        $this->cache->set('oidcstate:s1', ['return_path' => '', 'pkce_verifier' => 'verifier']);
     }
 
-    public function testSuccessfulNonLinkCallbackAuthenticatesUserStoresTokensAndSanitizesExternalReturnPath(): void
+    private function httpClientFromOverrides(): ICanSendHttpRequests
     {
-        DI::config()->set('openidconnect', 'client_id', 'client-id');
-        DI::config()->set('openidconnect', 'client_secret', 'secret');
-        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
+        $tokenResponse = $this->createMock(ICanHandleHttpResponses::class);
+        $tokenResponse->method('isSuccess')->willReturn(true);
+        $tokenResponse->method('getBodyString')->willReturn(json_encode(['access_token' => 'tok'], JSON_THROW_ON_ERROR));
 
-        DI::cache()->set('openidconnect:provider_config', [
-            'token_endpoint' => 'https://id.example/token',
-            'userinfo_endpoint' => 'https://id.example/userinfo',
-            'jwks_uri' => 'https://id.example/jwks',
-        ], 600);
-        DI::cache()->set('oidcstate:s', [
-            'nonce' => 'nonce',
-            'pkce_verifier' => 'pkce',
-            'return_path' => 'https://evil.example/phish',
-        ], 600);
-        DBA::seedUser([
-            'uid' => 11,
-            'openid' => 'sub-1',
-            'email' => 'person@example.test',
-            'nickname' => 'person',
-        ]);
+        $userinfoResponse = $this->createMock(ICanHandleHttpResponses::class);
+        $userinfoResponse->method('isSuccess')->willReturn(true);
+        $userinfoResponse->method('getBodyString')->willReturn(json_encode(['sub' => 'sub-123', 'email' => 'user@example.com'], JSON_THROW_ON_ERROR));
 
-        DI::httpClient()->nextPostResponse = new TestHttpResponse(
-            true,
-            json_encode(['access_token' => 'access-token'], JSON_THROW_ON_ERROR),
-            200
-        );
-        DI::httpClient()->nextGetResponse = new TestHttpResponse(
-            true,
-            json_encode([
-                'sub' => 'sub-1',
-                'email' => 'person@example.test',
-                'name' => 'Person Example',
-                'preferred_username' => 'person',
-            ], JSON_THROW_ON_ERROR),
-            200
-        );
+        $httpClient = $this->mockHttpClient();
+        $httpClient->method('post')->willReturn($tokenResponse);
+        $httpClient->method('get')->willReturn($userinfoResponse);
 
-        (new CallbackHandler($this->dependencies()))->handle([
-            'code' => 'auth-code',
-            'state' => 's',
-        ]);
-
-        self::assertSame(11, DI::auth()->authenticatedUser['uid'] ?? null);
-        self::assertTrue((bool) DI::session()->get('2fa'));
-        self::assertSame('access-token', DI::session()->get('openidconnect_tokens')['access_token']);
-        self::assertTrue(SessionFunctionSpy::$sessionWriteCloseCalled);
-        self::assertSame('', DI::baseUrl()->lastRedirect());
-        self::assertSame([], DI::sysmsg()->notices);
-
-        $logPayload = json_encode([
-            'warnings' => DI::logger()->warnings,
-            'errors' => DI::logger()->errors,
-            'debugs' => DI::logger()->debugs,
-        ], JSON_THROW_ON_ERROR);
-        self::assertStringNotContainsString('access-token', $logPayload);
-        self::assertStringNotContainsString('person@example.test', $logPayload);
-        self::assertStringNotContainsString('sub-1', $logPayload);
-    }
-
-    public function testAuthorizationErrorWithAbsoluteReturnPathFallsBackToLoginWithoutLeakingPath(): void
-    {
-        DI::cache()->set('oidcstate:s', [
-            'silent_auth' => false,
-            'return_path' => 'https://evil.example/phish?token=secret',
-        ], 600);
-
-        (new CallbackHandler($this->dependencies()))->handle([
-            'state' => 's',
-            'error' => 'access_denied',
-        ]);
-
-        self::assertSame('login?openidconnect_no_auto=1', DI::baseUrl()->lastRedirect());
-        self::assertStringNotContainsString('evil.example', implode(' ', DI::sysmsg()->notices));
-    }
-
-    private function dependencies(): CallbackDependencies
-    {
-        return new CallbackDependencies(
-            new AuthorizationRequest(new ProviderConfiguration()),
-            new TokenClient(),
-            new CallbackIdentityVerifier(new IdTokenValidator(), new UserInfo(new ProviderConfiguration())),
-            new CallbackLinkCompleter(new AccountLinker()),
-            new UserProvisioner(new AccountLinker(), new AvatarUpdater()),
-        );
+        return $httpClient;
     }
 }

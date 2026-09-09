@@ -5,10 +5,15 @@ declare(strict_types=1);
 namespace Friendica\Addon\OpenIdConnect\Tests\Auth;
 
 use Friendica\Addon\OpenIdConnect\Auth\LoginPolicy;
-use Friendica\Addon\OpenIdConnect\Tests\Support\AddonTestCase;
+use Friendica\Addon\OpenIdConnect\Tests\Support\DiTestCase;
 
-final class LoginPolicyTest extends AddonTestCase
+final class LoginPolicyTest extends DiTestCase
 {
+    protected function setUp(): void
+    {
+        $this->initDi();
+    }
+
     public function testSanitizeReturnPathKeepsRelativePath(): void
     {
         self::assertSame('settings/account', LoginPolicy::sanitizeReturnPath('settings/account'));

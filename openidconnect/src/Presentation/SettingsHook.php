@@ -11,6 +11,12 @@ use Friendica\DI;
 
 final class SettingsHook
 {
+    /**
+     * Own field name for the unlink CSRF token, so it doesn't collide with the
+     * enclosing settings/addons form's own "form_security_token" field.
+     */
+    public const UNLINK_TOKEN_FIELD = 'openidconnect_unlink_security_token';
+
     private AccountLinker $accountLinker;
 
     public function __construct(?AccountLinker $accountLinker = null)
@@ -26,8 +32,9 @@ final class SettingsHook
         }
 
         $linkedAccount = $this->accountLinker->get($uid);
-    $linkedPayload = $linkedAccount ? ['sub' => $linkedAccount['sub'] ?? ''] : null;
+        $linkedPayload = $linkedAccount ? ['sub' => $linkedAccount['sub'] ?? ''] : null;
         $baseUrl = (string)DI::baseUrl();
+        $title = DI::l10n()->t('OpenID Connect');
 
         $tpl = Renderer::getMarkupTemplate('settings.tpl', 'addon/openidconnect/');
         try {
@@ -40,17 +47,21 @@ final class SettingsHook
             $confirmJson = '""';
         }
 
-        $data['aside'] = Renderer::replaceMacros($tpl, [
+        $html = Renderer::replaceMacros($tpl, [
             '$linked' => $linkedPayload,
             '$sub_label' => DI::l10n()->t('OIDC ID:'),
             '$unlink_url' => $baseUrl . '/openidconnect/unlink',
             '$link_url' => $baseUrl . '/openidconnect/link',
+            '$unlink_token_field' => self::UNLINK_TOKEN_FIELD,
             '$unlink_token' => BaseModule::getFormSecurityToken('openidconnect_unlink'),
-            '$title' => DI::l10n()->t('OpenID Connect'),
             '$link_text' => DI::l10n()->t('Link OpenID Connect Account'),
             '$unlink_text' => DI::l10n()->t('Unlink Account'),
             '$confirm_json' => $confirmJson,
             '$description' => DI::l10n()->t('Link your local account with an OpenID Connect provider to use SSO for login.'),
         ]);
+
+        $data['addon'] = 'openidconnect';
+        $data['title'] = $title;
+        $data['html']  = $html;
     }
 }
