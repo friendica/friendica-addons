@@ -16,10 +16,66 @@ $(document).ready(function() {
 	}
 });
 
+// Bodies the user expanded, keyed by uri-id and kept for the tab so a live update
+// or a return to the timeline doesn't collapse them again
+function expandedBodies() {
+	try {
+		return JSON.parse(sessionStorage.getItem('showmore_dyn_expanded')) || {};
+	} catch (e) {
+		return {};
+	}
+}
+
+function storeExpandedBodies(expanded) {
+	try {
+		sessionStorage.setItem('showmore_dyn_expanded', JSON.stringify(expanded));
+	} catch (e) {}
+}
+
+function rememberExpandedBody($item) {
+	var uriId = $item.closest('[data-uri-id]').attr('data-uri-id');
+	if (!uriId) {
+		return;
+	}
+
+	var expanded = expandedBodies();
+	expanded[uriId] = true;
+	storeExpandedBodies(expanded);
+}
+
+// Drop remembered bodies whose thread is no longer loaded on the page
+function pruneExpandedBodies() {
+	var expanded = expandedBodies();
+	var present = {};
+	$('[data-uri-id]').each(function() {
+		present[this.getAttribute('data-uri-id')] = true;
+	});
+
+	var changed = false;
+	Object.keys(expanded).forEach(function(uriId) {
+		if (!present[uriId]) {
+			delete expanded[uriId];
+			changed = true;
+		}
+	});
+
+	if (changed) {
+		storeExpandedBodies(expanded);
+	}
+}
+
 function handleNewWallItemBodies() {
+	var expanded = expandedBodies();
+
 	$('.wall-item-body:not(.showmore-done)').each(function() {
 		var $el = $(this);
 		$el.addClass('showmore-done');
+
+		if (expanded[$el.closest('[data-uri-id]').attr('data-uri-id')]) {
+			$el.removeClass('limitable limit-height');
+			return;
+		}
+
 		if ($el.has('button.content-filter-button').length > 0) {
 			$el.removeClass('limitable');
 			return;
@@ -52,6 +108,8 @@ function handleNewWallItemBodies() {
 			});
 		}
 	});
+
+	pruneExpandedBodies();
 }
 
 function addHeightToggleHandler($item) {
@@ -68,6 +126,7 @@ function addHeightToggleHandler($item) {
 		$item.toggleClass("limit-height");
 		$(this).hide();
 		$item.removeClass("limitable");
+		rememberExpandedBody($item);
 	});
 }
 
