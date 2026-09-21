@@ -8,9 +8,9 @@
 
 <script type="text/javascript">
 	var uploader = null;
-	function createUploader() {
+	function createUploader(dropTarget) {
 		uploader = new qq.FileUploader({
-			element: document.getElementById('js_upload'),
+			element: dropTarget,
 			action: '{{$post_url}}',
 
 			template: '<div class="qq-uploader">' +
@@ -51,5 +51,8 @@
 		});
 	}
 
-	window.addEventListener('load', createUploader);
+	// window's load event only fires once per full page load, so it never
+	// runs again after navigating here in SPA mode. onWindowLoad() covers
+	// both the initial load and later SPA navigations to this page.
+	window.onWindowLoad('#js_upload', createUploader);
 </script>

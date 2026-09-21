@@ -1,15 +1,27 @@
 var nextBodyIdx = 0;
+var showmoreDynLiveUpdateBound = false;
 
-$(document).ready(function() {
+// ready() only fires once for this script, but SPA navigation swaps in a new
+// timeline without it firing again, so onDocumentReady() is needed to redo
+// the height limiting on every timeline the user navigates to.
+window.onDocumentReady('body', function() {
 	loc = window.location.pathname;
 	if (loc.startsWith('/display')) {
 		return;
 	}
 
-	if (postLimitHeight) {
-		$('head').append('<style type="text/css">.limit-height{max-height: ' + postLimitHeight + 'px; overflow: hidden; }</style>');
-		handleNewWallItemBodies();
+	if (!postLimitHeight) {
+		return;
+	}
 
+	if (!document.getElementById('showmore-dyn-style')) {
+		$('head').append('<style type="text/css" id="showmore-dyn-style">.limit-height{max-height: ' + postLimitHeight + 'px; overflow: hidden; }</style>');
+	}
+
+	handleNewWallItemBodies();
+
+	if (!showmoreDynLiveUpdateBound) {
+		showmoreDynLiveUpdateBound = true;
 		document.addEventListener('postprocess_liveupdate', function() {
 			handleNewWallItemBodies();
 		});
