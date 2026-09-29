@@ -45,17 +45,17 @@ final class OpenIdConnectAddon
 		?ModerationBadgeHook $moderationBadgeHook = null,
 		?AdminHook $adminHook = null,
 	) {
-		$this->lifecycle = $lifecycle ?? new AddonLifecycle();
+		$this->lifecycle             = $lifecycle             ?? new AddonLifecycle();
 		$this->providerConfiguration = $providerConfiguration ?? new ProviderConfiguration();
-		$this->authorizationRequest = $authorizationRequest ?? new AuthorizationRequest($this->providerConfiguration);
-		$this->callbackHandler = $callbackHandler ?? new CallbackHandler(null, $this->providerConfiguration);
-		$this->revokeRoute = $revokeRoute ?? new RevokeRoute($this->providerConfiguration);
-		$this->accountLinkRoutes = $accountLinkRoutes ?? new AccountLinkRoutes($this->providerConfiguration, $this->authorizationRequest);
-		$this->logoutHandler = $logoutHandler ?? new LogoutHandler($this->providerConfiguration);
-		$this->loginHook = $loginHook ?? new LoginHook($this->providerConfiguration);
-		$this->settingsHook = $settingsHook ?? new SettingsHook();
-		$this->moderationBadgeHook = $moderationBadgeHook ?? new ModerationBadgeHook();
-		$this->adminHook = $adminHook ?? new AdminHook();
+		$this->authorizationRequest  = $authorizationRequest  ?? new AuthorizationRequest($this->providerConfiguration);
+		$this->callbackHandler       = $callbackHandler       ?? new CallbackHandler(null, $this->providerConfiguration);
+		$this->revokeRoute           = $revokeRoute           ?? new RevokeRoute($this->providerConfiguration);
+		$this->accountLinkRoutes     = $accountLinkRoutes     ?? new AccountLinkRoutes($this->providerConfiguration, $this->authorizationRequest);
+		$this->logoutHandler         = $logoutHandler         ?? new LogoutHandler($this->providerConfiguration);
+		$this->loginHook             = $loginHook             ?? new LoginHook($this->providerConfiguration);
+		$this->settingsHook          = $settingsHook          ?? new SettingsHook();
+		$this->moderationBadgeHook   = $moderationBadgeHook   ?? new ModerationBadgeHook();
+		$this->adminHook             = $adminHook             ?? new AdminHook();
 	}
 
 	public function install(): void

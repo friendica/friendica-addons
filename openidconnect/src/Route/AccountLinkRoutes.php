@@ -25,9 +25,9 @@ final class AccountLinkRoutes
 		?AccountLinker $accountLinker = null,
 		?callable $authorizationRedirectFn = null,
 	) {
-		$this->providerConfiguration = $providerConfiguration ?? new ProviderConfiguration();
-		$this->authorizationRequest = $authorizationRequest ?? new AuthorizationRequest($this->providerConfiguration);
-		$this->accountLinker = $accountLinker ?? new AccountLinker();
+		$this->providerConfiguration   = $providerConfiguration   ?? new ProviderConfiguration();
+		$this->authorizationRequest    = $authorizationRequest    ?? new AuthorizationRequest($this->providerConfiguration);
+		$this->accountLinker           = $accountLinker           ?? new AccountLinker();
 		$this->authorizationRedirectFn = $authorizationRedirectFn ?? [$this->authorizationRequest, 'redirect'];
 	}
 
@@ -73,8 +73,8 @@ final class AccountLinkRoutes
 
 		$linkedAccount = $this->accountLinker->get($uid);
 		DI::logger()->debug('openidconnect_unlink_account linked', [
-			'uid' => (int)$uid,
-			'has_link' => !empty($linkedAccount),
+			'uid'         => (int) $uid,
+			'has_link'    => !empty($linkedAccount),
 			'has_link_id' => !empty($linkedAccount['sub']),
 		]);
 

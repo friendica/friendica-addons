@@ -229,7 +229,7 @@ function mailstream_post_hook(array &$item)
 		DI::logger()->debug('no uri', ['item' => $item['id']]);
 		return;
 	}
-	if (!in_array($item['verb'], array(Activity::POST, Activity::UPDATE, Activity::SHARE))) {
+	if (!in_array($item['verb'], [Activity::POST, Activity::UPDATE, Activity::SHARE])) {
 		DI::logger()->debug('ignoring activity', ['item' => $item['id'], 'verb' => $item['verb']]);
 		return;
 	}

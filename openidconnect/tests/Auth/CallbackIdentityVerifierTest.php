@@ -20,83 +20,83 @@ use Friendica\Network\HTTPClient\Capability\ICanSendHttpRequests;
  */
 final class CallbackIdentityVerifierTest extends DiTestCase
 {
-    private function seedUserinfoResponse(array $body, bool $success = true): void
-    {
-        $response = $this->createMock(ICanHandleHttpResponses::class);
-        $response->method('isSuccess')->willReturn($success);
-        $response->method('getBodyString')->willReturn(json_encode($body, JSON_THROW_ON_ERROR));
-        $response->method('getReturnCode')->willReturn($success ? '200' : '500');
+	private function seedUserinfoResponse(array $body, bool $success = true): void
+	{
+		$response = $this->createMock(ICanHandleHttpResponses::class);
+		$response->method('isSuccess')->willReturn($success);
+		$response->method('getBodyString')->willReturn(json_encode($body, JSON_THROW_ON_ERROR));
+		$response->method('getReturnCode')->willReturn($success ? '200' : '500');
 
-        $httpClient = $this->mockHttpClient();
-        $httpClient->method('get')->willReturn($response);
-        $this->initDi([ICanSendHttpRequests::class => $httpClient]);
-        $this->cache->set('openidconnect:provider_config', ['userinfo_endpoint' => 'https://idp.example/userinfo']);
-    }
+		$httpClient = $this->mockHttpClient();
+		$httpClient->method('get')->willReturn($response);
+		$this->initDi([ICanSendHttpRequests::class => $httpClient]);
+		$this->cache->set('openidconnect:provider_config', ['userinfo_endpoint' => 'https://idp.example/userinfo']);
+	}
 
-    private function verifier(): CallbackIdentityVerifier
-    {
-        return new CallbackIdentityVerifier(new IdTokenValidator(), new UserInfo());
-    }
+	private function verifier(): CallbackIdentityVerifier
+	{
+		return new CallbackIdentityVerifier(new IdTokenValidator(), new UserInfo());
+	}
 
-    public function testVerifyRejectsWhenIdTokenFailsValidation(): void
-    {
-        $this->initDi();
+	public function testVerifyRejectsWhenIdTokenFailsValidation(): void
+	{
+		$this->initDi();
 
-        $result = $this->verifier()->verify(['id_token' => 'not-a-jwt', 'access_token' => 'tok'], []);
+		$result = $this->verifier()->verify(['id_token' => 'not-a-jwt', 'access_token' => 'tok'], []);
 
-        self::assertSame([], $result);
-        self::assertSame(['OpenID Connect authentication failed: invalid identity token.'], $this->sysmsg->getNotices());
-    }
+		self::assertSame([], $result);
+		self::assertSame(['OpenID Connect authentication failed: invalid identity token.'], $this->sysmsg->getNotices());
+	}
 
-    public function testVerifyUsesUserinfoEndpointResultWhenAvailable(): void
-    {
-        $this->seedUserinfoResponse(['sub' => 'sub-123', 'email' => 'user@example.com']);
+	public function testVerifyUsesUserinfoEndpointResultWhenAvailable(): void
+	{
+		$this->seedUserinfoResponse(['sub' => 'sub-123', 'email' => 'user@example.com']);
 
-        $result = $this->verifier()->verify(['access_token' => 'tok'], []);
+		$result = $this->verifier()->verify(['access_token' => 'tok'], []);
 
-        self::assertSame(['sub' => 'sub-123', 'email' => 'user@example.com'], $result);
-    }
+		self::assertSame(['sub' => 'sub-123', 'email' => 'user@example.com'], $result);
+	}
 
-    public function testVerifyRejectsWhenUserinfoIsCompletelyUnavailable(): void
-    {
-        $this->seedUserinfoResponse([], false);
+	public function testVerifyRejectsWhenUserinfoIsCompletelyUnavailable(): void
+	{
+		$this->seedUserinfoResponse([], false);
 
-        $result = $this->verifier()->verify(['access_token' => 'tok'], []);
+		$result = $this->verifier()->verify(['access_token' => 'tok'], []);
 
-        self::assertSame([], $result);
-        self::assertSame(['OpenID Connect authentication failed: could not retrieve user info.'], $this->sysmsg->getNotices());
-    }
+		self::assertSame([], $result);
+		self::assertSame(['OpenID Connect authentication failed: could not retrieve user info.'], $this->sysmsg->getNotices());
+	}
 
-    public function testVerifyRejectsUnverifiedEmailByDefault(): void
-    {
-        $this->seedUserinfoResponse(['sub' => 'sub-123', 'email' => 'user@example.com', 'email_verified' => false]);
+	public function testVerifyRejectsUnverifiedEmailByDefault(): void
+	{
+		$this->seedUserinfoResponse(['sub' => 'sub-123', 'email' => 'user@example.com', 'email_verified' => false]);
 
-        $result = $this->verifier()->verify(['access_token' => 'tok'], []);
+		$result = $this->verifier()->verify(['access_token' => 'tok'], []);
 
-        self::assertSame([], $result);
-        self::assertSame(
-            ['OpenID Connect: Your email address has not been verified by the identity provider.'],
-            $this->sysmsg->getNotices()
-        );
-    }
+		self::assertSame([], $result);
+		self::assertSame(
+			['OpenID Connect: Your email address has not been verified by the identity provider.'],
+			$this->sysmsg->getNotices(),
+		);
+	}
 
-    public function testVerifyAllowsUnverifiedEmailWhenConfigured(): void
-    {
-        $this->seedUserinfoResponse(['sub' => 'sub-123', 'email' => 'user@example.com', 'email_verified' => false]);
-        $this->config->set('openidconnect', 'allow_unverified_email', true);
+	public function testVerifyAllowsUnverifiedEmailWhenConfigured(): void
+	{
+		$this->seedUserinfoResponse(['sub' => 'sub-123', 'email' => 'user@example.com', 'email_verified' => false]);
+		$this->config->set('openidconnect', 'allow_unverified_email', true);
 
-        $result = $this->verifier()->verify(['access_token' => 'tok'], []);
+		$result = $this->verifier()->verify(['access_token' => 'tok'], []);
 
-        self::assertSame('user@example.com', $result['email']);
-    }
+		self::assertSame('user@example.com', $result['email']);
+	}
 
-    public function testVerifyRejectsMissingEmail(): void
-    {
-        $this->seedUserinfoResponse(['sub' => 'sub-123']);
+	public function testVerifyRejectsMissingEmail(): void
+	{
+		$this->seedUserinfoResponse(['sub' => 'sub-123']);
 
-        $result = $this->verifier()->verify(['access_token' => 'tok'], []);
+		$result = $this->verifier()->verify(['access_token' => 'tok'], []);
 
-        self::assertSame([], $result);
-        self::assertSame(['OpenID Connect: Email address not provided by the identity provider.'], $this->sysmsg->getNotices());
-    }
+		self::assertSame([], $result);
+		self::assertSame(['OpenID Connect: Email address not provided by the identity provider.'], $this->sysmsg->getNotices());
+	}
 }

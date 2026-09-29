@@ -13,34 +13,34 @@ use Friendica\Core\PConfig\ValueObject\Cache;
  */
 final class FakePConfig implements IManagePersonalConfigValues
 {
-    private array $values = [];
+	private array $values = [];
 
-    public function load(int $uid, string $cat = 'config'): array
-    {
-        return $this->values[$uid][$cat] ?? [];
-    }
+	public function load(int $uid, string $cat = 'config'): array
+	{
+		return $this->values[$uid][$cat] ?? [];
+	}
 
-    public function get(int $uid, string $cat, string $key, $default_value = null, bool $refresh = false)
-    {
-        return $this->values[$uid][$cat][$key] ?? $default_value;
-    }
+	public function get(int $uid, string $cat, string $key, $default_value = null, bool $refresh = false)
+	{
+		return $this->values[$uid][$cat][$key] ?? $default_value;
+	}
 
-    public function set(int $uid, string $cat, string $key, $value): bool
-    {
-        $this->values[$uid][$cat][$key] = $value;
+	public function set(int $uid, string $cat, string $key, $value): bool
+	{
+		$this->values[$uid][$cat][$key] = $value;
 
-        return true;
-    }
+		return true;
+	}
 
-    public function delete(int $uid, string $cat, string $key): bool
-    {
-        unset($this->values[$uid][$cat][$key]);
+	public function delete(int $uid, string $cat, string $key): bool
+	{
+		unset($this->values[$uid][$cat][$key]);
 
-        return true;
-    }
+		return true;
+	}
 
-    public function getCache(): Cache
-    {
-        return new Cache();
-    }
+	public function getCache(): Cache
+	{
+		return new Cache();
+	}
 }

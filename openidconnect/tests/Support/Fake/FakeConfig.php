@@ -14,54 +14,52 @@ use Friendica\Core\Config\ValueObject\Cache;
  */
 final class FakeConfig implements IManageConfigValues
 {
-    private array $values = [];
-    private Cache $cache;
+	private array $values = [];
+	private Cache $cache;
 
-    public function __construct(array $values = [])
-    {
-        $this->values = $values;
-        $this->cache = new Cache();
-    }
+	public function __construct(array $values = [])
+	{
+		$this->values = $values;
+		$this->cache  = new Cache();
+	}
 
-    public function reload()
-    {
-    }
+	public function reload() {}
 
-    public function get(string $cat, ?string $key = null, $default_value = null)
-    {
-        if ($key === null) {
-            return $this->values[$cat] ?? $default_value;
-        }
+	public function get(string $cat, ?string $key = null, $default_value = null)
+	{
+		if ($key === null) {
+			return $this->values[$cat] ?? $default_value;
+		}
 
-        return $this->values[$cat][$key] ?? $default_value;
-    }
+		return $this->values[$cat][$key] ?? $default_value;
+	}
 
-    public function isWritable(string $cat, string $key): bool
-    {
-        return true;
-    }
+	public function isWritable(string $cat, string $key): bool
+	{
+		return true;
+	}
 
-    public function set(string $cat, string $key, $value): bool
-    {
-        $this->values[$cat][$key] = $value;
+	public function set(string $cat, string $key, $value): bool
+	{
+		$this->values[$cat][$key] = $value;
 
-        return true;
-    }
+		return true;
+	}
 
-    public function beginTransaction(): ISetConfigValuesTransactionally
-    {
-        throw new \RuntimeException('FakeConfig::beginTransaction() is not used by the openidconnect addon.');
-    }
+	public function beginTransaction(): ISetConfigValuesTransactionally
+	{
+		throw new \RuntimeException('FakeConfig::beginTransaction() is not used by the openidconnect addon.');
+	}
 
-    public function delete(string $cat, string $key): bool
-    {
-        unset($this->values[$cat][$key]);
+	public function delete(string $cat, string $key): bool
+	{
+		unset($this->values[$cat][$key]);
 
-        return true;
-    }
+		return true;
+	}
 
-    public function getCache(): Cache
-    {
-        return $this->cache;
-    }
+	public function getCache(): Cache
+	{
+		return $this->cache;
+	}
 }

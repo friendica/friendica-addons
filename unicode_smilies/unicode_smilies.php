@@ -827,8 +827,8 @@ function unicode_smilies_smilies(array &$b)
 	Smilies::add($b, ':motorcycle:', '&#x1F3CD;');
 	Smilies::add($b, ':motor scooter:', '&#x1F6F5;');
 	Smilies::add($b, ':manual wheelchair:', '&#x1F9BD;');
-    Smilies::add($b, ':motorized wheelchair:', '&#x1F9BC;');
-    Smilies::add($b, ':auto rickshaw:', '&#x1F6FA;');
+	Smilies::add($b, ':motorized wheelchair:', '&#x1F9BC;');
+	Smilies::add($b, ':auto rickshaw:', '&#x1F6FA;');
 	Smilies::add($b, ':bicycle:', '&#x1F6B2;');
 	Smilies::add($b, ':kick scooter:', '&#x1F6F4;');
 	Smilies::add($b, ':skateboard:', '&#x1F6F9;');

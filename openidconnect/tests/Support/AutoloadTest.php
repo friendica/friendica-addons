@@ -9,8 +9,8 @@ use PHPUnit\Framework\TestCase;
 
 final class AutoloadTest extends TestCase
 {
-    public function testAddonNamespaceIsComposerAutoloadable(): void
-    {
-        self::assertTrue(class_exists(LoginPolicy::class));
-    }
+	public function testAddonNamespaceIsComposerAutoloadable(): void
+	{
+		self::assertTrue(class_exists(LoginPolicy::class));
+	}
 }

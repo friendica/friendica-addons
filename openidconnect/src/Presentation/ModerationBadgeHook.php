@@ -9,15 +9,15 @@ use Friendica\DI;
 
 final class ModerationBadgeHook
 {
-    public function append(string &$output): void
-    {
-        $route = DI::args()->getCommand();
-        if (strpos($route, 'moderation/users') !== 0) {
-            return;
-        }
+	public function append(string &$output): void
+	{
+		$route = DI::args()->getCommand();
+		if (strpos($route, 'moderation/users') !== 0) {
+			return;
+		}
 
-        $oidcUsers = DBA::p(
-            "SELECT DISTINCT `uid`
+		$oidcUsers = DBA::p(
+			"SELECT DISTINCT `uid`
              FROM `pconfig`
              WHERE `cat` = ? AND `k` = ? AND `v` != ''
              UNION
@@ -26,30 +26,30 @@ final class ModerationBadgeHook
              WHERE `openid` != ''
                AND `openid` NOT LIKE 'http://%'
                AND `openid` NOT LIKE 'https://%'",
-            'openidconnect',
-            'oidc_sub'
-        );
+			'openidconnect',
+			'oidc_sub',
+		);
 
-        $uids = [];
-        while ($user = DBA::fetch($oidcUsers)) {
-            $uids[] = (int)$user['uid'];
-        }
-        DBA::close($oidcUsers);
+		$uids = [];
+		while ($user = DBA::fetch($oidcUsers)) {
+			$uids[] = (int) $user['uid'];
+		}
+		DBA::close($oidcUsers);
 
-        if (empty($uids)) {
-            return;
-        }
+		if (empty($uids)) {
+			return;
+		}
 
-        DI::page()->registerStylesheet(__DIR__ . '/../../static/addon.css');
+		DI::page()->registerStylesheet(__DIR__ . '/../../static/addon.css');
 
-        try {
-            $jsonUids = json_encode($uids, JSON_THROW_ON_ERROR);
-        } catch (\JsonException $e) {
-            DI::logger()->error('openidconnect: failed to encode SSO badge user ids for admin users table', ['error' => $e->getMessage()]);
-            return;
-        }
+		try {
+			$jsonUids = json_encode($uids, JSON_THROW_ON_ERROR);
+		} catch (\JsonException $e) {
+			DI::logger()->error('openidconnect: failed to encode SSO badge user ids for admin users table', ['error' => $e->getMessage()]);
+			return;
+		}
 
-        $output .= <<<JS
+		$output .= <<<JS
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     var uids = {$jsonUids};
@@ -88,5 +88,5 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 JS;
-    }
+	}
 }
