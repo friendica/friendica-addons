@@ -17,7 +17,7 @@ final class RevokeRoute
 	public function __construct(?ProviderConfiguration $providerConfiguration = null, ?TokenClient $tokenClient = null)
 	{
 		$this->providerConfiguration = $providerConfiguration ?? new ProviderConfiguration();
-		$this->tokenClient = $tokenClient ?? new TokenClient();
+		$this->tokenClient           = $tokenClient           ?? new TokenClient();
 	}
 
 	public function handle(): void
@@ -38,7 +38,7 @@ final class RevokeRoute
 			return;
 		}
 
-		$config = $this->providerConfiguration->get();
+		$config             = $this->providerConfiguration->get();
 		$revocationEndpoint = $config['revocation_endpoint'] ?? '';
 
 		if (empty($revocationEndpoint)) {

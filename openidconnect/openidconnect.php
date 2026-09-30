@@ -16,7 +16,7 @@ use Friendica\Network\HTTPException\MovedPermanentlyException;
 use Friendica\Network\HTTPException\TemporaryRedirectException;
 
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
-    require_once __DIR__ . '/vendor/autoload.php';
+	require_once __DIR__ . '/vendor/autoload.php';
 }
 
 define('OIDC_STATE_LENGTH', 32);
@@ -46,7 +46,7 @@ function openidconnect_init(): void
 
 	try {
 		openidconnect_addon()->dispatch($route);
-	} catch (FoundException | MovedPermanentlyException | TemporaryRedirectException $e) {
+	} catch (FoundException|MovedPermanentlyException|TemporaryRedirectException $e) {
 		// These signal a normal redirect (e.g. BaseURL::redirect()) and must
 		// propagate to App's own handling instead of being logged as errors.
 		throw $e;

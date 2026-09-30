@@ -16,7 +16,7 @@ final class LogoutHandler
 	public function __construct(?ProviderConfiguration $providerConfiguration = null, ?TokenClient $tokenClient = null)
 	{
 		$this->providerConfiguration = $providerConfiguration ?? new ProviderConfiguration();
-		$this->tokenClient = $tokenClient ?? new TokenClient();
+		$this->tokenClient           = $tokenClient           ?? new TokenClient();
 	}
 
 	public function handle(): void
@@ -29,7 +29,7 @@ final class LogoutHandler
 			return;
 		}
 
-		$config = $this->providerConfiguration->get();
+		$config             = $this->providerConfiguration->get();
 		$endSessionEndpoint = $config['end_session_endpoint'] ?? '';
 		if (empty($endSessionEndpoint)) {
 			return;
@@ -49,8 +49,8 @@ final class LogoutHandler
 		}
 
 		$params = [
-			'id_token_hint' => $tokens['id_token'],
-			'post_logout_redirect_uri' => (string)DI::baseUrl(),
+			'id_token_hint'            => $tokens['id_token'],
+			'post_logout_redirect_uri' => (string) DI::baseUrl(),
 		];
 		$sloUrl = $endSessionEndpoint . '?' . http_build_query($params);
 
@@ -62,15 +62,15 @@ final class LogoutHandler
 
 	private function setLogoutNoAutoCookie(): void
 	{
-		$path = trim(DI::baseUrl()->getPath(), '/');
+		$path       = trim(DI::baseUrl()->getPath(), '/');
 		$cookiePath = $path === '' ? '/' : '/' . $path . '/';
 
-		$secure = str_starts_with((string)DI::baseUrl(), 'https://');
+		$secure = str_starts_with((string) DI::baseUrl(), 'https://');
 
 		setcookie(OIDC_LOGOUT_NO_AUTO_COOKIE, '1', [
-			'expires' => time() + OIDC_LOGOUT_NO_AUTO_TTL,
-			'path' => $cookiePath,
-			'secure' => $secure,
+			'expires'  => time() + OIDC_LOGOUT_NO_AUTO_TTL,
+			'path'     => $cookiePath,
+			'secure'   => $secure,
 			'httponly' => true,
 			'samesite' => 'Lax',
 		]);

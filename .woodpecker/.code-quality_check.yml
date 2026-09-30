@@ -5,8 +5,7 @@ matrix:
     - PHP_MAJOR_VERSION: 8.5
       PHP_VERSION: 8.5.5
 
-# Runs the static addon QA (PHPStan, Rector, PHP-CS-Fixer) for PRs and
-# pushes to non-stable branches of Friendica.
+# Runs PHPStan and Rector for addon PRs and pushes to non-stable branches.
 when:
   branch:
     exclude: [ stable ]
@@ -22,14 +21,15 @@ steps:
     commands:
       - git config --global --add safe.directory $CI_WORKSPACE
       - git clone https://github.com/friendica/friendica.git .
-      - git checkout develop
+      - git checkout "$CI_COMMIT_BRANCH"
 
   clone_friendica_addon:
     image: alpine/git
     commands:
-      - git clone $CI_REPO_CLONE_URL addon
+      - git clone "$CI_REPO_CLONE_URL" addon
       - cd addon/
-      - git checkout $CI_COMMIT_BRANCH
+      - git fetch origin "$CI_COMMIT_REF"
+      - git checkout --detach "$CI_COMMIT_SHA"
 
   restore_cache:
     image: meltwater/drone-cache:dev

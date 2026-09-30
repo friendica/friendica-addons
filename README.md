@@ -21,6 +21,24 @@ For communication with contacts in networks supporting those (e.g. GNU social, D
 The addon interface of Friendica is very flexible and powerful, so if you are missing functionality, your chances are high it may be added with an addon.
 See the [documentation](https://github.com/friendica/friendica/blob/stable/doc/Addons.md) for more information on the addon development.
 
+### Continuous integration
+
+The Woodpecker checks run inside a matching Friendica core checkout, with this repository in `addon/`.
+The core branch must match the addon branch (the target branch for pull requests), including release-candidate branches.
+The addon checkout uses the triggering commit, so pull requests test their changes and reruns do not silently test a newer branch tip.
+
+Run the same checks from the Friendica root after installing its Composer dependencies:
+
+```bash
+composer run addons:rectify
+git -C addon diff
+composer run addons:qa
+```
+
+The tools come from the core's Composer dependencies; do not use a global PHPUnit installation.
+Rector skips addon `vendor/` directories because these contain third-party code.
+For database setup, see the core's `tests/README.md`.
+
 ## Translation
 
 Addons can be translated like any other part of Friendica.

@@ -15,13 +15,13 @@ use Friendica\Addon\OpenIdConnect\Tests\Support\DiTestCase;
  */
 final class SettingsHookTest extends DiTestCase
 {
-    public function testAppendDoesNothingWithoutLocalUser(): void
-    {
-        $this->initDi();
+	public function testAppendDoesNothingWithoutLocalUser(): void
+	{
+		$this->initDi();
 
-        $data = [];
-        (new SettingsHook())->append($data);
+		$data = [];
+		(new SettingsHook())->append($data);
 
-        self::assertSame([], $data);
-    }
+		self::assertSame([], $data);
+	}
 }

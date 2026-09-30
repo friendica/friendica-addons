@@ -11,22 +11,22 @@ use Psr\Log\AbstractLogger;
  */
 final class SpyLogger extends AbstractLogger
 {
-    /** @var array<int, array{level: mixed, message: string, context: array}> */
-    public array $records = [];
+	/** @var array<int, array{level: mixed, message: string, context: array}> */
+	public array $records = [];
 
-    public function log($level, $message, array $context = []): void
-    {
-        $this->records[] = ['level' => $level, 'message' => (string)$message, 'context' => $context];
-    }
+	public function log($level, $message, array $context = []): void
+	{
+		$this->records[] = ['level' => $level, 'message' => (string) $message, 'context' => $context];
+	}
 
-    public function hasRecordMatching(string $level, string $needle): bool
-    {
-        foreach ($this->records as $record) {
-            if ($record['level'] === $level && str_contains($record['message'], $needle)) {
-                return true;
-            }
-        }
+	public function hasRecordMatching(string $level, string $needle): bool
+	{
+		foreach ($this->records as $record) {
+			if ($record['level'] === $level && str_contains($record['message'], $needle)) {
+				return true;
+			}
+		}
 
-        return false;
-    }
+		return false;
+	}
 }

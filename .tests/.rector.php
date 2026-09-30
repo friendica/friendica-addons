@@ -11,14 +11,6 @@ return \Rector\Config\RectorConfig::configure()
 	->withPaths([
 		__DIR__ . '/..',
 	])
-	->withSkipPath(__DIR__ . '/../advancedcontentfilter/vendor')
-	->withSkipPath(__DIR__ . '/../blockbot/vendor')
-	->withSkipPath(__DIR__ . '/../monolog/vendor')
-	->withSkipPath(__DIR__ . '/../phpmailer/vendor')
-	->withSkipPath(__DIR__ . '/../s3_storage/vendor')
-	->withSkipPath(__DIR__ . '/../saml/vendor')
-	->withSkipPath(__DIR__ . '/../securemail/vendor')
-	->withSkipPath(__DIR__ . '/../tesseract/vendor')
 	->withIndent("\t", 4)
 	->withPhpVersion(80200)
 	->withPhpLevel(0)
@@ -31,6 +23,7 @@ return \Rector\Config\RectorConfig::configure()
 		//\Rector\PHPUnit\Set\PHPUnitSetList::ANNOTATIONS_TO_ATTRIBUTES,
 	])
 	->withSkip([
+		__DIR__ . '/../*/vendor/*',
 		//\Rector\Php56\Rector\FuncCall\PowToExpRector::class,
 		//\Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector::class,
 	])
