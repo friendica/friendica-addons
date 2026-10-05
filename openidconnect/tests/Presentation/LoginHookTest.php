@@ -79,6 +79,7 @@ final class LoginHookTest extends DiTestCase
 		(new LoginHook())->append($output);
 
 		self::assertContains('OpenID Connect provider configuration error.', $this->sysmsg->getNotices());
+		self::assertSame('login?openidconnect_no_auto=1', $this->lastRedirect);
 		self::assertStringContainsString('/openidconnect/auth', $output);
 	}
 
