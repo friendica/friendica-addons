@@ -3,7 +3,7 @@
 /**
  * Name: OpenID Connect (OAuth2)
  * Description: Authenticate and register users via OpenID Connect (OAuth2)
- * Version: 1.0
+ * Version: 1.1
  * Author: Daniel Buck <https://friendica.rollenspiel.monster/profile/tealk\>
  * Author: Daniel de Kay <https://charlemos.club/profile/daniel\>
  * Author: Philipp Holzer <https://friendica.philipp.info/profile/nupplaphil\>

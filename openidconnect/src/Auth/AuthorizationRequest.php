@@ -29,6 +29,7 @@ final class AuthorizationRequest
 		$config = $this->providerConfiguration->get();
 		if (empty($config['authorization_endpoint'])) {
 			DI::sysmsg()->addNotice(DI::l10n()->t('OpenID Connect provider configuration error.'));
+			DI::baseUrl()->redirect($linkMode ? 'settings/account' : LoginPolicy::buildFallbackPath($returnPath));
 			return;
 		}
 
