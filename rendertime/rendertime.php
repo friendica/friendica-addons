@@ -59,38 +59,37 @@ function rendertime_page_end(string &$o)
 
 	if (DI::userSession()->isSiteAdmin() && (($_GET['mode'] ?? '') != 'minimal') && !DI::mode()->isMobile() && !DI::mode()->isMobile() && !$ignored) {
 
-		$o = $o . '<div class="renderinfo" aria-hidden="true">' . DI::l10n()->t(
-			"Database: %s/%s, Network: %s, Rendering: %s, Session: %s, I/O: %s, Other: %s, Total: %s",
-			round($profiler->get('database') - $profiler->get('database_write'), 3),
-			round($profiler->get('database_write'), 3),
-			round($profiler->get('network'), 2),
-			round($profiler->get('rendering'), 2),
-			round($profiler->get('session'), 2),
-			round($profiler->get('file'), 2),
-			round($duration - $profiler->get('database')
-					- $profiler->get('network') - $profiler->get('rendering')
-					- $profiler->get('session') - $profiler->get('file'), 2),
-			round($duration, 2),
-			//round($profiler->get('markstart'), 3)
-			//round($profiler->get('plugin'), 3)
-		) . '</div>';
-
 		$total = microtime(true) - $profiler->get('start');
 		$rest  = $total - ($profiler->get('ready') - $profiler->get('start')) - $profiler->get('init') - $profiler->get('content');
-		$o     = $o . '<div class="renderinfo">' . DI::l10n()->t(
-			"Class-Init: %s, Boot: %s, Init: %s, Content: %s, Other: %s, Total: %s",
-			round($profiler->get('classinit') - $profiler->get('start'), 3),
-			round($profiler->get('ready') - $profiler->get('classinit'), 3),
-			round($profiler->get('init'), 3),
-			round($profiler->get('content'), 3),
-			round($rest, 3),
-			round($total, 3),
-		) . '</div>';
 
-		if ($profiler->isRendertime()) {
-			$o .= '<pre>';
-			$o .= $profiler->getRendertimeString(floatval(DI::config()->get('rendertime', 'minimal_time', 0)));
-			$o .= '</pre>';
-		}
+		$tpl = Renderer::getMarkupTemplate('rendertime.tpl', 'addon/rendertime/');
+
+		$o .= Renderer::replaceMacros($tpl, [
+			'$performance' => DI::l10n()->t(
+				"Database: %s/%s, Network: %s, Rendering: %s, Session: %s, I/O: %s, Other: %s, Total: %s",
+				round($profiler->get('database') - $profiler->get('database_write'), 3),
+				round($profiler->get('database_write'), 3),
+				round($profiler->get('network'), 2),
+				round($profiler->get('rendering'), 2),
+				round($profiler->get('session'), 2),
+				round($profiler->get('file'), 2),
+				round($duration - $profiler->get('database')
+					- $profiler->get('network') - $profiler->get('rendering')
+					- $profiler->get('session') - $profiler->get('file'), 2),
+				round($duration, 2)
+			),
+			'$initialization' => DI::l10n()->t(
+				"Class-Init: %s, Boot: %s, Init: %s, Content: %s, Other: %s, Total: %s",
+				round($profiler->get('classinit') - $profiler->get('start'), 3),
+				round($profiler->get('ready') - $profiler->get('classinit'), 3),
+				round($profiler->get('init'), 3),
+				round($profiler->get('content'), 3),
+				round($rest, 3),
+				round($total, 3)
+			),
+			'$callstack'       => $profiler->isRendertime() ?
+				$profiler->getRendertimeString(floatval(DI::config()->get('rendertime', 'minimal_time', 0))) : '',
+			'$callstack_title' => DI::l10n()->t('Callstack'),
+		]);
 	}
 }
