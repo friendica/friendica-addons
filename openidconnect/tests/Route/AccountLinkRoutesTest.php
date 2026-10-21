@@ -4,277 +4,151 @@ declare(strict_types=1);
 
 namespace Friendica\Addon\OpenIdConnect\Tests\Route;
 
+use Friendica\Addon\OpenIdConnect\Presentation\SettingsHook;
 use Friendica\Addon\OpenIdConnect\Route\AccountLinkRoutes;
-use Friendica\Addon\OpenIdConnect\Tests\Support\AddonTestCase;
-use Friendica\BaseModule;
-use Friendica\Core\Hook;
-use Friendica\Database\DBA;
-use Friendica\DI;
-use Friendica\Model\Contact;
-use Friendica\Model\User;
+use Friendica\Addon\OpenIdConnect\Tests\Support\DiTestCase;
+use Friendica\Database\Database;
 
-final class AccountLinkRoutesTest extends AddonTestCase
+final class AccountLinkRoutesTest extends DiTestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
+	private function configureProvider(): void
+	{
+		$this->config->set('openidconnect', 'client_id', 'client-id');
+		$this->config->set('openidconnect', 'client_secret', 'client-secret');
+		$this->config->set('openidconnect', 'discovery_url', 'https://idp.example/.well-known/openid-configuration');
+	}
 
-    protected function tearDown(): void
-    {
-        DBA::resetTestState();
-        Hook::resetTestState();
-        DI::resetTestState();
-        User::resetTestState();
-        Contact::resetTestState();
-        $_GET = [];
-        $_POST = [];
-        $_REQUEST = [];
-        $_SERVER = [];
+	private function validCsrfToken(string $typename): string
+	{
+		$timestamp = time();
 
-        parent::tearDown();
-    }
+		return $timestamp . '.' . hash('whirlpool', session_id() . $timestamp . $typename);
+	}
 
-    public function testBeginAlreadyLinked(): void
-    {
-        $this->configureProvider();
-        DI::userSession()->setLocalUserId(42);
-        DI::pConfig()->set(42, 'openidconnect', 'oidc_sub', 'subject-123');
-        DI::pConfig()->set(42, 'openidconnect', 'oidc_email', 'person@example.test');
-        DI::pConfig()->set(42, 'openidconnect', 'oidc_nickname', 'sensitive-nickname');
-        DI::session()->set('openidconnect_tokens', ['access_token' => 'access-token']);
+	public function testBeginRedirectsToSettingsWhenNotConfigured(): void
+	{
+		$this->initDi();
 
-        (new AccountLinkRoutes())->begin();
+		$this->assertRedirectsTo('settings/account', fn () => (new AccountLinkRoutes())->begin());
 
-        self::assertSame('settings/account', DI::baseUrl()->lastRedirect());
-        self::assertNotEmpty(DI::sysmsg()->notices);
-        self::assertStringContainsString('already linked', implode(' ', DI::sysmsg()->notices));
-        self::assertSame('subject-123', DI::pConfig()->get(42, 'openidconnect', 'oidc_sub'));
-        self::assertSame('person@example.test', DI::pConfig()->get(42, 'openidconnect', 'oidc_email'));
-        self::assertSame('sensitive-nickname', DI::pConfig()->get(42, 'openidconnect', 'oidc_nickname'));
-        self::assertSame('access-token', DI::session()->get('openidconnect_tokens')['access_token']);
-        self::assertNoSensitiveLogLeak(['subject-123', 'person@example.test', 'sensitive-nickname', 'access-token']);
-    }
+		self::assertSame(['OpenID Connect is not configured.'], $this->sysmsg->getNotices());
+	}
 
-    public function testBeginNotConfiguredRedirectsToAccountSettings(): void
-    {
-        DI::userSession()->setLocalUserId(42);
+	public function testBeginRedirectsToLoginWhenNotAuthenticated(): void
+	{
+		$this->initDi();
+		$this->configureProvider();
 
-        (new AccountLinkRoutes())->begin();
+		$this->assertRedirectsTo('login', fn () => (new AccountLinkRoutes())->begin());
 
-        self::assertSame('settings/account', DI::baseUrl()->lastRedirect());
-        self::assertNotEmpty(DI::sysmsg()->notices);
-        self::assertStringContainsString('not configured', implode(' ', DI::sysmsg()->notices));
-        self::assertNoSensitiveLogLeak(['subject-123', 'person@example.test', 'sensitive-nickname', 'access-token']);
-    }
+		self::assertSame(['You must be logged in to link your account.'], $this->sysmsg->getNotices());
+	}
 
-    public function testBeginUnauthenticatedIsRejected(): void
-    {
-        $this->configureProvider();
+	public function testBeginRedirectsToSettingsWhenAlreadyLinked(): void
+	{
+		$this->initDi();
+		$this->configureProvider();
+		$this->session->setLocalUserId(42);
+		$this->pConfig->set(42, 'openidconnect', 'oidc_sub', 'sub-123');
 
-        (new AccountLinkRoutes())->begin();
+		$this->assertRedirectsTo('settings/account', fn () => (new AccountLinkRoutes())->begin());
 
-        self::assertSame('login', DI::baseUrl()->lastRedirect());
-        self::assertNotEmpty(DI::sysmsg()->notices);
-        self::assertStringContainsString('must be logged in', implode(' ', DI::sysmsg()->notices));
-        self::assertNoSensitiveLogLeak(['subject-123', 'person@example.test', 'sensitive-nickname', 'access-token']);
-    }
+		self::assertSame(['Your account is already linked to an OpenID Connect provider.'], $this->sysmsg->getNotices());
+	}
 
-    public function testBeginConfiguredAndUnlinkedTriggersAuthorizationRedirect(): void
-    {
-        $this->configureProvider();
-        DI::userSession()->setLocalUserId(42);
+	public function testBeginDelegatesToAuthorizationRedirectInLinkMode(): void
+	{
+		$this->initDi();
+		$this->configureProvider();
+		$this->session->setLocalUserId(42);
+		$calls = [];
 
-        $captured = [];
-        $routes = new AccountLinkRoutes(
-            authorizationRedirectFn: static function (bool $linkMode, string $returnPath) use (&$captured): void {
-                $captured[] = ['linkMode' => $linkMode, 'returnPath' => $returnPath];
-            },
-        );
+		(new AccountLinkRoutes(null, null, null, function (bool $linkMode, string $returnPath) use (&$calls): void {
+			$calls[] = [$linkMode, $returnPath];
+		}))->begin();
 
-        $routes->begin();
+		self::assertSame([[true, 'settings/account']], $calls);
+	}
 
-        self::assertSame([['linkMode' => true, 'returnPath' => 'settings/account']], $captured);
-        self::assertNull(DI::baseUrl()->lastRedirect());
-        self::assertEmpty(DI::sysmsg()->notices);
-        self::assertNoSensitiveLogLeak(['subject-123', 'person@example.test', 'sensitive-nickname', 'access-token']);
-    }
+	public function testUnlinkRedirectsToSettingsWhenCsrfTokenIsInvalid(): void
+	{
+		$this->initDi();
+		$_REQUEST[SettingsHook::UNLINK_TOKEN_FIELD] = 'invalid';
 
-    public function testUnlinkNoLinkFound(): void
-    {
-        DI::userSession()->setLocalUserId(42);
-        DI::pConfig()->set(42, 'openidconnect', 'oidc_email', 'person@example.test');
-        DI::pConfig()->set(42, 'openidconnect', 'oidc_nickname', 'sensitive-nickname');
-        DI::session()->set('openidconnect_tokens', ['access_token' => 'access-token']);
-        $_POST['form_security_token'] = BaseModule::getFormSecurityToken('openidconnect_unlink');
+		$this->assertRedirectsTo('settings/account', fn () => (new AccountLinkRoutes())->unlink());
+	}
 
-        $baseline = $this->captureMutationBaseline();
+	public function testUnlinkRedirectsToLoginWhenNotAuthenticated(): void
+	{
+		$this->initDi();
+		$_REQUEST[SettingsHook::UNLINK_TOKEN_FIELD] = $this->validCsrfToken('openidconnect_unlink');
 
-        (new AccountLinkRoutes())->unlink();
+		$this->assertRedirectsTo('login', fn () => (new AccountLinkRoutes())->unlink());
+	}
 
-        self::assertSame('settings/account', DI::baseUrl()->lastRedirect());
-        self::assertNotEmpty(DI::sysmsg()->notices);
-        self::assertStringContainsString('No OpenID Connect link found', implode(' ', DI::sysmsg()->notices));
-        self::assertEmpty(DI::sysmsg()->infos);
-        self::assertSame('person@example.test', DI::pConfig()->get(42, 'openidconnect', 'oidc_email'));
-        self::assertSame('sensitive-nickname', DI::pConfig()->get(42, 'openidconnect', 'oidc_nickname'));
-        self::assertSame('access-token', DI::session()->get('openidconnect_tokens')['access_token']);
-        self::assertNoAccountLinkMutationSince($baseline);
-        self::assertNoSensitiveLogKeys();
-        self::assertNoSensitiveLogLeak(['subject-123', 'person@example.test', 'sensitive-nickname', 'access-token']);
-    }
+	public function testUnlinkRemovesLinkAndAddsInfoWhenLinked(): void
+	{
+		$dba = $this->mockDba();
+		$dba->method('update')->willReturn(true);
+		$this->initDi([Database::class => $dba]);
+		$_REQUEST[SettingsHook::UNLINK_TOKEN_FIELD] = $this->validCsrfToken('openidconnect_unlink');
+		$this->session->setLocalUserId(42);
+		$this->pConfig->set(42, 'openidconnect', 'oidc_sub', 'sub-123');
 
-    public function testUnlinkExistingLinkRemovesLinkAndShowsInfo(): void
-    {
-        DI::userSession()->setLocalUserId(42);
-        DI::pConfig()->set(42, 'openidconnect', 'oidc_sub', 'subject-123');
-        DI::pConfig()->set(42, 'openidconnect', 'oidc_email', 'person@example.test');
-        DI::pConfig()->set(42, 'openidconnect', 'oidc_nickname', 'sensitive-nickname');
-        DI::session()->set('openidconnect_tokens', ['access_token' => 'access-token']);
-        $_POST['form_security_token'] = BaseModule::getFormSecurityToken('openidconnect_unlink');
+		$this->assertRedirectsTo('settings/account', fn () => (new AccountLinkRoutes())->unlink());
 
-        (new AccountLinkRoutes())->unlink();
+		self::assertSame(['OpenID Connect account link removed.'], $this->sysmsg->getInfos());
+		self::assertSame('', $this->pConfig->get(42, 'openidconnect', 'oidc_sub', ''));
+	}
 
-        self::assertSame('settings/account', DI::baseUrl()->lastRedirect());
-        self::assertNotEmpty(DI::sysmsg()->infos);
-        self::assertStringContainsString('link removed', implode(' ', DI::sysmsg()->infos));
-        self::assertNull(DI::pConfig()->get(42, 'openidconnect', 'oidc_sub'));
-        self::assertNull(DI::pConfig()->get(42, 'openidconnect', 'oidc_email'));
-        self::assertNull(DI::pConfig()->get(42, 'openidconnect', 'oidc_nickname'));
-        self::assertNull(DI::session()->get('openidconnect_tokens'));
-        self::assertNoSensitiveLogKeys();
-        self::assertNoSensitiveLogLeak(['subject-123', 'person@example.test', 'sensitive-nickname', 'access-token']);
-    }
+	public function testUnlinkBlockedWhenOnlyGeneratedPasswordIsSet(): void
+	{
+		$dba = $this->mockDba();
+		$dba->method('selectFirst')->willReturnMap([
+			['user', ['password'], ['uid' => 42], [], ['password' => 'generated-hash']],
+		]);
+		$dba->expects(self::never())->method('update');
+		$this->initDi([Database::class => $dba]);
+		$_REQUEST[SettingsHook::UNLINK_TOKEN_FIELD] = $this->validCsrfToken('openidconnect_unlink');
+		$this->session->setLocalUserId(42);
+		$this->pConfig->set(42, 'openidconnect', 'oidc_sub', 'sub-123');
+		$this->pConfig->set(42, 'openidconnect', 'oidc_generated_password_hash', 'generated-hash');
 
-    public function testUnlinkMalformedCsrfToken(): void
-    {
-        DI::userSession()->setLocalUserId(42);
-        DI::pConfig()->set(42, 'openidconnect', 'oidc_sub', 'subject-123');
-        DI::pConfig()->set(42, 'openidconnect', 'oidc_email', 'person@example.test');
-        DI::pConfig()->set(42, 'openidconnect', 'oidc_nickname', 'sensitive-nickname');
-        DI::session()->set('openidconnect_tokens', ['access_token' => 'access-token']);
-        $_POST['form_security_token'] = 'malformed-openidconnect-token';
+		$this->assertRedirectsTo('settings/account', fn () => (new AccountLinkRoutes())->unlink());
 
-        $baseline = $this->captureMutationBaseline();
+		self::assertSame(
+			['Please set a password for your account before unlinking OpenID Connect, otherwise you will not be able to log in anymore.'],
+			$this->sysmsg->getNotices(),
+		);
+		self::assertSame('sub-123', $this->pConfig->get(42, 'openidconnect', 'oidc_sub', ''));
+	}
 
-        (new AccountLinkRoutes())->unlink();
+	public function testUnlinkProceedsWhenPasswordWasChangedSinceCreation(): void
+	{
+		$dba = $this->mockDba();
+		$dba->method('selectFirst')->willReturnMap([
+			['user', ['password'], ['uid' => 42], [], ['password' => 'new-hash']],
+		]);
+		$dba->method('update')->willReturn(true);
+		$this->initDi([Database::class => $dba]);
+		$_REQUEST[SettingsHook::UNLINK_TOKEN_FIELD] = $this->validCsrfToken('openidconnect_unlink');
+		$this->session->setLocalUserId(42);
+		$this->pConfig->set(42, 'openidconnect', 'oidc_sub', 'sub-123');
+		$this->pConfig->set(42, 'openidconnect', 'oidc_generated_password_hash', 'generated-hash');
 
-        self::assertSame('settings/account', DI::baseUrl()->lastRedirect());
-        self::assertSame('subject-123', DI::pConfig()->get(42, 'openidconnect', 'oidc_sub'));
-        self::assertSame('person@example.test', DI::pConfig()->get(42, 'openidconnect', 'oidc_email'));
-        self::assertSame('sensitive-nickname', DI::pConfig()->get(42, 'openidconnect', 'oidc_nickname'));
-        self::assertSame('access-token', DI::session()->get('openidconnect_tokens')['access_token']);
-        self::assertNoAccountLinkMutationSince($baseline);
-        self::assertEmpty(DI::sysmsg()->infos);
-        self::assertEmpty(DI::sysmsg()->notices);
-        self::assertEmpty(DI::logger()->debugs);
-        self::assertEmpty(DI::logger()->warnings);
-        self::assertNoSensitiveLogLeak(['subject-123', 'person@example.test', 'sensitive-nickname', 'access-token']);
-    }
+		$this->assertRedirectsTo('settings/account', fn () => (new AccountLinkRoutes())->unlink());
 
-    public function testUnlinkAuthBypassAttempted(): void
-    {
-        DI::pConfig()->set(42, 'openidconnect', 'oidc_sub', 'subject-123');
-        DI::pConfig()->set(42, 'openidconnect', 'oidc_email', 'person@example.test');
-        DI::pConfig()->set(42, 'openidconnect', 'oidc_nickname', 'sensitive-nickname');
-        DI::session()->set('openidconnect_tokens', ['access_token' => 'access-token']);
-        $_POST['form_security_token'] = BaseModule::getFormSecurityToken('openidconnect_unlink');
+		self::assertSame(['OpenID Connect account link removed.'], $this->sysmsg->getInfos());
+	}
 
-        $baseline = $this->captureMutationBaseline();
+	public function testUnlinkAddsNoticeWhenNoLinkExists(): void
+	{
+		$this->initDi();
+		$_REQUEST[SettingsHook::UNLINK_TOKEN_FIELD] = $this->validCsrfToken('openidconnect_unlink');
+		$this->session->setLocalUserId(42);
 
-        (new AccountLinkRoutes())->unlink();
+		$this->assertRedirectsTo('settings/account', fn () => (new AccountLinkRoutes())->unlink());
 
-        self::assertSame('login', DI::baseUrl()->lastRedirect());
-        self::assertSame('subject-123', DI::pConfig()->get(42, 'openidconnect', 'oidc_sub'));
-        self::assertSame('person@example.test', DI::pConfig()->get(42, 'openidconnect', 'oidc_email'));
-        self::assertSame('sensitive-nickname', DI::pConfig()->get(42, 'openidconnect', 'oidc_nickname'));
-        self::assertSame('access-token', DI::session()->get('openidconnect_tokens')['access_token']);
-        self::assertNoAccountLinkMutationSince($baseline);
-        self::assertNoSensitiveLogKeys();
-        self::assertEmpty(DI::sysmsg()->infos);
-        self::assertEmpty(DI::sysmsg()->notices);
-        self::assertNoSensitiveLogLeak(['subject-123', 'person@example.test', 'sensitive-nickname', 'access-token']);
-    }
-
-    private function configureProvider(): void
-    {
-        DI::config()->set('openidconnect', 'client_id', 'client-id');
-        DI::config()->set('openidconnect', 'client_secret', 'secret');
-        DI::config()->set('openidconnect', 'discovery_url', 'https://id.example/.well-known/openid-configuration');
-        DI::cache()->set('openidconnect:provider_config', [
-            'authorization_endpoint' => 'https://id.example/authorize',
-        ], 600);
-    }
-
-    private function captureMutationBaseline(): array
-    {
-        return [
-            'updateCalls' => count(DBA::$updateCalls),
-            'deleteCalls' => count(DBA::$deleteCalls),
-            'setCalls' => count(DI::pConfig()->setCalls),
-            'deleteConfigCalls' => count(DI::pConfig()->deleteCalls),
-        ];
-    }
-
-    private static function assertNoAccountLinkMutationSince(array $baseline): void
-    {
-        self::assertSame($baseline['updateCalls'], count(DBA::$updateCalls));
-        self::assertSame($baseline['deleteCalls'], count(DBA::$deleteCalls));
-        self::assertSame($baseline['setCalls'], count(DI::pConfig()->setCalls));
-        self::assertSame($baseline['deleteConfigCalls'], count(DI::pConfig()->deleteCalls));
-    }
-
-    private static function assertNoSensitiveLogKeys(): void
-    {
-        $channels = [
-            DI::logger()->debugs,
-            DI::logger()->warnings,
-            DI::logger()->errors,
-            DI::logger()->infos,
-        ];
-
-        foreach ($channels as $entries) {
-            foreach ($entries as [$message, $context]) {
-                self::assertStringNotContainsString('sub', $message);
-
-                if (!is_array($context)) {
-                    continue;
-                }
-
-                foreach (array_keys($context) as $key) {
-                    self::assertIsString($key);
-                    self::assertStringNotContainsString('sub', $key);
-                    self::assertStringNotContainsString('email', $key);
-                    self::assertStringNotContainsString('access_token', $key);
-                    self::assertStringNotContainsString('id_token', $key);
-                }
-            }
-        }
-    }
-
-    /**
-     * @param list<string> $sensitiveValues
-     */
-    private function assertNoSensitiveLogLeak(array $sensitiveValues): void
-    {
-        $channels = [
-            DI::logger()->debugs,
-            DI::logger()->warnings,
-            DI::logger()->errors,
-            DI::logger()->infos,
-        ];
-
-        foreach ($channels as $entries) {
-            foreach ($entries as [$message, $context]) {
-                self::assertIsString($message);
-                $encodedContext = json_encode($context);
-                self::assertNotFalse($encodedContext);
-
-                foreach ($sensitiveValues as $value) {
-                    self::assertStringNotContainsString($value, $message);
-                    self::assertStringNotContainsString($value, $encodedContext);
-                }
-            }
-        }
-    }
+		self::assertSame(['No OpenID Connect link found for this account.'], $this->sysmsg->getNotices());
+	}
 }

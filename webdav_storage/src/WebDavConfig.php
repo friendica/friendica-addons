@@ -93,8 +93,9 @@ class WebDavConfig implements ICanConfigureStorage
 			'password' => [
 				'password',
 				$this->l10n->t('Password'),
-				$this->config->get('webdav', 'username', ''),
-				$this->l10n->t('Password to authenticate to the Webdav endpoint'),
+				// Never send the stored password back to the browser, an empty field keeps it.
+				'',
+				$this->l10n->t('Password to authenticate to the Webdav endpoint (leave empty to keep the current one)'),
 			],
 			'auth_type' => [
 				'select',
@@ -113,7 +114,7 @@ class WebDavConfig implements ICanConfigureStorage
 	{
 		$url      = $data['url']      ?? '';
 		$username = $data['username'] ?? '';
-		$password = $data['password'] ?? '';
+		$password = ($data['password'] ?? '') !== '' ? $data['password'] : (string) $this->config->get('webdav', 'password', '');
 
 		$auths = [
 			''       => 'None',

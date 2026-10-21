@@ -11,14 +11,22 @@ class ComposerStaticInitS3StorageAddon
     );
 
     public static $prefixLengthsPsr4 = array (
-        'A' => 
+        'F' =>
+        array (
+            'Friendica\\Addon\\s3_storage\\src\\' => 31,
+        ),
+        'A' =>
         array (
             'Akeeba\\S3\\' => 10,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Akeeba\\S3\\' => 
+        'Friendica\\Addon\\s3_storage\\src\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/src',
+        ),
+        'Akeeba\\S3\\' =>
         array (
             0 => __DIR__ . '/..' . '/akeeba/s3/src',
         ),
@@ -52,6 +60,9 @@ class ComposerStaticInitS3StorageAddon
         'Akeeba\\S3\\Signature\\V2' => __DIR__ . '/..' . '/akeeba/s3/src/Signature/V2.php',
         'Akeeba\\S3\\Signature\\V4' => __DIR__ . '/..' . '/akeeba/s3/src/Signature/V4.php',
         'Akeeba\\S3\\StorageClass' => __DIR__ . '/..' . '/akeeba/s3/src/StorageClass.php',
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'Friendica\\Addon\\s3_storage\\src\\S3Client' => __DIR__ . '/../..' . '/src/S3Client.php',
+        'Friendica\\Addon\\s3_storage\\src\\S3Config' => __DIR__ . '/../..' . '/src/S3Config.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

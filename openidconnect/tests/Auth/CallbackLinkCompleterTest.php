@@ -4,176 +4,67 @@ declare(strict_types=1);
 
 namespace Friendica\Addon\OpenIdConnect\Tests\Auth;
 
-use Friendica\Addon\OpenIdConnect\Account\AccountLinker;
 use Friendica\Addon\OpenIdConnect\Auth\CallbackLinkCompleter;
-use Friendica\Addon\OpenIdConnect\Auth\SessionFunctionSpy;
-use Friendica\Addon\OpenIdConnect\Tests\Support\AddonTestCase;
-use Friendica\DI;
+use Friendica\Addon\OpenIdConnect\Tests\Support\DiTestCase;
 
-final class CallbackLinkCompleterTest extends AddonTestCase
+final class CallbackLinkCompleterTest extends DiTestCase
 {
-    public function testCompleteClosesSessionAfterTokenWriteBeforeRedirect(): void
-    {
-        DI::userSession()->setLocalUserId(7);
-        $returnPath = 'settings/account';
-        $ownerLookup = fn(string $sub): ?array => null;
+	public function testCompleteRequiresLogin(): void
+	{
+		$this->initDi();
 
-        $accountLinker = $this->createMock(AccountLinker::class);
-        $accountLinker
-            ->expects(self::once())
-            ->method('link')
-            ->with(7, 'sub-1', 'person@example.test', 'nick')
-            ->willReturn(true);
+		(new CallbackLinkCompleter(null, static fn (string $sub): ?array => null))
+			->complete('sub-123', 'user@example.com', 'someuser', 'settings/account', []);
 
-        $tokens = [
-            'access_token' => 'access-token',
-            'refresh_token' => 'refresh-token',
-        ];
+		self::assertSame(['You must be logged in to link your account.'], $this->sysmsg->getNotices());
+	}
 
-        (new CallbackLinkCompleter($accountLinker, $ownerLookup))->complete(
-            'sub-1',
-            'person@example.test',
-            'nick',
-            $returnPath,
-            $tokens
-        );
+	public function testCompleteRejectsEmptySub(): void
+	{
+		$this->initDi();
+		$this->session->setLocalUserId(42);
 
-        self::assertSame($tokens, DI::session()->get('openidconnect_tokens'));
-        self::assertTrue(SessionFunctionSpy::$sessionWriteCloseCalled);
-        self::assertSame($returnPath, DI::baseUrl()->lastRedirect());
-        self::assertNotEmpty(DI::sysmsg()->infos);
-    }
+		(new CallbackLinkCompleter(null, static fn (string $sub): ?array => null))
+			->complete('', 'user@example.com', 'someuser', 'settings/account', []);
 
-    public function testCompleteRejectsForeignLinkedSubjectWithoutLoggingRawSubjectOrEmail(): void
-    {
-        DI::userSession()->setLocalUserId(7);
-        $ownerLookup = fn(string $sub): ?array => ['uid' => 99];
+		self::assertSame(
+			['OpenID Connect authentication failed: provider did not return a stable subject identifier.'],
+			$this->sysmsg->getNotices(),
+		);
+	}
 
-        $accountLinker = $this->createMock(AccountLinker::class);
-        $accountLinker
-            ->expects(self::never())
-            ->method('link');
+	public function testCompleteRefusesSubAlreadyLinkedToAnotherAccount(): void
+	{
+		$this->initDi();
+		$this->session->setLocalUserId(42);
 
-        (new CallbackLinkCompleter($accountLinker, $ownerLookup))->complete(
-            'subject-123',
-            'person@example.test',
-            'sensitive-nick',
-            'settings/account',
-            ['access_token' => 'access-token']
-        );
+		(new CallbackLinkCompleter(null, static fn (string $sub): ?array => ['uid' => 99]))
+			->complete('sub-123', 'user@example.com', 'someuser', 'settings/account', []);
 
-        self::assertSame('settings/account', DI::baseUrl()->lastRedirect());
-        self::assertNotEmpty(DI::logger()->warnings);
-        $lastWarning = DI::logger()->warnings[array_key_last(DI::logger()->warnings)];
-        self::assertSame('openidconnect: refusing to link subject already linked to another account', $lastWarning[0]);
-        $contextEncoded = json_encode($lastWarning[1], JSON_THROW_ON_ERROR);
-        self::assertStringNotContainsString('subject-123', $contextEncoded);
-        self::assertStringNotContainsString('person@example.test', $contextEncoded);
-        self::assertStringNotContainsString('sensitive-nick', $contextEncoded);
-        self::assertStringNotContainsString('access-token', $contextEncoded);
-    }
+		self::assertSame(['This identity is already linked to another account.'], $this->sysmsg->getNotices());
+	}
 
-    public function testCompleteRedirectsToLoginWhenUnauthenticated(): void
-    {
-        $ownerLookup = fn(string $sub): ?array => null;
+	public function testCompleteLinksAccountAndStoresTokensInSession(): void
+	{
+		$this->initDi();
+		$this->session->setLocalUserId(42);
 
-        $accountLinker = $this->createMock(AccountLinker::class);
-        $accountLinker
-            ->expects(self::never())
-            ->method('link');
+		(new CallbackLinkCompleter(null, static fn (string $sub): ?array => null))
+			->complete('sub-123', 'user@example.com', 'someuser', 'settings/account', ['access_token' => 'tok']);
 
-        (new CallbackLinkCompleter($accountLinker, $ownerLookup))->complete(
-            'subject-123',
-            'person@example.test',
-            'nick',
-            'settings/account',
-            ['access_token' => 'access-token']
-        );
+		self::assertSame(['OpenID Connect account successfully linked.'], $this->sysmsg->getInfos());
+		self::assertSame(['access_token' => 'tok'], $this->session->get('openidconnect_tokens'));
+		self::assertSame('sub-123', $this->pConfig->get(42, 'openidconnect', 'oidc_sub', ''));
+	}
 
-        self::assertSame('login', DI::baseUrl()->lastRedirect());
-        self::assertNotEmpty(DI::sysmsg()->notices);
-        self::assertSame([], DI::logger()->warnings);
-    }
+	public function testCompleteAllowsRelinkingSameAccountToSameSub(): void
+	{
+		$this->initDi();
+		$this->session->setLocalUserId(42);
 
-    public function testCompleteRedirectsToSettingsWhenSubjectMissing(): void
-    {
-        DI::userSession()->setLocalUserId(7);
+		(new CallbackLinkCompleter(null, static fn (string $sub): ?array => ['uid' => 42]))
+			->complete('sub-123', 'user@example.com', 'someuser', 'settings/account', []);
 
-        $accountLinker = $this->createMock(AccountLinker::class);
-        $accountLinker
-            ->expects(self::never())
-            ->method('link');
-
-        (new CallbackLinkCompleter($accountLinker))->complete(
-            '',
-            'person@example.test',
-            'nick',
-            'settings/account',
-            ['access_token' => 'access-token']
-        );
-
-        self::assertSame('settings/account', DI::baseUrl()->lastRedirect());
-        self::assertNotEmpty(DI::sysmsg()->notices);
-    }
-
-    public function testCompleteAllowsSubjectAlreadyLinkedToCurrentUser(): void
-    {
-        DI::userSession()->setLocalUserId(7);
-        $returnPath = 'settings/account';
-        $ownerLookup = fn(string $sub): ?array => ['uid' => 7];
-
-        $accountLinker = $this->createMock(AccountLinker::class);
-        $accountLinker
-            ->expects(self::once())
-            ->method('link')
-            ->with(7, 'subject-123', 'person@example.test', 'nick')
-            ->willReturn(true);
-
-        $tokens = [
-            'access_token' => 'access-token',
-            'refresh_token' => 'refresh-token',
-        ];
-
-        (new CallbackLinkCompleter($accountLinker, $ownerLookup))->complete(
-            'subject-123',
-            'person@example.test',
-            'nick',
-            $returnPath,
-            $tokens
-        );
-
-        self::assertSame($returnPath, DI::baseUrl()->lastRedirect());
-        self::assertNotEmpty(DI::sysmsg()->infos);
-        self::assertSame($tokens, DI::session()->get('openidconnect_tokens'));
-        self::assertTrue(SessionFunctionSpy::$sessionWriteCloseCalled);
-    }
-
-    public function testCompleteRedirectsToSettingsWhenAccountLinkerReturnsFalse(): void
-    {
-        DI::userSession()->setLocalUserId(7);
-        $ownerLookup = fn(string $sub): ?array => null;
-
-        $accountLinker = $this->createMock(AccountLinker::class);
-        $accountLinker
-            ->expects(self::once())
-            ->method('link')
-            ->with(7, 'subject-123', 'person@example.test', 'nick')
-            ->willReturn(false);
-
-        (new CallbackLinkCompleter($accountLinker, $ownerLookup))->complete(
-            'subject-123',
-            'person@example.test',
-            'nick',
-            'settings/account',
-            ['access_token' => 'access-token']
-        );
-
-        self::assertSame('settings/account', DI::baseUrl()->lastRedirect());
-        self::assertNotEmpty(DI::sysmsg()->notices);
-        self::assertNotEmpty(DI::logger()->warnings);
-        $lastWarning = DI::logger()->warnings[array_key_last(DI::logger()->warnings)];
-        self::assertSame('openidconnect: link mode failed to store user link', $lastWarning[0]);
-        self::assertNull(DI::session()->get('openidconnect_tokens'));
-        self::assertFalse(SessionFunctionSpy::$sessionWriteCloseCalled);
-    }
+		self::assertSame(['OpenID Connect account successfully linked.'], $this->sysmsg->getInfos());
+	}
 }

@@ -687,7 +687,7 @@ function bluesky_create_post(array $item, stdClass $root = null, stdClass $paren
 		$record = [
 			'text'      => $facets['body'],
 			'$type'     => 'app.bsky.feed.post',
-			'createdAt' => DateTimeFormat::utcNow(DateTimeFormat::ATOM),
+			'createdAt' => DateTimeFormat::utcNow(DateTimeFormat::JSON),
 		];
 
 		if (!empty($language)) {
@@ -699,7 +699,10 @@ function bluesky_create_post(array $item, stdClass $root = null, stdClass $paren
 		}
 
 		if (!empty($root)) {
-			$record['reply'] = ['root' => $root, 'parent' => $parent];
+			$record['reply'] = [
+				'root'   => ['uri' => $root->uri, 'cid' => $root->cid],
+				'parent' => ['uri' => $parent->uri, 'cid' => $parent->cid],
+			];
 		}
 
 		if ($key == count($msg['parts']) - 1) {

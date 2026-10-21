@@ -3,16 +3,20 @@
 /**
  * Name: OpenID Connect (OAuth2)
  * Description: Authenticate and register users via OpenID Connect (OAuth2)
- * Version: 0.3
+ * Version: 1.1
  * Author: Daniel Buck <https://friendica.rollenspiel.monster/profile/tealk\>
  * Author: Daniel de Kay <https://charlemos.club/profile/daniel\>
+ * Author: Philipp Holzer <https://friendica.philipp.info/profile/nupplaphil\>
  */
 
 use Friendica\Core\Config\Util\ConfigFileManager;
 use Friendica\DI;
+use Friendica\Network\HTTPException\FoundException;
+use Friendica\Network\HTTPException\MovedPermanentlyException;
+use Friendica\Network\HTTPException\TemporaryRedirectException;
 
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
-    require_once __DIR__ . '/vendor/autoload.php';
+	require_once __DIR__ . '/vendor/autoload.php';
 }
 
 define('OIDC_STATE_LENGTH', 32);
@@ -42,6 +46,10 @@ function openidconnect_init(): void
 
 	try {
 		openidconnect_addon()->dispatch($route);
+	} catch (FoundException|MovedPermanentlyException|TemporaryRedirectException $e) {
+		// These signal a normal redirect (e.g. BaseURL::redirect()) and must
+		// propagate to App's own handling instead of being logged as errors.
+		throw $e;
 	} catch (\Throwable $e) {
 		DI::logger()->error('openidconnect: unhandled exception in module init', [
 			'route' => $route,
@@ -77,31 +85,6 @@ function openidconnect_sso_initiate(string &$o): void
 function openidconnect_logout(): void
 {
 	openidconnect_addon()->logout();
-}
-
-function openidconnect_exchange_code(string $code, string $codeVerifier = ''): array
-{
-	return TokenHandler::exchangeCode($code, $codeVerifier);
-}
-
-function openidconnect_validate_id_token(string $idToken, string $expectedNonce = '', string $accessToken = ''): object|false
-{
-	return TokenHandler::validateIdToken($idToken, $expectedNonce, $accessToken);
-}
-
-function openidconnect_get_userinfo(string $accessToken): array
-{
-	return UserInfo::fetchUserinfo($accessToken);
-}
-
-function openidconnect_find_or_create_user(string $sub, string $email, string $name, string $nickname, string $picture): ?array
-{
-	return UserManager::findOrCreateUser($sub, $email, $name, $nickname, $picture);
-}
-
-function openidconnect_create_user(string $sub, string $email, string $name, string $nickname, string $picture): ?array
-{
-	return UserManager::createUser($sub, $email, $name, $nickname, $picture);
 }
 
 function openidconnect_page_end(string &$o): void

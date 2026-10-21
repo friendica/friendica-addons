@@ -3,7 +3,7 @@
  * Akeeba Engine
  *
  * @package   akeebaengine
- * @copyright Copyright (c)2006-2024 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2006-2026 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -101,21 +101,24 @@ function getTestMethods(string $className): array
 	$reflectedClass = new ReflectionClass($className);
 	$methods        = $reflectedClass->getMethods(ReflectionMethod::IS_PUBLIC | ReflectionMethod::IS_STATIC);
 
-	$classMethodMap[$className] = array_map(function (ReflectionMethod $refMethod) {
-		if ($refMethod->isPrivate() || $refMethod->isProtected() || $refMethod->isAbstract())
-		{
-			return null;
-		}
+	$classMethodMap[$className] = array_map(
+		function (ReflectionMethod $refMethod) {
+			if ($refMethod->isPrivate() || $refMethod->isProtected() || $refMethod->isAbstract())
+			{
+				return null;
+			}
 
-		if (!$refMethod->isStatic())
-		{
-			return null;
-		}
+			if (!$refMethod->isStatic())
+			{
+				return null;
+			}
 
-		return $refMethod->getName();
-	}, $methods);
+			return $refMethod->getName();
+		}, $methods
+	);
 
-	$classMethodMap[$className] = array_filter($classMethodMap[$className], function ($method) {
+	$classMethodMap[$className] = array_filter(
+		$classMethodMap[$className], function ($method) {
 		if (is_null($method))
 		{
 			return false;
@@ -127,7 +130,8 @@ function getTestMethods(string $className): array
 		}
 
 		return true;
-	});
+	}
+	);
 
 	return $classMethodMap[$className];
 }
@@ -181,17 +185,24 @@ foreach ($testConfigurations as $description => $setup)
 		$setup['configuration'] = [];
 	}
 
-	$configOptions = array_merge([
-		'access'      => defined('DEFAULT_ACCESS_KEY') ? DEFAULT_ACCESS_KEY : null,
-		'secret'      => defined('DEFAULT_SECRET_KEY') ? DEFAULT_SECRET_KEY : null,
-		'region'      => defined('DEFAULT_REGION') ? DEFAULT_REGION : null,
-		'bucket'      => defined('DEFAULT_BUCKET') ? DEFAULT_BUCKET : null,
-		'signature'   => defined('DEFAULT_SIGNATURE') ? DEFAULT_SIGNATURE : null,
-		'dualstack'   => defined('DEFAULT_DUALSTACK') ? DEFAULT_DUALSTACK : null,
-		'path_access' => defined('DEFAULT_PATH_ACCESS') ? DEFAULT_PATH_ACCESS : null,
-		'ssl'         => defined('DEFAULT_SSL') ? DEFAULT_SSL : null,
-		'endpoint'    => defined('DEFAULT_ENDPOINT') ? constant('DEFAULT_ENDPOINT') : null,
-	], $setup['configuration']);
+	$configOptions = array_merge(
+		[
+			'access'                    => defined('DEFAULT_ACCESS_KEY') ? DEFAULT_ACCESS_KEY : null,
+			'secret'                    => defined('DEFAULT_SECRET_KEY') ? DEFAULT_SECRET_KEY : null,
+			'region'                    => defined('DEFAULT_REGION') ? DEFAULT_REGION : null,
+			'bucket'                    => defined('DEFAULT_BUCKET') ? DEFAULT_BUCKET : null,
+			'signature'                 => defined('DEFAULT_SIGNATURE') ? DEFAULT_SIGNATURE : null,
+			'dualstack'                 => defined('DEFAULT_DUALSTACK') ? DEFAULT_DUALSTACK : null,
+			'path_access'               => defined('DEFAULT_PATH_ACCESS') ? DEFAULT_PATH_ACCESS : null,
+			'ssl'                       => defined('DEFAULT_SSL') ? DEFAULT_SSL : null,
+			'endpoint'                  => defined('DEFAULT_ENDPOINT') ? constant('DEFAULT_ENDPOINT') : null,
+			'alternateDateHeaderFormat' => defined('DEFAULT_ALTERNATE_DATE_FORMAT') ? constant(
+				'DEFAULT_ALTERNATE_DATE_FORMAT'
+			) : false,
+			'useHTTPDateHeader'         => defined('DEFAULT_USE_HTTP_HEADER') ? constant('DEFAULT_USE_HTTP_HEADER')
+				: false,
+		], $setup['configuration']
+	);
 
 	// Extract the test classes/methods to run
 	if (!isset($setup['tests']))
@@ -207,7 +218,9 @@ foreach ($testConfigurations as $description => $setup)
 	}
 
 	// Create the S3 configuration object
-	$s3Configuration = new Configuration($configOptions['access'], $configOptions['secret'], $configOptions['signature'], $configOptions['region']);
+	$s3Configuration = new Configuration(
+		$configOptions['access'], $configOptions['secret'], $configOptions['signature'], $configOptions['region']
+	);
 	$s3Configuration->setRegion($configOptions['region']);
 	$s3Configuration->setSignatureMethod($configOptions['signature']);
 
@@ -263,9 +276,11 @@ foreach ($testConfigurations as $description => $setup)
 				continue;
 			}
 
-			$testInfo = array_map(function ($method) use ($className) {
-				return [$className, $method];
-			}, getTestMethods($className));
+			$testInfo = array_map(
+				function ($method) use ($className) {
+					return [$className, $method];
+				}, getTestMethods($className)
+			);
 		}
 		else
 		{

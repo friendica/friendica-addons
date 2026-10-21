@@ -3,7 +3,7 @@
  * Akeeba Engine
  *
  * @package   akeebaengine
- * @copyright Copyright (c)2006-2024 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2006-2026 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -400,6 +400,20 @@ class Request
 		$curl = curl_init();
 		curl_setopt($curl, CURLOPT_USERAGENT, 'AkeebaBackupProfessional/S3PostProcessor');
 
+		// Apply the optional connection and request timeouts. A value of 0 means "no explicit limit".
+		$connectTimeout = $this->configuration->getConnectTimeout();
+		$requestTimeout = $this->configuration->getRequestTimeout();
+
+		if ($connectTimeout > 0)
+		{
+			curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $connectTimeout);
+		}
+
+		if ($requestTimeout > 0)
+		{
+			curl_setopt($curl, CURLOPT_TIMEOUT, $requestTimeout);
+		}
+
 		if ($this->configuration->isSSL())
 		{
 			// Set the CA certificate cache location
@@ -578,7 +592,10 @@ class Request
 			);
 		}
 
-		@curl_close($curl);
+		if (version_compare(PHP_VERSION, '8.5.0', 'lt'))
+		{
+			@curl_close($curl);
+		}
 
 		// Set the body data
 		$this->response->finaliseBody($rawResponse);

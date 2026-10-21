@@ -8,12 +8,13 @@
  * Maintainer: Hypolite Petovan <hypolite@friendica.mrpetovan.com>
  */
 
+use Friendica\Core\Config\Capability\IManageConfigValues;
 use Friendica\Core\Hook;
 use Friendica\DI;
 use Friendica\Object\EMail\IEmail;
 use Friendica\Core\Config\Util\ConfigFileManager;
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+use Psr\Log\LoggerInterface;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
@@ -29,6 +30,42 @@ function phpmailer_load_config(ConfigFileManager $loader)
 }
 
 /**
+ * Applies the SMTP transport settings to the mailer.
+ *
+ * @return bool True if SMTP relaying is enabled
+ */
+function phpmailer_setup_smtp(PHPMailer $mailer, IManageConfigValues $config): bool
+{
+	if (!$config->get('phpmailer', 'smtp')) {
+		return false;
+	}
+
+	$mailer->isSMTP();
+
+	$mailer->Host = $config->get('phpmailer', 'smtp_server');
+	$mailer->Port = $config->get('phpmailer', 'smtp_port');
+
+	// '' (none), 'ssl' (implicit TLS) or 'tls' (STARTTLS).
+	$smtpSecure = strtolower(trim((string) $config->get('phpmailer', 'smtp_secure', '')));
+	if (in_array($smtpSecure, [PHPMailer::ENCRYPTION_SMTPS, PHPMailer::ENCRYPTION_STARTTLS], true)) {
+		$mailer->SMTPSecure = $smtpSecure;
+
+		// The secure port replaces smtp_port as soon as encryption is enabled.
+		if ($config->get('phpmailer', 'smtp_port_s')) {
+			$mailer->Port = $config->get('phpmailer', 'smtp_port_s');
+		}
+	}
+
+	if ($config->get('phpmailer', 'smtp_username') && $config->get('phpmailer', 'smtp_password')) {
+		$mailer->SMTPAuth = true;
+		$mailer->Username = $config->get('phpmailer', 'smtp_username');
+		$mailer->Password = $config->get('phpmailer', 'smtp_password');
+	}
+
+	return true;
+}
+
+/**
  * @param null|IEmail $email
  */
 function phpmailer_emailer_send_prepare(?IEmail &$email)
@@ -38,34 +75,26 @@ function phpmailer_emailer_send_prepare(?IEmail &$email)
 	}
 
 	// Passing `true` enables exceptions
-	$mailer = new PHPMailer(true);
+	if (phpmailer_send(new PHPMailer(true), $email, DI::config(), DI::logger())) {
+		$email = null;
+	}
+}
+
+/**
+ * Composes the mail and hands it to the transport.
+ *
+ * Nothing thrown in here leaves this function.
+ * A single unreachable recipient must not take down the worker that runs the cron hooks.
+ */
+function phpmailer_send(PHPMailer $mailer, IEmail $email, IManageConfigValues $config, LoggerInterface $logger): bool
+{
 	try {
 		// Setup encoding.
 		$mailer->CharSet  = 'UTF-8';
 		$mailer->Encoding = 'base64';
 
-		if (DI::config()->get('phpmailer', 'smtp')) {
-			// Set mailer to use SMTP
-			$mailer->isSMTP();
-
-			// Specify main and backup SMTP servers
-			$mailer->Host = DI::config()->get('phpmailer', 'smtp_server');
-			$mailer->Port = DI::config()->get('phpmailer', 'smtp_port');
-
-			if (DI::config()->get('system', 'smtp_secure') && DI::config()->get('phpmailer', 'smtp_port_s')) {
-				$mailer->SMTPSecure = DI::config()->get('phpmailer', 'smtp_secure');
-				$mailer->Port       = DI::config()->get('phpmailer', 'smtp_port_s');
-			}
-
-			if (DI::config()->get('phpmailer', 'smtp_username') && DI::config()->get('phpmailer', 'smtp_password')) {
-				$mailer->SMTPAuth = true;
-				$mailer->Username = DI::config()->get('phpmailer', 'smtp_username');
-				$mailer->Password = DI::config()->get('phpmailer', 'smtp_password');
-			}
-
-			if (DI::config()->get('phpmailer', 'smtp_from')) {
-				$mailer->setFrom(DI::config()->get('phpmailer', 'smtp_from'), $email->getFromName());
-			}
+		if (phpmailer_setup_smtp($mailer, $config) && $config->get('phpmailer', 'smtp_from')) {
+			$mailer->setFrom($config->get('phpmailer', 'smtp_from'), $email->getFromName());
 		} else {
 			$mailer->setFrom($email->getFromAddress(), $email->getFromName());
 		}
@@ -104,10 +133,17 @@ function phpmailer_emailer_send_prepare(?IEmail &$email)
 			}
 		}
 
-		if ($mailer->send()) {
-			$email = null;
-		}
-	} catch (Exception $e) {
-		DI::logger()->error('PHPMailer error', ['email' => $email, 'ErrorInfo' => $mailer->ErrorInfo, 'exception' => $e]);
+		return $mailer->send();
+	} catch (Throwable $throwable) {
+		// ErrorInfo carries the SMTP conversation, down to the reply that refused the mail.
+		// The stack trace is the same worker frames every time and says nothing about the failure.
+		$logger->error('The mail could not be sent', [
+			'to'        => $email->getToAddress(),
+			'subject'   => $email->getSubject(),
+			'ErrorInfo' => $mailer->ErrorInfo,
+			'message'   => $throwable->getMessage(),
+		]);
+
+		return false;
 	}
 }

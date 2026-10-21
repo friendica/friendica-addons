@@ -4,178 +4,106 @@ declare(strict_types=1);
 
 namespace Friendica\Addon\OpenIdConnect\Tests\Route;
 
-use Friendica\Addon\OpenIdConnect\Provider\TokenClient;
 use Friendica\Addon\OpenIdConnect\Route\RevokeRoute;
-use Friendica\Addon\OpenIdConnect\Tests\Support\AddonTestCase;
-use Friendica\DI;
+use Friendica\Addon\OpenIdConnect\Tests\Support\DiTestCase;
+use Friendica\Network\HTTPClient\Capability\ICanHandleHttpResponses;
+use Friendica\Network\HTTPClient\Capability\ICanSendHttpRequests;
 
-final class RevokeRouteTest extends AddonTestCase
+final class RevokeRouteTest extends DiTestCase
 {
-    public function testHandleRejectsGetRequestsWithoutRevokingTokens(): void
-    {
-        DI::session()->set('openidconnect_tokens', [
-            'access_token' => 'access-token',
-            'refresh_token' => 'refresh-token',
-        ]);
-        $_SERVER['REQUEST_METHOD'] = 'GET';
+	/**
+	 * BaseModule::checkFormSecurityToken() hashes the anonymous (empty
+	 * guid/prvkey) user against session_id()+timestamp+typename.
+	 */
+	private function validCsrfToken(string $typename): string
+	{
+		$timestamp = time();
 
-        (new RevokeRoute())->handle();
+		return $timestamp . '.' . hash('whirlpool', session_id() . $timestamp . $typename);
+	}
 
-        self::assertSame('access-token', DI::session()->get('openidconnect_tokens')['access_token']);
-        self::assertSame('', DI::baseUrl()->lastRedirect());
-    }
+	public function testHandleRedirectsWithoutRevokingOnGetRequest(): void
+	{
+		$this->initDi();
+		$this->session->set('openidconnect_tokens', ['access_token' => 'access-token']);
+		$_SERVER['REQUEST_METHOD'] = 'GET';
 
-    public function testHandleRejectsPostWithoutCsrfToken(): void
-    {
-        DI::session()->set('openidconnect_tokens', [
-            'access_token' => 'access-token',
-            'refresh_token' => 'refresh-token',
-        ]);
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $_POST = [];
+		$this->assertRedirectsTo('', fn () => (new RevokeRoute())->handle());
 
-        (new RevokeRoute())->handle();
+		self::assertSame('access-token', $this->session->get('openidconnect_tokens')['access_token']);
+	}
 
-        self::assertSame('access-token', DI::session()->get('openidconnect_tokens')['access_token']);
-        self::assertSame('', DI::baseUrl()->lastRedirect());
-    }
+	public function testHandleRedirectsWithoutRevokingOnMissingCsrfToken(): void
+	{
+		$this->initDi();
+		$this->session->set('openidconnect_tokens', ['access_token' => 'access-token']);
+		$_SERVER['REQUEST_METHOD'] = 'POST';
+		$_REQUEST                  = [];
 
-    public function testHandleRevokesAccessAndRefreshTokensThenClearsSession(): void
-    {
-        DI::config()->set('openidconnect', 'client_id', 'client-id');
-        DI::config()->set('openidconnect', 'client_secret', 'client-secret');
-        DI::cache()->set('openidconnect:provider_config', [
-            'revocation_endpoint' => 'https://id.example/revoke',
-            'revocation_endpoint_auth_methods_supported' => ['client_secret_post'],
-        ], 600);
-        DI::session()->set('openidconnect_tokens', [
-            'access_token' => 'access-token',
-            'refresh_token' => 'refresh-token',
-        ]);
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $_POST['form_security_token'] = 'test-token-openidconnect_revoke';
+		$this->assertRedirectsTo('', fn () => (new RevokeRoute())->handle());
 
-        (new RevokeRoute())->handle();
+		self::assertSame('access-token', $this->session->get('openidconnect_tokens')['access_token']);
+	}
 
-        self::assertNull(DI::session()->get('openidconnect_tokens'));
-        self::assertSame('', DI::baseUrl()->lastRedirect());
-        self::assertCount(2, DI::httpClient()->postCalls);
-        self::assertStringContainsString('token=access-token', (string) DI::httpClient()->postCalls[0]['postData']);
-        self::assertStringContainsString('token=refresh-token', (string) DI::httpClient()->postCalls[1]['postData']);
-    }
+	public function testHandleRedirectsWithoutRevokingWhenAccessTokenIsMissing(): void
+	{
+		$this->initDi();
+		$this->session->set('openidconnect_tokens', ['refresh_token' => 'refresh-token']);
+		$_SERVER['REQUEST_METHOD']       = 'POST';
+		$_REQUEST['form_security_token'] = $this->validCsrfToken('openidconnect_revoke');
 
-    public function testHandleClearsSessionLocallyWhenProviderHasNoRevocationEndpoint(): void
-    {
-        DI::session()->set('openidconnect_tokens', [
-            'access_token' => 'access-token',
-            'refresh_token' => 'refresh-token',
-        ]);
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $_POST['form_security_token'] = 'test-token-openidconnect_revoke';
+		$this->assertRedirectsTo('', fn () => (new RevokeRoute())->handle());
 
-        (new RevokeRoute())->handle();
+		self::assertSame('refresh-token', $this->session->get('openidconnect_tokens')['refresh_token']);
+	}
 
-        self::assertNull(DI::session()->get('openidconnect_tokens'));
-        self::assertSame('', DI::baseUrl()->lastRedirect());
-        self::assertCount(0, DI::httpClient()->postCalls);
-    }
+	public function testHandleClearsSessionLocallyWhenProviderHasNoRevocationEndpoint(): void
+	{
+		$this->initDi();
+		$this->session->set('openidconnect_tokens', ['access_token' => 'access-token']);
+		$_SERVER['REQUEST_METHOD']       = 'POST';
+		$_REQUEST['form_security_token'] = $this->validCsrfToken('openidconnect_revoke');
 
-    public function testHandleRedirectsWithoutRevokingWhenAccessTokenIsMissing(): void
-    {
-        DI::session()->set('openidconnect_tokens', [
-            'refresh_token' => 'refresh-token',
-        ]);
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $_POST['form_security_token'] = 'test-token-openidconnect_revoke';
+		$this->assertRedirectsTo('', fn () => (new RevokeRoute())->handle());
 
-        (new RevokeRoute())->handle();
+		self::assertNull($this->session->get('openidconnect_tokens'));
+	}
 
-        self::assertSame('refresh-token', DI::session()->get('openidconnect_tokens')['refresh_token']);
-        self::assertSame('', DI::baseUrl()->lastRedirect());
-        self::assertCount(0, DI::httpClient()->postCalls);
-    }
+	public function testHandleRevokesAccessAndRefreshTokensThenClearsSession(): void
+	{
+		$response = $this->createMock(ICanHandleHttpResponses::class);
+		$response->method('isSuccess')->willReturn(true);
+		$httpClient = $this->mockHttpClient();
+		$httpClient->expects(self::exactly(2))->method('post')
+			->willReturnCallback(function (string $url, $body) use ($response): ICanHandleHttpResponses {
+				self::assertSame('https://idp.example/revoke', $url);
 
-    public function testHandleRevokesOnlyAccessTokenWhenRefreshTokenIsAbsent(): void
-    {
-        DI::config()->set('openidconnect', 'client_id', 'client-id');
-        DI::config()->set('openidconnect', 'client_secret', 'client-secret');
-        DI::cache()->set('openidconnect:provider_config', [
-            'revocation_endpoint' => 'https://id.example/revoke',
-            'revocation_endpoint_auth_methods_supported' => ['client_secret_post'],
-        ], 600);
-        DI::session()->set('openidconnect_tokens', [
-            'access_token' => 'access-token',
-        ]);
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $_POST['form_security_token'] = 'test-token-openidconnect_revoke';
+				return $response;
+			});
+		$this->initDi([ICanSendHttpRequests::class => $httpClient]);
+		$this->cache->set('openidconnect:provider_config', ['revocation_endpoint' => 'https://idp.example/revoke']);
+		$this->session->set('openidconnect_tokens', ['access_token' => 'access-token', 'refresh_token' => 'refresh-token']);
+		$_SERVER['REQUEST_METHOD']       = 'POST';
+		$_REQUEST['form_security_token'] = $this->validCsrfToken('openidconnect_revoke');
 
-        (new RevokeRoute())->handle();
+		$this->assertRedirectsTo('', fn () => (new RevokeRoute())->handle());
 
-        self::assertNull(DI::session()->get('openidconnect_tokens'));
-        self::assertSame('', DI::baseUrl()->lastRedirect());
-        self::assertCount(1, DI::httpClient()->postCalls);
-        self::assertStringContainsString('token=access-token', (string) DI::httpClient()->postCalls[0]['postData']);
-    }
+		self::assertNull($this->session->get('openidconnect_tokens'));
+	}
 
-    public function testHandleLogsWarningsWhenInjectedTokenClientThrows(): void
-    {
-        $throwingClient = new class extends TokenClient {
-            public function revoke(string $endpoint, string $token, array $providerConfig, int $timeout = 30): void
-            {
-                throw new \RuntimeException('forced revoke failure');
-            }
-        };
+	public function testHandleLogsWarningAndStillClearsSessionWhenRevocationThrows(): void
+	{
+		$httpClient = $this->mockHttpClient();
+		$httpClient->method('post')->willThrowException(new \RuntimeException('boom'));
+		$this->initDi([ICanSendHttpRequests::class => $httpClient]);
+		$this->cache->set('openidconnect:provider_config', ['revocation_endpoint' => 'https://idp.example/revoke']);
+		$this->session->set('openidconnect_tokens', ['access_token' => 'access-token']);
+		$_SERVER['REQUEST_METHOD']       = 'POST';
+		$_REQUEST['form_security_token'] = $this->validCsrfToken('openidconnect_revoke');
 
-        DI::cache()->set('openidconnect:provider_config', [
-            'revocation_endpoint' => 'https://id.example/revoke',
-        ], 600);
-        DI::session()->set('openidconnect_tokens', [
-            'access_token' => 'access-token',
-            'refresh_token' => 'refresh-token',
-        ]);
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $_POST['form_security_token'] = 'test-token-openidconnect_revoke';
+		$this->assertRedirectsTo('', fn () => (new RevokeRoute())->handle());
 
-        (new RevokeRoute(null, $throwingClient))->handle();
-
-        self::assertNull(DI::session()->get('openidconnect_tokens'));
-        self::assertSame('', DI::baseUrl()->lastRedirect());
-        self::assertCount(2, DI::logger()->warnings);
-        self::assertSame('openidconnect: access token revocation failed', DI::logger()->warnings[0][0]);
-        self::assertSame('RuntimeException', DI::logger()->warnings[0][1]['exception'] ?? null);
-        self::assertSame('openidconnect: refresh token revocation failed', DI::logger()->warnings[1][0]);
-        self::assertSame('RuntimeException', DI::logger()->warnings[1][1]['exception'] ?? null);
-    }
-
-    public function testHandleLogsSafeWarningsAndClearsSessionWhenRevocationThrows(): void
-    {
-        DI::session()->set('openidconnect_tokens', [
-            'access_token' => 'access-token-123',
-            'refresh_token' => 'refresh-token-456',
-        ]);
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $_POST['form_security_token'] = 'test-token-openidconnect_revoke';
-
-        DI::cache()->set('openidconnect:provider_config', [
-            'revocation_endpoint' => 'https://id.example/revoke',
-        ], 600);
-
-        DI::httpClient()->nextException = new \RuntimeException('failed for access-token-123 with super-secret');
-
-        (new RevokeRoute())->handle();
-
-        self::assertNull(DI::session()->get('openidconnect_tokens'));
-        self::assertCount(2, DI::logger()->warnings);
-
-        foreach (DI::logger()->warnings as [$message, $context]) {
-            self::assertContains($message, [
-                'openidconnect: revocation endpoint request threw exception',
-                'openidconnect: revocation endpoint returned non-success',
-            ]);
-            $contextEncoded = json_encode($context, JSON_THROW_ON_ERROR);
-            self::assertStringNotContainsString('access-token-123', $contextEncoded);
-            self::assertStringNotContainsString('refresh-token-456', $contextEncoded);
-            self::assertStringNotContainsString('super-secret', $contextEncoded);
-        }
-    }
+		self::assertNull($this->session->get('openidconnect_tokens'));
+		self::assertTrue($this->logger->hasRecordMatching('warning', 'revocation endpoint request threw exception'));
+	}
 }

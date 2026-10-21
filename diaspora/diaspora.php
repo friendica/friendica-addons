@@ -5,6 +5,7 @@
  * Description: Post to Diaspora
  * Version: 0.2
  * Author: Michael Vogel <heluecht@pirati.ca>
+ * Status: Unsupported
  */
 
 require_once 'addon/diaspora/Diaspora_Connection.php';

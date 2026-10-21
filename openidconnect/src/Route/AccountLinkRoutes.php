@@ -6,8 +6,10 @@ namespace Friendica\Addon\OpenIdConnect\Route;
 
 use Friendica\Addon\OpenIdConnect\Account\AccountLinker;
 use Friendica\Addon\OpenIdConnect\Auth\AuthorizationRequest;
+use Friendica\Addon\OpenIdConnect\Presentation\SettingsHook;
 use Friendica\Addon\OpenIdConnect\Provider\ProviderConfiguration;
 use Friendica\BaseModule;
+use Friendica\Database\DBA;
 use Friendica\DI;
 
 final class AccountLinkRoutes
@@ -23,9 +25,9 @@ final class AccountLinkRoutes
 		?AccountLinker $accountLinker = null,
 		?callable $authorizationRedirectFn = null,
 	) {
-		$this->providerConfiguration = $providerConfiguration ?? new ProviderConfiguration();
-		$this->authorizationRequest = $authorizationRequest ?? new AuthorizationRequest($this->providerConfiguration);
-		$this->accountLinker = $accountLinker ?? new AccountLinker();
+		$this->providerConfiguration   = $providerConfiguration   ?? new ProviderConfiguration();
+		$this->authorizationRequest    = $authorizationRequest    ?? new AuthorizationRequest($this->providerConfiguration);
+		$this->accountLinker           = $accountLinker           ?? new AccountLinker();
 		$this->authorizationRedirectFn = $authorizationRedirectFn ?? [$this->authorizationRequest, 'redirect'];
 	}
 
@@ -55,7 +57,7 @@ final class AccountLinkRoutes
 
 	public function unlink(): void
 	{
-		if (!BaseModule::checkFormSecurityToken('openidconnect_unlink')) {
+		if (!BaseModule::checkFormSecurityToken('openidconnect_unlink', SettingsHook::UNLINK_TOKEN_FIELD)) {
 			DI::baseUrl()->redirect('settings/account');
 			return;
 		}
@@ -71,12 +73,18 @@ final class AccountLinkRoutes
 
 		$linkedAccount = $this->accountLinker->get($uid);
 		DI::logger()->debug('openidconnect_unlink_account linked', [
-			'uid' => (int)$uid,
-			'has_link' => !empty($linkedAccount),
+			'uid'         => (int) $uid,
+			'has_link'    => !empty($linkedAccount),
 			'has_link_id' => !empty($linkedAccount['sub']),
 		]);
 
 		if ($linkedAccount) {
+			if ($this->hasOnlyGeneratedPassword($uid)) {
+				DI::sysmsg()->addNotice(DI::l10n()->t('Please set a password for your account before unlinking OpenID Connect, otherwise you will not be able to log in anymore.'));
+				DI::baseUrl()->redirect('settings/account');
+				return;
+			}
+
 			$this->accountLinker->unlink($uid);
 			DI::sysmsg()->addInfo(DI::l10n()->t('OpenID Connect account link removed.'));
 		} else {
@@ -84,5 +92,21 @@ final class AccountLinkRoutes
 		}
 
 		DI::baseUrl()->redirect('settings/account');
+	}
+
+	/**
+	 * True if the account was auto-created by OpenID Connect and the user
+	 * never replaced the random, never-shown password it was created with.
+	 */
+	private function hasOnlyGeneratedPassword(int $uid): bool
+	{
+		$generatedHash = DI::pConfig()->get($uid, 'openidconnect', 'oidc_generated_password_hash', '');
+		if ($generatedHash === '') {
+			return false;
+		}
+
+		$user = DBA::selectFirst('user', ['password'], ['uid' => $uid]);
+
+		return $user && $user['password'] === $generatedHash;
 	}
 }

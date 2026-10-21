@@ -1,10 +1,10 @@
 <?php
 
-/*
+/**
  * Name: S3 Storage
  * Description: Adds the possibility to use Amazon S3 as a selectable storage backend
- * Version: 1.0
- * Author: Philipp Holzer
+ * Version: 1.1
+ * Author: Philipp Holzer <https://friendica.philipp.info/profile/nupplaphil\>
  */
 
 use Friendica\Addon\s3_storage\src\S3Client;

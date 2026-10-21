@@ -366,3 +366,21 @@ If you are using a third party service which for any reason does not understand 
 ```php
 $configuration->setUseHTTPDateHeader(true);
 ```
+
+### Connection and request timeouts
+
+By default, the connector does not impose any explicit time limit on its HTTP requests; the underlying cURL defaults apply. You can set two independent timeouts, both expressed in whole seconds:
+
+```php
+// Give up if the connection to the endpoint is not established within 10 seconds
+$configuration->setConnectTimeout(10);
+
+// Give up if the entire request has not completed within 120 seconds
+$configuration->setRequestTimeout(120);
+```
+
+`setConnectTimeout()` limits only the time spent establishing the connection to the S3 endpoint. `setRequestTimeout()` limits the total time allowed for the whole request, including the transfer of the request and response bodies.
+
+A value of `0` (the default) means no explicit limit is applied. Negative values are clamped to `0`.
+
+Caveat: `setRequestTimeout()` applies to the request as a whole. When you are uploading or downloading large objects you must allow enough time for the transfer to complete, otherwise the request will be aborted mid-transfer. If in doubt, leave it at its default of `0` (no limit).

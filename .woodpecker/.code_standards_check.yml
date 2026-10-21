@@ -1,29 +1,35 @@
 skip_clone: true
 
+matrix:
+  include:
+    - PHP_MAJOR_VERSION: 8.5
+      PHP_VERSION: 8.5.5
+
+# Runs the PHP-CS-Fixer check for the addons for PRs and pushes to non-stable branches.
+when:
+  branch:
+    exclude: [ stable ]
+  event: [ pull_request, push ]
+
+# This forces the checks to the "opensocial" labeled location (because of access issues with git.friendi.ca)
+labels:
+  location: opensocial
+
 steps:
   clone_friendica_base:
     image: alpine/git
     commands:
-      - git config --global user.email "no-reply@friendi.ca"
-      - git config --global user.name "Friendica"
       - git config --global --add safe.directory $CI_WORKSPACE
       - git clone https://github.com/friendica/friendica.git .
-      - git checkout $CI_COMMIT_BRANCH
-    when:
-      event: pull_request
+      - git checkout "$CI_COMMIT_BRANCH"
 
   clone_friendica_addon:
     image: alpine/git
     commands:
-      - git config --global user.email "no-reply@friendi.ca"
-      - git config --global user.name "Friendica"
-      - git clone $CI_REPO_CLONE_URL addon
+      - git clone "$CI_REPO_CLONE_URL" addon
       - cd addon/
-      - git checkout $CI_COMMIT_BRANCH
-      - git fetch origin $CI_COMMIT_REF
-      - git merge $CI_COMMIT_SHA
-    when:
-      event: pull_request
+      - git fetch origin "$CI_COMMIT_REF"
+      - git checkout --detach "$CI_COMMIT_SHA"
 
   restore_cache:
     image: meltwater/drone-cache:dev
@@ -36,16 +42,13 @@ steps:
         - '.composer'
     volumes:
       - /tmp/drone-cache:/tmp/cache
-    when:
-      event: pull_request
 
   composer_install:
-    image: composer
+    image: friendicaci/php${PHP_MAJOR_VERSION}:php${PHP_VERSION}
     commands:
       - export COMPOSER_HOME=.composer
-      - ./bin/composer.phar run cs:install
-    when:
-      event: pull_request
+      - ./bin/composer.phar validate
+      - ./bin/composer.phar install --prefer-dist
 
   rebuild_cache:
     image: meltwater/drone-cache:dev
@@ -58,20 +61,8 @@ steps:
         - '.composer'
     volumes:
       - /tmp/drone-cache:/tmp/cache
-    when:
-      event: pull_request
 
   check:
-    image: friendicaci/php-cs
+    image: friendicaci/php${PHP_MAJOR_VERSION}:php${PHP_VERSION}
     commands:
-      - cd addon/
-      - if [ ! -z "$${CI_COMMIT_PULL_REQUEST}" ]; then
-          git fetch --no-tags origin ${CI_COMMIT_TARGET_BRANCH};
-          export CHANGED_FILES="$(git diff --name-status $(git merge-base FETCH_HEAD origin/${CI_COMMIT_TARGET_BRANCH})..${CI_COMMIT_SHA} | grep ^A | cut -f2 | sed -e "s/^/addon\\//")";
-        else
-          export CHANGED_FILES="$(git diff --name-status ${CI_COMMIT_SHA} | grep ^A | cut -f2 | sed -e "s/^/addon\\//")";
-        fi
-      - cd ../
-      - /check-php-cs.sh
-    when:
-      event: pull_request
+      - bin/composer.phar run addons:cs:check

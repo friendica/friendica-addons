@@ -11,46 +11,57 @@ use Friendica\DI;
 
 final class SettingsHook
 {
-    private AccountLinker $accountLinker;
+	/**
+	 * Own field name for the unlink CSRF token, so it doesn't collide with the
+	 * enclosing settings/addons form's own "form_security_token" field.
+	 */
+	public const UNLINK_TOKEN_FIELD = 'openidconnect_unlink_security_token';
 
-    public function __construct(?AccountLinker $accountLinker = null)
-    {
-        $this->accountLinker = $accountLinker ?? new AccountLinker();
-    }
+	private AccountLinker $accountLinker;
 
-    public function append(array &$data): void
-    {
-        $uid = DI::userSession()->getLocalUserId();
-        if (!$uid) {
-            return;
-        }
+	public function __construct(?AccountLinker $accountLinker = null)
+	{
+		$this->accountLinker = $accountLinker ?? new AccountLinker();
+	}
 
-        $linkedAccount = $this->accountLinker->get($uid);
-    $linkedPayload = $linkedAccount ? ['sub' => $linkedAccount['sub'] ?? ''] : null;
-        $baseUrl = (string)DI::baseUrl();
+	public function append(array &$data): void
+	{
+		$uid = DI::userSession()->getLocalUserId();
+		if (!$uid) {
+			return;
+		}
 
-        $tpl = Renderer::getMarkupTemplate('settings.tpl', 'addon/openidconnect/');
-        try {
-            $confirmJson = json_encode(
-                DI::l10n()->t('Are you sure you want to unlink your OpenID Connect account?'),
-                JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_THROW_ON_ERROR
-            );
-        } catch (\JsonException $e) {
-            DI::logger()->error('openidconnect: failed to encode unlink confirmation text', ['error' => $e->getMessage()]);
-            $confirmJson = '""';
-        }
+		$linkedAccount = $this->accountLinker->get($uid);
+		$linkedPayload = $linkedAccount ? ['sub' => $linkedAccount['sub'] ?? ''] : null;
+		$baseUrl       = (string) DI::baseUrl();
+		$title         = DI::l10n()->t('OpenID Connect');
 
-        $data['aside'] = Renderer::replaceMacros($tpl, [
-            '$linked' => $linkedPayload,
-            '$sub_label' => DI::l10n()->t('OIDC ID:'),
-            '$unlink_url' => $baseUrl . '/openidconnect/unlink',
-            '$link_url' => $baseUrl . '/openidconnect/link',
-            '$unlink_token' => BaseModule::getFormSecurityToken('openidconnect_unlink'),
-            '$title' => DI::l10n()->t('OpenID Connect'),
-            '$link_text' => DI::l10n()->t('Link OpenID Connect Account'),
-            '$unlink_text' => DI::l10n()->t('Unlink Account'),
-            '$confirm_json' => $confirmJson,
-            '$description' => DI::l10n()->t('Link your local account with an OpenID Connect provider to use SSO for login.'),
-        ]);
-    }
+		$tpl = Renderer::getMarkupTemplate('settings.tpl', 'addon/openidconnect/');
+		try {
+			$confirmJson = json_encode(
+				DI::l10n()->t('Are you sure you want to unlink your OpenID Connect account?'),
+				JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_THROW_ON_ERROR,
+			);
+		} catch (\JsonException $e) {
+			DI::logger()->error('openidconnect: failed to encode unlink confirmation text', ['error' => $e->getMessage()]);
+			$confirmJson = '""';
+		}
+
+		$html = Renderer::replaceMacros($tpl, [
+			'$linked'             => $linkedPayload,
+			'$sub_label'          => DI::l10n()->t('OIDC ID:'),
+			'$unlink_url'         => $baseUrl . '/openidconnect/unlink',
+			'$link_url'           => $baseUrl . '/openidconnect/link',
+			'$unlink_token_field' => self::UNLINK_TOKEN_FIELD,
+			'$unlink_token'       => BaseModule::getFormSecurityToken('openidconnect_unlink'),
+			'$link_text'          => DI::l10n()->t('Link OpenID Connect Account'),
+			'$unlink_text'        => DI::l10n()->t('Unlink Account'),
+			'$confirm_json'       => $confirmJson,
+			'$description'        => DI::l10n()->t('Link your local account with an OpenID Connect provider to use SSO for login.'),
+		]);
+
+		$data['addon'] = 'openidconnect';
+		$data['title'] = $title;
+		$data['html']  = $html;
+	}
 }

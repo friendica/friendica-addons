@@ -3,7 +3,7 @@
  * Akeeba Engine
  *
  * @package   akeebaengine
- * @copyright Copyright (c)2006-2024 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2006-2026 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -47,7 +47,7 @@ class SignedURLs extends AbstractTest
 		$tempData = static::getRandomData(AbstractTest::TEN_KB);
 		$input    = Input::createFromData($tempData);
 		$prefix   = $spaces ? 'test file' : 'test';
-		$uri      = $prefix . '.' . md5(microtime(false)) . '.dat';
+		$uri      = $prefix . '.' . hash('md5', microtime(false)) . '.dat';
 
 		$s3->putObject($input, $options['bucket'], $uri, $aclPrivilege);
 

@@ -23,7 +23,8 @@ return [
 		'smtp_secure' => '',
 
 		// smtp_port_s (Integer)
-		// Secure SMTP server port number
+		// SMTP server port number used instead of smtp_port when smtp_secure is set
+		// Common values: 465 for 'ssl', 587 for 'tls'
 		'smtp_port_s' => 465,
 
 		// smtp_username (String)

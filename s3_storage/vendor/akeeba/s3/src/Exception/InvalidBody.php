@@ -3,7 +3,7 @@
  * Akeeba Engine
  *
  * @package   akeebaengine
- * @copyright Copyright (c)2006-2024 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @copyright Copyright (c)2006-2026 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
@@ -12,15 +12,15 @@ namespace Akeeba\S3\Exception;
 // Protection against direct access
 defined('AKEEBAENGINE') || die();
 
-use Exception;
 use RuntimeException;
+use Throwable;
 
 /**
  * Invalid response body type
  */
 class InvalidBody extends RuntimeException
 {
-	public function __construct(string $message = "", int $code = 0, Exception $previous = null)
+	public function __construct(string $message = "", int $code = 0, ?Throwable $previous = null)
 	{
 		if (empty($message))
 		{

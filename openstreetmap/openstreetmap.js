@@ -2,8 +2,10 @@ var toolserver = 'http://toolserver.org/~kolossos/openlayers/kml-on-ol.php';
 var startTag = '<iframe class="osmFrame" style="width: 100%; height: 350px; clear: both;" src="'+ toolserver + '?lang=de&amp;uselang=de&amp;params=';
 var endTag = '"></iframe>';
 
-// @TODO document.ready() does not work for ajax loaded content
-jQuery(document).ready(function($) {
+// ready() only fires once for this script, but SPA navigation replaces the
+// timeline with new posts without it firing again, so onDocumentReady() is
+// needed to rebind the toggle on every timeline the user navigates to.
+window.onDocumentReady('body', function() {
 	$('.wall-item-content-wrapper').each(function(index) {
 		var link = $(this).find('.wall-item-location .OSMMapLink');
 		link.toggle(addIframe, removeIframe);
