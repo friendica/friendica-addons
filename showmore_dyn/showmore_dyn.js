@@ -83,6 +83,11 @@ function handleNewWallItemBodies() {
 		var $el = $(this);
 		$el.addClass('showmore-done');
 
+		// Previews of a post or comment in the editor must show the full text
+		if ($el.closest('#jot-preview-content, [id^="comment-edit-preview-"]').length > 0) {
+			return;
+		}
+
 		if (expanded[$el.closest('[data-uri-id]').attr('data-uri-id')]) {
 			$el.removeClass('limitable limit-height');
 			return;
