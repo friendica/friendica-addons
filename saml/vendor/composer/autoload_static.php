@@ -7,25 +7,29 @@ namespace Composer\Autoload;
 class ComposerStaticInit6ecac07d47dd9d108b36bee3eda76704
 {
     public static $prefixLengthsPsr4 = array (
-        'R' => 
+        'R' =>
         array (
             'RobRichards\\XMLSecLibs\\' => 23,
         ),
-        'O' => 
+        'O' =>
         array (
             'OneLogin\\' => 9,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'RobRichards\\XMLSecLibs\\' => 
+        'RobRichards\\XMLSecLibs\\' =>
         array (
             0 => __DIR__ . '/..' . '/robrichards/xmlseclibs/src',
         ),
-        'OneLogin\\' => 
+        'OneLogin\\' =>
         array (
             0 => __DIR__ . '/..' . '/onelogin/php-saml/src',
         ),
+    );
+
+    public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
@@ -33,6 +37,7 @@ class ComposerStaticInit6ecac07d47dd9d108b36bee3eda76704
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit6ecac07d47dd9d108b36bee3eda76704::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit6ecac07d47dd9d108b36bee3eda76704::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit6ecac07d47dd9d108b36bee3eda76704::$classMap;
 
         }, null, ClassLoader::class);
     }
