@@ -1,0 +1,56 @@
+<?php return array(
+    'root' => array(
+        'name' => 'friendica-addons/securemail',
+        'pretty_version' => '1.0.0+no-version-set',
+        'version' => '1.0.0.0',
+        'reference' => null,
+        'type' => 'friendica-addon',
+        'install_path' => __DIR__ . '/../../',
+        'aliases' => array(),
+        'dev' => true,
+    ),
+    'versions' => array(
+        'friendica-addons/securemail' => array(
+            'pretty_version' => '1.0.0+no-version-set',
+            'version' => '1.0.0.0',
+            'reference' => null,
+            'type' => 'friendica-addon',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'paragonie/constant_time_encoding' => array(
+            'pretty_version' => 'v2.6.3',
+            'version' => '2.6.3.0',
+            'reference' => '58c3f47f650c94ec05a151692652a868995d2938',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../paragonie/constant_time_encoding',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'paragonie/random_compat' => array(
+            'dev_requirement' => false,
+            'replaced' => array(
+                0 => '9.99.99',
+            ),
+        ),
+        'phpseclib/phpseclib' => array(
+            'pretty_version' => '3.0.57',
+            'version' => '3.0.57.0',
+            'reference' => 'd17e0ddaeaf6f22f7e007cbb437d78792fe2a0e4',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpseclib/phpseclib',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'singpolyma/openpgp-php' => array(
+            'pretty_version' => '0.6.0',
+            'version' => '0.6.0.0',
+            'reference' => '1c3bdcd2d9c6113c2d6b768e208e7432a48d3a1e',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../singpolyma/openpgp-php',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+    ),
+);
