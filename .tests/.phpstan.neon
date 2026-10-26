@@ -30,6 +30,7 @@ parameters:
         analyseAndScan:
             - ../../vendor/rector/
             - ../../vendor/phpstan/
+            - ../../vendor/deptrac/ (?)
 
     dynamicConstantNames:
         - DB_UPDATE_VERSION
