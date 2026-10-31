@@ -634,9 +634,6 @@ function smiley_pack_smilies(array &$b)
 	$b['texts'][] = ':thunderbird:';
 	$b['icons'][] = '<img class="smiley" src="' . DI::baseUrl() . '/addon/smiley_pack/icons/opensource/thunderbird.png' . '" alt="' . ':thunderbird:' . '" />';
 
-	$b['texts'][] = ':vivaldi:';
-	$b['icons'][] = '<img class="smiley" src="' . DI::baseUrl() . '/addon/smiley_pack/icons/opensource/vivaldi.png' . '" alt="' . ':vivaldi:' . '" />';
-
 	$b['texts'][] = ':jabber:';
 	$b['icons'][] = '<img class="smiley" src="' . DI::baseUrl() . '/addon/smiley_pack/icons/opensource/jabber.png' . '" alt="' . ':jabber:' . '" />';
 
