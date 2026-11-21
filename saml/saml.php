@@ -221,7 +221,7 @@ function saml_slo_reply()
 	$errors = $auth->getErrors();
 
 	if (empty($errors)) {
-		$auth->redirectTo(DI::baseUrl());
+		$auth->redirectTo((string) DI::baseUrl());
 	} else {
 		DI::logger()->error(implode(', ', $errors));
 	}
@@ -400,7 +400,7 @@ function saml_settings()
 				'serviceDescription'  => 'SLO and SSO support for Friendica',
 				'requestedAttributes' => [
 					[
-						'uid'        => '',
+						'name'       => 'uid',
 						'isRequired' => false,
 					],
 				],
