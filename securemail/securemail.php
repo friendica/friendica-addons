@@ -76,6 +76,14 @@ function securemail_settings_post(array &$b)
 		$enable = (!empty($_POST['securemail-enable']) ? 1 : 0);
 		DI::pConfig()->set(DI::userSession()->getLocalUserId(), 'securemail', 'enable', $enable);
 
+		if ($enable) {
+			try {
+				securemail_encrypt(trim($_POST['securemail-pkey']), 'test');
+			} catch (Throwable $e) {
+				DI::sysmsg()->addNotice(DI::l10n()->t('Your public key can\'t be used for encryption, only RSA keys are supported. Notification mails will arrive without content.'));
+			}
+		}
+
 		if (!empty($_POST['securemail-test'])) {
 			$res = DI::emailer()->send(new SecureTestEmail(DI::config(), DI::pConfig(), DI::baseUrl()));
 
@@ -112,31 +120,42 @@ function securemail_emailer_send_prepare(IEmail &$email)
 		return;
 	}
 
-	$public_key_ascii = DI::pConfig()->get($uid, 'securemail', 'pkey');
+	try {
+		$email = $email->withMessage(securemail_encrypt((string) DI::pConfig()->get($uid, 'securemail', 'pkey'), $email->getMessage(true)), null);
+	} catch (Throwable $e) {
+		// Never fall back to the plaintext, the user expects encrypted mails only.
+		DI::logger()->warning('Encryption failed, content removed.', ['uid' => $uid, 'exception' => $e]);
+		$email = $email->withMessage(DI::l10n()->t('This message could not be encrypted, so its content was removed. Please check your "Secure Mail" settings.'), null);
+	}
+}
 
+/**
+ * Encrypts the text with the ascii armored public key.
+ *
+ * @throws Exception if the key is unusable
+ */
+function securemail_encrypt(string $public_key_ascii, string $text): string
+{
 	preg_match('/-----BEGIN ([A-Za-z ]+)-----/', $public_key_ascii, $matches);
 	$marker     = empty($matches[1]) ? 'MESSAGE' : $matches[1];
 	$public_key = OpenPGP::unarmor($public_key_ascii, $marker);
 
-	$key = OpenPGP_Message::parse($public_key);
+	$key = $public_key ? OpenPGP_Message::parse($public_key) : null;
+	if (!$key instanceof OpenPGP_Message || !array_filter($key->packets, fn ($packet) => $packet instanceof OpenPGP_PublicKeyPacket)) {
+		throw new Exception('No public key found.');
+	}
 
-	$data = new OpenPGP_LiteralDataPacket($email->getMessage(true), [
+	$data = new OpenPGP_LiteralDataPacket($text, [
 		'format'   => 'u',
 		'filename' => 'encrypted.gpg',
 	]);
 
-	try {
-		$encrypted         = OpenPGP_Crypt_Symmetric::encrypt($key, new OpenPGP_Message([$data]));
-		$armored_encrypted = wordwrap(
-			OpenPGP::enarmor($encrypted->to_bytes(), 'PGP MESSAGE'),
-			64,
-			"\n",
-			true,
-		);
+	$encrypted = OpenPGP_Crypt_Symmetric::encrypt($key, new OpenPGP_Message([$data]));
 
-		$email = $email->withMessage($armored_encrypted, null);
-
-	} catch (Exception $e) {
-		DI::logger()->warning('Encryption failed.', ['email' => $email, 'exception' => $e]);
-	}
+	return wordwrap(
+		OpenPGP::enarmor($encrypted->to_bytes(), 'PGP MESSAGE'),
+		64,
+		"\n",
+		true,
+	);
 }
