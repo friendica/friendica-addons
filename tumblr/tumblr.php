@@ -328,7 +328,7 @@ function tumblr_settings(array &$data)
 	$tags_str = implode(', ', $tags);
 	$cachekey = 'tumblr-blogs-' . DI::userSession()->getLocalUserId();
 	$blogs    = DI::cache()->get($cachekey);
-	if (empty($blogs)) {
+	if (empty($blogs)) && tumblr_enabled_for_user(DI::userSession()->getLocalUserId()) {
 		$blogs = tumblr_get_blogs(DI::userSession()->getLocalUserId());
 		if (!empty($blogs)) {
 			DI::cache()->set($cachekey, $blogs, Duration::HALF_HOUR);
